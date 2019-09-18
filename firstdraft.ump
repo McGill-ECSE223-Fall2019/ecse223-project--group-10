@@ -1,10 +1,24 @@
 class Game{
-  1--1 Menu mainMenu;
+  array moveList;
+User user1;
+User user2;
+1--1 Menu mainMenu;
   1--1 Control mainControl;
   1--1 Board curBoard;
   1--1 Record gameRecord;
   1--2..4 Player player; 
-  
+
+  * -- 1 Quoridor;
+    1 -- 2 User;
+public Player initPlayerWhite(){
+
+}
+public Player initPlayerBlack(){
+
+}
+public void saveGame(){
+
+}
 }
 class Menu{
 }
@@ -12,12 +26,21 @@ class Control{
 }
 class Board{
 
+  positionFileName;
+  File positionFile;
 }
 class Box {
 Boolean isHighLighted;
 }
 class Player{
 Boolean isHighLighted;
+    startPos;
+    winCondition;
+    playerId;
+enum playerColor;
+int playerWallStock;
+playerUsername;
+
 }
 class Cordinate{
   Integer x;
@@ -30,7 +53,6 @@ class Wall {
 class Destination{
 }
 class HUD{
-  
 }
 class Record{
 }
@@ -48,4 +70,18 @@ association {
   0..1 Box -> 1 Cordinate;
   0..1 Board -> 100 Box;
   0..1 Board -> 0..20 Wall;
+}class Quoridor
+{
+  array userList;
+  1 -- * User;
 }
+
+class User
+{
+  userName;
+  int userScore;
+  int userWins;
+  int userLosses;
+  int userDraws;
+}
+
