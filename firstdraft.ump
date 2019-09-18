@@ -34,6 +34,13 @@ Boolean isHighLighted;
 }
 class Player{
 Boolean isHighLighted;
+    startPos;
+    winCondition;
+    playerId;
+enum playerColor;
+int playerWallStock;
+playerUsername;
+
 }
 class Cordinate{
   Integer x;
