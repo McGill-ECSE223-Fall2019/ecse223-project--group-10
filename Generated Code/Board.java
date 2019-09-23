@@ -4,7 +4,7 @@
 
 import java.util.*;
 
-// line 8 "firstdraft.ump"
+// line 23 "firstdraft.ump"
 public class Board
 {
 

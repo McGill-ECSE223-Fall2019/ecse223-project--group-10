@@ -363,6 +363,31 @@ public class Game
     
   }
 
+  // line 9 "firstdraft.ump"
+   public void initPlayers(Integer i, String [] Names){
+    
+  }
+
+  // line 12 "firstdraft.ump"
+   public void initBoard(){
+    
+  }
+
+  // line 15 "firstdraft.ump"
+   public void addwall(Cordinate cord){
+    
+  }
+
+  // line 18 "firstdraft.ump"
+   public void move(Cordinate from, Cordinate to){
+    
+  }
+
+  // line 21 "firstdraft.ump"
+   public void saveGame(){
+    
+  }
+
 
   public String toString()
   {

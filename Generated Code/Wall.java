@@ -3,7 +3,7 @@
 
 
 
-// line 27 "firstdraft.ump"
+// line 42 "firstdraft.ump"
 public class Wall
 {
 

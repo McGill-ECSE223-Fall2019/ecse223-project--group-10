@@ -3,7 +3,7 @@
 
 
 
-// line 32 "firstdraft.ump"
+// line 47 "firstdraft.ump"
 public class Destination
 {
 
@@ -49,7 +49,7 @@ public class Destination
   public void delete()
   {}
 
-  // line 36 "firstdraft.ump"
+  // line 51 "firstdraft.ump"
   public Boolean checkWin(Cordinate cord){
     
   }

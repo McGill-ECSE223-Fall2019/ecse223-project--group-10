@@ -3,7 +3,7 @@
 
 
 
-// line 11 "firstdraft.ump"
+// line 26 "firstdraft.ump"
 public class Grid
 {
 
@@ -17,44 +17,18 @@ public class Grid
   // MEMBER VARIABLES
   //------------------------
 
-  //Grid Associations
-  private Cordinate cordinate;
-
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Grid(Cordinate aCordinate)
-  {
-    if (!setCordinate(aCordinate))
-    {
-      throw new RuntimeException("Unable to create Grid due to aCordinate. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-  }
+  public Grid()
+  {}
 
   //------------------------
   // INTERFACE
   //------------------------
-  /* Code from template association_GetOne */
-  public Cordinate getCordinate()
-  {
-    return cordinate;
-  }
-  /* Code from template association_SetUnidirectionalOne */
-  public boolean setCordinate(Cordinate aNewCordinate)
-  {
-    boolean wasSet = false;
-    if (aNewCordinate != null)
-    {
-      cordinate = aNewCordinate;
-      wasSet = true;
-    }
-    return wasSet;
-  }
 
   public void delete()
-  {
-    cordinate = null;
-  }
+  {}
 
 }
