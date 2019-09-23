@@ -3,26 +3,61 @@
 
 
 
-// line 30 "firstdraft.ump"
+// line 32 "firstdraft.ump"
 public class Destination
 {
+
+  //------------------------
+  // ENUMERATIONS
+  //------------------------
+
+  public enum Orientation { Horizontal, Vertical }
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
+  //Destination Attributes
+  private int index;
+
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Destination()
-  {}
+  public Destination(int aIndex)
+  {
+    index = aIndex;
+  }
 
   //------------------------
   // INTERFACE
   //------------------------
 
+  public boolean setIndex(int aIndex)
+  {
+    boolean wasSet = false;
+    index = aIndex;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public int getIndex()
+  {
+    return index;
+  }
+
   public void delete()
   {}
 
+  // line 36 "firstdraft.ump"
+  public Boolean checkWin(Cordinate cord){
+    
+  }
+
+
+  public String toString()
+  {
+    return super.toString() + "["+
+            "index" + ":" + getIndex()+ "]";
+  }
 }

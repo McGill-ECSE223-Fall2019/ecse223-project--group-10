@@ -3,7 +3,7 @@
 
 
 
-// line 22 "firstdraft.ump"
+// line 23 "firstdraft.ump"
 public class Cordinate
 {
 

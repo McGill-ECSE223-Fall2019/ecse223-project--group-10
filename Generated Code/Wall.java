@@ -3,33 +3,36 @@
 
 
 
-// line 26 "firstdraft.ump"
+// line 27 "firstdraft.ump"
 public class Wall
 {
+
+  //------------------------
+  // ENUMERATIONS
+  //------------------------
+
+  public enum Orientation { Horizontal, Vertical }
+  public enum State { Highlighted, NotHighlighted }
+  public enum Owner { Black, White, Yellow, Red }
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //Wall Attributes
-  private boolean horizontal;
-  private boolean isHighLighted;
-
   //Wall Associations
-  private Color color;
+  private Game game;
   private Cordinate cordinate;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Wall(boolean aHorizontal, boolean aIsHighLighted, Color aColor, Cordinate aCordinate)
+  public Wall(Game aGame, Cordinate aCordinate)
   {
-    horizontal = aHorizontal;
-    isHighLighted = aIsHighLighted;
-    if (!setColor(aColor))
+    boolean didAddGame = setGame(aGame);
+    if (!didAddGame)
     {
-      throw new RuntimeException("Unable to create Wall due to aColor. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+      throw new RuntimeException("Unable to create wall due to game. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
     if (!setCordinate(aCordinate))
     {
@@ -40,61 +43,45 @@ public class Wall
   //------------------------
   // INTERFACE
   //------------------------
-
-  public boolean setHorizontal(boolean aHorizontal)
-  {
-    boolean wasSet = false;
-    horizontal = aHorizontal;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public boolean setIsHighLighted(boolean aIsHighLighted)
-  {
-    boolean wasSet = false;
-    isHighLighted = aIsHighLighted;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public boolean getHorizontal()
-  {
-    return horizontal;
-  }
-
-  public boolean getIsHighLighted()
-  {
-    return isHighLighted;
-  }
-  /* Code from template attribute_IsBoolean */
-  public boolean isHorizontal()
-  {
-    return horizontal;
-  }
-  /* Code from template attribute_IsBoolean */
-  public boolean isIsHighLighted()
-  {
-    return isHighLighted;
-  }
   /* Code from template association_GetOne */
-  public Color getColor()
+  public Game getGame()
   {
-    return color;
+    return game;
   }
   /* Code from template association_GetOne */
   public Cordinate getCordinate()
   {
     return cordinate;
   }
-  /* Code from template association_SetUnidirectionalOne */
-  public boolean setColor(Color aNewColor)
+  /* Code from template association_SetOneToAtMostN */
+  public boolean setGame(Game aGame)
   {
     boolean wasSet = false;
-    if (aNewColor != null)
+    //Must provide game to wall
+    if (aGame == null)
     {
-      color = aNewColor;
-      wasSet = true;
+      return wasSet;
     }
+
+    //game already at maximum (20)
+    if (aGame.numberOfWalls() >= Game.maximumNumberOfWalls())
+    {
+      return wasSet;
+    }
+    
+    Game existingGame = game;
+    game = aGame;
+    if (existingGame != null && !existingGame.equals(aGame))
+    {
+      boolean didRemove = existingGame.removeWall(this);
+      if (!didRemove)
+      {
+        game = existingGame;
+        return wasSet;
+      }
+    }
+    game.addWall(this);
+    wasSet = true;
     return wasSet;
   }
   /* Code from template association_SetUnidirectionalOne */
@@ -111,17 +98,13 @@ public class Wall
 
   public void delete()
   {
-    color = null;
+    Game placeholderGame = game;
+    this.game = null;
+    if(placeholderGame != null)
+    {
+      placeholderGame.removeWall(this);
+    }
     cordinate = null;
   }
 
-
-  public String toString()
-  {
-    return super.toString() + "["+
-            "horizontal" + ":" + getHorizontal()+ "," +
-            "isHighLighted" + ":" + getIsHighLighted()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "color = "+(getColor()!=null?Integer.toHexString(System.identityHashCode(getColor())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "cordinate = "+(getCordinate()!=null?Integer.toHexString(System.identityHashCode(getCordinate())):"null");
-  }
 }

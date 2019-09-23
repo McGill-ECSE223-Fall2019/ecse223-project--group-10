@@ -2,31 +2,56 @@
 /*This code was generated using the UMPLE 1.29.1.4657.40ea68fec modeling language!*/
 
 
+import java.util.*;
 
-// line 19 "firstdraft.ump"
+// line 14 "firstdraft.ump"
 public class Player
 {
+
+  //------------------------
+  // ENUMERATIONS
+  //------------------------
+
+  public enum State { Highlighted, NotHighlighted }
+
+  //------------------------
+  // STATIC VARIABLES
+  //------------------------
+
+  private static Map<String, Player> playersByUserName = new HashMap<String, Player>();
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
   //Player Attributes
-  private boolean isHighLighted;
+  private String userName;
+  private int userScore;
+  private int userWin;
+  private int userLoss;
+  private int userTie;
+  private int playerWallStock;
 
   //Player Associations
   private Game game;
   private Cordinate cordinate;
   private Destination destination;
-  private Color color;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Player(boolean aIsHighLighted, Game aGame, Cordinate aCordinate, Destination aDestination, Color aColor)
+  public Player(String aUserName, int aUserScore, int aUserWin, int aUserLoss, int aUserTie, int aPlayerWallStock, Game aGame, Cordinate aCordinate, Destination aDestination)
   {
-    isHighLighted = aIsHighLighted;
+    userScore = aUserScore;
+    userWin = aUserWin;
+    userLoss = aUserLoss;
+    userTie = aUserTie;
+    playerWallStock = aPlayerWallStock;
+    if (!setUserName(aUserName))
+    {
+      throw new RuntimeException("Cannot create due to duplicate userName. See http://manual.umple.org?RE003ViolationofUniqueness.html");
+    }
     boolean didAddGame = setGame(aGame);
     if (!didAddGame)
     {
@@ -40,32 +65,109 @@ public class Player
     {
       throw new RuntimeException("Unable to create Player due to aDestination. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    if (!setColor(aColor))
-    {
-      throw new RuntimeException("Unable to create Player due to aColor. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
   }
 
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setIsHighLighted(boolean aIsHighLighted)
+  public boolean setUserName(String aUserName)
   {
     boolean wasSet = false;
-    isHighLighted = aIsHighLighted;
+    String anOldUserName = getUserName();
+    if (anOldUserName != null && anOldUserName.equals(aUserName)) {
+      return true;
+    }
+    if (hasWithUserName(aUserName)) {
+      return wasSet;
+    }
+    userName = aUserName;
+    wasSet = true;
+    if (anOldUserName != null) {
+      playersByUserName.remove(anOldUserName);
+    }
+    playersByUserName.put(aUserName, this);
+    return wasSet;
+  }
+
+  public boolean setUserScore(int aUserScore)
+  {
+    boolean wasSet = false;
+    userScore = aUserScore;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean getIsHighLighted()
+  public boolean setUserWin(int aUserWin)
   {
-    return isHighLighted;
+    boolean wasSet = false;
+    userWin = aUserWin;
+    wasSet = true;
+    return wasSet;
   }
-  /* Code from template attribute_IsBoolean */
-  public boolean isIsHighLighted()
+
+  public boolean setUserLoss(int aUserLoss)
   {
-    return isHighLighted;
+    boolean wasSet = false;
+    userLoss = aUserLoss;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setUserTie(int aUserTie)
+  {
+    boolean wasSet = false;
+    userTie = aUserTie;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setPlayerWallStock(int aPlayerWallStock)
+  {
+    boolean wasSet = false;
+    playerWallStock = aPlayerWallStock;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public String getUserName()
+  {
+    return userName;
+  }
+  /* Code from template attribute_GetUnique */
+  public static Player getWithUserName(String aUserName)
+  {
+    return playersByUserName.get(aUserName);
+  }
+  /* Code from template attribute_HasUnique */
+  public static boolean hasWithUserName(String aUserName)
+  {
+    return getWithUserName(aUserName) != null;
+  }
+
+  public int getUserScore()
+  {
+    return userScore;
+  }
+
+  public int getUserWin()
+  {
+    return userWin;
+  }
+
+  public int getUserLoss()
+  {
+    return userLoss;
+  }
+
+  public int getUserTie()
+  {
+    return userTie;
+  }
+
+  public int getPlayerWallStock()
+  {
+    return playerWallStock;
   }
   /* Code from template association_GetOne */
   public Game getGame()
@@ -82,11 +184,6 @@ public class Player
   {
     return destination;
   }
-  /* Code from template association_GetOne */
-  public Color getColor()
-  {
-    return color;
-  }
   /* Code from template association_SetOneToAtMostN */
   public boolean setGame(Game aGame)
   {
@@ -98,7 +195,7 @@ public class Player
     }
 
     //game already at maximum (4)
-    if (aGame.numberOfPlayer() >= Game.maximumNumberOfPlayer())
+    if (aGame.numberOfPlayers() >= Game.maximumNumberOfPlayers())
     {
       return wasSet;
     }
@@ -140,20 +237,10 @@ public class Player
     }
     return wasSet;
   }
-  /* Code from template association_SetUnidirectionalOne */
-  public boolean setColor(Color aNewColor)
-  {
-    boolean wasSet = false;
-    if (aNewColor != null)
-    {
-      color = aNewColor;
-      wasSet = true;
-    }
-    return wasSet;
-  }
 
   public void delete()
   {
+    playersByUserName.remove(getUserName());
     Game placeholderGame = game;
     this.game = null;
     if(placeholderGame != null)
@@ -162,17 +249,20 @@ public class Player
     }
     cordinate = null;
     destination = null;
-    color = null;
   }
 
 
   public String toString()
   {
     return super.toString() + "["+
-            "isHighLighted" + ":" + getIsHighLighted()+ "]" + System.getProperties().getProperty("line.separator") +
+            "userName" + ":" + getUserName()+ "," +
+            "userScore" + ":" + getUserScore()+ "," +
+            "userWin" + ":" + getUserWin()+ "," +
+            "userLoss" + ":" + getUserLoss()+ "," +
+            "userTie" + ":" + getUserTie()+ "," +
+            "playerWallStock" + ":" + getPlayerWallStock()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "game = "+(getGame()!=null?Integer.toHexString(System.identityHashCode(getGame())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "cordinate = "+(getCordinate()!=null?Integer.toHexString(System.identityHashCode(getCordinate())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "destination = "+(getDestination()!=null?Integer.toHexString(System.identityHashCode(getDestination())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "color = "+(getColor()!=null?Integer.toHexString(System.identityHashCode(getColor())):"null");
+            "  " + "destination = "+(getDestination()!=null?Integer.toHexString(System.identityHashCode(getDestination())):"null");
   }
 }

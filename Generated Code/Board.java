@@ -4,7 +4,7 @@
 
 import java.util.*;
 
-// line 13 "firstdraft.ump"
+// line 8 "firstdraft.ump"
 public class Board
 {
 
@@ -14,39 +14,36 @@ public class Board
 
   //Board Associations
   private Game game;
-  private List<Box> boxs;
-  private List<Wall> walls;
+  private List<Grid> grids;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Board(Game aGame, Box... allBoxs)
+  public Board(Game aGame, Grid... allGrids)
   {
     if (aGame == null || aGame.getCurBoard() != null)
     {
       throw new RuntimeException("Unable to create Board due to aGame. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
     game = aGame;
-    boxs = new ArrayList<Box>();
-    boolean didAddBoxs = setBoxs(allBoxs);
-    if (!didAddBoxs)
+    grids = new ArrayList<Grid>();
+    boolean didAddGrids = setGrids(allGrids);
+    if (!didAddGrids)
     {
-      throw new RuntimeException("Unable to create Board, must have 100 boxs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+      throw new RuntimeException("Unable to create Board, must have 100 grids. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    walls = new ArrayList<Wall>();
   }
 
-  public Board(Menu aMainMenuForGame, Control aMainControlForGame, Record aGameRecordForGame, Box... allBoxs)
+  public Board(String aPositionFileNameForGame, File aPositionFileForGame, Grid... allGrids)
   {
-    game = new Game(aMainMenuForGame, aMainControlForGame, this, aGameRecordForGame);
-    boxs = new ArrayList<Box>();
-    boolean didAddBoxs = setBoxs(allBoxs);
-    if (!didAddBoxs)
+    game = new Game(aPositionFileNameForGame, aPositionFileForGame, this);
+    grids = new ArrayList<Grid>();
+    boolean didAddGrids = setGrids(allGrids);
+    if (!didAddGrids)
     {
-      throw new RuntimeException("Unable to create Board, must have 100 boxs. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+      throw new RuntimeException("Unable to create Board, must have 100 grids. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
-    walls = new ArrayList<Wall>();
   }
 
   //------------------------
@@ -58,192 +55,73 @@ public class Board
     return game;
   }
   /* Code from template association_GetMany */
-  public Box getBox(int index)
+  public Grid getGrid(int index)
   {
-    Box aBox = boxs.get(index);
-    return aBox;
+    Grid aGrid = grids.get(index);
+    return aGrid;
   }
 
-  public List<Box> getBoxs()
+  public List<Grid> getGrids()
   {
-    List<Box> newBoxs = Collections.unmodifiableList(boxs);
-    return newBoxs;
+    List<Grid> newGrids = Collections.unmodifiableList(grids);
+    return newGrids;
   }
 
-  public int numberOfBoxs()
+  public int numberOfGrids()
   {
-    int number = boxs.size();
+    int number = grids.size();
     return number;
   }
 
-  public boolean hasBoxs()
+  public boolean hasGrids()
   {
-    boolean has = boxs.size() > 0;
+    boolean has = grids.size() > 0;
     return has;
   }
 
-  public int indexOfBox(Box aBox)
+  public int indexOfGrid(Grid aGrid)
   {
-    int index = boxs.indexOf(aBox);
-    return index;
-  }
-  /* Code from template association_GetMany */
-  public Wall getWall(int index)
-  {
-    Wall aWall = walls.get(index);
-    return aWall;
-  }
-
-  public List<Wall> getWalls()
-  {
-    List<Wall> newWalls = Collections.unmodifiableList(walls);
-    return newWalls;
-  }
-
-  public int numberOfWalls()
-  {
-    int number = walls.size();
-    return number;
-  }
-
-  public boolean hasWalls()
-  {
-    boolean has = walls.size() > 0;
-    return has;
-  }
-
-  public int indexOfWall(Wall aWall)
-  {
-    int index = walls.indexOf(aWall);
+    int index = grids.indexOf(aGrid);
     return index;
   }
   /* Code from template association_RequiredNumberOfMethod */
-  public static int requiredNumberOfBoxs()
+  public static int requiredNumberOfGrids()
   {
     return 100;
   }
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfBoxs()
+  public static int minimumNumberOfGrids()
   {
     return 100;
   }
   /* Code from template association_MaximumNumberOfMethod */
-  public static int maximumNumberOfBoxs()
+  public static int maximumNumberOfGrids()
   {
     return 100;
   }
   /* Code from template association_SetUnidirectionalN */
-  public boolean setBoxs(Box... newBoxs)
+  public boolean setGrids(Grid... newGrids)
   {
     boolean wasSet = false;
-    ArrayList<Box> verifiedBoxs = new ArrayList<Box>();
-    for (Box aBox : newBoxs)
+    ArrayList<Grid> verifiedGrids = new ArrayList<Grid>();
+    for (Grid aGrid : newGrids)
     {
-      if (verifiedBoxs.contains(aBox))
+      if (verifiedGrids.contains(aGrid))
       {
         continue;
       }
-      verifiedBoxs.add(aBox);
+      verifiedGrids.add(aGrid);
     }
 
-    if (verifiedBoxs.size() != newBoxs.length || verifiedBoxs.size() != requiredNumberOfBoxs())
+    if (verifiedGrids.size() != newGrids.length || verifiedGrids.size() != requiredNumberOfGrids())
     {
       return wasSet;
     }
 
-    boxs.clear();
-    boxs.addAll(verifiedBoxs);
+    grids.clear();
+    grids.addAll(verifiedGrids);
     wasSet = true;
     return wasSet;
-  }
-  /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfWalls()
-  {
-    return 0;
-  }
-  /* Code from template association_MaximumNumberOfMethod */
-  public static int maximumNumberOfWalls()
-  {
-    return 20;
-  }
-  /* Code from template association_AddUnidirectionalOptionalN */
-  public boolean addWall(Wall aWall)
-  {
-    boolean wasAdded = false;
-    if (walls.contains(aWall)) { return false; }
-    if (numberOfWalls() < maximumNumberOfWalls())
-    {
-      walls.add(aWall);
-      wasAdded = true;
-    }
-    return wasAdded;
-  }
-
-  public boolean removeWall(Wall aWall)
-  {
-    boolean wasRemoved = false;
-    if (walls.contains(aWall))
-    {
-      walls.remove(aWall);
-      wasRemoved = true;
-    }
-    return wasRemoved;
-  }
-  /* Code from template association_SetUnidirectionalOptionalN */
-  public boolean setWalls(Wall... newWalls)
-  {
-    boolean wasSet = false;
-    ArrayList<Wall> verifiedWalls = new ArrayList<Wall>();
-    for (Wall aWall : newWalls)
-    {
-      if (verifiedWalls.contains(aWall))
-      {
-        continue;
-      }
-      verifiedWalls.add(aWall);
-    }
-
-    if (verifiedWalls.size() != newWalls.length || verifiedWalls.size() > maximumNumberOfWalls())
-    {
-      return wasSet;
-    }
-
-    walls.clear();
-    walls.addAll(verifiedWalls);
-    wasSet = true;
-    return wasSet;
-  }
-  /* Code from template association_AddIndexControlFunctions */
-  public boolean addWallAt(Wall aWall, int index)
-  {  
-    boolean wasAdded = false;
-    if(addWall(aWall))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfWalls()) { index = numberOfWalls() - 1; }
-      walls.remove(aWall);
-      walls.add(index, aWall);
-      wasAdded = true;
-    }
-    return wasAdded;
-  }
-
-  public boolean addOrMoveWallAt(Wall aWall, int index)
-  {
-    boolean wasAdded = false;
-    if(walls.contains(aWall))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfWalls()) { index = numberOfWalls() - 1; }
-      walls.remove(aWall);
-      walls.add(index, aWall);
-      wasAdded = true;
-    } 
-    else 
-    {
-      wasAdded = addWallAt(aWall, index);
-    }
-    return wasAdded;
   }
 
   public void delete()
@@ -254,8 +132,7 @@ public class Board
     {
       existingGame.delete();
     }
-    boxs.clear();
-    walls.clear();
+    grids.clear();
   }
 
 }

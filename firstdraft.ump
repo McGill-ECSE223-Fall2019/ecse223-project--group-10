@@ -1,87 +1,61 @@
 class Game{
-  array moveList;
-User user1;
-User user2;
-1--1 Menu mainMenu;
-  1--1 Control mainControl;
-  1--1 Board curBoard;
-  1--1 Record gameRecord;
-  1--2..4 Player player; 
+   positionFileName;
+   File positionFile;
+   1 <@>- 1 Board curBoard;
+   1 <@>- 2..4 Player players;
+   1 <@>- 0..20 Wall walls;
+   public void initPlayers(Integer i, String[] Names){
+   
+   }
+   public void initBoard(){
+   
+   }
+   public void addwall(Cordinate cord){
+   
+   }
+   public void move(Cordinate from, Cordinate to){
+   
+   }
+   public void saveGame(){
 
-  * -- 1 Quoridor;
-    1 -- 2 User;
-public Player initPlayerWhite(){
-
-}
-public Player initPlayerBlack(){
-
-}
-public void saveGame(){
-
-}
-}
-class Menu{
-}
-class Control{
+   }
 }
 class Board{
 
   positionFileName;
   File positionFile;
 }
-class Box {
-Boolean isHighLighted;
+class Grid {
+enum state{Highlighted,NotHighlighted};
 }
 class Player{
-Boolean isHighLighted;
-    startPos;
-    winCondition;
-    playerId;
-enum playerColor;
-int playerWallStock;
-playerUsername;
-
+enum state{Highlighted,NotHighlighted};
+unique userName;
+Integer userScore;
+Integer userWin;
+Integer userLoss;
+Integer userTie;
+Integer playerWallStock;
 }
 class Cordinate{
   Integer x;
   Integer y;
 }
 class Wall {
-  Boolean horizontal;
-  Boolean isHighLighted;
+  enum orientation{Horizontal, Vertical};
+  enum state{Highlighted,NotHighlighted};
+  enum owner{Black,White,Yellow,Red};
 }
 class Destination{
-}
-class HUD{
-}
-class Record{
-}
-class Color{
-Integer r;
-Integer g;
-Integer b;
+enum orientation{Horizontal,Vertical};
+Integer index;
+Boolean checkWin(Cordinate cord){
+} 
 }
 association {  
   0..1 Player -> 1 Cordinate;
   0..1 Player -> 1 Destination;
-  0..1 Player -> 1 Color;
-  0..1 Wall -> 1 Color;
   0..1 Wall -> 1 Cordinate;
-  0..1 Box -> 1 Cordinate;
-  0..1 Board -> 100 Box;
-  0..1 Board -> 0..20 Wall;
-}class Quoridor
-{
-  array userList;
-  1 -- * User;
-}
-
-class User
-{
-  userName;
-  int userScore;
-  int userWins;
-  int userLosses;
-  int userDraws;
+  0..1 Board -> 100 Grid;
 }
 
