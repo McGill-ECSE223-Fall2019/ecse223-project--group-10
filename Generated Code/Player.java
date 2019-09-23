@@ -3,7 +3,7 @@
 
 
 
-// line 19 "firstdraft.ump"
+// line 24 "firstdraft.ump"
 public class Player
 {
 
@@ -13,9 +13,9 @@ public class Player
 
   //Player Attributes
   private boolean isHighLighted;
+  private int playerWallStock;
 
   //Player Associations
-  private Game game;
   private Cordinate cordinate;
   private Destination destination;
   private Color color;
@@ -24,14 +24,10 @@ public class Player
   // CONSTRUCTOR
   //------------------------
 
-  public Player(boolean aIsHighLighted, Game aGame, Cordinate aCordinate, Destination aDestination, Color aColor)
+  public Player(boolean aIsHighLighted, int aPlayerWallStock, Cordinate aCordinate, Destination aDestination, Color aColor)
   {
     isHighLighted = aIsHighLighted;
-    boolean didAddGame = setGame(aGame);
-    if (!didAddGame)
-    {
-      throw new RuntimeException("Unable to create player due to game. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
+    playerWallStock = aPlayerWallStock;
     if (!setCordinate(aCordinate))
     {
       throw new RuntimeException("Unable to create Player due to aCordinate. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
@@ -58,19 +54,27 @@ public class Player
     return wasSet;
   }
 
+  public boolean setPlayerWallStock(int aPlayerWallStock)
+  {
+    boolean wasSet = false;
+    playerWallStock = aPlayerWallStock;
+    wasSet = true;
+    return wasSet;
+  }
+
   public boolean getIsHighLighted()
   {
     return isHighLighted;
+  }
+
+  public int getPlayerWallStock()
+  {
+    return playerWallStock;
   }
   /* Code from template attribute_IsBoolean */
   public boolean isIsHighLighted()
   {
     return isHighLighted;
-  }
-  /* Code from template association_GetOne */
-  public Game getGame()
-  {
-    return game;
   }
   /* Code from template association_GetOne */
   public Cordinate getCordinate()
@@ -86,37 +90,6 @@ public class Player
   public Color getColor()
   {
     return color;
-  }
-  /* Code from template association_SetOneToAtMostN */
-  public boolean setGame(Game aGame)
-  {
-    boolean wasSet = false;
-    //Must provide game to player
-    if (aGame == null)
-    {
-      return wasSet;
-    }
-
-    //game already at maximum (4)
-    if (aGame.numberOfPlayer() >= Game.maximumNumberOfPlayer())
-    {
-      return wasSet;
-    }
-    
-    Game existingGame = game;
-    game = aGame;
-    if (existingGame != null && !existingGame.equals(aGame))
-    {
-      boolean didRemove = existingGame.removePlayer(this);
-      if (!didRemove)
-      {
-        game = existingGame;
-        return wasSet;
-      }
-    }
-    game.addPlayer(this);
-    wasSet = true;
-    return wasSet;
   }
   /* Code from template association_SetUnidirectionalOne */
   public boolean setCordinate(Cordinate aNewCordinate)
@@ -154,12 +127,6 @@ public class Player
 
   public void delete()
   {
-    Game placeholderGame = game;
-    this.game = null;
-    if(placeholderGame != null)
-    {
-      placeholderGame.removePlayer(this);
-    }
     cordinate = null;
     destination = null;
     color = null;
@@ -169,8 +136,8 @@ public class Player
   public String toString()
   {
     return super.toString() + "["+
-            "isHighLighted" + ":" + getIsHighLighted()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "game = "+(getGame()!=null?Integer.toHexString(System.identityHashCode(getGame())):"null") + System.getProperties().getProperty("line.separator") +
+            "isHighLighted" + ":" + getIsHighLighted()+ "," +
+            "playerWallStock" + ":" + getPlayerWallStock()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "cordinate = "+(getCordinate()!=null?Integer.toHexString(System.identityHashCode(getCordinate())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "destination = "+(getDestination()!=null?Integer.toHexString(System.identityHashCode(getDestination())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "color = "+(getColor()!=null?Integer.toHexString(System.identityHashCode(getColor())):"null");

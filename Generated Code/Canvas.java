@@ -3,33 +3,33 @@
 
 
 
-// line 14 "firstdraft.ump"
-public class Control
+// line 9 "firstdraft.ump"
+public class Canvas
 {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //Control Associations
+  //Canvas Associations
   private Game game;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Control(Game aGame)
+  public Canvas(Game aGame)
   {
-    if (aGame == null || aGame.getMainControl() != null)
+    if (aGame == null || aGame.getGameCanvas() != null)
     {
-      throw new RuntimeException("Unable to create Control due to aGame. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+      throw new RuntimeException("Unable to create Canvas due to aGame. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
     game = aGame;
   }
 
-  public Control(Menu aMainMenuForGame, Board aCurBoardForGame, Record aGameRecordForGame, Canvas aGameCanvasForGame)
+  public Canvas(Menu aMainMenuForGame, Control aMainControlForGame, Board aCurBoardForGame, Record aGameRecordForGame)
   {
-    game = new Game(aMainMenuForGame, this, aCurBoardForGame, aGameRecordForGame, aGameCanvasForGame);
+    game = new Game(aMainMenuForGame, aMainControlForGame, aCurBoardForGame, aGameRecordForGame, this);
   }
 
   //------------------------

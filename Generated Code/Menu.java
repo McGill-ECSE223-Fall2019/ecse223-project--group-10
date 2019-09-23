@@ -3,7 +3,7 @@
 
 
 
-// line 9 "firstdraft.ump"
+// line 12 "firstdraft.ump"
 public class Menu
 {
 
@@ -27,9 +27,9 @@ public class Menu
     game = aGame;
   }
 
-  public Menu(Control aMainControlForGame, Board aCurBoardForGame, Record aGameRecordForGame)
+  public Menu(Control aMainControlForGame, Board aCurBoardForGame, Record aGameRecordForGame, Canvas aGameCanvasForGame)
   {
-    game = new Game(this, aMainControlForGame, aCurBoardForGame, aGameRecordForGame);
+    game = new Game(this, aMainControlForGame, aCurBoardForGame, aGameRecordForGame, aGameCanvasForGame);
   }
 
   //------------------------

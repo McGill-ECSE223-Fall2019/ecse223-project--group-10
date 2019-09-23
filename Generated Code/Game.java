@@ -17,13 +17,14 @@ public class Game
   private Control mainControl;
   private Board curBoard;
   private Record gameRecord;
-  private List<Player> player;
+  private Canvas gameCanvas;
+  private List<User> users;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Game(Menu aMainMenu, Control aMainControl, Board aCurBoard, Record aGameRecord)
+  public Game(Menu aMainMenu, Control aMainControl, Board aCurBoard, Record aGameRecord, Canvas aGameCanvas)
   {
     if (aMainMenu == null || aMainMenu.getGame() != null)
     {
@@ -45,16 +46,22 @@ public class Game
       throw new RuntimeException("Unable to create Game due to aGameRecord. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
     gameRecord = aGameRecord;
-    player = new ArrayList<Player>();
+    if (aGameCanvas == null || aGameCanvas.getGame() != null)
+    {
+      throw new RuntimeException("Unable to create Game due to aGameCanvas. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    gameCanvas = aGameCanvas;
+    users = new ArrayList<User>();
   }
 
-  public Game(Box... allBoxsForCurBoard)
+  public Game(String aPositionFileNameForCurBoard, File aPositionFileForCurBoard, Box... allBoxsForCurBoard)
   {
     mainMenu = new Menu(this);
     mainControl = new Control(this);
-    curBoard = new Board(this, allBoxsForCurBoard);
+    curBoard = new Board(aPositionFileNameForCurBoard, aPositionFileForCurBoard, this, allBoxsForCurBoard);
     gameRecord = new Record(this);
-    player = new ArrayList<Player>();
+    gameCanvas = new Canvas(this);
+    users = new ArrayList<User>();
   }
 
   //------------------------
@@ -80,141 +87,127 @@ public class Game
   {
     return gameRecord;
   }
+  /* Code from template association_GetOne */
+  public Canvas getGameCanvas()
+  {
+    return gameCanvas;
+  }
   /* Code from template association_GetMany */
-  public Player getPlayer(int index)
+  public User getUser(int index)
   {
-    Player aPlayer = player.get(index);
-    return aPlayer;
+    User aUser = users.get(index);
+    return aUser;
   }
 
-  public List<Player> getPlayer()
+  public List<User> getUsers()
   {
-    List<Player> newPlayer = Collections.unmodifiableList(player);
-    return newPlayer;
+    List<User> newUsers = Collections.unmodifiableList(users);
+    return newUsers;
   }
 
-  public int numberOfPlayer()
+  public int numberOfUsers()
   {
-    int number = player.size();
+    int number = users.size();
     return number;
   }
 
-  public boolean hasPlayer()
+  public boolean hasUsers()
   {
-    boolean has = player.size() > 0;
+    boolean has = users.size() > 0;
     return has;
   }
 
-  public int indexOfPlayer(Player aPlayer)
+  public int indexOfUser(User aUser)
   {
-    int index = player.indexOf(aPlayer);
+    int index = users.indexOf(aUser);
     return index;
   }
-  /* Code from template association_IsNumberOfValidMethod */
-  public boolean isNumberOfPlayerValid()
-  {
-    boolean isValid = numberOfPlayer() >= minimumNumberOfPlayer() && numberOfPlayer() <= maximumNumberOfPlayer();
-    return isValid;
-  }
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfPlayer()
+  public static int minimumNumberOfUsers()
   {
-    return 2;
+    return 0;
   }
   /* Code from template association_MaximumNumberOfMethod */
-  public static int maximumNumberOfPlayer()
+  public static int maximumNumberOfUsers()
   {
     return 4;
   }
-  /* Code from template association_AddMNToOnlyOne */
-  public Player addPlayer(boolean aIsHighLighted, Cordinate aCordinate, Destination aDestination, Color aColor)
+  /* Code from template association_AddOptionalNToOne */
+  public User addUser(String aUserName, int aUserScore, int aUserWin, int aUserLoss, int aUserTie, Player aPlayer)
   {
-    if (numberOfPlayer() >= maximumNumberOfPlayer())
+    if (numberOfUsers() >= maximumNumberOfUsers())
     {
       return null;
     }
     else
     {
-      return new Player(aIsHighLighted, this, aCordinate, aDestination, aColor);
+      return new User(aUserName, aUserScore, aUserWin, aUserLoss, aUserTie, this, aPlayer);
     }
   }
 
-  public boolean addPlayer(Player aPlayer)
+  public boolean addUser(User aUser)
   {
     boolean wasAdded = false;
-    if (player.contains(aPlayer)) { return false; }
-    if (numberOfPlayer() >= maximumNumberOfPlayer())
+    if (users.contains(aUser)) { return false; }
+    if (numberOfUsers() >= maximumNumberOfUsers())
     {
       return wasAdded;
     }
 
-    Game existingGame = aPlayer.getGame();
+    Game existingGame = aUser.getGame();
     boolean isNewGame = existingGame != null && !this.equals(existingGame);
-
-    if (isNewGame && existingGame.numberOfPlayer() <= minimumNumberOfPlayer())
-    {
-      return wasAdded;
-    }
-
     if (isNewGame)
     {
-      aPlayer.setGame(this);
+      aUser.setGame(this);
     }
     else
     {
-      player.add(aPlayer);
+      users.add(aUser);
     }
     wasAdded = true;
     return wasAdded;
   }
 
-  public boolean removePlayer(Player aPlayer)
+  public boolean removeUser(User aUser)
   {
     boolean wasRemoved = false;
-    //Unable to remove aPlayer, as it must always have a game
-    if (this.equals(aPlayer.getGame()))
+    //Unable to remove aUser, as it must always have a game
+    if (!this.equals(aUser.getGame()))
     {
-      return wasRemoved;
+      users.remove(aUser);
+      wasRemoved = true;
     }
-
-    //game already at minimum (2)
-    if (numberOfPlayer() <= minimumNumberOfPlayer())
-    {
-      return wasRemoved;
-    }
-    player.remove(aPlayer);
-    wasRemoved = true;
     return wasRemoved;
   }
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addPlayerAt(Player aPlayer, int index)
+  public boolean addUserAt(User aUser, int index)
   {  
     boolean wasAdded = false;
-    if(addPlayer(aPlayer))
+    if(addUser(aUser))
     {
       if(index < 0 ) { index = 0; }
-      if(index > numberOfPlayer()) { index = numberOfPlayer() - 1; }
-      player.remove(aPlayer);
-      player.add(index, aPlayer);
+      if(index > numberOfUsers()) { index = numberOfUsers() - 1; }
+      users.remove(aUser);
+      users.add(index, aUser);
       wasAdded = true;
     }
     return wasAdded;
   }
 
-  public boolean addOrMovePlayerAt(Player aPlayer, int index)
+  public boolean addOrMoveUserAt(User aUser, int index)
   {
     boolean wasAdded = false;
-    if(player.contains(aPlayer))
+    if(users.contains(aUser))
     {
       if(index < 0 ) { index = 0; }
-      if(index > numberOfPlayer()) { index = numberOfPlayer() - 1; }
-      player.remove(aPlayer);
-      player.add(index, aPlayer);
+      if(index > numberOfUsers()) { index = numberOfUsers() - 1; }
+      users.remove(aUser);
+      users.add(index, aUser);
       wasAdded = true;
     } 
     else 
     {
-      wasAdded = addPlayerAt(aPlayer, index);
+      wasAdded = addUserAt(aUser, index);
     }
     return wasAdded;
   }
@@ -245,10 +238,16 @@ public class Game
     {
       existingGameRecord.delete();
     }
-    for(int i=player.size(); i > 0; i--)
+    Canvas existingGameCanvas = gameCanvas;
+    gameCanvas = null;
+    if (existingGameCanvas != null)
     {
-      Player aPlayer = player.get(i - 1);
-      aPlayer.delete();
+      existingGameCanvas.delete();
+    }
+    for(int i=users.size(); i > 0; i--)
+    {
+      User aUser = users.get(i - 1);
+      aUser.delete();
     }
   }
 

@@ -3,7 +3,7 @@
 
 
 
-// line 35 "firstdraft.ump"
+// line 42 "firstdraft.ump"
 public class Record
 {
 
@@ -27,9 +27,9 @@ public class Record
     game = aGame;
   }
 
-  public Record(Menu aMainMenuForGame, Control aMainControlForGame, Board aCurBoardForGame)
+  public Record(Menu aMainMenuForGame, Control aMainControlForGame, Board aCurBoardForGame, Canvas aGameCanvasForGame)
   {
-    game = new Game(aMainMenuForGame, aMainControlForGame, aCurBoardForGame, this);
+    game = new Game(aMainMenuForGame, aMainControlForGame, aCurBoardForGame, this, aGameCanvasForGame);
   }
 
   //------------------------
@@ -50,5 +50,12 @@ public class Record
       existingGame.delete();
     }
   }
-
+  
+  //------------------------
+  // DEVELOPER CODE - PROVIDED AS-IS
+  //------------------------
+  
+  // line 43 firstdraft.ump
+  save()
+  
 }

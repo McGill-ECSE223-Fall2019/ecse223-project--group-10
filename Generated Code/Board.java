@@ -4,13 +4,17 @@
 
 import java.util.*;
 
-// line 13 "firstdraft.ump"
+// line 16 "firstdraft.ump"
 public class Board
 {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
+
+  //Board Attributes
+  private String positionFileName;
+  private File positionFile;
 
   //Board Associations
   private Game game;
@@ -21,8 +25,10 @@ public class Board
   // CONSTRUCTOR
   //------------------------
 
-  public Board(Game aGame, Box... allBoxs)
+  public Board(String aPositionFileName, File aPositionFile, Game aGame, Box... allBoxs)
   {
+    positionFileName = aPositionFileName;
+    positionFile = aPositionFile;
     if (aGame == null || aGame.getCurBoard() != null)
     {
       throw new RuntimeException("Unable to create Board due to aGame. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
@@ -37,9 +43,11 @@ public class Board
     walls = new ArrayList<Wall>();
   }
 
-  public Board(Menu aMainMenuForGame, Control aMainControlForGame, Record aGameRecordForGame, Box... allBoxs)
+  public Board(String aPositionFileName, File aPositionFile, Menu aMainMenuForGame, Control aMainControlForGame, Record aGameRecordForGame, Canvas aGameCanvasForGame, Box... allBoxs)
   {
-    game = new Game(aMainMenuForGame, aMainControlForGame, this, aGameRecordForGame);
+    positionFileName = aPositionFileName;
+    positionFile = aPositionFile;
+    game = new Game(aMainMenuForGame, aMainControlForGame, this, aGameRecordForGame, aGameCanvasForGame);
     boxs = new ArrayList<Box>();
     boolean didAddBoxs = setBoxs(allBoxs);
     if (!didAddBoxs)
@@ -52,6 +60,32 @@ public class Board
   //------------------------
   // INTERFACE
   //------------------------
+
+  public boolean setPositionFileName(String aPositionFileName)
+  {
+    boolean wasSet = false;
+    positionFileName = aPositionFileName;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public boolean setPositionFile(File aPositionFile)
+  {
+    boolean wasSet = false;
+    positionFile = aPositionFile;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public String getPositionFileName()
+  {
+    return positionFileName;
+  }
+
+  public File getPositionFile()
+  {
+    return positionFile;
+  }
   /* Code from template association_GetOne */
   public Game getGame()
   {
@@ -258,4 +292,12 @@ public class Board
     walls.clear();
   }
 
+
+  public String toString()
+  {
+    return super.toString() + "["+
+            "positionFileName" + ":" + getPositionFileName()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "positionFile" + "=" + (getPositionFile() != null ? !getPositionFile().equals(this)  ? getPositionFile().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
+            "  " + "game = "+(getGame()!=null?Integer.toHexString(System.identityHashCode(getGame())):"null");
+  }
 }
