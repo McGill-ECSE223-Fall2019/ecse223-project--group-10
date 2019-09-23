@@ -4,6 +4,21 @@ class Game{
    1 <@>- 1 Board curBoard;
    1 <@>- 2..4 Player players;
    1 <@>- 0..20 Wall walls;
+   public void initPlayers(Integer i, String[] Names){
+   
+   }
+   public void initBoard(){
+   
+   }
+   public void addwall(Cordinate cord){
+   
+   }
+   public void move(Cordinate from, Cordinate to){
+   
+   }
+   public void saveGame(){
+
+   }
 }
 class Board{
 
@@ -39,6 +54,5 @@ association {
   0..1 Player -> 1 Cordinate;
   0..1 Player -> 1 Destination;
   0..1 Wall -> 1 Cordinate;
-  0..1 Grid -> 1 Cordinate;
   0..1 Board -> 100 Grid;
 }
