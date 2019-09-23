@@ -22,6 +22,8 @@ class Game{
 }
 class Board{
 
+  positionFileName;
+  File positionFile;
 }
 class Grid {
 enum state{Highlighted,NotHighlighted};
@@ -56,3 +58,4 @@ association {
   0..1 Wall -> 1 Cordinate;
   0..1 Board -> 100 Grid;
 }
+
