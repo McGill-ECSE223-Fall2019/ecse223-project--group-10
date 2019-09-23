@@ -12,243 +12,363 @@ public class Game
   // MEMBER VARIABLES
   //------------------------
 
+  //Game Attributes
+  private String positionFileName;
+  private File positionFile;
+
   //Game Associations
-  private Menu mainMenu;
-  private Control mainControl;
   private Board curBoard;
-  private Record gameRecord;
-  private Canvas gameCanvas;
-  private List<User> users;
+  private List<Player> players;
+  private List<Wall> walls;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Game(Menu aMainMenu, Control aMainControl, Board aCurBoard, Record aGameRecord, Canvas aGameCanvas)
+  public Game(String aPositionFileName, File aPositionFile, Board aCurBoard)
   {
-    if (aMainMenu == null || aMainMenu.getGame() != null)
-    {
-      throw new RuntimeException("Unable to create Game due to aMainMenu. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    mainMenu = aMainMenu;
-    if (aMainControl == null || aMainControl.getGame() != null)
-    {
-      throw new RuntimeException("Unable to create Game due to aMainControl. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    mainControl = aMainControl;
+    positionFileName = aPositionFileName;
+    positionFile = aPositionFile;
     if (aCurBoard == null || aCurBoard.getGame() != null)
     {
       throw new RuntimeException("Unable to create Game due to aCurBoard. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
     curBoard = aCurBoard;
-    if (aGameRecord == null || aGameRecord.getGame() != null)
-    {
-      throw new RuntimeException("Unable to create Game due to aGameRecord. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    gameRecord = aGameRecord;
-    if (aGameCanvas == null || aGameCanvas.getGame() != null)
-    {
-      throw new RuntimeException("Unable to create Game due to aGameCanvas. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    gameCanvas = aGameCanvas;
-    users = new ArrayList<User>();
+    players = new ArrayList<Player>();
+    walls = new ArrayList<Wall>();
   }
 
-  public Game(String aPositionFileNameForCurBoard, File aPositionFileForCurBoard, Box... allBoxsForCurBoard)
+  public Game(String aPositionFileName, File aPositionFile, Grid... allGridsForCurBoard)
   {
-    mainMenu = new Menu(this);
-    mainControl = new Control(this);
-    curBoard = new Board(aPositionFileNameForCurBoard, aPositionFileForCurBoard, this, allBoxsForCurBoard);
-    gameRecord = new Record(this);
-    gameCanvas = new Canvas(this);
-    users = new ArrayList<User>();
+    positionFileName = aPositionFileName;
+    positionFile = aPositionFile;
+    curBoard = new Board(this, allGridsForCurBoard);
+    players = new ArrayList<Player>();
+    walls = new ArrayList<Wall>();
   }
 
   //------------------------
   // INTERFACE
   //------------------------
-  /* Code from template association_GetOne */
-  public Menu getMainMenu()
+
+  public boolean setPositionFileName(String aPositionFileName)
   {
-    return mainMenu;
+    boolean wasSet = false;
+    positionFileName = aPositionFileName;
+    wasSet = true;
+    return wasSet;
   }
-  /* Code from template association_GetOne */
-  public Control getMainControl()
+
+  public boolean setPositionFile(File aPositionFile)
   {
-    return mainControl;
+    boolean wasSet = false;
+    positionFile = aPositionFile;
+    wasSet = true;
+    return wasSet;
+  }
+
+  public String getPositionFileName()
+  {
+    return positionFileName;
+  }
+
+  public File getPositionFile()
+  {
+    return positionFile;
   }
   /* Code from template association_GetOne */
   public Board getCurBoard()
   {
     return curBoard;
   }
-  /* Code from template association_GetOne */
-  public Record getGameRecord()
-  {
-    return gameRecord;
-  }
-  /* Code from template association_GetOne */
-  public Canvas getGameCanvas()
-  {
-    return gameCanvas;
-  }
   /* Code from template association_GetMany */
-  public User getUser(int index)
+  public Player getPlayer(int index)
   {
-    User aUser = users.get(index);
-    return aUser;
+    Player aPlayer = players.get(index);
+    return aPlayer;
   }
 
-  public List<User> getUsers()
+  public List<Player> getPlayers()
   {
-    List<User> newUsers = Collections.unmodifiableList(users);
-    return newUsers;
+    List<Player> newPlayers = Collections.unmodifiableList(players);
+    return newPlayers;
   }
 
-  public int numberOfUsers()
+  public int numberOfPlayers()
   {
-    int number = users.size();
+    int number = players.size();
     return number;
   }
 
-  public boolean hasUsers()
+  public boolean hasPlayers()
   {
-    boolean has = users.size() > 0;
+    boolean has = players.size() > 0;
     return has;
   }
 
-  public int indexOfUser(User aUser)
+  public int indexOfPlayer(Player aPlayer)
   {
-    int index = users.indexOf(aUser);
+    int index = players.indexOf(aPlayer);
     return index;
   }
-  /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfUsers()
+  /* Code from template association_GetMany */
+  public Wall getWall(int index)
   {
-    return 0;
+    Wall aWall = walls.get(index);
+    return aWall;
+  }
+
+  public List<Wall> getWalls()
+  {
+    List<Wall> newWalls = Collections.unmodifiableList(walls);
+    return newWalls;
+  }
+
+  public int numberOfWalls()
+  {
+    int number = walls.size();
+    return number;
+  }
+
+  public boolean hasWalls()
+  {
+    boolean has = walls.size() > 0;
+    return has;
+  }
+
+  public int indexOfWall(Wall aWall)
+  {
+    int index = walls.indexOf(aWall);
+    return index;
+  }
+  /* Code from template association_IsNumberOfValidMethod */
+  public boolean isNumberOfPlayersValid()
+  {
+    boolean isValid = numberOfPlayers() >= minimumNumberOfPlayers() && numberOfPlayers() <= maximumNumberOfPlayers();
+    return isValid;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfPlayers()
+  {
+    return 2;
   }
   /* Code from template association_MaximumNumberOfMethod */
-  public static int maximumNumberOfUsers()
+  public static int maximumNumberOfPlayers()
   {
     return 4;
   }
-  /* Code from template association_AddOptionalNToOne */
-  public User addUser(String aUserName, int aUserScore, int aUserWin, int aUserLoss, int aUserTie, Player aPlayer)
+  /* Code from template association_AddMNToOnlyOne */
+  public Player addPlayer(String aUserName, int aUserScore, int aUserWin, int aUserLoss, int aUserTie, int aPlayerWallStock, Cordinate aCordinate, Destination aDestination)
   {
-    if (numberOfUsers() >= maximumNumberOfUsers())
+    if (numberOfPlayers() >= maximumNumberOfPlayers())
     {
       return null;
     }
     else
     {
-      return new User(aUserName, aUserScore, aUserWin, aUserLoss, aUserTie, this, aPlayer);
+      return new Player(aUserName, aUserScore, aUserWin, aUserLoss, aUserTie, aPlayerWallStock, this, aCordinate, aDestination);
     }
   }
 
-  public boolean addUser(User aUser)
+  public boolean addPlayer(Player aPlayer)
   {
     boolean wasAdded = false;
-    if (users.contains(aUser)) { return false; }
-    if (numberOfUsers() >= maximumNumberOfUsers())
+    if (players.contains(aPlayer)) { return false; }
+    if (numberOfPlayers() >= maximumNumberOfPlayers())
     {
       return wasAdded;
     }
 
-    Game existingGame = aUser.getGame();
+    Game existingGame = aPlayer.getGame();
     boolean isNewGame = existingGame != null && !this.equals(existingGame);
+
+    if (isNewGame && existingGame.numberOfPlayers() <= minimumNumberOfPlayers())
+    {
+      return wasAdded;
+    }
+
     if (isNewGame)
     {
-      aUser.setGame(this);
+      aPlayer.setGame(this);
     }
     else
     {
-      users.add(aUser);
+      players.add(aPlayer);
     }
     wasAdded = true;
     return wasAdded;
   }
 
-  public boolean removeUser(User aUser)
+  public boolean removePlayer(Player aPlayer)
   {
     boolean wasRemoved = false;
-    //Unable to remove aUser, as it must always have a game
-    if (!this.equals(aUser.getGame()))
+    //Unable to remove aPlayer, as it must always have a game
+    if (this.equals(aPlayer.getGame()))
     {
-      users.remove(aUser);
-      wasRemoved = true;
+      return wasRemoved;
     }
+
+    //game already at minimum (2)
+    if (numberOfPlayers() <= minimumNumberOfPlayers())
+    {
+      return wasRemoved;
+    }
+    players.remove(aPlayer);
+    wasRemoved = true;
     return wasRemoved;
   }
   /* Code from template association_AddIndexControlFunctions */
-  public boolean addUserAt(User aUser, int index)
+  public boolean addPlayerAt(Player aPlayer, int index)
   {  
     boolean wasAdded = false;
-    if(addUser(aUser))
+    if(addPlayer(aPlayer))
     {
       if(index < 0 ) { index = 0; }
-      if(index > numberOfUsers()) { index = numberOfUsers() - 1; }
-      users.remove(aUser);
-      users.add(index, aUser);
+      if(index > numberOfPlayers()) { index = numberOfPlayers() - 1; }
+      players.remove(aPlayer);
+      players.add(index, aPlayer);
       wasAdded = true;
     }
     return wasAdded;
   }
 
-  public boolean addOrMoveUserAt(User aUser, int index)
+  public boolean addOrMovePlayerAt(Player aPlayer, int index)
   {
     boolean wasAdded = false;
-    if(users.contains(aUser))
+    if(players.contains(aPlayer))
     {
       if(index < 0 ) { index = 0; }
-      if(index > numberOfUsers()) { index = numberOfUsers() - 1; }
-      users.remove(aUser);
-      users.add(index, aUser);
+      if(index > numberOfPlayers()) { index = numberOfPlayers() - 1; }
+      players.remove(aPlayer);
+      players.add(index, aPlayer);
       wasAdded = true;
     } 
     else 
     {
-      wasAdded = addUserAt(aUser, index);
+      wasAdded = addPlayerAt(aPlayer, index);
+    }
+    return wasAdded;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfWalls()
+  {
+    return 0;
+  }
+  /* Code from template association_MaximumNumberOfMethod */
+  public static int maximumNumberOfWalls()
+  {
+    return 20;
+  }
+  /* Code from template association_AddOptionalNToOne */
+  public Wall addWall(Cordinate aCordinate)
+  {
+    if (numberOfWalls() >= maximumNumberOfWalls())
+    {
+      return null;
+    }
+    else
+    {
+      return new Wall(this, aCordinate);
+    }
+  }
+
+  public boolean addWall(Wall aWall)
+  {
+    boolean wasAdded = false;
+    if (walls.contains(aWall)) { return false; }
+    if (numberOfWalls() >= maximumNumberOfWalls())
+    {
+      return wasAdded;
+    }
+
+    Game existingGame = aWall.getGame();
+    boolean isNewGame = existingGame != null && !this.equals(existingGame);
+    if (isNewGame)
+    {
+      aWall.setGame(this);
+    }
+    else
+    {
+      walls.add(aWall);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeWall(Wall aWall)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aWall, as it must always have a game
+    if (!this.equals(aWall.getGame()))
+    {
+      walls.remove(aWall);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addWallAt(Wall aWall, int index)
+  {  
+    boolean wasAdded = false;
+    if(addWall(aWall))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfWalls()) { index = numberOfWalls() - 1; }
+      walls.remove(aWall);
+      walls.add(index, aWall);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveWallAt(Wall aWall, int index)
+  {
+    boolean wasAdded = false;
+    if(walls.contains(aWall))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfWalls()) { index = numberOfWalls() - 1; }
+      walls.remove(aWall);
+      walls.add(index, aWall);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addWallAt(aWall, index);
     }
     return wasAdded;
   }
 
   public void delete()
   {
-    Menu existingMainMenu = mainMenu;
-    mainMenu = null;
-    if (existingMainMenu != null)
-    {
-      existingMainMenu.delete();
-    }
-    Control existingMainControl = mainControl;
-    mainControl = null;
-    if (existingMainControl != null)
-    {
-      existingMainControl.delete();
-    }
     Board existingCurBoard = curBoard;
     curBoard = null;
     if (existingCurBoard != null)
     {
       existingCurBoard.delete();
     }
-    Record existingGameRecord = gameRecord;
-    gameRecord = null;
-    if (existingGameRecord != null)
+    while (players.size() > 0)
     {
-      existingGameRecord.delete();
+      Player aPlayer = players.get(players.size() - 1);
+      aPlayer.delete();
+      players.remove(aPlayer);
     }
-    Canvas existingGameCanvas = gameCanvas;
-    gameCanvas = null;
-    if (existingGameCanvas != null)
+    
+    while (walls.size() > 0)
     {
-      existingGameCanvas.delete();
+      Wall aWall = walls.get(walls.size() - 1);
+      aWall.delete();
+      walls.remove(aWall);
     }
-    for(int i=users.size(); i > 0; i--)
-    {
-      User aUser = users.get(i - 1);
-      aUser.delete();
-    }
+    
   }
 
+
+  public String toString()
+  {
+    return super.toString() + "["+
+            "positionFileName" + ":" + getPositionFileName()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "positionFile" + "=" + (getPositionFile() != null ? !getPositionFile().equals(this)  ? getPositionFile().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
+            "  " + "curBoard = "+(getCurBoard()!=null?Integer.toHexString(System.identityHashCode(getCurBoard())):"null");
+  }
 }

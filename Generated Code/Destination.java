@@ -3,39 +3,35 @@
 
 
 
-// line 36 "firstdraft.ump"
+// line 32 "firstdraft.ump"
 public class Destination
 {
+
+  //------------------------
+  // ENUMERATIONS
+  //------------------------
+
+  public enum Orientation { Horizontal, Vertical }
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
   //Destination Attributes
-  private boolean horizontal;
   private int index;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Destination(boolean aHorizontal, int aIndex)
+  public Destination(int aIndex)
   {
-    horizontal = aHorizontal;
     index = aIndex;
   }
 
   //------------------------
   // INTERFACE
   //------------------------
-
-  public boolean setHorizontal(boolean aHorizontal)
-  {
-    boolean wasSet = false;
-    horizontal = aHorizontal;
-    wasSet = true;
-    return wasSet;
-  }
 
   public boolean setIndex(int aIndex)
   {
@@ -45,25 +41,15 @@ public class Destination
     return wasSet;
   }
 
-  public boolean getHorizontal()
-  {
-    return horizontal;
-  }
-
   public int getIndex()
   {
     return index;
-  }
-  /* Code from template attribute_IsBoolean */
-  public boolean isHorizontal()
-  {
-    return horizontal;
   }
 
   public void delete()
   {}
 
-  // line 40 "firstdraft.ump"
+  // line 36 "firstdraft.ump"
   public Boolean checkWin(Cordinate cord){
     
   }
@@ -72,7 +58,6 @@ public class Destination
   public String toString()
   {
     return super.toString() + "["+
-            "horizontal" + ":" + getHorizontal()+ "," +
             "index" + ":" + getIndex()+ "]";
   }
 }
