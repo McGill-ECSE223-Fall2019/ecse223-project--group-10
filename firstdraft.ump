@@ -3,8 +3,11 @@ class Game{
   1--1 Control mainControl;
   1--1 Board curBoard;
   1--1 Record gameRecord;
-  1--2..4 Player player; 
-  
+  1--1 Canvas gameCanvas;
+  1 -- 0..4 User;
+}
+class Canvas{
+
 }
 class Menu{
 }
@@ -12,12 +15,15 @@ class Control{
 }
 class Board{
 
+  positionFileName;
+  File positionFile;
 }
 class Box {
 Boolean isHighLighted;
 }
 class Player{
 Boolean isHighLighted;
+Integer playerWallStock;
 }
 class Cordinate{
   Integer x;
@@ -28,11 +34,13 @@ class Wall {
   Boolean isHighLighted;
 }
 class Destination{
-}
-class HUD{
-  
+Boolean horizontal;
+Integer index;
+Boolean checkWin(Cordinate cord){
+} 
 }
 class Record{
+save()
 }
 class Color{
 Integer r;
@@ -48,4 +56,13 @@ association {
   0..1 Box -> 1 Cordinate;
   0..1 Board -> 100 Box;
   0..1 Board -> 0..20 Wall;
+  0..1 User -> 1 Player;
+}
+class User
+{
+  String userName;
+  Integer userScore;
+  Integer userWin;
+  Integer userLoss;
+  Integer userTie;
 }
