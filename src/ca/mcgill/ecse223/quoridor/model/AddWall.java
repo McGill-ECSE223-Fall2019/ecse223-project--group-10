@@ -3,15 +3,21 @@
 
 
 
-// line 38 "firstdraft.ump"
-public class Cordinate
+// line 56 "Quoridor.ump"
+public class AddWall extends Action
 {
+
+  //------------------------
+  // ENUMERATIONS
+  //------------------------
+
+  public enum Orientation { Horizontal, Vertical }
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //Cordinate Attributes
+  //AddWall Attributes
   private int x;
   private int y;
 
@@ -19,8 +25,9 @@ public class Cordinate
   // CONSTRUCTOR
   //------------------------
 
-  public Cordinate(int aX, int aY)
+  public AddWall(History aHistory, int aX, int aY)
   {
+    super(aHistory);
     x = aX;
     y = aY;
   }
@@ -56,7 +63,9 @@ public class Cordinate
   }
 
   public void delete()
-  {}
+  {
+    super.delete();
+  }
 
 
   public String toString()

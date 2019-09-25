@@ -4,7 +4,7 @@
 
 import java.util.*;
 
-// line 1 "firstdraft.ump"
+// line 1 "Quoridor.ump"
 public class Game
 {
 
@@ -13,102 +13,108 @@ public class Game
   //------------------------
 
   //Game Attributes
-  private String positionFileName;
-  private File positionFile;
+  private boolean isOver;
 
   //Game Associations
-  private Board curBoard;
-  private List<Player> players;
+  private Player winner;
+  private List<Pawn> pawns;
   private List<Wall> walls;
+  private List<Tile> gameTiles;
+  private History gameHistory;
+  private Quoridor quoridor;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Game(String aPositionFileName, File aPositionFile, Board aCurBoard)
+  public Game(boolean aIsOver, History aGameHistory, Quoridor aQuoridor)
   {
-    positionFileName = aPositionFileName;
-    positionFile = aPositionFile;
-    if (aCurBoard == null || aCurBoard.getGame() != null)
-    {
-      throw new RuntimeException("Unable to create Game due to aCurBoard. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    curBoard = aCurBoard;
-    players = new ArrayList<Player>();
+    isOver = aIsOver;
+    pawns = new ArrayList<Pawn>();
     walls = new ArrayList<Wall>();
+    gameTiles = new ArrayList<Tile>();
+    if (aGameHistory == null || aGameHistory.getGame() != null)
+    {
+      throw new RuntimeException("Unable to create Game due to aGameHistory. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    gameHistory = aGameHistory;
+    if (aQuoridor == null || aQuoridor.getGame() != null)
+    {
+      throw new RuntimeException("Unable to create Game due to aQuoridor. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    quoridor = aQuoridor;
   }
 
-  public Game(String aPositionFileName, File aPositionFile, Grid... allGridsForCurBoard)
+  public Game(boolean aIsOver, Quoridor aQuoridorForGameHistory, History aHistoryForQuoridor)
   {
-    positionFileName = aPositionFileName;
-    positionFile = aPositionFile;
-    curBoard = new Board(this, allGridsForCurBoard);
-    players = new ArrayList<Player>();
+    isOver = aIsOver;
+    pawns = new ArrayList<Pawn>();
     walls = new ArrayList<Wall>();
+    gameTiles = new ArrayList<Tile>();
+    gameHistory = new History(this, aQuoridorForGameHistory);
+    quoridor = new Quoridor(this, aHistoryForQuoridor);
   }
 
   //------------------------
   // INTERFACE
   //------------------------
 
-  public boolean setPositionFileName(String aPositionFileName)
+  public boolean setIsOver(boolean aIsOver)
   {
     boolean wasSet = false;
-    positionFileName = aPositionFileName;
+    isOver = aIsOver;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setPositionFile(File aPositionFile)
+  public boolean getIsOver()
   {
-    boolean wasSet = false;
-    positionFile = aPositionFile;
-    wasSet = true;
-    return wasSet;
+    return isOver;
   }
-
-  public String getPositionFileName()
+  /* Code from template attribute_IsBoolean */
+  public boolean isIsOver()
   {
-    return positionFileName;
-  }
-
-  public File getPositionFile()
-  {
-    return positionFile;
+    return isOver;
   }
   /* Code from template association_GetOne */
-  public Board getCurBoard()
+  public Player getWinner()
   {
-    return curBoard;
+    return winner;
+  }
+
+  public boolean hasWinner()
+  {
+    boolean has = winner != null;
+    return has;
   }
   /* Code from template association_GetMany */
-  public Player getPlayer(int index)
+  public Pawn getPawn(int index)
   {
-    Player aPlayer = players.get(index);
-    return aPlayer;
+    Pawn aPawn = pawns.get(index);
+    return aPawn;
   }
 
-  public List<Player> getPlayers()
+  public List<Pawn> getPawns()
   {
-    List<Player> newPlayers = Collections.unmodifiableList(players);
-    return newPlayers;
+    List<Pawn> newPawns = Collections.unmodifiableList(pawns);
+    return newPawns;
   }
 
-  public int numberOfPlayers()
+  public int numberOfPawns()
   {
-    int number = players.size();
+    int number = pawns.size();
     return number;
   }
 
-  public boolean hasPlayers()
+  public boolean hasPawns()
   {
-    boolean has = players.size() > 0;
+    boolean has = pawns.size() > 0;
     return has;
   }
 
-  public int indexOfPlayer(Player aPlayer)
+  public int indexOfPawn(Pawn aPawn)
   {
-    int index = players.indexOf(aPlayer);
+    int index = pawns.indexOf(aPawn);
     return index;
   }
   /* Code from template association_GetMany */
@@ -141,113 +147,134 @@ public class Game
     int index = walls.indexOf(aWall);
     return index;
   }
-  /* Code from template association_IsNumberOfValidMethod */
-  public boolean isNumberOfPlayersValid()
+  /* Code from template association_GetMany */
+  public Tile getGameTile(int index)
   {
-    boolean isValid = numberOfPlayers() >= minimumNumberOfPlayers() && numberOfPlayers() <= maximumNumberOfPlayers();
+    Tile aGameTile = gameTiles.get(index);
+    return aGameTile;
+  }
+
+  public List<Tile> getGameTiles()
+  {
+    List<Tile> newGameTiles = Collections.unmodifiableList(gameTiles);
+    return newGameTiles;
+  }
+
+  public int numberOfGameTiles()
+  {
+    int number = gameTiles.size();
+    return number;
+  }
+
+  public boolean hasGameTiles()
+  {
+    boolean has = gameTiles.size() > 0;
+    return has;
+  }
+
+  public int indexOfGameTile(Tile aGameTile)
+  {
+    int index = gameTiles.indexOf(aGameTile);
+    return index;
+  }
+  /* Code from template association_GetOne */
+  public History getGameHistory()
+  {
+    return gameHistory;
+  }
+  /* Code from template association_GetOne */
+  public Quoridor getQuoridor()
+  {
+    return quoridor;
+  }
+  /* Code from template association_SetUnidirectionalOptionalOne */
+  public boolean setWinner(Player aNewWinner)
+  {
+    boolean wasSet = false;
+    winner = aNewWinner;
+    wasSet = true;
+    return wasSet;
+  }
+  /* Code from template association_IsNumberOfValidMethod */
+  public boolean isNumberOfPawnsValid()
+  {
+    boolean isValid = numberOfPawns() >= minimumNumberOfPawns() && numberOfPawns() <= maximumNumberOfPawns();
     return isValid;
   }
+  /* Code from template association_RequiredNumberOfMethod */
+  public static int requiredNumberOfPawns()
+  {
+    return 2;
+  }
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfPlayers()
+  public static int minimumNumberOfPawns()
   {
     return 2;
   }
   /* Code from template association_MaximumNumberOfMethod */
-  public static int maximumNumberOfPlayers()
+  public static int maximumNumberOfPawns()
   {
-    return 4;
+    return 2;
   }
   /* Code from template association_AddMNToOnlyOne */
-  public Player addPlayer(String aUserName, int aUserScore, int aUserWin, int aUserLoss, int aUserTie, int aPlayerWallStock, Cordinate aCordinate, Destination aDestination)
+  public Pawn addPawn(int aX, int aY)
   {
-    if (numberOfPlayers() >= maximumNumberOfPlayers())
+    if (numberOfPawns() >= maximumNumberOfPawns())
     {
       return null;
     }
     else
     {
-      return new Player(aUserName, aUserScore, aUserWin, aUserLoss, aUserTie, aPlayerWallStock, this, aCordinate, aDestination);
+      return new Pawn(aX, aY, this);
     }
   }
 
-  public boolean addPlayer(Player aPlayer)
+  public boolean addPawn(Pawn aPawn)
   {
     boolean wasAdded = false;
-    if (players.contains(aPlayer)) { return false; }
-    if (numberOfPlayers() >= maximumNumberOfPlayers())
+    if (pawns.contains(aPawn)) { return false; }
+    if (numberOfPawns() >= maximumNumberOfPawns())
     {
       return wasAdded;
     }
 
-    Game existingGame = aPlayer.getGame();
+    Game existingGame = aPawn.getGame();
     boolean isNewGame = existingGame != null && !this.equals(existingGame);
 
-    if (isNewGame && existingGame.numberOfPlayers() <= minimumNumberOfPlayers())
+    if (isNewGame && existingGame.numberOfPawns() <= minimumNumberOfPawns())
     {
       return wasAdded;
     }
 
     if (isNewGame)
     {
-      aPlayer.setGame(this);
+      aPawn.setGame(this);
     }
     else
     {
-      players.add(aPlayer);
+      pawns.add(aPawn);
     }
     wasAdded = true;
     return wasAdded;
   }
 
-  public boolean removePlayer(Player aPlayer)
+  public boolean removePawn(Pawn aPawn)
   {
     boolean wasRemoved = false;
-    //Unable to remove aPlayer, as it must always have a game
-    if (this.equals(aPlayer.getGame()))
+    //Unable to remove aPawn, as it must always have a game
+    if (this.equals(aPawn.getGame()))
     {
       return wasRemoved;
     }
 
     //game already at minimum (2)
-    if (numberOfPlayers() <= minimumNumberOfPlayers())
+    if (numberOfPawns() <= minimumNumberOfPawns())
     {
       return wasRemoved;
     }
-    players.remove(aPlayer);
+    pawns.remove(aPawn);
     wasRemoved = true;
     return wasRemoved;
-  }
-  /* Code from template association_AddIndexControlFunctions */
-  public boolean addPlayerAt(Player aPlayer, int index)
-  {  
-    boolean wasAdded = false;
-    if(addPlayer(aPlayer))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfPlayers()) { index = numberOfPlayers() - 1; }
-      players.remove(aPlayer);
-      players.add(index, aPlayer);
-      wasAdded = true;
-    }
-    return wasAdded;
-  }
-
-  public boolean addOrMovePlayerAt(Player aPlayer, int index)
-  {
-    boolean wasAdded = false;
-    if(players.contains(aPlayer))
-    {
-      if(index < 0 ) { index = 0; }
-      if(index > numberOfPlayers()) { index = numberOfPlayers() - 1; }
-      players.remove(aPlayer);
-      players.add(index, aPlayer);
-      wasAdded = true;
-    } 
-    else 
-    {
-      wasAdded = addPlayerAt(aPlayer, index);
-    }
-    return wasAdded;
   }
   /* Code from template association_MinimumNumberOfMethod */
   public static int minimumNumberOfWalls()
@@ -260,7 +287,7 @@ public class Game
     return 20;
   }
   /* Code from template association_AddOptionalNToOne */
-  public Wall addWall(Cordinate aCordinate)
+  public Wall addWall(int aX, int aY)
   {
     if (numberOfWalls() >= maximumNumberOfWalls())
     {
@@ -268,7 +295,7 @@ public class Game
     }
     else
     {
-      return new Wall(this, aCordinate);
+      return new Wall(aX, aY, this);
     }
   }
 
@@ -338,20 +365,96 @@ public class Game
     }
     return wasAdded;
   }
+  /* Code from template association_IsNumberOfValidMethod */
+  public boolean isNumberOfGameTilesValid()
+  {
+    boolean isValid = numberOfGameTiles() >= minimumNumberOfGameTiles() && numberOfGameTiles() <= maximumNumberOfGameTiles();
+    return isValid;
+  }
+  /* Code from template association_RequiredNumberOfMethod */
+  public static int requiredNumberOfGameTiles()
+  {
+    return 81;
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfGameTiles()
+  {
+    return 81;
+  }
+  /* Code from template association_MaximumNumberOfMethod */
+  public static int maximumNumberOfGameTiles()
+  {
+    return 81;
+  }
+  /* Code from template association_AddMNToOnlyOne */
+  public Tile addGameTile(int aX, int aY, boolean aTop, boolean aBottom, boolean aLeft, boolean aRight)
+  {
+    if (numberOfGameTiles() >= maximumNumberOfGameTiles())
+    {
+      return null;
+    }
+    else
+    {
+      return new Tile(aX, aY, aTop, aBottom, aLeft, aRight, this);
+    }
+  }
+
+  public boolean addGameTile(Tile aGameTile)
+  {
+    boolean wasAdded = false;
+    if (gameTiles.contains(aGameTile)) { return false; }
+    if (numberOfGameTiles() >= maximumNumberOfGameTiles())
+    {
+      return wasAdded;
+    }
+
+    Game existingGame = aGameTile.getGame();
+    boolean isNewGame = existingGame != null && !this.equals(existingGame);
+
+    if (isNewGame && existingGame.numberOfGameTiles() <= minimumNumberOfGameTiles())
+    {
+      return wasAdded;
+    }
+
+    if (isNewGame)
+    {
+      aGameTile.setGame(this);
+    }
+    else
+    {
+      gameTiles.add(aGameTile);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeGameTile(Tile aGameTile)
+  {
+    boolean wasRemoved = false;
+    //Unable to remove aGameTile, as it must always have a game
+    if (this.equals(aGameTile.getGame()))
+    {
+      return wasRemoved;
+    }
+
+    //game already at minimum (81)
+    if (numberOfGameTiles() <= minimumNumberOfGameTiles())
+    {
+      return wasRemoved;
+    }
+    gameTiles.remove(aGameTile);
+    wasRemoved = true;
+    return wasRemoved;
+  }
 
   public void delete()
   {
-    Board existingCurBoard = curBoard;
-    curBoard = null;
-    if (existingCurBoard != null)
+    winner = null;
+    while (pawns.size() > 0)
     {
-      existingCurBoard.delete();
-    }
-    while (players.size() > 0)
-    {
-      Player aPlayer = players.get(players.size() - 1);
-      aPlayer.delete();
-      players.remove(aPlayer);
+      Pawn aPawn = pawns.get(pawns.size() - 1);
+      aPawn.delete();
+      pawns.remove(aPawn);
     }
     
     while (walls.size() > 0)
@@ -361,39 +464,34 @@ public class Game
       walls.remove(aWall);
     }
     
-  }
-
-  // line 9 "firstdraft.ump"
-   public void initPlayers(Integer i, String [] Names){
+    while (gameTiles.size() > 0)
+    {
+      Tile aGameTile = gameTiles.get(gameTiles.size() - 1);
+      aGameTile.delete();
+      gameTiles.remove(aGameTile);
+    }
     
-  }
-
-  // line 12 "firstdraft.ump"
-   public void initBoard(){
-    
-  }
-
-  // line 15 "firstdraft.ump"
-   public void addwall(Cordinate cord){
-    
-  }
-
-  // line 18 "firstdraft.ump"
-   public void move(Cordinate from, Cordinate to){
-    
-  }
-
-  // line 21 "firstdraft.ump"
-   public void saveGame(){
-    
+    History existingGameHistory = gameHistory;
+    gameHistory = null;
+    if (existingGameHistory != null)
+    {
+      existingGameHistory.delete();
+    }
+    Quoridor existingQuoridor = quoridor;
+    quoridor = null;
+    if (existingQuoridor != null)
+    {
+      existingQuoridor.delete();
+    }
   }
 
 
   public String toString()
   {
     return super.toString() + "["+
-            "positionFileName" + ":" + getPositionFileName()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "positionFile" + "=" + (getPositionFile() != null ? !getPositionFile().equals(this)  ? getPositionFile().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
-            "  " + "curBoard = "+(getCurBoard()!=null?Integer.toHexString(System.identityHashCode(getCurBoard())):"null");
+            "isOver" + ":" + getIsOver()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "winner = "+(getWinner()!=null?Integer.toHexString(System.identityHashCode(getWinner())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "gameHistory = "+(getGameHistory()!=null?Integer.toHexString(System.identityHashCode(getGameHistory())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "quoridor = "+(getQuoridor()!=null?Integer.toHexString(System.identityHashCode(getQuoridor())):"null");
   }
 }

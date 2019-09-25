@@ -3,41 +3,33 @@
 
 
 
-// line 35 "Quoridor.ump"
-public class Wall
+// line 31 "Quoridor.ump"
+public class Pawn
 {
-
-  //------------------------
-  // ENUMERATIONS
-  //------------------------
-
-  public enum Orientation { Horizontal, Vertical }
-  public enum State { Highlighted, NotHighlighted }
-  public enum Owner { Black, White, Yellow, Red }
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //Wall Attributes
+  //Pawn Attributes
   private int x;
   private int y;
 
-  //Wall Associations
+  //Pawn Associations
   private Game game;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Wall(int aX, int aY, Game aGame)
+  public Pawn(int aX, int aY, Game aGame)
   {
     x = aX;
     y = aY;
     boolean didAddGame = setGame(aGame);
     if (!didAddGame)
     {
-      throw new RuntimeException("Unable to create wall due to game. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+      throw new RuntimeException("Unable to create pawn due to game. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
 
@@ -79,14 +71,14 @@ public class Wall
   public boolean setGame(Game aGame)
   {
     boolean wasSet = false;
-    //Must provide game to wall
+    //Must provide game to pawn
     if (aGame == null)
     {
       return wasSet;
     }
 
-    //game already at maximum (20)
-    if (aGame.numberOfWalls() >= Game.maximumNumberOfWalls())
+    //game already at maximum (2)
+    if (aGame.numberOfPawns() >= Game.maximumNumberOfPawns())
     {
       return wasSet;
     }
@@ -95,14 +87,14 @@ public class Wall
     game = aGame;
     if (existingGame != null && !existingGame.equals(aGame))
     {
-      boolean didRemove = existingGame.removeWall(this);
+      boolean didRemove = existingGame.removePawn(this);
       if (!didRemove)
       {
         game = existingGame;
         return wasSet;
       }
     }
-    game.addWall(this);
+    game.addPawn(this);
     wasSet = true;
     return wasSet;
   }
@@ -113,7 +105,7 @@ public class Wall
     this.game = null;
     if(placeholderGame != null)
     {
-      placeholderGame.removeWall(this);
+      placeholderGame.removePawn(this);
     }
   }
 

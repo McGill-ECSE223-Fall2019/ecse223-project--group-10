@@ -4,15 +4,9 @@
 
 import java.util.*;
 
-// line 29 "firstdraft.ump"
+// line 9 "Quoridor.ump"
 public class Player
 {
-
-  //------------------------
-  // ENUMERATIONS
-  //------------------------
-
-  public enum State { Highlighted, NotHighlighted }
 
   //------------------------
   // STATIC VARIABLES
@@ -26,44 +20,35 @@ public class Player
 
   //Player Attributes
   private String userName;
-  private int userScore;
-  private int userWin;
-  private int userLoss;
-  private int userTie;
-  private int playerWallStock;
+  private int playerScore;
+  private int playerWin;
+  private int playerLoss;
+  private int playerTie;
+  private int wallStock;
 
   //Player Associations
-  private Game game;
-  private Cordinate cordinate;
-  private Destination destination;
+  private Pawn currentPawn;
+  private Quoridor quoridor;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Player(String aUserName, int aUserScore, int aUserWin, int aUserLoss, int aUserTie, int aPlayerWallStock, Game aGame, Cordinate aCordinate, Destination aDestination)
+  public Player(String aUserName, int aPlayerScore, int aPlayerWin, int aPlayerLoss, int aPlayerTie, int aWallStock, Quoridor aQuoridor)
   {
-    userScore = aUserScore;
-    userWin = aUserWin;
-    userLoss = aUserLoss;
-    userTie = aUserTie;
-    playerWallStock = aPlayerWallStock;
+    playerScore = aPlayerScore;
+    playerWin = aPlayerWin;
+    playerLoss = aPlayerLoss;
+    playerTie = aPlayerTie;
+    wallStock = aWallStock;
     if (!setUserName(aUserName))
     {
       throw new RuntimeException("Cannot create due to duplicate userName. See http://manual.umple.org?RE003ViolationofUniqueness.html");
     }
-    boolean didAddGame = setGame(aGame);
-    if (!didAddGame)
+    boolean didAddQuoridor = setQuoridor(aQuoridor);
+    if (!didAddQuoridor)
     {
-      throw new RuntimeException("Unable to create player due to game. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    if (!setCordinate(aCordinate))
-    {
-      throw new RuntimeException("Unable to create Player due to aCordinate. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    if (!setDestination(aDestination))
-    {
-      throw new RuntimeException("Unable to create Player due to aDestination. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+      throw new RuntimeException("Unable to create player due to quoridor. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
 
@@ -90,42 +75,42 @@ public class Player
     return wasSet;
   }
 
-  public boolean setUserScore(int aUserScore)
+  public boolean setPlayerScore(int aPlayerScore)
   {
     boolean wasSet = false;
-    userScore = aUserScore;
+    playerScore = aPlayerScore;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setUserWin(int aUserWin)
+  public boolean setPlayerWin(int aPlayerWin)
   {
     boolean wasSet = false;
-    userWin = aUserWin;
+    playerWin = aPlayerWin;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setUserLoss(int aUserLoss)
+  public boolean setPlayerLoss(int aPlayerLoss)
   {
     boolean wasSet = false;
-    userLoss = aUserLoss;
+    playerLoss = aPlayerLoss;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setUserTie(int aUserTie)
+  public boolean setPlayerTie(int aPlayerTie)
   {
     boolean wasSet = false;
-    userTie = aUserTie;
+    playerTie = aPlayerTie;
     wasSet = true;
     return wasSet;
   }
 
-  public boolean setPlayerWallStock(int aPlayerWallStock)
+  public boolean setWallStock(int aWallStock)
   {
     boolean wasSet = false;
-    playerWallStock = aPlayerWallStock;
+    wallStock = aWallStock;
     wasSet = true;
     return wasSet;
   }
@@ -145,110 +130,96 @@ public class Player
     return getWithUserName(aUserName) != null;
   }
 
-  public int getUserScore()
+  public int getPlayerScore()
   {
-    return userScore;
+    return playerScore;
   }
 
-  public int getUserWin()
+  public int getPlayerWin()
   {
-    return userWin;
+    return playerWin;
   }
 
-  public int getUserLoss()
+  public int getPlayerLoss()
   {
-    return userLoss;
+    return playerLoss;
   }
 
-  public int getUserTie()
+  public int getPlayerTie()
   {
-    return userTie;
+    return playerTie;
   }
 
-  public int getPlayerWallStock()
+  public int getWallStock()
   {
-    return playerWallStock;
+    return wallStock;
   }
   /* Code from template association_GetOne */
-  public Game getGame()
+  public Pawn getCurrentPawn()
   {
-    return game;
+    return currentPawn;
+  }
+
+  public boolean hasCurrentPawn()
+  {
+    boolean has = currentPawn != null;
+    return has;
   }
   /* Code from template association_GetOne */
-  public Cordinate getCordinate()
+  public Quoridor getQuoridor()
   {
-    return cordinate;
+    return quoridor;
   }
-  /* Code from template association_GetOne */
-  public Destination getDestination()
-  {
-    return destination;
-  }
-  /* Code from template association_SetOneToAtMostN */
-  public boolean setGame(Game aGame)
+  /* Code from template association_SetUnidirectionalOptionalOne */
+  public boolean setCurrentPawn(Pawn aNewCurrentPawn)
   {
     boolean wasSet = false;
-    //Must provide game to player
-    if (aGame == null)
+    currentPawn = aNewCurrentPawn;
+    wasSet = true;
+    return wasSet;
+  }
+  /* Code from template association_SetOneToAtMostN */
+  public boolean setQuoridor(Quoridor aQuoridor)
+  {
+    boolean wasSet = false;
+    //Must provide quoridor to player
+    if (aQuoridor == null)
     {
       return wasSet;
     }
 
-    //game already at maximum (4)
-    if (aGame.numberOfPlayers() >= Game.maximumNumberOfPlayers())
+    //quoridor already at maximum (2)
+    if (aQuoridor.numberOfPlayers() >= Quoridor.maximumNumberOfPlayers())
     {
       return wasSet;
     }
     
-    Game existingGame = game;
-    game = aGame;
-    if (existingGame != null && !existingGame.equals(aGame))
+    Quoridor existingQuoridor = quoridor;
+    quoridor = aQuoridor;
+    if (existingQuoridor != null && !existingQuoridor.equals(aQuoridor))
     {
-      boolean didRemove = existingGame.removePlayer(this);
+      boolean didRemove = existingQuoridor.removePlayer(this);
       if (!didRemove)
       {
-        game = existingGame;
+        quoridor = existingQuoridor;
         return wasSet;
       }
     }
-    game.addPlayer(this);
+    quoridor.addPlayer(this);
     wasSet = true;
-    return wasSet;
-  }
-  /* Code from template association_SetUnidirectionalOne */
-  public boolean setCordinate(Cordinate aNewCordinate)
-  {
-    boolean wasSet = false;
-    if (aNewCordinate != null)
-    {
-      cordinate = aNewCordinate;
-      wasSet = true;
-    }
-    return wasSet;
-  }
-  /* Code from template association_SetUnidirectionalOne */
-  public boolean setDestination(Destination aNewDestination)
-  {
-    boolean wasSet = false;
-    if (aNewDestination != null)
-    {
-      destination = aNewDestination;
-      wasSet = true;
-    }
     return wasSet;
   }
 
   public void delete()
   {
     playersByUserName.remove(getUserName());
-    Game placeholderGame = game;
-    this.game = null;
-    if(placeholderGame != null)
+    currentPawn = null;
+    Quoridor placeholderQuoridor = quoridor;
+    this.quoridor = null;
+    if(placeholderQuoridor != null)
     {
-      placeholderGame.removePlayer(this);
+      placeholderQuoridor.removePlayer(this);
     }
-    cordinate = null;
-    destination = null;
   }
 
 
@@ -256,13 +227,12 @@ public class Player
   {
     return super.toString() + "["+
             "userName" + ":" + getUserName()+ "," +
-            "userScore" + ":" + getUserScore()+ "," +
-            "userWin" + ":" + getUserWin()+ "," +
-            "userLoss" + ":" + getUserLoss()+ "," +
-            "userTie" + ":" + getUserTie()+ "," +
-            "playerWallStock" + ":" + getPlayerWallStock()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "game = "+(getGame()!=null?Integer.toHexString(System.identityHashCode(getGame())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "cordinate = "+(getCordinate()!=null?Integer.toHexString(System.identityHashCode(getCordinate())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "destination = "+(getDestination()!=null?Integer.toHexString(System.identityHashCode(getDestination())):"null");
+            "playerScore" + ":" + getPlayerScore()+ "," +
+            "playerWin" + ":" + getPlayerWin()+ "," +
+            "playerLoss" + ":" + getPlayerLoss()+ "," +
+            "playerTie" + ":" + getPlayerTie()+ "," +
+            "wallStock" + ":" + getWallStock()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "currentPawn = "+(getCurrentPawn()!=null?Integer.toHexString(System.identityHashCode(getCurrentPawn())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "quoridor = "+(getQuoridor()!=null?Integer.toHexString(System.identityHashCode(getQuoridor())):"null");
   }
 }

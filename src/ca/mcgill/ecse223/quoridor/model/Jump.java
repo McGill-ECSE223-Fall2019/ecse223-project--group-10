@@ -3,15 +3,9 @@
 
 
 
-// line 26 "firstdraft.ump"
-public class Grid
+// line 62 "Quoridor.ump"
+public class Jump extends Action
 {
-
-  //------------------------
-  // ENUMERATIONS
-  //------------------------
-
-  public enum State { Highlighted, NotHighlighted }
 
   //------------------------
   // MEMBER VARIABLES
@@ -21,14 +15,18 @@ public class Grid
   // CONSTRUCTOR
   //------------------------
 
-  public Grid()
-  {}
+  public Jump(History aHistory)
+  {
+    super(aHistory);
+  }
 
   //------------------------
   // INTERFACE
   //------------------------
 
   public void delete()
-  {}
+  {
+    super.delete();
+  }
 
 }
