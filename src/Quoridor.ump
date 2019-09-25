@@ -1,61 +1,64 @@
 class Game{
-   positionFileName;
-   File positionFile;
-   1 <@>- 1 Board curBoard;
-   1 <@>- 2..4 Player players;
+   Boolean isOver;
+   1 -> 0..1 Player winner;
+   1 <@>- 2 Pawn pawns;
    1 <@>- 0..20 Wall walls;
-   public void initPlayers(Integer i, String[] Names){
-   
-   }
-   public void initBoard(){
-   
-   }
-   public void addwall(Cordinate cord){
-   
-   }
-   public void move(Cordinate from, Cordinate to){
-   
-   }
-   public void saveGame(){
-
-   }
-}
-class Board{
-
-  positionFileName;
-  File positionFile;
-}
-class Grid {
-enum state{Highlighted,NotHighlighted};
+   1 <@>- 81 Tile gameTiles;
+   1 <@>- 1 History gameHistory;
 }
 class Player{
-enum state{Highlighted,NotHighlighted};
-unique userName;
-Integer userScore;
-Integer userWin;
-Integer userLoss;
-Integer userTie;
-Integer playerWallStock;
+  unique userName;
+  Integer playerScore;
+  Integer playerWin;
+  Integer playerLoss;
+  Integer playerTie;
+  Integer wallStock;
+  1 -> 0..1 Pawn currentPawn;
 }
-class Cordinate{
-  Integer x;
-  Integer y;
+class Quoridor{
+   1 <@>- 1 Game;
+   1 <@>- 1 History; 
+   1 <@>- 2 Player; 
+}
+class Tile{
+Integer x;
+Integer y;
+Boolean top;
+Boolean bottom;
+Boolean left;
+Boolean right;
+}
+class Pawn{
+Integer x;
+Integer y;
 }
 class Wall {
   enum orientation{Horizontal, Vertical};
   enum state{Highlighted,NotHighlighted};
   enum owner{Black,White,Yellow,Red};
+  Integer x;
+  Integer y;
 }
-class Destination{
-enum orientation{Horizontal,Vertical};
-Integer index;
-Boolean checkWin(Cordinate cord){
-} 
+class History{
+  1 <@>- * Action actionHistory; 
 }
-association {  
-  0..1 Player -> 1 Cordinate;
-  0..1 Player -> 1 Destination;
-  0..1 Wall -> 1 Cordinate;
-  0..1 Board -> 100 Grid;
+class Action{
+  abstract;
+  1 ->0..1 Player user;
 }
-
+class Move{
+  isA Action;
+  Integer oldX;
+  Integer oldY;
+  Integer newX;
+  Integer newY;
+}
+class AddWall{
+  isA Action;
+  Integer x;
+  Integer y;
+  enum orientation{Horizontal, Vertical};
+}
+class Jump{
+isA Action;
+}
