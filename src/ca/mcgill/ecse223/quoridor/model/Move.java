@@ -3,7 +3,7 @@
 
 
 
-// line 39 "Quoridor.ump"
+// line 45 "Quoridor.ump"
 public abstract class Move
 {
 

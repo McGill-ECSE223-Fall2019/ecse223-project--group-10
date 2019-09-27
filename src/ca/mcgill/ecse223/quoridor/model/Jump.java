@@ -3,7 +3,7 @@
 
 
 
-// line 60 "Quoridor.ump"
+// line 63 "Quoridor.ump"
 public class Jump extends Move
 {
 

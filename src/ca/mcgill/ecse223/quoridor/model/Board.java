@@ -4,7 +4,7 @@
 
 import java.util.*;
 
-// line 17 "Quoridor.ump"
+// line 23 "Quoridor.ump"
 public class Board
 {
 
@@ -13,54 +13,86 @@ public class Board
   //------------------------
 
   //Board Associations
-  private List<Tile> gameTiles;
+  private List<Pawn> pawns;
+  private List<Wall> walls;
   private Game game;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Board(Tile... allGameTiles)
+  public Board(Pawn... allPawns)
   {
-    gameTiles = new ArrayList<Tile>();
-    boolean didAddGameTiles = setGameTiles(allGameTiles);
-    if (!didAddGameTiles)
+    pawns = new ArrayList<Pawn>();
+    boolean didAddPawns = setPawns(allPawns);
+    if (!didAddPawns)
     {
-      throw new RuntimeException("Unable to create Board, must have 81 gameTiles. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+      throw new RuntimeException("Unable to create Board, must have 2 pawns. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
+    walls = new ArrayList<Wall>();
   }
 
   //------------------------
   // INTERFACE
   //------------------------
   /* Code from template association_GetMany */
-  public Tile getGameTile(int index)
+  public Pawn getPawn(int index)
   {
-    Tile aGameTile = gameTiles.get(index);
-    return aGameTile;
+    Pawn aPawn = pawns.get(index);
+    return aPawn;
   }
 
-  public List<Tile> getGameTiles()
+  public List<Pawn> getPawns()
   {
-    List<Tile> newGameTiles = Collections.unmodifiableList(gameTiles);
-    return newGameTiles;
+    List<Pawn> newPawns = Collections.unmodifiableList(pawns);
+    return newPawns;
   }
 
-  public int numberOfGameTiles()
+  public int numberOfPawns()
   {
-    int number = gameTiles.size();
+    int number = pawns.size();
     return number;
   }
 
-  public boolean hasGameTiles()
+  public boolean hasPawns()
   {
-    boolean has = gameTiles.size() > 0;
+    boolean has = pawns.size() > 0;
     return has;
   }
 
-  public int indexOfGameTile(Tile aGameTile)
+  public int indexOfPawn(Pawn aPawn)
   {
-    int index = gameTiles.indexOf(aGameTile);
+    int index = pawns.indexOf(aPawn);
+    return index;
+  }
+  /* Code from template association_GetMany */
+  public Wall getWall(int index)
+  {
+    Wall aWall = walls.get(index);
+    return aWall;
+  }
+
+  public List<Wall> getWalls()
+  {
+    List<Wall> newWalls = Collections.unmodifiableList(walls);
+    return newWalls;
+  }
+
+  public int numberOfWalls()
+  {
+    int number = walls.size();
+    return number;
+  }
+
+  public boolean hasWalls()
+  {
+    boolean has = walls.size() > 0;
+    return has;
+  }
+
+  public int indexOfWall(Wall aWall)
+  {
+    int index = walls.indexOf(aWall);
     return index;
   }
   /* Code from template association_GetOne */
@@ -75,94 +107,175 @@ public class Board
     return has;
   }
   /* Code from template association_RequiredNumberOfMethod */
-  public static int requiredNumberOfGameTiles()
+  public static int requiredNumberOfPawns()
   {
-    return 81;
+    return 2;
   }
   /* Code from template association_MinimumNumberOfMethod */
-  public static int minimumNumberOfGameTiles()
+  public static int minimumNumberOfPawns()
   {
-    return 81;
+    return 2;
   }
   /* Code from template association_MaximumNumberOfMethod */
-  public static int maximumNumberOfGameTiles()
+  public static int maximumNumberOfPawns()
   {
-    return 81;
+    return 2;
   }
   /* Code from template association_SetNToOptionalOne */
-  public boolean setGameTiles(Tile... newGameTiles)
+  public boolean setPawns(Pawn... newPawns)
   {
     boolean wasSet = false;
-    ArrayList<Tile> checkNewGameTiles = new ArrayList<Tile>();
-    for (Tile aGameTile : newGameTiles)
+    ArrayList<Pawn> checkNewPawns = new ArrayList<Pawn>();
+    for (Pawn aPawn : newPawns)
     {
-      if (checkNewGameTiles.contains(aGameTile))
+      if (checkNewPawns.contains(aPawn))
       {
         return wasSet;
       }
-      else if (aGameTile.getBoard() != null && !this.equals(aGameTile.getBoard()))
+      else if (aPawn.getBoard() != null && !this.equals(aPawn.getBoard()))
       {
         return wasSet;
       }
-      checkNewGameTiles.add(aGameTile);
+      checkNewPawns.add(aPawn);
     }
 
-    if (checkNewGameTiles.size() != minimumNumberOfGameTiles())
+    if (checkNewPawns.size() != minimumNumberOfPawns())
     {
       return wasSet;
     }
 
-    gameTiles.removeAll(checkNewGameTiles);
+    pawns.removeAll(checkNewPawns);
     
-    for (Tile orphan : gameTiles)
+    for (Pawn orphan : pawns)
     {
       setBoard(orphan, null);
     }
-    gameTiles.clear();
-    for (Tile aGameTile : newGameTiles)
+    pawns.clear();
+    for (Pawn aPawn : newPawns)
     {
-      setBoard(aGameTile, this);
-      gameTiles.add(aGameTile);
+      setBoard(aPawn, this);
+      pawns.add(aPawn);
     }
     wasSet = true;
     return wasSet;
   }
   /* Code from template association_GetPrivate */
-  private void setBoard(Tile aGameTile, Board aBoard)
+  private void setBoard(Pawn aPawn, Board aBoard)
   {
     try
     {
-      java.lang.reflect.Field mentorField = aGameTile.getClass().getDeclaredField("board");
+      java.lang.reflect.Field mentorField = aPawn.getClass().getDeclaredField("board");
       mentorField.setAccessible(true);
-      mentorField.set(aGameTile, aBoard);
+      mentorField.set(aPawn, aBoard);
     }
     catch (Exception e)
     {
-      throw new RuntimeException("Issue internally setting aBoard to aGameTile", e);
+      throw new RuntimeException("Issue internally setting aBoard to aPawn", e);
     }
+  }
+  /* Code from template association_MinimumNumberOfMethod */
+  public static int minimumNumberOfWalls()
+  {
+    return 0;
+  }
+  /* Code from template association_MaximumNumberOfMethod */
+  public static int maximumNumberOfWalls()
+  {
+    return 20;
+  }
+  /* Code from template association_AddOptionalNToOptionalOne */
+  public boolean addWall(Wall aWall)
+  {
+    boolean wasAdded = false;
+    if (walls.contains(aWall)) { return false; }
+    if (numberOfWalls() >= maximumNumberOfWalls())
+    {
+      return wasAdded;
+    }
+
+    Board existingBoard = aWall.getBoard();
+    if (existingBoard == null)
+    {
+      aWall.setBoard(this);
+    }
+    else if (!this.equals(existingBoard))
+    {
+      existingBoard.removeWall(aWall);
+      addWall(aWall);
+    }
+    else
+    {
+      walls.add(aWall);
+    }
+    wasAdded = true;
+    return wasAdded;
+  }
+
+  public boolean removeWall(Wall aWall)
+  {
+    boolean wasRemoved = false;
+    if (walls.contains(aWall))
+    {
+      walls.remove(aWall);
+      aWall.setBoard(null);
+      wasRemoved = true;
+    }
+    return wasRemoved;
+  }
+  /* Code from template association_AddIndexControlFunctions */
+  public boolean addWallAt(Wall aWall, int index)
+  {  
+    boolean wasAdded = false;
+    if(addWall(aWall))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfWalls()) { index = numberOfWalls() - 1; }
+      walls.remove(aWall);
+      walls.add(index, aWall);
+      wasAdded = true;
+    }
+    return wasAdded;
+  }
+
+  public boolean addOrMoveWallAt(Wall aWall, int index)
+  {
+    boolean wasAdded = false;
+    if(walls.contains(aWall))
+    {
+      if(index < 0 ) { index = 0; }
+      if(index > numberOfWalls()) { index = numberOfWalls() - 1; }
+      walls.remove(aWall);
+      walls.add(index, aWall);
+      wasAdded = true;
+    } 
+    else 
+    {
+      wasAdded = addWallAt(aWall, index);
+    }
+    return wasAdded;
   }
   /* Code from template association_SetOptionalOneToOne */
   public boolean setGame(Game aNewGame)
   {
     boolean wasSet = false;
-    if (game != null && !game.equals(aNewGame) && equals(game.getBoard()))
+    if (game != null && !game.equals(aNewGame) && equals(game.getGameBoard()))
     {
       //Unable to setGame, as existing game would become an orphan
       return wasSet;
     }
 
     game = aNewGame;
-    Board anOldBoard = aNewGame != null ? aNewGame.getBoard() : null;
+    Board anOldGameBoard = aNewGame != null ? aNewGame.getGameBoard() : null;
 
-    if (!this.equals(anOldBoard))
+    if (!this.equals(anOldGameBoard))
     {
-      if (anOldBoard != null)
+      if (anOldGameBoard != null)
       {
-        anOldBoard.game = null;
+        anOldGameBoard.game = null;
       }
       if (game != null)
       {
-        game.setBoard(this);
+        game.setGameBoard(this);
       }
     }
     wasSet = true;
@@ -171,11 +284,18 @@ public class Board
 
   public void delete()
   {
-    while (gameTiles.size() > 0)
+    while (pawns.size() > 0)
     {
-      Tile aGameTile = gameTiles.get(gameTiles.size() - 1);
-      aGameTile.delete();
-      gameTiles.remove(aGameTile);
+      Pawn aPawn = pawns.get(pawns.size() - 1);
+      aPawn.delete();
+      pawns.remove(aPawn);
+    }
+    
+    while (walls.size() > 0)
+    {
+      Wall aWall = walls.get(walls.size() - 1);
+      aWall.delete();
+      walls.remove(aWall);
     }
     
     Game existingGame = game;

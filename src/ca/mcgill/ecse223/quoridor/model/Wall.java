@@ -3,7 +3,7 @@
 
 
 
-// line 32 "Quoridor.ump"
+// line 38 "Quoridor.ump"
 public class Wall
 {
 
@@ -24,8 +24,8 @@ public class Wall
 
   //Wall Associations
   private Pawn wallOwner;
-  private Game game;
-  private Position position;
+  private Board board;
+  private Position whiteWallPosition;
 
   //------------------------
   // CONSTRUCTOR
@@ -77,25 +77,25 @@ public class Wall
     return wallOwner;
   }
   /* Code from template association_GetOne */
-  public Game getGame()
+  public Board getBoard()
   {
-    return game;
+    return board;
   }
 
-  public boolean hasGame()
+  public boolean hasBoard()
   {
-    boolean has = game != null;
+    boolean has = board != null;
     return has;
   }
   /* Code from template association_GetOne */
-  public Position getPosition()
+  public Position getWhiteWallPosition()
   {
-    return position;
+    return whiteWallPosition;
   }
 
-  public boolean hasPosition()
+  public boolean hasWhiteWallPosition()
   {
-    boolean has = position != null;
+    boolean has = whiteWallPosition != null;
     return has;
   }
   /* Code from template association_SetOneToAtMostN */
@@ -130,45 +130,45 @@ public class Wall
     return wasSet;
   }
   /* Code from template association_SetOptionalOneToOptionalN */
-  public boolean setGame(Game aGame)
+  public boolean setBoard(Board aBoard)
   {
     boolean wasSet = false;
-    if (aGame != null && aGame.numberOfWalls() >= Game.maximumNumberOfWalls())
+    if (aBoard != null && aBoard.numberOfWalls() >= Board.maximumNumberOfWalls())
     {
       return wasSet;
     }
 
-    Game existingGame = game;
-    game = aGame;
-    if (existingGame != null && !existingGame.equals(aGame))
+    Board existingBoard = board;
+    board = aBoard;
+    if (existingBoard != null && !existingBoard.equals(aBoard))
     {
-      existingGame.removeWall(this);
+      existingBoard.removeWall(this);
     }
-    if (aGame != null)
+    if (aBoard != null)
     {
-      aGame.addWall(this);
+      aBoard.addWall(this);
     }
     wasSet = true;
     return wasSet;
   }
   /* Code from template association_SetOptionalOneToOptionalN */
-  public boolean setPosition(Position aPosition)
+  public boolean setWhiteWallPosition(Position aWhiteWallPosition)
   {
     boolean wasSet = false;
-    if (aPosition != null && aPosition.numberOfWalls() >= Position.maximumNumberOfWalls())
+    if (aWhiteWallPosition != null && aWhiteWallPosition.numberOfWhiteWalls() >= Position.maximumNumberOfWhiteWalls())
     {
       return wasSet;
     }
 
-    Position existingPosition = position;
-    position = aPosition;
-    if (existingPosition != null && !existingPosition.equals(aPosition))
+    Position existingWhiteWallPosition = whiteWallPosition;
+    whiteWallPosition = aWhiteWallPosition;
+    if (existingWhiteWallPosition != null && !existingWhiteWallPosition.equals(aWhiteWallPosition))
     {
-      existingPosition.removeWall(this);
+      existingWhiteWallPosition.removeWhiteWall(this);
     }
-    if (aPosition != null)
+    if (aWhiteWallPosition != null)
     {
-      aPosition.addWall(this);
+      aWhiteWallPosition.addWhiteWall(this);
     }
     wasSet = true;
     return wasSet;
@@ -182,17 +182,17 @@ public class Wall
     {
       placeholderWallOwner.removeWall(this);
     }
-    if (game != null)
+    if (board != null)
     {
-      Game placeholderGame = game;
-      this.game = null;
-      placeholderGame.removeWall(this);
+      Board placeholderBoard = board;
+      this.board = null;
+      placeholderBoard.removeWall(this);
     }
-    if (position != null)
+    if (whiteWallPosition != null)
     {
-      Position placeholderPosition = position;
-      this.position = null;
-      placeholderPosition.removeWall(this);
+      Position placeholderWhiteWallPosition = whiteWallPosition;
+      this.whiteWallPosition = null;
+      placeholderWhiteWallPosition.removeWhiteWall(this);
     }
   }
 
@@ -203,7 +203,7 @@ public class Wall
             "x" + ":" + getX()+ "," +
             "y" + ":" + getY()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "wallOwner = "+(getWallOwner()!=null?Integer.toHexString(System.identityHashCode(getWallOwner())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "game = "+(getGame()!=null?Integer.toHexString(System.identityHashCode(getGame())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "position = "+(getPosition()!=null?Integer.toHexString(System.identityHashCode(getPosition())):"null");
+            "  " + "board = "+(getBoard()!=null?Integer.toHexString(System.identityHashCode(getBoard())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "whiteWallPosition = "+(getWhiteWallPosition()!=null?Integer.toHexString(System.identityHashCode(getWhiteWallPosition())):"null");
   }
 }

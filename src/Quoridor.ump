@@ -1,11 +1,9 @@
-class Game{
-  Boolean isOver;
-  0..1 -> 0..1 Player winner;
-  0..1 <@>- 2 Pawn pawns;
-  0..1 <@>- 0..20 Wall walls;
-  0..1 <@>- 1 Board;
-  0..1 <@>- * Move moves;
-    0..1 <@>- 1 Position boardPosition;
+class Quoridor{
+   0..1 <@>- * Game;
+   0..1 <@>- 1 PlayerList; 
+}
+class PlayerList{
+0..1 <@>- * Player gamePlayers;
 }
 class Player{
   unique userName;
@@ -15,15 +13,22 @@ class Player{
   Integer playerTie;
   0..1 -> 0..1 Pawn currentPawn;
 }
+class Game{
+  Boolean isOver;
+  0..1 -> 0..1 Player winner;
+  0..1 <@>- 1 Board gameBoard;
+  0..1 <@>- * Move moves;
+    0..1 <@>- 1 Position boardPosition;
+}
 class Board{
-   0..1 <@>- 81 Tile gameTiles;
+   0..1 <@>- 2 Pawn pawns;
+   0..1 <@>- 0..20 Wall walls;
 }
-class Quoridor{
-   0..1 <@>- * Game;
-   0..1 <@>- 2 Player; 
-}
-class Tile{
-  0..1 ->  1 Cordinate cordinate;
+class Position{
+0..1 blackPawnPosition -> 0..1 Pawn blackPawn;
+0..1 blackWallPosition->  0..10 Wall blackWalls;
+0..1 whitePawnPosition <@>- 0..1 Pawn whitePawn;
+0..1 whiteWallPosition <@>- 0..10 Wall whiteWalls;
 }
 class Pawn{
 0..1 ->  1 Cordinate cordinate;
@@ -45,10 +50,7 @@ class Cordinate{
   Integer x; 
   Integer y;
 }
-class Position{
-0..1 <@>- 0..2 Pawn pawnPositions;
-0..1 <@>-  0..20 Wall wallPositions;
-}
+
 class PawnMove{
   isA Move;
   0..1->  1 Cordinate cordinate;

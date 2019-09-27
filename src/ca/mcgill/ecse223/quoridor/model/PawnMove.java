@@ -3,7 +3,7 @@
 
 
 
-// line 51 "Quoridor.ump"
+// line 54 "Quoridor.ump"
 public class PawnMove extends Move
 {
 

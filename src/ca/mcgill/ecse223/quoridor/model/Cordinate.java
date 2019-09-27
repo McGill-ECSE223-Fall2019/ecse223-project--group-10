@@ -3,7 +3,7 @@
 
 
 
-// line 43 "Quoridor.ump"
+// line 49 "Quoridor.ump"
 public class Cordinate
 {
 

@@ -3,7 +3,7 @@
 
 
 
-// line 55 "Quoridor.ump"
+// line 58 "Quoridor.ump"
 public class AddWall extends Move
 {
 

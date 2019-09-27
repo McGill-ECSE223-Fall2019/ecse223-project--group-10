@@ -5,7 +5,7 @@
 import java.sql.Time;
 import java.util.*;
 
-// line 27 "Quoridor.ump"
+// line 33 "Quoridor.ump"
 public class Pawn
 {
 
@@ -19,9 +19,9 @@ public class Pawn
 
   //Pawn Associations
   private Cordinate cordinate;
-  private Game game;
+  private Board board;
+  private Position whitePawnPosition;
   private List<Wall> walls;
-  private Position position;
 
   //------------------------
   // CONSTRUCTOR
@@ -73,14 +73,25 @@ public class Pawn
     return cordinate;
   }
   /* Code from template association_GetOne */
-  public Game getGame()
+  public Board getBoard()
   {
-    return game;
+    return board;
   }
 
-  public boolean hasGame()
+  public boolean hasBoard()
   {
-    boolean has = game != null;
+    boolean has = board != null;
+    return has;
+  }
+  /* Code from template association_GetOne */
+  public Position getWhitePawnPosition()
+  {
+    return whitePawnPosition;
+  }
+
+  public boolean hasWhitePawnPosition()
+  {
+    boolean has = whitePawnPosition != null;
     return has;
   }
   /* Code from template association_GetMany */
@@ -113,17 +124,6 @@ public class Pawn
     int index = walls.indexOf(aWall);
     return index;
   }
-  /* Code from template association_GetOne */
-  public Position getPosition()
-  {
-    return position;
-  }
-
-  public boolean hasPosition()
-  {
-    boolean has = position != null;
-    return has;
-  }
   /* Code from template association_SetUnidirectionalOne */
   public boolean setCordinate(Cordinate aNewCordinate)
   {
@@ -133,6 +133,39 @@ public class Pawn
       cordinate = aNewCordinate;
       wasSet = true;
     }
+    return wasSet;
+  }
+  /* Code from template association_SetOptionalOneToOptionalOne */
+  public boolean setWhitePawnPosition(Position aNewWhitePawnPosition)
+  {
+    boolean wasSet = false;
+    if (aNewWhitePawnPosition == null)
+    {
+      Position existingWhitePawnPosition = whitePawnPosition;
+      whitePawnPosition = null;
+      
+      if (existingWhitePawnPosition != null && existingWhitePawnPosition.getWhitePawn() != null)
+      {
+        existingWhitePawnPosition.setWhitePawn(null);
+      }
+      wasSet = true;
+      return wasSet;
+    }
+
+    Position currentWhitePawnPosition = getWhitePawnPosition();
+    if (currentWhitePawnPosition != null && !currentWhitePawnPosition.equals(aNewWhitePawnPosition))
+    {
+      currentWhitePawnPosition.setWhitePawn(null);
+    }
+
+    whitePawnPosition = aNewWhitePawnPosition;
+    Pawn existingWhitePawn = aNewWhitePawnPosition.getWhitePawn();
+
+    if (!equals(existingWhitePawn))
+    {
+      aNewWhitePawnPosition.setWhitePawn(this);
+    }
+    wasSet = true;
     return wasSet;
   }
   /* Code from template association_MinimumNumberOfMethod */
@@ -224,48 +257,24 @@ public class Pawn
     }
     return wasAdded;
   }
-  /* Code from template association_SetOptionalOneToOptionalN */
-  public boolean setPosition(Position aPosition)
-  {
-    boolean wasSet = false;
-    if (aPosition != null && aPosition.numberOfPawns() >= Position.maximumNumberOfPawns())
-    {
-      return wasSet;
-    }
-
-    Position existingPosition = position;
-    position = aPosition;
-    if (existingPosition != null && !existingPosition.equals(aPosition))
-    {
-      existingPosition.removePawn(this);
-    }
-    if (aPosition != null)
-    {
-      aPosition.addPawn(this);
-    }
-    wasSet = true;
-    return wasSet;
-  }
 
   public void delete()
   {
     cordinate = null;
-    if (game != null)
+    if (board != null)
     {
-        Game placeholderGame = game;
-        this.game = null;
-        placeholderGame.delete();
+        Board placeholderBoard = board;
+        this.board = null;
+        placeholderBoard.delete();
+    }
+    if (whitePawnPosition != null)
+    {
+      whitePawnPosition.setWhitePawn(null);
     }
     for(int i=walls.size(); i > 0; i--)
     {
       Wall aWall = walls.get(i - 1);
       aWall.delete();
-    }
-    if (position != null)
-    {
-      Position placeholderPosition = position;
-      this.position = null;
-      placeholderPosition.removePawn(this);
     }
   }
 
@@ -276,7 +285,7 @@ public class Pawn
             "wallStock" + ":" + getWallStock()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "remainingTime" + "=" + (getRemainingTime() != null ? !getRemainingTime().equals(this)  ? getRemainingTime().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "cordinate = "+(getCordinate()!=null?Integer.toHexString(System.identityHashCode(getCordinate())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "game = "+(getGame()!=null?Integer.toHexString(System.identityHashCode(getGame())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "position = "+(getPosition()!=null?Integer.toHexString(System.identityHashCode(getPosition())):"null");
+            "  " + "board = "+(getBoard()!=null?Integer.toHexString(System.identityHashCode(getBoard())):"null") + System.getProperties().getProperty("line.separator") +
+            "  " + "whitePawnPosition = "+(getWhitePawnPosition()!=null?Integer.toHexString(System.identityHashCode(getWhitePawnPosition())):"null");
   }
 }

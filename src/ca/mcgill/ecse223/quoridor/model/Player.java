@@ -4,7 +4,7 @@
 
 import java.util.*;
 
-// line 9 "Quoridor.ump"
+// line 8 "Quoridor.ump"
 public class Player
 {
 
@@ -27,7 +27,7 @@ public class Player
 
   //Player Associations
   private Pawn currentPawn;
-  private Quoridor quoridor;
+  private PlayerList playerList;
 
   //------------------------
   // CONSTRUCTOR
@@ -146,14 +146,14 @@ public class Player
     return has;
   }
   /* Code from template association_GetOne */
-  public Quoridor getQuoridor()
+  public PlayerList getPlayerList()
   {
-    return quoridor;
+    return playerList;
   }
 
-  public boolean hasQuoridor()
+  public boolean hasPlayerList()
   {
-    boolean has = quoridor != null;
+    boolean has = playerList != null;
     return has;
   }
   /* Code from template association_SetUnidirectionalOptionalOne */
@@ -164,16 +164,33 @@ public class Player
     wasSet = true;
     return wasSet;
   }
+  /* Code from template association_SetOptionalOneToMany */
+  public boolean setPlayerList(PlayerList aPlayerList)
+  {
+    boolean wasSet = false;
+    PlayerList existingPlayerList = playerList;
+    playerList = aPlayerList;
+    if (existingPlayerList != null && !existingPlayerList.equals(aPlayerList))
+    {
+      existingPlayerList.removeGamePlayer(this);
+    }
+    if (aPlayerList != null)
+    {
+      aPlayerList.addGamePlayer(this);
+    }
+    wasSet = true;
+    return wasSet;
+  }
 
   public void delete()
   {
     playersByUserName.remove(getUserName());
     currentPawn = null;
-    if (quoridor != null)
+    if (playerList != null)
     {
-        Quoridor placeholderQuoridor = quoridor;
-        this.quoridor = null;
-        placeholderQuoridor.delete();
+      PlayerList placeholderPlayerList = playerList;
+      this.playerList = null;
+      placeholderPlayerList.removeGamePlayer(this);
     }
   }
 
@@ -187,6 +204,6 @@ public class Player
             "playerLoss" + ":" + getPlayerLoss()+ "," +
             "playerTie" + ":" + getPlayerTie()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "currentPawn = "+(getCurrentPawn()!=null?Integer.toHexString(System.identityHashCode(getCurrentPawn())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "quoridor = "+(getQuoridor()!=null?Integer.toHexString(System.identityHashCode(getQuoridor())):"null");
+            "  " + "playerList = "+(getPlayerList()!=null?Integer.toHexString(System.identityHashCode(getPlayerList())):"null");
   }
 }
