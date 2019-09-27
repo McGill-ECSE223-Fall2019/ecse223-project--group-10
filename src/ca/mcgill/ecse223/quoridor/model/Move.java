@@ -3,101 +3,85 @@
 
 
 
-// line 49 "Quoridor.ump"
-public class Move extends Action
+// line 39 "Quoridor.ump"
+public abstract class Move
 {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //Move Attributes
-  private int oldX;
-  private int oldY;
-  private int newX;
-  private int newY;
+  //Move Associations
+  private Pawn user;
+  private Game game;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Move(History aHistory, int aOldX, int aOldY, int aNewX, int aNewY)
-  {
-    super(aHistory);
-    oldX = aOldX;
-    oldY = aOldY;
-    newX = aNewX;
-    newY = aNewY;
-  }
+  public Move()
+  {}
 
   //------------------------
   // INTERFACE
   //------------------------
+  /* Code from template association_GetOne */
+  public Pawn getUser()
+  {
+    return user;
+  }
 
-  public boolean setOldX(int aOldX)
+  public boolean hasUser()
+  {
+    boolean has = user != null;
+    return has;
+  }
+  /* Code from template association_GetOne */
+  public Game getGame()
+  {
+    return game;
+  }
+
+  public boolean hasGame()
+  {
+    boolean has = game != null;
+    return has;
+  }
+  /* Code from template association_SetUnidirectionalOptionalOne */
+  public boolean setUser(Pawn aNewUser)
   {
     boolean wasSet = false;
-    oldX = aOldX;
+    user = aNewUser;
     wasSet = true;
     return wasSet;
   }
-
-  public boolean setOldY(int aOldY)
+  /* Code from template association_SetOptionalOneToMany */
+  public boolean setGame(Game aGame)
   {
     boolean wasSet = false;
-    oldY = aOldY;
+    Game existingGame = game;
+    game = aGame;
+    if (existingGame != null && !existingGame.equals(aGame))
+    {
+      existingGame.removeMove(this);
+    }
+    if (aGame != null)
+    {
+      aGame.addMove(this);
+    }
     wasSet = true;
     return wasSet;
-  }
-
-  public boolean setNewX(int aNewX)
-  {
-    boolean wasSet = false;
-    newX = aNewX;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public boolean setNewY(int aNewY)
-  {
-    boolean wasSet = false;
-    newY = aNewY;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public int getOldX()
-  {
-    return oldX;
-  }
-
-  public int getOldY()
-  {
-    return oldY;
-  }
-
-  public int getNewX()
-  {
-    return newX;
-  }
-
-  public int getNewY()
-  {
-    return newY;
   }
 
   public void delete()
   {
-    super.delete();
+    user = null;
+    if (game != null)
+    {
+      Game placeholderGame = game;
+      this.game = null;
+      placeholderGame.removeMove(this);
+    }
   }
 
-
-  public String toString()
-  {
-    return super.toString() + "["+
-            "oldX" + ":" + getOldX()+ "," +
-            "oldY" + ":" + getOldY()+ "," +
-            "newX" + ":" + getNewX()+ "," +
-            "newY" + ":" + getNewY()+ "]";
-  }
 }

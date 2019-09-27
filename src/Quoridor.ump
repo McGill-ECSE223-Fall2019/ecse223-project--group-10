@@ -1,10 +1,10 @@
 class Game{
-   Boolean isOver;
-   1 -> 0..1 Player winner;
-   1 <@>- 2 Pawn pawns;
-   1 <@>- 0..20 Wall walls;
-   1 <@>- 81 Tile gameTiles;
-   1 <@>- 1 History gameHistory;
+  Boolean isOver;
+  0..1 -> 0..1 Player winner;
+  0..1 <@>- 2 Pawn pawns;
+  0..1 <@>- 0..20 Wall walls;
+  0..1 <@>- 1 Board;
+  0..1 <@>- * Move moves;
 }
 class Player{
   unique userName;
@@ -12,53 +12,52 @@ class Player{
   Integer playerWin;
   Integer playerLoss;
   Integer playerTie;
-  Integer wallStock;
-  1 -> 0..1 Pawn currentPawn;
+  0..1 -> 0..1 Pawn currentPawn;
+}
+class Board{
+   0..1 <@>- 81 Tile gameTiles;
 }
 class Quoridor{
-   1 <@>- 1 Game;
-   1 <@>- 1 History; 
-   1 <@>- 2 Player; 
+   0..1 <@>- * Game;
+   0..1 <@>- 2 Player; 
 }
 class Tile{
-Integer x;
-Integer y;
-Boolean top;
-Boolean bottom;
-Boolean left;
-Boolean right;
+  0..1 ->  1 Cordinate cordinate;
 }
 class Pawn{
-Integer x;
-Integer y;
+0..1 ->  1 Cordinate cordinate;
+  Time remainingTime;
+  Integer wallStock;
 }
 class Wall {
   enum orientation{Horizontal, Vertical};
   enum state{Highlighted,NotHighlighted};
-  enum owner{Black,White,Yellow,Red};
+   0..10 -- 1 Pawn wallOwner;
   Integer x;
   Integer y;
-}
-class History{
-  1 <@>- * Action actionHistory; 
-}
-class Action{
-  abstract;
-  1 ->0..1 Player user;
 }
 class Move{
-  isA Action;
-  Integer oldX;
-  Integer oldY;
-  Integer newX;
-  Integer newY;
+  abstract;
+  0..1 ->0..1 Pawn user;
+}
+class Cordinate{
+  Integer x; 
+  Integer y;
+}
+class Position{
+0..1 <@>- 0..2 Pawn pawns;
+0..1 <@>-  0..20 Wall;
+}
+class PawnMove{
+  isA Move;
+  0..1->  1 Cordinate cordinate;
 }
 class AddWall{
-  isA Action;
-  Integer x;
-  Integer y;
+  isA Move;
+  0..1 ->  1 Cordinate wallCord;
   enum orientation{Horizontal, Vertical};
 }
 class Jump{
-isA Action;
+  isA Move;
+  0..1 ->  1 Cordinate jumpTo;
 }

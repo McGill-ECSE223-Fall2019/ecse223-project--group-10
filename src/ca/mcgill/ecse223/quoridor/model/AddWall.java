@@ -3,8 +3,8 @@
 
 
 
-// line 56 "Quoridor.ump"
-public class AddWall extends Action
+// line 55 "Quoridor.ump"
+public class AddWall extends Move
 {
 
   //------------------------
@@ -17,61 +17,46 @@ public class AddWall extends Action
   // MEMBER VARIABLES
   //------------------------
 
-  //AddWall Attributes
-  private int x;
-  private int y;
+  //AddWall Associations
+  private Cordinate wallCord;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public AddWall(History aHistory, int aX, int aY)
+  public AddWall(Cordinate aWallCord)
   {
-    super(aHistory);
-    x = aX;
-    y = aY;
+    super();
+    if (!setWallCord(aWallCord))
+    {
+      throw new RuntimeException("Unable to create AddWall due to aWallCord. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
   }
 
   //------------------------
   // INTERFACE
   //------------------------
-
-  public boolean setX(int aX)
+  /* Code from template association_GetOne */
+  public Cordinate getWallCord()
+  {
+    return wallCord;
+  }
+  /* Code from template association_SetUnidirectionalOne */
+  public boolean setWallCord(Cordinate aNewWallCord)
   {
     boolean wasSet = false;
-    x = aX;
-    wasSet = true;
+    if (aNewWallCord != null)
+    {
+      wallCord = aNewWallCord;
+      wasSet = true;
+    }
     return wasSet;
-  }
-
-  public boolean setY(int aY)
-  {
-    boolean wasSet = false;
-    y = aY;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public int getX()
-  {
-    return x;
-  }
-
-  public int getY()
-  {
-    return y;
   }
 
   public void delete()
   {
+    wallCord = null;
     super.delete();
   }
 
-
-  public String toString()
-  {
-    return super.toString() + "["+
-            "x" + ":" + getX()+ "," +
-            "y" + ":" + getY()+ "]";
-  }
 }

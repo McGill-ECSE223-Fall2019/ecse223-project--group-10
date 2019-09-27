@@ -24,7 +24,6 @@ public class Player
   private int playerWin;
   private int playerLoss;
   private int playerTie;
-  private int wallStock;
 
   //Player Associations
   private Pawn currentPawn;
@@ -34,21 +33,15 @@ public class Player
   // CONSTRUCTOR
   //------------------------
 
-  public Player(String aUserName, int aPlayerScore, int aPlayerWin, int aPlayerLoss, int aPlayerTie, int aWallStock, Quoridor aQuoridor)
+  public Player(String aUserName, int aPlayerScore, int aPlayerWin, int aPlayerLoss, int aPlayerTie)
   {
     playerScore = aPlayerScore;
     playerWin = aPlayerWin;
     playerLoss = aPlayerLoss;
     playerTie = aPlayerTie;
-    wallStock = aWallStock;
     if (!setUserName(aUserName))
     {
       throw new RuntimeException("Cannot create due to duplicate userName. See http://manual.umple.org?RE003ViolationofUniqueness.html");
-    }
-    boolean didAddQuoridor = setQuoridor(aQuoridor);
-    if (!didAddQuoridor)
-    {
-      throw new RuntimeException("Unable to create player due to quoridor. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
 
@@ -107,14 +100,6 @@ public class Player
     return wasSet;
   }
 
-  public boolean setWallStock(int aWallStock)
-  {
-    boolean wasSet = false;
-    wallStock = aWallStock;
-    wasSet = true;
-    return wasSet;
-  }
-
   public String getUserName()
   {
     return userName;
@@ -149,11 +134,6 @@ public class Player
   {
     return playerTie;
   }
-
-  public int getWallStock()
-  {
-    return wallStock;
-  }
   /* Code from template association_GetOne */
   public Pawn getCurrentPawn()
   {
@@ -170,6 +150,12 @@ public class Player
   {
     return quoridor;
   }
+
+  public boolean hasQuoridor()
+  {
+    boolean has = quoridor != null;
+    return has;
+  }
   /* Code from template association_SetUnidirectionalOptionalOne */
   public boolean setCurrentPawn(Pawn aNewCurrentPawn)
   {
@@ -178,47 +164,16 @@ public class Player
     wasSet = true;
     return wasSet;
   }
-  /* Code from template association_SetOneToAtMostN */
-  public boolean setQuoridor(Quoridor aQuoridor)
-  {
-    boolean wasSet = false;
-    //Must provide quoridor to player
-    if (aQuoridor == null)
-    {
-      return wasSet;
-    }
-
-    //quoridor already at maximum (2)
-    if (aQuoridor.numberOfPlayers() >= Quoridor.maximumNumberOfPlayers())
-    {
-      return wasSet;
-    }
-    
-    Quoridor existingQuoridor = quoridor;
-    quoridor = aQuoridor;
-    if (existingQuoridor != null && !existingQuoridor.equals(aQuoridor))
-    {
-      boolean didRemove = existingQuoridor.removePlayer(this);
-      if (!didRemove)
-      {
-        quoridor = existingQuoridor;
-        return wasSet;
-      }
-    }
-    quoridor.addPlayer(this);
-    wasSet = true;
-    return wasSet;
-  }
 
   public void delete()
   {
     playersByUserName.remove(getUserName());
     currentPawn = null;
-    Quoridor placeholderQuoridor = quoridor;
-    this.quoridor = null;
-    if(placeholderQuoridor != null)
+    if (quoridor != null)
     {
-      placeholderQuoridor.removePlayer(this);
+        Quoridor placeholderQuoridor = quoridor;
+        this.quoridor = null;
+        placeholderQuoridor.delete();
     }
   }
 
@@ -230,8 +185,7 @@ public class Player
             "playerScore" + ":" + getPlayerScore()+ "," +
             "playerWin" + ":" + getPlayerWin()+ "," +
             "playerLoss" + ":" + getPlayerLoss()+ "," +
-            "playerTie" + ":" + getPlayerTie()+ "," +
-            "wallStock" + ":" + getWallStock()+ "]" + System.getProperties().getProperty("line.separator") +
+            "playerTie" + ":" + getPlayerTie()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "currentPawn = "+(getCurrentPawn()!=null?Integer.toHexString(System.identityHashCode(getCurrentPawn())):"null") + System.getProperties().getProperty("line.separator") +
             "  " + "quoridor = "+(getQuoridor()!=null?Integer.toHexString(System.identityHashCode(getQuoridor())):"null");
   }

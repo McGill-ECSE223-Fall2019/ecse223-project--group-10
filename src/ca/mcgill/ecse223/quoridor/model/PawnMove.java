@@ -3,27 +3,27 @@
 
 
 
-// line 24 "Quoridor.ump"
-public class Tile
+// line 51 "Quoridor.ump"
+public class PawnMove extends Move
 {
 
   //------------------------
   // MEMBER VARIABLES
   //------------------------
 
-  //Tile Associations
+  //PawnMove Associations
   private Cordinate cordinate;
-  private Board board;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public Tile(Cordinate aCordinate)
+  public PawnMove(Cordinate aCordinate)
   {
+    super();
     if (!setCordinate(aCordinate))
     {
-      throw new RuntimeException("Unable to create Tile due to aCordinate. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+      throw new RuntimeException("Unable to create PawnMove due to aCordinate. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
 
@@ -34,17 +34,6 @@ public class Tile
   public Cordinate getCordinate()
   {
     return cordinate;
-  }
-  /* Code from template association_GetOne */
-  public Board getBoard()
-  {
-    return board;
-  }
-
-  public boolean hasBoard()
-  {
-    boolean has = board != null;
-    return has;
   }
   /* Code from template association_SetUnidirectionalOne */
   public boolean setCordinate(Cordinate aNewCordinate)
@@ -61,12 +50,7 @@ public class Tile
   public void delete()
   {
     cordinate = null;
-    if (board != null)
-    {
-        Board placeholderBoard = board;
-        this.board = null;
-        placeholderBoard.delete();
-    }
+    super.delete();
   }
 
 }
