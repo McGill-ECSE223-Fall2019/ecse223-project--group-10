@@ -5,6 +5,7 @@ class Game{
   0..1 <@>- 0..20 Wall walls;
   0..1 <@>- 1 Board;
   0..1 <@>- * Move moves;
+    0..1 <@>- 1 Position boardPosition;
 }
 class Player{
   unique userName;
@@ -45,8 +46,8 @@ class Cordinate{
   Integer y;
 }
 class Position{
-0..1 <@>- 0..2 Pawn pawns;
-0..1 <@>-  0..20 Wall;
+0..1 <@>- 0..2 Pawn pawnPositions;
+0..1 <@>-  0..20 Wall wallPositions;
 }
 class PawnMove{
   isA Move;
