@@ -179,7 +179,7 @@ public class Pawn
     return 10;
   }
   /* Code from template association_AddOptionalNToOne */
-  public Wall addWall(int aX, int aY)
+  public Wall addWall(Cordinate aCordinate)
   {
     if (numberOfWalls() >= maximumNumberOfWalls())
     {
@@ -187,7 +187,7 @@ public class Pawn
     }
     else
     {
-      return new Wall(aX, aY, this);
+      return new Wall(this, aCordinate);
     }
   }
 

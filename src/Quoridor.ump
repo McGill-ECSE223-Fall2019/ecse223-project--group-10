@@ -39,8 +39,7 @@ class Wall {
   enum orientation{Horizontal, Vertical};
   enum state{Highlighted,NotHighlighted};
    0..10 -- 1 Pawn wallOwner;
-  Integer x;
-  Integer y;
+  0..1 -> 1 Cordinate cordinate;
 }
 class Move{
   abstract;

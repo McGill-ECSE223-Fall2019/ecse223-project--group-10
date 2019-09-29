@@ -18,12 +18,9 @@ public class Wall
   // MEMBER VARIABLES
   //------------------------
 
-  //Wall Attributes
-  private int x;
-  private int y;
-
   //Wall Associations
   private Pawn wallOwner;
+  private Cordinate cordinate;
   private Board board;
   private Position whiteWallPosition;
 
@@ -31,50 +28,31 @@ public class Wall
   // CONSTRUCTOR
   //------------------------
 
-  public Wall(int aX, int aY, Pawn aWallOwner)
+  public Wall(Pawn aWallOwner, Cordinate aCordinate)
   {
-    x = aX;
-    y = aY;
     boolean didAddWallOwner = setWallOwner(aWallOwner);
     if (!didAddWallOwner)
     {
       throw new RuntimeException("Unable to create wall due to wallOwner. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    if (!setCordinate(aCordinate))
+    {
+      throw new RuntimeException("Unable to create Wall due to aCordinate. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
 
   //------------------------
   // INTERFACE
   //------------------------
-
-  public boolean setX(int aX)
-  {
-    boolean wasSet = false;
-    x = aX;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public boolean setY(int aY)
-  {
-    boolean wasSet = false;
-    y = aY;
-    wasSet = true;
-    return wasSet;
-  }
-
-  public int getX()
-  {
-    return x;
-  }
-
-  public int getY()
-  {
-    return y;
-  }
   /* Code from template association_GetOne */
   public Pawn getWallOwner()
   {
     return wallOwner;
+  }
+  /* Code from template association_GetOne */
+  public Cordinate getCordinate()
+  {
+    return cordinate;
   }
   /* Code from template association_GetOne */
   public Board getBoard()
@@ -127,6 +105,17 @@ public class Wall
     }
     wallOwner.addWall(this);
     wasSet = true;
+    return wasSet;
+  }
+  /* Code from template association_SetUnidirectionalOne */
+  public boolean setCordinate(Cordinate aNewCordinate)
+  {
+    boolean wasSet = false;
+    if (aNewCordinate != null)
+    {
+      cordinate = aNewCordinate;
+      wasSet = true;
+    }
     return wasSet;
   }
   /* Code from template association_SetOptionalOneToOptionalN */
@@ -182,6 +171,7 @@ public class Wall
     {
       placeholderWallOwner.removeWall(this);
     }
+    cordinate = null;
     if (board != null)
     {
       Board placeholderBoard = board;
@@ -196,14 +186,4 @@ public class Wall
     }
   }
 
-
-  public String toString()
-  {
-    return super.toString() + "["+
-            "x" + ":" + getX()+ "," +
-            "y" + ":" + getY()+ "]" + System.getProperties().getProperty("line.separator") +
-            "  " + "wallOwner = "+(getWallOwner()!=null?Integer.toHexString(System.identityHashCode(getWallOwner())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "board = "+(getBoard()!=null?Integer.toHexString(System.identityHashCode(getBoard())):"null") + System.getProperties().getProperty("line.separator") +
-            "  " + "whiteWallPosition = "+(getWhiteWallPosition()!=null?Integer.toHexString(System.identityHashCode(getWhiteWallPosition())):"null");
-  }
 }
