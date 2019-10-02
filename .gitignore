@@ -1,2 +1,6 @@
-/bin/
-umple.jar
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+ca.mcgill.ecse223.quoridor/
