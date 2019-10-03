@@ -1,4 +1,4 @@
-package controller;
+package ca.mcgill.ecse223.quoridor.controller;
 import java.sql.Time;
 public class Quoridor223Controller {
 	//under feature 1
