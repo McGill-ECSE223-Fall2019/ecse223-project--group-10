@@ -1,5 +1,8 @@
 package ca.mcgill.ecse223.quoridor.controller;
+
+import ca.mcgill.ecse223.quoridor.model.*;
 import java.sql.Time;
+
 public class Quoridor223Controller {
 	//under feature 1
 	public void createGame() {
@@ -45,9 +48,13 @@ public class Quoridor223Controller {
 	public void loadPosition() {
 	
 	}
+	
 	//under feature 11
-	public void validatePosition() {
+	public void validatePosition(Tile tile) {
+		// need parameter to know whether it is a pawn or a wall ?
 		
+		// validate pawn position
+		// validate wall position
 	}
 	//under feature 12
 	public void UpdateBoard() {
