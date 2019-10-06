@@ -28,7 +28,13 @@ public class Quoridor223Controller {
 	}
 	//under feature 5
 	public void rotateWall() {
-		
+		//check if the Game is running. If not, thrown an exception.
+		//check if it is the player's turn. If not, thrown an excpetion. 
+		//check if there is no wall in my hand. If no wall, thrown an excpetion. 
+		//if there is a wall in my hand
+			//rotate walls with the "A", "S", "W", "D" keys.
+		//else if
+			//Notify player there is no wall in hand.
 	}
 	//under feature 6
 	public void grabWall(Player player)  throws UnsupportedOperationException{
