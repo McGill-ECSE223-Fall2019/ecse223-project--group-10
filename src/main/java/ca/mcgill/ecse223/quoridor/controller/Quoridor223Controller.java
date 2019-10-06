@@ -68,7 +68,7 @@ public class Quoridor223Controller {
 		//check if there is wall in my hand if not throw exception
 		//check if the Row and Col are valid for the given wall parameter if not throw exception
 		//finalize drop by putting the move into the movelist and update the gamePosition.
-		//set my hand as empty
+		//set my hand as empty and switch turn
 	}
 	//under feature 9
 	public void savePosition() {
