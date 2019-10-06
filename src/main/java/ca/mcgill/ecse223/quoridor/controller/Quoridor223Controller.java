@@ -6,6 +6,7 @@ import java.sql.Time;
 import java.security.InvalidAlgorithmParameterException;
 
 public class Quoridor223Controller {
+	private enum side{up,down,left,right};
 	//under feature 1
 	public void createGame() {
 	
@@ -37,7 +38,7 @@ public class Quoridor223Controller {
 			//Notify player there is no wall in hand.
 	}
 	//under feature 6
-	public void grabWall(Player player)  throws UnsupportedOperationException{
+	public void grabWall()  throws UnsupportedOperationException{
 		//check if the Game is running if not throw exception
 		//check if the it is player's turn if not throw exception
 		//check if there is no wall in my hand if not throw exception
@@ -55,12 +56,20 @@ public class Quoridor223Controller {
 	 * @param Row
 	 * @param Col
 	 */
-	public void moveWall(int Row, int Col, int side) throws UnsupportedOperationException{
+	public void moveWall(int row, int col, side s) throws UnsupportedOperationException{
 		//check if the Game is running if not throw exception
+		Game curGame = Quoridor223Application.getCurrentGame();
+		if(!isRunning())throw new UnsupportedOperationException("Game is not running");
 		//check if the it is player's turn if not throw exception
+		if(curGame.getWallMoveCandidate()==null)
 		//check if there is wall in my hand if not throw exception
+		
 		//check if newRow and newCol are within the board if not throw exception
+		int nRow = row +(s==side.up?-1:s==side.down?1:0);
+		int nCol = col +(s==side.left?1:s==side.right?-1:0);
+		if(!isWallValid(nRow,nCol))throw new UnsupportedOperationException("Move is illegal.");
 		//update the move candidate according to the change.
+		
 	}
 	
 	/**
@@ -100,6 +109,9 @@ public class Quoridor223Controller {
 		Game current = Quoridor223Application.getCurrentGame();
 		if(current == null || current.getGameStatus()!=Game.GameStatus.Running)return false;
 		return true;
+	}
+	private boolean isWallValid(int row, int col) {
+		return (row>0 && col>0 && row<9 && col <9);
 	}
 }
 	
