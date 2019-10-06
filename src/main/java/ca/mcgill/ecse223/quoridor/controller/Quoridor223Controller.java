@@ -62,7 +62,7 @@ public class Quoridor223Controller {
 	 * @param newRow
 	 * @param newCol
 	 */
-	public void dropWall() {
+	public void dropWall() throws UnsupportedOperationException{
 		//check if the Game is running if not throw exception
 		//check if the it is player's turn if not throw exception
 		//check if there is wall in my hand if not throw exception
@@ -89,6 +89,11 @@ public class Quoridor223Controller {
 	//under feature 12
 	public void UpdateBoard() {
 		
+	}
+	private boolean isRunning() {
+		Game current = Quoridor223Application.getCurrentGame();
+		if(current == null || current.getGameStatus()!=Game.GameStatus.Running)return false;
+		return true;
 	}
 }
 	
