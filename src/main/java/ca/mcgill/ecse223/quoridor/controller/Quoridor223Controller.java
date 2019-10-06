@@ -49,11 +49,12 @@ public class Quoridor223Controller {
 	 * @param Row
 	 * @param Col
 	 */
-	public void moveWall(Player player, int Row, int Col , Side ) throws UnsupportedOperationException{
+	public void moveWall(int Row, int Col, int side) throws UnsupportedOperationException{
 		//check if the Game is running if not throw exception
 		//check if the it is player's turn if not throw exception
 		//check if there is wall in my hand if not throw exception
 		//check if newRow and newCol are within the board if not throw exception
+		//update the move candidate according to the change.
 	}
 	
 	/**
@@ -61,12 +62,13 @@ public class Quoridor223Controller {
 	 * @param newRow
 	 * @param newCol
 	 */
-	public void dropWall(Player player, int newRow, int newCol) {
+	public void dropWall() {
 		//check if the Game is running if not throw exception
 		//check if the it is player's turn if not throw exception
 		//check if there is wall in my hand if not throw exception
 		//check if the Row and Col are valid for the given wall parameter if not throw exception
 		//finalize drop by putting the move into the movelist and update the gamePosition.
+		//set my hand as empty
 	}
 	//under feature 9
 	public void savePosition() {
