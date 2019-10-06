@@ -1,6 +1,5 @@
 Feature: Move Wall
-  As a player who grabbed a wall, I wish to move the wall between possible rows and columns of the board 
-  so that I could move it to its designated target position. 
+  As a player who grabbed a wall,
   I wish to get feedback from the game if a designated wall position is illegal.
 
   Background: 
