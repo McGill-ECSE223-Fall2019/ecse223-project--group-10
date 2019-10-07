@@ -55,9 +55,9 @@ public class Quoridor223Controller {
 		Game curGame = Quoridor223Application.getCurrentGame();
 		if(!isRunning())throw new UnsupportedOperationException("Game is not running");
 		//check if the it is player's turn if not throw exception
-		if(curGame.getWallMoveCandidate()==null)
-		//check if there is wall in my hand if not throw exception
 		
+		//check if there is wall in my hand if not throw exception
+		if(curGame.getWallMoveCandidate()==null)throw new UnsupportedOperationException("No Wall selected");
 		//check if newRow and newCol are within the board if not throw exception
 		int nRow = row +(s==side.up?-1:s==side.down?1:0);
 		int nCol = col +(s==side.left?1:s==side.right?-1:0);
@@ -73,11 +73,19 @@ public class Quoridor223Controller {
 	 */
 	public void dropWall() throws UnsupportedOperationException{
 		//check if the Game is running if not throw exception
+		Game curGame = Quoridor223Application.getCurrentGame();
+		if(!isRunning())throw new UnsupportedOperationException("Game is not running");
 		//check if the it is player's turn if not throw exception
 		//check if there is wall in my hand if not throw exception
+		if(curGame.getWallMoveCandidate()==null)throw new UnsupportedOperationException("No Wall selected");
 		//check if the Row and Col are valid for the given wall parameter if not throw exception
+		int	row = curGame.getWallMoveCandidate().getTargetTile().getRow();
+		int	col = curGame.getWallMoveCandidate().getTargetTile().getColumn();
+		if(!isWallValid(row,col))throw new UnsupportedOperationException("Position is not valid");
 		//finalize drop by putting the move into the movelist and update the gamePosition.
+		
 		//set my hand as empty and switch turn
+		curGame.setWallMoveCandidate(null);
 	}
 	//under feature 9
 	public void savePosition() {
