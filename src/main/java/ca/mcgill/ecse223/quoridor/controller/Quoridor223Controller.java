@@ -1,12 +1,13 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication.Quoridor223Application;
+import ca.mcgill.ecse223.quoridor.QuoridorApplication.Quoridor223Application.Side;
 import ca.mcgill.ecse223.quoridor.model.*;
 import java.sql.Time;
 import java.security.InvalidAlgorithmParameterException;
 
 public class Quoridor223Controller {
-	private enum side{up,down,left,right};
+	
 	//under feature 1
 	public void createGame() {
 	
@@ -46,24 +47,25 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * @param player
-	 * @param Row
-	 * @param Col
+	 * @param side
+	 * @throws UnsupportedOperationException
 	 */
-	public void moveWall(int row, int col, side s) throws UnsupportedOperationException{
+	public void moveWall(Side side) throws UnsupportedOperationException{
 		//check if the Game is running if not throw exception
 		Game curGame = Quoridor223Application.getCurrentGame();
 		if(!isRunning())throw new UnsupportedOperationException("Game is not running");
 		//check if the it is player's turn if not throw exception
-		if(curGame.getWallMoveCandidate()==null)
-		//check if there is wall in my hand if not throw exception
 		
+		//check if there is wall in my hand if not throw exception
+		WallMove candidate = curGame.getWallMoveCandidate();
+		if(candidate==null)throw new UnsupportedOperationException("No candidate move.");
+		Tile curTile = candidate.getTargetTile();
 		//check if newRow and newCol are within the board if not throw exception
-		int nRow = row +(s==side.up?-1:s==side.down?1:0);
-		int nCol = col +(s==side.left?1:s==side.right?-1:0);
+		int nRow = curTile.getRow() +(side==Side.up?-1:side==Side.down?1:0);
+		int nCol = curTile.getColumn() +(side==Side.left?1:side==Side.right?-1:0);
 		if(!isWallValid(nRow,nCol))throw new UnsupportedOperationException("Move is illegal.");
 		//update the move candidate according to the change.
-		
+		candidate.setTargetTile(getTile(nRow,nCol));
 	}
 	
 	/**
