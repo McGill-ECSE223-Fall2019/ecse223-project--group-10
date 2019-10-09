@@ -159,13 +159,19 @@ public class Quoridor223Controller {
 	 * @author Le-Li Mao
 	 * @throws UnsupportedOperationException
 	 */
-	public static void dropWall() throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
+	public static void dropWall() throws GameNotRunningException, InvalidOperationException {
 		//check if the Game is running if not throw exception
+		if(!isRunning())throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if the it is player's turn if not throw exception
+		//HOW to do this??
 		//check if there is wall in my hand if not throw exception
-		//finalize drop by putting the move into the movelist and update the gamePosition.
-		//set my hand as empty and switch turn
+		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
+		//finalize drop by putting the move into the movelist and update the gamePosition TODO.
+		curGame.addMove(curGame.getWallMoveCandidate());
+		curGame.setWallMoveCandidate(null);
+
+		//set my hand as empty and switch turn TODO
 	}
 	
 	//under feature 9
@@ -207,7 +213,7 @@ public class Quoridor223Controller {
 	 * @return
 	 */
 	private static boolean isWallPositionValid(int row, int col) {
-		return (row>0 && col>0 && row<=9 && col <=9);
+		return (row>0 && col>0 && row<9 && col <9);
 	}
 	private static Tile getTile(int row, int col){
 		Board board = QuoridorApplication.getQuoridor().getBoard();

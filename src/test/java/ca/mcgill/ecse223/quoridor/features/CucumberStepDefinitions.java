@@ -148,7 +148,12 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I release the wall in my hand")
 	public void iReleaseTheWallInMyHand() {
-		Quoridor223Controller.dropWall();
+		try{
+			Quoridor223Controller.dropWall();
+		}
+		catch (Exception e){
+
+		}
 	}
 	/**
 	 * @author Le-Li Mao
@@ -204,14 +209,33 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I try to move the wall {word}")
 	public void iTryToMoveTheWallSide(String side) {
-		throw new PendingException();
+		try {
+			Quoridor223Controller.moveWall(side);
+		}
+		catch (Exception e){
+
+		}
 	}
 	/**
 	 * @author Le-Li Mao
 	 */
 	@And("The wall candidate is at the {word} edge of the board")
 	public void theWallCandidateIsAtTheSideEdgeOfTheBoard(String side) {
-		throw new PendingException();
+		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		int row = candidate.getTargetTile().getRow();
+		int col = candidate.getTargetTile().getColumn();
+		if(side.equalsIgnoreCase("UP")){
+			Assert.assertEquals(1,row);
+		}
+		else if (side.equalsIgnoreCase("DOWN")){
+			Assert.assertEquals(8,row);
+		}
+		else if (side.equalsIgnoreCase("RIHGT")){
+			Assert.assertEquals(8,col);
+		}
+		else {
+			Assert.assertEquals(1,col);
+		}
 	}
 	/**
 	 * @author Le-Li Mao
