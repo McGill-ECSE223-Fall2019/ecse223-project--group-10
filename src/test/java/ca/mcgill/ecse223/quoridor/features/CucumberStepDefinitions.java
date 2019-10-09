@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication.*;
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -18,6 +19,7 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
+import cucumber.api.PendingException;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -117,63 +119,65 @@ public class CucumberStepDefinitions {
 	 */
 	@And ("I have a wall in my hand over the board")
 	public void iHaveAWallInMyHandOverTheBoard() {
-		
+		throw new PendingException();
 	}
 	@Given("A wall move candidate exists with (.*) at position ((.*), (.*))")
 	public void wallMoveCandidateExists(String dir, int row, int col) {
-		
+		getWallMoveCandidate(dir,row,col);
 	}
 	@And("The wall candidate is at the (.*) edge of the board")
 	public void Thewallcandidateisattheedgeoftheboard(String side) {
-		
+		throw new PendingException();
 	}
 	@And("The wall candidate is not at the (.*) edge of the board")
 	public void Thewallcandidateisnotattheedgeoftheboard(String side) {
-		
+		throw new PendingException();
 	}
 	@When("I try to move the wall (.*)")
 	public void iTryToMoveTheWall(String side) {
-		
+		Quoridor223Controller.moveWall(side);
 	}
 	
     @Then("The wall shall be moved over the board to position ((.*), (.*))")
     public void theWallShallBeMovedOverTheBoardToPosition(int row, int col) {
-    	
+    	throw new PendingException();
     }
     @And("A wall move candidate shall exist with (.*) at position ((.*), (.*))")
     public void aWallMoveCandidateShallExist(String dir, int row, int col) {
-    	
+    	throw new PendingException();
     }
     @Then("I should be notified that my move is illegal")
-    public void thenIShouldBeNotifiedThatMyMoveIsIllegal() {
-    	
+    public void IShouldBeNotifiedThatMyMoveIsIllegal() {
+    	//Feel like this is GUI
+    	throw new PendingException();
     }
     @Given ("The wall move candidate with (.*) at position ((.*), (.*)) is valid")
-    public void theWallMoveCandidateIsValid() {
-    	
+    public void theWallMoveCandidateIsValid(String dir, int row, int col) {
+    	setWall(dir, row, col);
     }
     @Given("The wall move candidate with (.*) at position ((.*), (.*)) is invalid")
     public void TheWallMoveCandidateWithIsInvalid(String dir, int row, int col) {
-    	
+    	setWall(dir, row, col);
     }
     @When("I release the wall in my hand")
     public void iReleaseTheWallInMyHand() {
-    	
+    	Quoridor223Controller.dropWall();
     }
     @But("A wall move is registered with (.*) at position ((.*), (.*))")
     public void aWallMoveIsRegistered() {
-    	
+    	throw new PendingException();
     }
     @And("My move is completed")
     public void myMoveIsCompleted() {
-    	
+    	throw new PendingException();
     }
     @And ("It is not my turn to move")
     public void itIsNotMyTurnToMove() {
-    	
+    	throw new PendingException();
     }
     @Then ("I shall be notified that my wall move is invalid")
     public void iShallBeNotifiedThatMyWallMoveIsInvalid() {
+    	//Feel like this is GUI
     }
     @But("No wall move is registered with (.*) at position ((.*), (.*))")
     public void noWallMoveIsRegistered(String direction, int row, int col){
@@ -266,5 +270,24 @@ public class CucumberStepDefinitions {
 
 		game.setCurrentPosition(gamePosition);
 	}
-
+	/**
+	 * Create select the wall and set it to the wall candidate in the game
+	 * @param dir
+	 * @param row
+	 * @param col
+	 */
+	private void getWallMoveCandidate(String dir, int row, int col) {
+		//create a new WallMove Candidate and place the corresponding tile
+		Direction wallDirection = dir.equals("horizontal")?Direction.Horizontal:Direction.Vertical;
+		game.setWallMoveCandidate(new WallMove(0, 1, player1, board.getTile((row-1)*9+(col-1)), game, wallDirection, game.getCurrentPosition().getBlackWallsInStock(0)));
+	}
+	private void setWall(String dir, int row, int col) {
+		//25 is a valid position of 3 row and 8th column
+		if(game.getWallMoveCandidate()!=null) {
+		game.getWallMoveCandidate().setTargetTile(board.getTile((row-1)*9+(col-1)));
+		}
+		else {
+			getWallMoveCandidate(dir, row, col);
+		}
+	}
 }

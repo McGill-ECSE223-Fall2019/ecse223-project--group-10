@@ -9,27 +9,27 @@ import java.security.InvalidAlgorithmParameterException;
 public class Quoridor223Controller {
 	
 	//under feature 1
-	public void createGame() {
+	public static void createGame() {
 	
 	}
 	//under feature 2
-	public void selectUser(String playerName1, String playerName2) {
+	public static void selectUser(String playerName1, String playerName2) {
 		
 	}
 	//under feature 2
-	public void createUser(String name) {
+	public static void createUser(String name) {
 		
 	}
 	//under feature 3
-	public void setThinkingTime(Time thinkingTime, String playerName) {
+	public static void setThinkingTime(Time thinkingTime, String playerName) {
 		
 	}
 	//under feature 4
-	public void initializeBoard() {
+	public static void initializeBoard() {
 		
 	}
 	//under feature 5
-	public void rotateWall() {
+	public static void rotateWall() {
 		
 	}
 	//under feature 6
@@ -39,18 +39,18 @@ public class Quoridor223Controller {
 		//check if there is no wall in my hand if not throw exception
 		//check if there is wall leftover
 		//if Player has more wall
-			//move the wall into my hand
-			//Remove wall from stock
-			//create a wallmoveCandidate in the game model.
+		//move the wall into my hand
+		//Remove wall from stock
+		//create a wallmoveCandidate in the game model.
 		//else if player have no wall
-			//Notify the user that they don't have any wall.	
+		//Notify the user that they don't have any wall.	
 	}
 	
 	/**
 	 * @param side
 	 * @throws UnsupportedOperationException
 	 */
-	public void moveWall() throws UnsupportedOperationException{
+	public static void moveWall(String side) throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
 		//check if the Game is running if not throw exception
 		//check if the it is player's turn if not throw exception
@@ -62,7 +62,7 @@ public class Quoridor223Controller {
 	/**
 	 * @throws UnsupportedOperationException
 	 */
-	public void dropWall() throws UnsupportedOperationException{
+	public static void dropWall() throws UnsupportedOperationException{
 		throw new UnsupportedOperationException();
 		//check if the Game is running if not throw exception
 		//check if the it is player's turn if not throw exception
@@ -72,31 +72,31 @@ public class Quoridor223Controller {
 	}
 	
 	//under feature 9
-	public void savePosition() {
+	public static void savePosition() {
 		
 	}
 	//under feature 10
-	public void loadPosition() {
+	public static void loadPosition() {
 	
 	}
 	
 	//under feature 11
-	public void validatePosition(Tile tile) {
+	public static void validatePosition(Tile tile) {
 		// need parameter to know whether it is a pawn or a wall ?
 		
 		// validate pawn position
 		// validate wall position
 	}
 	//under feature 12
-	public void UpdateBoard() {
+	public static void UpdateBoard() {
 		
 	}
-	private boolean isRunning() {
+	private static boolean isRunning() {
 		Game current = Quoridor223Application.getCurrentGame();
 		if(current == null || current.getGameStatus()!=Game.GameStatus.Running)return false;
 		return true;
 	}
-	private boolean isWallValid(int row, int col) {
+	private static boolean isWallValid(int row, int col) {
 		return (row>0 && col>0 && row<9 && col <9);
 	}
 }
