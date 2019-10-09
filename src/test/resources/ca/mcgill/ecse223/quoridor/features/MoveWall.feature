@@ -22,7 +22,7 @@ Feature: Move Wall
       | horizontal |   5 |   6 | down  |    6 |    6 |
 
   Scenario Outline: Move wall at the edge of the board
-    Given A wall move candidate exists with <dir> at position (<row>, <col>)
+    Given A wall move candidate exists with <dir> at position ((<row>, <col>))
     And The wall candidate is at the <side> edge of the board
     When I try to move the wall <side>
     Then I should be notified that my move is illegal 

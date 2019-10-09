@@ -1,7 +1,7 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
-import ca.mcgill.ecse223.quoridor.QuoridorApplication.Quoridor223Application;
-import ca.mcgill.ecse223.quoridor.QuoridorApplication.Quoridor223Application.Side;
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+
 import ca.mcgill.ecse223.quoridor.model.*;
 import java.sql.Time;
 import java.security.InvalidAlgorithmParameterException;
@@ -92,7 +92,7 @@ public class Quoridor223Controller {
 		
 	}
 	private static boolean isRunning() {
-		Game current = Quoridor223Application.getCurrentGame();
+		Game current = QuoridorApplication.getCurrentGame();
 		if(current == null || current.getGameStatus()!=Game.GameStatus.Running)return false;
 		return true;
 	}
