@@ -129,7 +129,9 @@ public class CucumberStepDefinitions {
 //		setWall(orientation,row, col);
 		
 	}
-
+	/**
+	 * @author Le-Li Mao
+	 */
 	@And("A wall move candidate shall exist with {word} at position \\({int}, {int})")
 	public void aWallMoveCandidateShallExistWithDirAtPositionNrowNcol(String orientation, int row, int col) {
 		Assert.assertEquals(true, hasWallCandidate(orientation,row,col));
@@ -148,52 +150,72 @@ public class CucumberStepDefinitions {
 	public void iReleaseTheWallInMyHand() {
 		Quoridor223Controller.dropWall();
 	}
-
+	/**
+	 * @author Le-Li Mao
+	 */
 	@But("A wall move is registered with {word} at position \\({int}, {int})")
 	public void aWallMoveIsRegisteredWithDirAtPositionRowCol(String orientation, int col, int row) {
 		throw new PendingException();
 	}
-
+	/**
+	 * @author Le-Li Mao
+	 */
 	@And("My move is completed")
 	public void myMoveIsCompleted() {
 		throw new PendingException();
 	}
+	/**
+	 * @author Le-Li Mao
+	 */
 	@And("It is not my turn to move")
 	public void itIsNotMyTurnToMove() {
 		throw new PendingException();
 	}
-
+	/**
+	 * @author Le-Li Mao
+	 */
 	@Given("The wall move candidate with {word} at position \\({int}, {int}) is invalid")
 	public void theWallMoveCandidateWithDirAtPositionRowColIsInvalid(String orientation, int col, int row) {
 		throw new PendingException();
 	}
-
-
+	/**
+	 * @author Le-Li Mao
+	 */
 	@But("No wall move is registered with {word} at position \\({int}, {int})")
 	public void noWallMoveIsRegisteredWithDirAtPositionRowCol(String orientation, int col, int row) {
 		throw new PendingException();
 	}
-
+	/**
+	 * @author Le-Li Mao
+	 */
 	@And("The wall candidate is not at the {word} edge of the board")
 	public void theWallCandidateIsNotAtTheSideEdgeOfTheBoard() {
 		throw new PendingException();
 	}
-
+	/**
+	 * @author Le-Li Mao
+	 */
 	@Then("The wall shall be moved over the board to position \\({int}, {int})")
 	public void theWallShallBeMovedOverTheBoardToPositionNrowNcol(int col, int row) {
 		throw new PendingException();
 	}
-
+	/**
+	 * @author Le-Li Mao
+	 */
 	@When("I try to move the wall {word}")
 	public void iTryToMoveTheWallSide(String side) {
 		throw new PendingException();
 	}
-
+	/**
+	 * @author Le-Li Mao
+	 */
 	@And("The wall candidate is at the {word} edge of the board")
 	public void theWallCandidateIsAtTheSideEdgeOfTheBoard(String side) {
 		throw new PendingException();
 	}
-
+	/**
+	 * @author Le-Li Mao
+	 */
 	@Then("I should be notified that my move is illegal")
 	public void iShouldBeNotifiedThatMyMoveIsIllegal() {
 		//GUI

@@ -129,19 +129,30 @@ public class Quoridor223Controller {
 		//else if player have no wall
 		//Notify the user that they don't have any wall.	
 	}
-	
+
 	/**
+	 * Perform a move operation on a currently selected wall
 	 * @author Le-Li Mao
 	 * @param side
-	 * @throws UnsupportedOperationException
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
-	public static void moveWall(String side) throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
+	public static void moveWall(String side) throws GameNotRunningException, InvalidOperationException {
+
 		//check if the Game is running if not throw exception
+		if(!isRunning())throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if the it is player's turn if not throw exception
+
 		//check if there is wall in my hand if not throw exception
+		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
+		WallMove candidate =  curGame.getWallMoveCandidate();
 		//check if newRow and newCol are within the board if not throw exception
+		int newRow = candidate.getTargetTile().getRow()+ (side.equalsIgnoreCase("up")?-1:side.equalsIgnoreCase("down")?1:0);
+		int newCol = candidate.getTargetTile().getRow()+ (side.equalsIgnoreCase("left")?-1:side.equalsIgnoreCase("right")?1:0);
+		if(!isWallPositionValid(newRow,newCol))throw new InvalidOperationException("Move invalid");
 		//update the move candidate according to the change.
+		candidate.setTargetTile(getTile(newRow,newCol));
 	}
 	
 	/**
@@ -177,13 +188,30 @@ public class Quoridor223Controller {
 	public static void UpdateBoard() {
 		
 	}
+
+	/**
+	 * @author Le-Li Mao
+	 * @return gameIsRunning
+	 */
 	private static boolean isRunning() {
 		Game current = QuoridorApplication.getCurrentGame();
 		if(current == null || current.getGameStatus()!=Game.GameStatus.Running)return false;
 		return true;
 	}
-	private static boolean isWallValid(int row, int col) {
-		return (row>0 && col>0 && row<9 && col <9);
+
+	/**
+	 * Check if wall is valid
+	 * @author Le-Li Mao
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	private static boolean isWallPositionValid(int row, int col) {
+		return (row>0 && col>0 && row<=9 && col <=9);
+	}
+	private static Tile getTile(int row, int col){
+		Board board = QuoridorApplication.getQuoridor().getBoard();
+		return board.getTile((row-1)*9+(col-1));
 	}
 }
 	
