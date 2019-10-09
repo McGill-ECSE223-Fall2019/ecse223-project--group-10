@@ -200,5 +200,70 @@ public class CucumberStepDefinitions {
 
 		game.setCurrentPosition(gamePosition);
 	}
+	
+//	Grab Wall Feature
+	//Scenario: Start wall placement
+	@Given("I have more walls on stock")
+	public void iHaveMoreWallsOnStock() {
+		//
+	}
+	
+	@When("I try to grab a wall from my stock")
+	public void iTryToGrabAWallFromMyStock() {
+		//
+	}
+	
+	@Then("I have a wall in my hand over the board")
+	public void iHaveAWallInMyHandOverTheBoard() {
+		//
+	}
+	
+	@And("The wall in my hand should disappear from my stock")
+	public void theWallInMyHandShouldDisappearFromMyStock() {
+		//
+	}
+	
+	@And("A wall move candidate shall be created at the initial position")
+	public void aWallMoveCandidateShallBeCraetedAtInitialPosition() {
+		//
+	}
+	
+	//Scenario: No more walls in stock
+	@Given("I have no more walls on stock")
+	public void iHaveNoMoreWallsOnStock() {
+		//
+	}
+	
+	@When("I try to grab a wall from my stock")
+	public void iTryToGrabAWallFromMyStock() { //Duplicate method
+		//
+	}
+	
+	@Then("I should be notified that I have no more walls")
+	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
+		//
+	}
+	
+//	Rotate Wall Feature
+	//Scenario: Flip wall from horizontal to vertical or vice versa
+	@Given("A wall move candidate exists with <dir> at position (<row>, <col>")
+	public void aWallMoveCandidateExistswithDirAtPosition() {
+		//
+	}
+	
+	@When("I try to flip the wall")
+	public void iTryToFlipTheWall(){
+		//
+	}
+	
+	@Then("The wall shall be rotated over the board to <newdir>")
+	public void theWallShallBeRotatedOverTheBoardToNewdir() {
+		//
+	}
+	
+	@And("A wall move candidate shall exist with <newdir> at position (<row>, <col>")
+	public void aWallMoveCandidateShallExistWithNewdirAtPosition() {
+		//
+	}
 
 }

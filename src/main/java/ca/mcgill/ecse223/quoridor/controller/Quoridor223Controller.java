@@ -28,24 +28,31 @@ public class Quoridor223Controller {
 		
 	}
 	//under feature 5
-	public void rotateWall() {
+	public void rotateWall()(int row, int col, side s) throws UnsupportedOperationException {
 		//check if the Game is running. If not, thrown an exception.
+		Game curGame = Quoridor223Application.getCurrentGame();
+		if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
 		//check if it is the player's turn. If not, thrown an excpetion. 
 		//check if there is no wall in my hand. If no wall, thrown an excpetion. 
 		//if there is a wall in my hand
-			//rotate walls with the "A", "S", "W", "D" keys.
+			//rotate walls with the "A" and "D" keys.
+			//get coordinates for the wall position
+			//
 		//else if
 			//Notify player there is no wall in hand.
 	}
 	//under feature 6
 	public void grabWall()  throws UnsupportedOperationException{
 		//check if the Game is running if not throw exception
+		Game curGame = Quoridor223Application.getCurrentGame();
+		if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
 		//check if the it is player's turn if not throw exception
 		//check if there is no wall in my hand if not throw exception
+		if(curGame.getWallMoveCandidate()==null)
 		//check if there is wall leftover
 		//if Player has more wall
-			//move the wall into my hand
-			//Remove wall from stock
+			//move the wall into player's hand
+			//Remove one wall from stock
 			//create a wallmoveCandidate in the game model.
 		//else if player have no wall
 			//Notify the user that they don't have any wall.	
@@ -61,7 +68,9 @@ public class Quoridor223Controller {
 		Game curGame = Quoridor223Application.getCurrentGame();
 		if(!isRunning())throw new UnsupportedOperationException("Game is not running");
 		//check if the it is player's turn if not throw exception
-		if(curGame.getWallMoveCandidate()==null)
+		if(curGame.getWallMoveCandidate()==null) {
+			
+		}
 		//check if there is wall in my hand if not throw exception
 		
 		//check if newRow and newCol are within the board if not throw exception
@@ -105,6 +114,7 @@ public class Quoridor223Controller {
 	public void UpdateBoard() {
 		
 	}
+	
 	private boolean isRunning() {
 		Game current = Quoridor223Application.getCurrentGame();
 		if(current == null || current.getGameStatus()!=Game.GameStatus.Running)return false;
