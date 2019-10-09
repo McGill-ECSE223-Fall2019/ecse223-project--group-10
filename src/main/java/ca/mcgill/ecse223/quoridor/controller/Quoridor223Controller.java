@@ -22,7 +22,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * Feature 3
+	 * Feature 3: set total thinking time
 	 * @author Andrew Ta
 	 * @param thinkingTime
 	 * @param playerName
@@ -47,7 +47,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * Feature 4
+	 * Feature 4: set total thinking time
 	 * @author Andrew Ta
 	 * @throws UnsupportedOperationException
 	 */
