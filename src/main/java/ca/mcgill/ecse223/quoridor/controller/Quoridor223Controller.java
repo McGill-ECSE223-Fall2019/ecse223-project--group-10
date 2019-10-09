@@ -22,6 +22,27 @@ public class Quoridor223Controller {
 	}
 	
 	/**
+	 * helper method to get current player
+	 * @author Andrew Ta
+	 * @param playerName
+	 * @return
+	 */
+	public static Player getCurrentPlayer(String playerName) {
+		// get current game
+		Game currentGame = Quoridor223Application.getCurrentGame();
+				
+		Player currentPlayer;
+		// get currentPlayer
+		if(currentGame.getBlackPlayer().getUser().getName().equals(playerName)) {
+			currentPlayer = currentGame.getBlackPlayer();
+		}else {
+			currentPlayer = currentGame.getWhitePlayer();
+		}
+		
+		return currentPlayer;
+	}
+	
+	/**
 	 * Feature 3: set total thinking time
 	 * @author Andrew Ta
 	 * @param thinkingTime
@@ -31,23 +52,31 @@ public class Quoridor223Controller {
 	public void setThinkingTime(Time thinkingTime, String playerName) throws UnsupportedOperationException{
 		if(!isRunning()) return; //if the game is not running, return
 		
-		// get current game
-		Game currentGame = Quoridor223Application.getCurrentGame();
-		
-		Player currentPlayer;
-		// get currentPlayer
-		if(currentGame.getBlackPlayer().getUser().getName().equals(playerName)) {
-			currentPlayer = currentGame.getBlackPlayer();
-		}else {
-			currentPlayer = currentGame.getWhitePlayer();
-		}
+		// get current player
+		Player currentPlayer = getCurrentPlayer(playerName);
 		
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
 	}
 	
 	/**
-	 * Feature 4: set total thinking time
+	 * get remaining time
+	 * @author Andrew Ta
+	 * @param playerName
+	 * @return Time
+	 * @throws UnsupportedOperationException
+	 */
+	public Time getThinkingTime(String playerName) throws UnsupportedOperationException{
+		if(!isRunning()) return null; //if the game is not running, return
+		
+		// get current player
+		Player currentPlayer = getCurrentPlayer(playerName);
+		
+		return currentPlayer.getRemainingTime();	
+	}
+	
+	/**
+	 * Feature 4: initialize board
 	 * @author Andrew Ta
 	 * @throws UnsupportedOperationException
 	 */
@@ -59,9 +88,28 @@ public class Quoridor223Controller {
 		Board board;
 		
 		// if there is no board, create a new board
-		if(quoridor.getBoard() == null) {
+		if(quoridor.hasBoard()) {
 			board = new Board(quoridor);
 			quoridor.setBoard(board);
+		}
+	}
+	
+	/**
+	 * return board
+	 * @author Andrew Ta
+	 * @return
+	 * @throws UnsupportedOperationException
+	 */
+	public Board getBoard() throws UnsupportedOperationException{
+		if(!isRunning()) return null;
+		
+		// get quoridor object
+		Quoridor quoridor = Quoridor223Application.getQuoridor();
+		
+		if(quoridor.hasBoard()) {
+			return quoridor.getBoard();
+		}else {
+			return null;
 		}
 	}
 	
