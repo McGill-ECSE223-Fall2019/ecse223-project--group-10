@@ -21,6 +21,9 @@ import ca.mcgill.ecse223.quoridor.model.WallMove;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import io.cucumber.java.en.But;
 
 public class CucumberStepDefinitions {
 
@@ -112,8 +115,71 @@ public class CucumberStepDefinitions {
 	 * are implemented
 	 * 
 	 */
-
-	// ***********************************************
+	@And ("I have a wall in my hand over the board")
+	public void iHaveAWallInMyHandOverTheBoard() {
+		
+	}
+	@Given("A wall move candidate exists with (.*) at position ((.*), (.*))")
+	public void wallMoveCandidateExists(String dir, int row, int col) {
+		
+	}
+	@And("The wall candidate is at the (.*) edge of the board")
+	public void Thewallcandidateisattheedgeoftheboard(String side) {
+		
+	}
+	@And("The wall candidate is not at the (.*) edge of the board")
+	public void Thewallcandidateisnotattheedgeoftheboard(String side) {
+		
+	}
+	@When("I try to move the wall (.*)")
+	public void iTryToMoveTheWall(String side) {
+		
+	}
+	
+    @Then("The wall shall be moved over the board to position ((.*), (.*))")
+    public void theWallShallBeMovedOverTheBoardToPosition(int row, int col) {
+    	
+    }
+    @And("A wall move candidate shall exist with (.*) at position ((.*), (.*))")
+    public void aWallMoveCandidateShallExist(String dir, int row, int col) {
+    	
+    }
+    @Then("I should be notified that my move is illegal")
+    public void thenIShouldBeNotifiedThatMyMoveIsIllegal() {
+    	
+    }
+    @Given ("The wall move candidate with (.*) at position ((.*), (.*)) is valid")
+    public void theWallMoveCandidateIsValid() {
+    	
+    }
+    @Given("The wall move candidate with (.*) at position ((.*), (.*)) is invalid")
+    public void TheWallMoveCandidateWithIsInvalid(String dir, int row, int col) {
+    	
+    }
+    @When("I release the wall in my hand")
+    public void iReleaseTheWallInMyHand() {
+    	
+    }
+    @But("A wall move is registered with (.*) at position ((.*), (.*))")
+    public void aWallMoveIsRegistered() {
+    	
+    }
+    @And("My move is completed")
+    public void myMoveIsCompleted() {
+    	
+    }
+    @And ("It is not my turn to move")
+    public void itIsNotMyTurnToMove() {
+    	
+    }
+    @Then ("I shall be notified that my wall move is invalid")
+    public void iShallBeNotifiedThatMyWallMoveIsInvalid() {
+    }
+    @But("No wall move is registered with (.*) at position ((.*), (.*))")
+    public void noWallMoveIsRegistered(String direction, int row, int col){
+    	
+    }
+    // ***********************************************
 	// Clean up
 	// ***********************************************
 
