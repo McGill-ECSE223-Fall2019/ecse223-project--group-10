@@ -20,6 +20,7 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
+import com.sun.org.apache.xpath.internal.operations.Quo;
 import cucumber.api.PendingException;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
@@ -124,7 +125,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Le-Li Mao
 	 */
-	@Given("A wall move candidate exists with {word} at position \\({int}, {int})")
+	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
 	public void aWallMoveCandidateExistsWithAtPosition(String orientation, int row, int col) {
 //		setWall(orientation,row, col);
 		
@@ -132,14 +133,14 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Le-Li Mao
 	 */
-	@And("A wall move candidate shall exist with {word} at position \\({int}, {int})")
+	@And("A wall move candidate shall exist with {string} at position \\({int}, {int})")
 	public void aWallMoveCandidateShallExistWithDirAtPositionNrowNcol(String orientation, int row, int col) {
 		Assert.assertEquals(true, hasWallCandidate(orientation,row,col));
 	}
 	/**
 	 * @author Le-Li Mao
 	 */
-	@Given("The wall move candidate with {word} at position \\({int}, {int}) is valid")
+	@Given("The wall move candidate with {string} at position \\({int}, {int}) is valid")
 	public void theWallMoveCandidateWithDirAtPositionRowColIsValid(String orientation, int row, int col) {
 //		setWall(orientation,row, col);
 	}
@@ -158,7 +159,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Le-Li Mao
 	 */
-	@But("A wall move is registered with {word} at position \\({int}, {int})")
+	@But("A wall move shall be registered with {string} at position \\({int}, {int})")
 	public void aWallMoveIsRegisteredWithDirAtPositionRowCol(String orientation, int col, int row) {
 		throw new PendingException();
 	}
@@ -179,21 +180,21 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Le-Li Mao
 	 */
-	@Given("The wall move candidate with {word} at position \\({int}, {int}) is invalid")
+	@Given("The wall move candidate with {string} at position \\({int}, {int}) is invalid")
 	public void theWallMoveCandidateWithDirAtPositionRowColIsInvalid(String orientation, int col, int row) {
 		throw new PendingException();
 	}
 	/**
 	 * @author Le-Li Mao
 	 */
-	@But("No wall move is registered with {word} at position \\({int}, {int})")
+	@But("No wall move is registered with {string} at position \\({int}, {int})")
 	public void noWallMoveIsRegisteredWithDirAtPositionRowCol(String orientation, int col, int row) {
 		throw new PendingException();
 	}
 	/**
 	 * @author Le-Li Mao
 	 */
-	@And("The wall candidate is not at the {word} edge of the board")
+	@And("The wall candidate is not at the {string} edge of the board")
 	public void theWallCandidateIsNotAtTheSideEdgeOfTheBoard() {
 		throw new PendingException();
 	}
@@ -202,12 +203,17 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The wall shall be moved over the board to position \\({int}, {int})")
 	public void theWallShallBeMovedOverTheBoardToPositionNrowNcol(int col, int row) {
-		throw new PendingException();
+		Quoridor quoridor =QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		WallMove candidate = curGame.getWallMoveCandidate();
+		Tile tile= candidate.getTargetTile();
+		boolean reached = isCordEqual(row,col,tile.getRow(),tile.getColumn());
+		Assert.assertEquals(true,reached);
 	}
 	/**
 	 * @author Le-Li Mao
 	 */
-	@When("I try to move the wall {word}")
+	@When("I try to move the wall {string}")
 	public void iTryToMoveTheWallSide(String side) {
 		try {
 			Quoridor223Controller.moveWall(side);
@@ -219,7 +225,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Le-Li Mao
 	 */
-	@And("The wall candidate is at the {word} edge of the board")
+	@And("The wall candidate is at the {string} edge of the board")
 	public void theWallCandidateIsAtTheSideEdgeOfTheBoard(String side) {
 		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		int row = candidate.getTargetTile().getRow();
@@ -375,5 +381,8 @@ public class CucumberStepDefinitions {
 		if(candidate.getTargetTile().getRow()!=row || candidate.getTargetTile().getColumn()!=col)return false;
 		if(candidate.getWallDirection()!=(dir.equalsIgnoreCase("horizontal")?Direction.Horizontal:Direction.Vertical))return false;
 		return true;
+	}
+	public boolean isCordEqual(int row1,int col1, int row2, int col2){
+		return row1==row2 && col1==col2;
 	}
 }
