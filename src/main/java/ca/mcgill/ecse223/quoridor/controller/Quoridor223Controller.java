@@ -20,14 +20,51 @@ public class Quoridor223Controller {
 	public static void createUser(String name) {
 		
 	}
-	//under feature 3
-	public static void setThinkingTime(Time thinkingTime, String playerName) {
+	
+	/**
+	 * Feature 3: set total thinking time
+	 * @author Andrew Ta
+	 * @param thinkingTime
+	 * @param playerName
+	 * @throws UnsupportedOperationException
+	 */
+	public void setThinkingTime(Time thinkingTime, String playerName) throws UnsupportedOperationException{
+		if(!isRunning()) return; //if the game is not running, return
 		
-	}
-	//under feature 4
-	public static void initializeBoard() {
+		// get current game
+		Game currentGame = Quoridor223Application.getCurrentGame();
 		
+		Player currentPlayer;
+		// get currentPlayer
+		if(currentGame.getBlackPlayer().getUser().getName().equals(playerName)) {
+			currentPlayer = currentGame.getBlackPlayer();
+		}else {
+			currentPlayer = currentGame.getWhitePlayer();
+		}
+		
+		// set thinking time of that player
+		currentPlayer.setRemainingTime(thinkingTime);
 	}
+	
+	/**
+	 * Feature 4: set total thinking time
+	 * @author Andrew Ta
+	 * @throws UnsupportedOperationException
+	 */
+	public void initializeBoard() throws UnsupportedOperationException {
+		if(!isRunning()) return;
+		
+		// get quoridor object
+		Quoridor quoridor = Quoridor223Application.getQuoridor();
+		Board board;
+		
+		// if there is no board, create a new board
+		if(quoridor.getBoard() == null) {
+			board = new Board(quoridor);
+			quoridor.setBoard(board);
+		}
+	}
+	
 	//under feature 5
 	public static void rotateWall() {
 		
