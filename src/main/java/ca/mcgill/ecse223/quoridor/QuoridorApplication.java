@@ -6,8 +6,6 @@ import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
 public class QuoridorApplication {
 	private static Quoridor quoridor;
-	private static Game currentGame;
-	public enum Side{up,down,left,right};
 	public static void main(String[] args) {
 	
 	}
@@ -16,8 +14,5 @@ public class QuoridorApplication {
 			quoridor = new Quoridor();
 		}
  		return quoridor;
-	}
-	public static Game getCurrentGame() {
-		return currentGame;
 	}
 }

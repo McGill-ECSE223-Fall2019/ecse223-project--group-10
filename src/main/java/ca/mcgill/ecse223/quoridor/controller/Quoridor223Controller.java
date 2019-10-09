@@ -29,7 +29,7 @@ public class Quoridor223Controller {
 	 */
 	public static Player getCurrentPlayer(String playerName) {
 		// get current game
-		Game currentGame = QuoridorApplication.getCurrentGame();
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player currentPlayer;
 		// get currentPlayer
 		if(currentGame.getBlackPlayer().getUser().getName().equals(playerName)) {
@@ -200,7 +200,7 @@ public class Quoridor223Controller {
 	 * @return gameIsRunning
 	 */
 	private static boolean isRunning() {
-		Game current = QuoridorApplication.getCurrentGame();
+		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
 		if(current == null || current.getGameStatus()!=Game.GameStatus.Running)return false;
 		return true;
 	}

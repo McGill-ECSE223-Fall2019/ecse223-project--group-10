@@ -99,7 +99,7 @@ public class CucumberStepDefinitions {
 
 	}
 
-	@And("I do not have a wall in my hand")
+	@And("I shall not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand() {
 		// GUI-related feature -- TODO for later
 	}
@@ -165,14 +165,14 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Le-Li Mao
 	 */
-	@And("My move is completed")
+	@And("My move shall be completed")
 	public void myMoveIsCompleted() {
 		throw new PendingException();
 	}
 	/**
 	 * @author Le-Li Mao
 	 */
-	@And("It is not my turn to move")
+	@And("It shall not be my turn to move")
 	public void itIsNotMyTurnToMove() {
 		throw new PendingException();
 	}
@@ -186,7 +186,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Le-Li Mao
 	 */
-	@But("No wall move is registered with {string} at position \\({int}, {int})")
+	@But("No wall move shall be registered with {string} at position \\({int}, {int})")
 	public void noWallMoveIsRegisteredWithDirAtPositionRowCol(String orientation, int col, int row) {
 		throw new PendingException();
 	}
@@ -245,10 +245,23 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Le-Li Mao
 	 */
-	@Then("I should be notified that my move is illegal")
+	@Then("I shall be notified that my move is illegal")
 	public void iShouldBeNotifiedThatMyMoveIsIllegal() {
 		//GUI
 		throw new PendingException();
+	}
+	@Then ("I shall be notified that my wall move is invalid")
+	public void iShallBeNotifiedThatMyWallMoveIsInvalid() {
+		throw new PendingException();
+	}
+	@And("I shall have a wall in my hand over the board")
+	public void iShallHaveAWallInMyHandOverTheBoard() {
+		//GUI 
+		throw new PendingException();
+	}
+	@And("It shall be my turn to move")
+	public void itShallBeMyTurnToMove() {
+		
 	}
 	// ***********************************************
 	// Clean up
