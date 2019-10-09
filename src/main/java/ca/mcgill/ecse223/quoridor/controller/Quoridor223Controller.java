@@ -84,6 +84,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
+	 * @author Le-Li Mao
 	 * @param side
 	 * @throws UnsupportedOperationException
 	 */
@@ -97,6 +98,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
+	 * @author Le-Li Mao
 	 * @throws UnsupportedOperationException
 	 */
 	public static void dropWall() throws UnsupportedOperationException{
