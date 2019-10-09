@@ -32,7 +32,7 @@ public class Quoridor223Controller {
 		if(!isRunning()) return; //if the game is not running, return
 		
 		// get current game
-		Game currentGame = Quoridor223Application.getCurrentGame();
+		Game currentGame = QuoridorApplication.getCurrentGame();
 		
 		Player currentPlayer;
 		// get currentPlayer
@@ -55,7 +55,7 @@ public class Quoridor223Controller {
 		if(!isRunning()) return;
 		
 		// get quoridor object
-		Quoridor quoridor = Quoridor223Application.getQuoridor();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Board board;
 		
 		// if there is no board, create a new board
