@@ -9,6 +9,8 @@ public class Quoridor223Application {
 	private static Game currentGame;
 	private static GamePosition currentGamePosition;
 	
+	public enum Side{up,down,left,right};
+
 	public static void main(String[] args) {
 	
 	}
