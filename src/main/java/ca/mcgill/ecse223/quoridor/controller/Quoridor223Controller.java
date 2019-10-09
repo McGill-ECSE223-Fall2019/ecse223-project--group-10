@@ -2,11 +2,19 @@ package ca.mcgill.ecse223.quoridor.controller;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication.Quoridor223Application;
 import ca.mcgill.ecse223.quoridor.model.*;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Time;
 import java.security.InvalidAlgorithmParameterException;
 
 public class Quoridor223Controller {
 	private enum side{up,down,left,right};
+	
 	//under feature 1
 	public void createGame() {
 	
@@ -88,12 +96,98 @@ public class Quoridor223Controller {
 		curGame.setWallMoveCandidate(null);
 	}
 	//under feature 9
-	public void savePosition() {
+	public void savePosition(String filename) throws UnsupportedOperationException, IOException{
 		
+		//check if the Game is running, if not, throw exception
+		Game curGame = Quoridor223Application.getCurrentGame();
+		if(!isRunning()) {
+			throw new UnsupportedOperationException("Game is not running");
+		}
+		
+		// create a new File instance
+		File saveFile = new File(filename);
+				
+		// check if the File <filename> exists and is a normal file
+		if(!saveFile.exists() && saveFile.isFile()) {
+		    // make the File writable and then create the new file
+			saveFile.setWritable(true);
+			if(saveFile.createNewFile() == false) throw new IOException("File cannot be created") ;
+		}
+		// if the file exists
+		else if(saveFile.exists() && saveFile.isFile()) {
+			// prompt user to overwrite the current file
+			boolean overwrite = userOverwritePrompt(filename);
+			if(overwrite == false) {
+				return;
+			}
+		}
+		// if file is invalid
+		else {
+			throw new UnsupportedOperationException("Invalid File");
+		}
+		
+		// check if the file is writable
+		if(saveFile.canWrite() == false) throw new SecurityException("Cannot modify File");
+		
+		// if the file is valid and writable, write the current game position to the file
+		/*try {
+			FileWriter fileWriter = new FileWriter(filename,false);
+		    PrintWriter printWriter = new PrintWriter(fileWriter);
+		    printWriter.printf("%s\n", GamePosition.nextPlayer);
+		    printWriter.printf("%s", GamePosition.currentPlayer);
+		    printWriter.close();
+		} catch (Exception E) {
+			E.printStackTrace();			
+		}*/
 	}
-	//under feature 10
-	public void loadPosition() {
 	
+	//under feature 10
+	public boolean loadPosition(String filename) {
+		//check if the Game is running, if it is, throw exception
+		Game curGame = Quoridor223Application.getCurrentGame();
+		if(isRunning()) {
+			throw new UnsupportedOperationException("Game is currently running");
+		}
+		
+		File loadFile = new File(filename);
+		if (!loadFile.isFile() || !loadFile.canRead()) {
+			//throw new IOException("Invalid File");
+			return false;
+		}
+		
+		// get the new GamePosition from the loadFile
+		GamePosition loadGamePosition = getLoadGamePosition(loadFile);
+		
+		// validate the tile position for the current player
+		/*for(PlayerPosition playerPosition : loadGamePosition.getPlayerPositions()) {
+			for(Tile tilePosition : playerPosition) {
+					
+				boolean isPositionValid = validatePosition(tilePosition);
+				if (isPositionValid == false) {
+					//throw new UnsupportedOperationException("Invalid load File");
+					return false;
+				}
+				if( tilePosition.isPlayerWhite()) {
+					//set player White to tile Position
+				}
+				else if(tilePosition.isPlayerBlack()) {
+					//set player Black to tile Position
+				}
+				else if(tilePosition.isPlayerBlackWall()) {
+					//set wall in tile position
+					//decrement player Black's wall reserve by 1
+				}
+				else if(tilePosition.isPlayerWhiteWall()) {
+					//set wall in tile position
+					//decrement player White's wall reserve by 1
+				}
+			}
+		}*/
+		
+		
+		//load the new GamePosition
+		Quoridor223Application.loadNewGamePosition(loadGamePosition);
+		return true;
 	}
 	
 	//under feature 11
@@ -114,6 +208,38 @@ public class Quoridor223Controller {
 	}
 	private boolean isWallValid(int row, int col) {
 		return (row>0 && col>0 && row<9 && col <9);
+	}
+	
+	private boolean userOverwritePrompt(String filename) {
+		// use UI to prompt user to overwrite the existing file filename
+		boolean overwriteApproved = false;
+		
+		// overwriteApproved = result of user input using the ui;
+		
+		return overwriteApproved;
+	}
+	
+	private GamePosition getLoadGamePosition(File filename) {
+		
+		// initialize the new GamePosition
+		GamePosition newGamePosition = new GamePosition(0, null, null, null, null);
+		
+		try {
+			// create a file reader
+			//BufferedReader fileReader = new BufferedReader(new FileReader(filename));
+					
+			// read the file to load the GamePosition
+			//newGamePosition.nextPlayer = fileReader.readLine();
+			//newGamePosition.CurrentPlayer = fileReader.readLine();
+			
+			// set the current player color by the first entry in the Current player
+			// set the next player as the other color
+			
+		} catch(Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+		
+		return newGamePosition;
 	}
 }
 	

@@ -7,6 +7,8 @@ import ca.mcgill.ecse223.quoridor.model.Quoridor;
 public class Quoridor223Application {
 	private static Quoridor quoridor;
 	private static Game currentGame;
+	private static GamePosition currentGamePosition;
+	
 	public static void main(String[] args) {
 	
 	}
@@ -18,5 +20,14 @@ public class Quoridor223Application {
 	}
 	public static Game getCurrentGame() {
 		return currentGame;
+	}
+	
+	public static GamePosition getCurrentGamePosition() {
+		return currentGamePosition;
+	}
+	
+	public static void loadNewGamePosition(GamePosition newGamePosition) {
+		currentGamePosition = newGamePosition;
+		return;
 	}
 }
