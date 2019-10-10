@@ -1,7 +1,7 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
-import ca.mcgill.ecse223.quoridor.QuoridorApplication.Quoridor223Application;
-import ca.mcgill.ecse223.quoridor.QuoridorApplication.Quoridor223Application.Side;
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+
 import ca.mcgill.ecse223.quoridor.model.*;
 
 import java.io.BufferedReader;
@@ -43,8 +43,8 @@ public class Quoridor223Controller {
 	 */
 	public static Player getCurrentPlayer(String playerName) {
 		// get current game
-		Game currentGame = Quoridor223Application.getCurrentGame();
 
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player currentPlayer;
 		// get currentPlayer
 		if (currentGame.getBlackPlayer().getUser().getName().equals(playerName)) {
@@ -104,7 +104,7 @@ public class Quoridor223Controller {
 			return;
 
 		// get quoridor object
-		Quoridor quoridor = Quoridor223Application.getQuoridor();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Board board;
 
 		// if there is no board, create a new board
@@ -126,9 +126,9 @@ public class Quoridor223Controller {
 			return null;
 
 		// get quoridor object
-		Quoridor quoridor = Quoridor223Application.getQuoridor();
-
-		if (quoridor.hasBoard()) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		
+		if(quoridor.hasBoard()) {
 			return quoridor.getBoard();
 		} else {
 			return null;
@@ -140,51 +140,54 @@ public class Quoridor223Controller {
 
 	}
 
-	// under feature 6
-	public void grabWall() throws UnsupportedOperationException {
-		// check if the Game is running if not throw exception
-		// check if the it is player's turn if not throw exception
-		// check if there is no wall in my hand if not throw exception
-		// check if there is wall leftover
-		// if Player has more wall
-		// move the wall into my hand
-		// Remove wall from stock
-		// create a wallmoveCandidate in the game model.
-		// else if player have no wall
-		// Notify the user that they don't have any wall.
+	//under feature 6
+	public void grabWall()  throws UnsupportedOperationException{
+		//check if the Game is running if not throw exception
+		//check if the it is player's turn if not throw exception
+		//check if there is no wall in my hand if not throw exception
+		//check if there is wall leftover
+		//if Player has more wall
+		//move the wall into my hand
+		//Remove wall from stock
+		//create a wallmoveCandidate in the game model.
+		//else if player have no wall
+		//Notify the user that they don't have any wall.	
 	}
 
 	/**
+	 * Perform a move operation on a currently selected wall
+	 * @author Le-Li Mao
 	 * @param side
-	 * @throws UnsupportedOperationException
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
-	public static void moveWall(String side) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
-		// check if the Game is running if not throw exception
-		// check if the it is player's turn if not throw exception
-		// check if there is wall in my hand if not throw exception
-		// check if newRow and newCol are within the board if not throw exception
-		// update the move candidate according to the change.
+	public static void moveWall(String side) throws GameNotRunningException, InvalidOperationException {
+
+		//check if the Game is running if not throw exception
+		if(!isRunning())throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		//check if the it is player's turn if not throw exception
+
+		//check if there is wall in my hand if not throw exception
+		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
+		WallMove candidate =  curGame.getWallMoveCandidate();
+		//check if newRow and newCol are within the board if not throw exception
+		int newRow = candidate.getTargetTile().getRow()+ (side.equalsIgnoreCase("up")?-1:side.equalsIgnoreCase("down")?1:0);
+		int newCol = candidate.getTargetTile().getRow()+ (side.equalsIgnoreCase("left")?-1:side.equalsIgnoreCase("right")?1:0);
+		if(!isWallPositionValid(newRow,newCol))throw new InvalidOperationException("Move invalid");
+		//update the move candidate according to the change.
+		candidate.setTargetTile(getTile(newRow,newCol));
 	}
 
 	/**
+	 * @author Le-Li Mao
 	 * @throws UnsupportedOperationException
 	 */
-	public static void dropWall() throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
-		// check if the Game is running if not throw exception
-		// check if the it is player's turn if not throw exception
-		// check if there is wall in my hand if not throw exception
-		// finalize drop by putting the move into the movelist and update the
-		// gamePosition.
-		// set my hand as empty and switch turn
-	}
-
 	// under feature 9
 	public void savePosition(String filename) throws UnsupportedOperationException, IOException {
 
 		// check if the Game is running, if not, throw exception
-		Game curGame = Quoridor223Application.getCurrentGame();
+		Game curGame = QuoridorApplication.getCurrentGame();
 		if (!isRunning()) {
 			throw new UnsupportedOperationException("Game is not running");
 		}
@@ -215,7 +218,7 @@ public class Quoridor223Controller {
 		// check if the file is writable
 		// if(saveFile.canWrite() == false) throw new SecurityException("Cannot modify
 		// File");
-		GamePosition currentGamePosition = Quoridor223Application.getCurrentGamePosition();
+		GamePosition currentGamePosition = QuoridorApplication.getCurrentGamePosition();
 
 		// if the file is valid and writable, write the current game position to the
 		// file
@@ -246,7 +249,7 @@ public class Quoridor223Controller {
 	// under feature 10
 	public boolean loadPosition(String filename) {
 		// check if the Game is running, if it is, throw exception
-		Game curGame = Quoridor223Application.getCurrentGame();
+		Game curGame = QuoridorApplication.getCurrentGame();
 		if (isRunning()) {
 			throw new UnsupportedOperationException("Game is currently running");
 		}
@@ -276,7 +279,7 @@ public class Quoridor223Controller {
 		 */
 
 		// load the new GamePosition
-		Quoridor223Application.loadNewGamePosition(loadGamePosition);
+		QuoridorApplication.loadNewGamePosition(loadGamePosition);
 		return true;
 	}
 
@@ -293,15 +296,29 @@ public class Quoridor223Controller {
 
 	}
 
+	/**
+	 * @author Le-Li Mao
+	 * @return gameIsRunning
+	 */
 	private static boolean isRunning() {
-		Game current = Quoridor223Application.getCurrentGame();
-		if (current == null || current.getGameStatus() != Game.GameStatus.Running)
-			return false;
+		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(current == null || current.getGameStatus()!=Game.GameStatus.Running)return false;
 		return true;
 	}
 
-	private static boolean isWallValid(int row, int col) {
-		return (row > 0 && col > 0 && row < 9 && col < 9);
+	/**
+	 * Check if wall is valid
+	 * @author Le-Li Mao
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	private static boolean isWallPositionValid(int row, int col) {
+		return (row>0 && col>0 && row<9 && col <9);
+	}
+	private static Tile getTile(int row, int col){
+		Board board = QuoridorApplication.getQuoridor().getBoard();
+		return board.getTile((row-1)*9+(col-1));
 	}
 
 	private boolean userOverwritePrompt(String filename) {
@@ -334,5 +351,10 @@ public class Quoridor223Controller {
 		}
 
 		return newGamePosition;
+	}
+
+	public static void dropWall() {
+		// TODO Auto-generated method stub
+		
 	}
 }
