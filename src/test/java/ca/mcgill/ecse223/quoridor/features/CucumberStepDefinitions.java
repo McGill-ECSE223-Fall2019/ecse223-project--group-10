@@ -1,5 +1,8 @@
 package ca.mcgill.ecse223.quoridor.features;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +16,7 @@ import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.model.GamePosition;
+import ca.mcgill.ecse223.quoridor.model.Move;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
@@ -284,6 +288,64 @@ public class CucumberStepDefinitions {
 	public void itShallBeMyTurnToMove() {
 		
 	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 */	
+	@Given("No file {string} exists in the filesystem")
+	public void noFileFilenameExistsInTheFilesystem(String filename) {
+		File file = new File(filename);
+		file.delete();
+	}	
+	
+	/**
+	 * @author Mitchell Keeley
+	 */
+	@When("The user initiates to save the game with name {string}")
+	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) {
+		//GUI
+		//the user types the filename into a dialog box and then clicks the save button
+		//throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws Throwable 
+	 */
+	@Then("A file with {string} shall be created in the filesystem")
+	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws Throwable {
+		File file = new File(filename);
+		file.createNewFile();
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws Throwable 
+	 */
+	@Given("File {string} exists in the filesystem")
+	public void fileFilenameExistsInTheFilesystem(String filename) throws Throwable {
+		File file = new File(filename);
+		file.createNewFile();
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 */
+	@And("The user confirms to overwrite existing file")
+	public void theUserConfirmsToOverwriteExistingFile() {
+		//GUI
+		//The user clicks yes when prompted by the GUI to overwrite the existing file
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws Throwable 
+	 */
+	@Then("File with {string} shall be updated in the filesystem")
+	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
+		saveCurrentGamePositionAsFile(filename);
+	}
+	
 	// ***********************************************
 	// Clean up
 	// ***********************************************
@@ -442,5 +504,96 @@ public class CucumberStepDefinitions {
 	 */
 	private boolean isCordEqual(int row1,int col1, int row2, int col2){
 		return row1==row2 && col1==col2;
-	}	
+	}
+	
+	/**
+	 * A function that checks if a file with the given file path exists
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @return fileExists
+	 */
+	public boolean doesFileExistInSystem(String filename) {
+		File file = new File(filename);
+		
+		if (file.isFile() && file.exists()) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * A function to save the current GamePosition as a file
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @throws Throwable 
+	 */
+	public void saveCurrentGamePositionAsFile(String filename) throws Throwable {
+		Game currentGame = QuoridorApplication.getCurrentGame();
+		GamePosition currentGamePosition = QuoridorApplication.getCurrentGamePosition();
+		
+		// get the player information strings to write to the file
+		String WhitePlayer = "W: " + tileToString(currentGamePosition.getWhitePosition().getTile());
+		// continue with wall list converted to string 
+		String BlackPlayer = "B: " + tileToString(currentGamePosition.getBlackPosition().getTile());
+		
+		// add the wall positions
+		for( Move move : currentGame.getMoves()) {
+			if (move instanceof WallMove){
+				WhitePlayer.concat(tileToString(move.getTargetTile()) + ((WallMove) move).getWallDirection());
+			}
+		}
+		// TODO: Finish, starting from here, verify wall position for loop
+		
+		
+		// initialize the printWriter
+		PrintWriter printWriter = new PrintWriter(new FileWriter(filename));
+	    
+		// if the next player to move is the White Player
+		if(currentGamePosition.getPlayerToMove().equals(currentGamePosition.getGame().getWhitePlayer())){
+			printWriter.printf("%s\n", WhitePlayer);
+			printWriter.printf("%s", BlackPlayer);
+		}else {
+			printWriter.printf("%s\n",BlackPlayer);
+			printWriter.printf("%s", WhitePlayer);
+		} 
+		printWriter.close();
+	}
+	
+	/**
+	 * A function to translate tile into the correct string to write to the save file
+	 * @author Mitchell Keeley
+	 * @param tile
+	 * @return
+	 */
+	public String tileToString(Tile tile) {
+		int asciiNumberOffset = 48;
+		int asciiLetterOffset = 96;
+		
+		String tileString = String.valueOf(asciiLetterOffset + tile.getRow())
+				+ String.valueOf(asciiNumberOffset + tile.getColumn());
+		
+		return tileString;
+	}
+	
+	public String directionToString(Direction direction) {
+		if( direction.equals(Direction.Horizontal)){
+			return "h";
+		}
+		else {
+			return "v";
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

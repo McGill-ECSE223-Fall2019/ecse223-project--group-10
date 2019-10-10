@@ -222,26 +222,32 @@ public class Quoridor223Controller {
 
 		// if the file is valid and writable, write the current game position to the
 		// file
-		/*
-		 * try {
-		 * 
-		 * FileWriter fileWriter = new FileWriter(filename,false); PrintWriter
-		 * printWriter = new PrintWriter(fileWriter);
-		 * 
-		 * // get the player information strings to write to the file String WhitePlayer
-		 * = "W: " + currentGamePosition.getWhitePosition().getTile().getColumn() +
-		 * currentGamePosition.getWhitePosition().getTile().getRow() + ", "; // continue
-		 * with wall list converted to string String BlackPlayer = "B: "; // continue as
-		 * above
-		 * 
-		 * // if the next player to move is the White Player if
-		 * (currentGamePosition.getPlayerToMove().equals(currentGamePosition.getGame().
-		 * getWhitePlayer())){ printWriter.printf("%s\n", WhitePlayer);
-		 * printWriter.printf("%s", BlackPlayer); }else { printWriter.printf("%s\n",
-		 * BlackPlayer); printWriter.printf("%s", WhitePlayer); } printWriter.close();
-		 * 
-		 * } catch (Exception E) { E.printStackTrace(); }
-		 */
+		
+		try {
+
+			FileWriter fileWriter = new FileWriter(filename,false);
+			PrintWriter printWriter = new PrintWriter(fileWriter);
+ 
+			// get the player information strings to write to the file
+			String WhitePlayer = "W: " + currentGamePosition.getWhitePosition().getTile().getColumn() +
+					currentGamePosition.getWhitePosition().getTile().getRow() + ", ";
+			// continue with wall list converted to string 
+			String BlackPlayer = "B: "; // continue as above
+
+			// if the next player to move is the White Player
+			if(currentGamePosition.getPlayerToMove().equals(currentGamePosition.getGame().getWhitePlayer())){
+				printWriter.printf("%s\n", WhitePlayer);
+				printWriter.printf("%s", BlackPlayer);
+			}else {
+				printWriter.printf("%s\n",BlackPlayer);
+				printWriter.printf("%s", WhitePlayer);
+			} 
+			printWriter.close();
+
+		} catch (Exception E) {
+			E.printStackTrace();
+		}
+		 
 
 		throw new UnsupportedOperationException("Saving not yet implemented");
 	}
@@ -264,19 +270,31 @@ public class Quoridor223Controller {
 		GamePosition loadGamePosition = getLoadGamePosition(loadFile);
 
 		// validate the tile position for the current player
-		/*
-		 * for(PlayerPosition playerPosition : loadGamePosition.getPlayerPositions()) {
-		 * for(Tile tilePosition : playerPosition) {
-		 * 
-		 * boolean isPositionValid = validatePosition(tilePosition); if (isPositionValid
-		 * == false) { //throw new UnsupportedOperationException("Invalid load File");
-		 * return false; } if( tilePosition.isPlayerWhite()) { //set player White to
-		 * tile Position } else if(tilePosition.isPlayerBlack()) { //set player Black to
-		 * tile Position } else if(tilePosition.isPlayerBlackWall()) { //set wall in
-		 * tile position //decrement player Black's wall reserve by 1 } else
-		 * if(tilePosition.isPlayerWhiteWall()) { //set wall in tile position
-		 * //decrement player White's wall reserve by 1 } } }
-		 */
+		
+		/*for(PlayerPosition playerPosition : loadGamePosition.getPlayerPositions()) {
+			for(Tile tilePosition : playerPosition) {
+			  
+				boolean isPositionValid = validatePosition(tilePosition);
+				if (isPositionValid == false) {
+					//throw new UnsupportedOperationException("Invalid load File");
+				}
+				return false;  
+				
+				if(tilePosition.isPlayerWhite()) {
+					//set player White to tile Position
+				}else if(tilePosition.isPlayerBlack()) {
+					//set player Black to tile Position 
+				}else if(tilePosition.isPlayerBlackWall()) {
+					//set wall in tile position 
+				}
+						  
+				//decrement player Black's wall reserve by 1 } else
+				if(tilePosition.isPlayerWhiteWall()) { //set wall in tile position
+				//decrement player White's wall reserve by 1
+				}
+			} 
+		}*/
+		 
 
 		// load the new GamePosition
 		QuoridorApplication.loadNewGamePosition(loadGamePosition);
