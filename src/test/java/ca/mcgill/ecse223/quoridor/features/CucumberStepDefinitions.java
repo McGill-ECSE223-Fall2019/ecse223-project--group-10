@@ -126,8 +126,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
 	public void aWallMoveCandidateExistsWithAtPosition(String orientation, int row, int col) {
-//		setWall(orientation,row, col);
-		
+		setWall(orientation,row, col);	
 	}
 	/**
 	 * @author Le-Li Mao
@@ -141,7 +140,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("The wall move candidate with {string} at position \\({int}, {int}) is valid")
 	public void theWallMoveCandidateWithDirAtPositionRowColIsValid(String orientation, int row, int col) {
-//		setWall(orientation,row, col);
+		setWall(orientation,row, col);
 	}
 	/**
 	 * @author Le-Li Mao
@@ -158,9 +157,15 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Le-Li Mao
 	 */
-	@But("A wall move shall be registered with {string} at position \\({int}, {int})")
-	public void aWallMoveIsRegisteredWithDirAtPositionRowCol(String orientation, int col, int row) {
-		throw new PendingException();
+	@Then("A wall move shall be registered with {string} at position \\({int}, {int})")
+	public void aWallMoveIsRegisteredWithDirAtPositionRowCol(String direction, int row, int col) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		WallMove move = (WallMove) curGame.getMove(curGame.numberOfMoves()-1);
+		Tile target = move.getTargetTile();
+		Direction expected = direction.equalsIgnoreCase("horizontal")?Direction.Horizontal:Direction.Vertical;
+		boolean match = move.getWallDirection()==expected&& target.getRow()==row && target.getColumn()==col;
+		Assert.assertEquals(true,match);
 	}
 	/**
 	 * @author Le-Li Mao
@@ -194,8 +199,23 @@ public class CucumberStepDefinitions {
 	 * @author Le-Li Mao
 	 */
 	@And("The wall candidate is not at the {string} edge of the board")
-	public void theWallCandidateIsNotAtTheSideEdgeOfTheBoard() {
-		throw new PendingException();
+	public void theWallCandidateIsNotAtTheSideEdgeOfTheBoard(String side) {
+		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		if(candidate == null )return;
+		int row = candidate.getTargetTile().getRow();
+		int col = candidate.getTargetTile().getColumn();
+		if(side.equalsIgnoreCase("UP")){
+			Assert.assertEquals(false,1==row);
+		}
+		else if (side.equalsIgnoreCase("DOWN")){
+			Assert.assertEquals(false,8==row);
+		}
+		else if (side.equalsIgnoreCase("RIHGT")){
+			Assert.assertEquals(false,8==col);
+		}
+		else {
+			Assert.assertEquals(false,1==col);
+		}
 	}
 	/**
 	 * @author Le-Li Mao
@@ -369,6 +389,13 @@ public class CucumberStepDefinitions {
 
 		game.setCurrentPosition(gamePosition);
 	}
+	/**
+	 * Set a MoveCandidate based on the given parameter
+	 * @param player
+	 * @param dir
+	 * @param row
+	 * @param col
+	 */
 	private void getWallMoveCandidate(Player player, String dir, int row, int col) {
 		//create a new WallMove Candidate and place the corresponding tile
 		Board board = QuoridorApplication.getQuoridor().getBoard();
@@ -376,17 +403,30 @@ public class CucumberStepDefinitions {
 		Direction wallDirection = dir.equals("horizontal")?Direction.Horizontal:Direction.Vertical;
 		game.setWallMoveCandidate(new WallMove(0, 1, player, board.getTile((row-1)*9+(col-1)), game, wallDirection, game.getCurrentPosition().getBlackWallsInStock(0)));
 	}
-	private void setWall(Player player, String dir, int row, int col) {
+	/**
+	 * @param dir
+	 * @param row
+	 * @param col
+	 */
+	private void setWall(String dir, int row, int col) {
 		Game game =  QuoridorApplication.getQuoridor().getCurrentGame();
 		Board board = QuoridorApplication.getQuoridor().getBoard();
 		if(game.getWallMoveCandidate()!=null) {
 		game.getWallMoveCandidate().setTargetTile(board.getTile((row-1)*9+(col-1)));
 		}
 		else {
-			getWallMoveCandidate(player,dir, row, col);
+			getWallMoveCandidate(game.getCurrentPosition().getPlayerToMove(),dir, row, col);
 		}
 	}
-	public boolean hasWallCandidate(String dir, int row, int col){
+	/**
+	 * A function that return whether the given orientation and tile has a wall candidate
+	 * @author Le-Li Mao
+	 * @param dir
+	 * @param row
+	 * @param col
+	 * @return candidateExists
+	 */
+	private boolean hasWallCandidate(String dir, int row, int col){
 		Game game =  QuoridorApplication.getQuoridor().getCurrentGame();
 		if(game.getWallMoveCandidate()==null)return false;
 		WallMove candidate = game.getWallMoveCandidate();
@@ -394,7 +434,16 @@ public class CucumberStepDefinitions {
 		if(candidate.getWallDirection()!=(dir.equalsIgnoreCase("horizontal")?Direction.Horizontal:Direction.Vertical))return false;
 		return true;
 	}
-	public boolean isCordEqual(int row1,int col1, int row2, int col2){
+	/**
+	 * A function that return whether the given tile equal to another given tile row/col
+	 * @author Le-Li Mao
+	 * @param row1
+	 * @param col1
+	 * @param row2
+	 * @param col2
+	 * @return
+	 */
+	private boolean isCordEqual(int row1,int col1, int row2, int col2){
 		return row1==row2 && col1==col2;
-	}
+	}	
 }
