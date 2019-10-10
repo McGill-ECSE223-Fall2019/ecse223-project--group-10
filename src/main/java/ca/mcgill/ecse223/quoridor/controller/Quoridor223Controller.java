@@ -162,7 +162,6 @@ public class Quoridor223Controller {
 	 * @throws InvalidOperationException
 	 */
 	public static void moveWall(String side) throws GameNotRunningException, InvalidOperationException {
-
 		//check if the Game is running if not throw exception
 		if(!isRunning())throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -180,6 +179,7 @@ public class Quoridor223Controller {
 	}
 
 	/**
+	 * Perform a drop wall Operation that drop the currently held wall
 	 * @author Le-Li Mao
 	 * @throws UnsupportedOperationException
 	 */
