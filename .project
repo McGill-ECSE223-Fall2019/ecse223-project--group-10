@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>ca.mcgill.ecse223.quoridor</name>
-	<comment>Project ca.mcgill.ecse223.quoridor.features created by Buildship.</comment>
+	<comment>Project ecse223-project--group-10 created by Buildship.</comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -15,19 +15,8 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>cucumber.eclipse.builder.stepdefinition</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
-		<buildCommand>
-			<name>cucumber.eclipse.builder.gherkin</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>cucumber.eclipse.nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>
 	</natures>
