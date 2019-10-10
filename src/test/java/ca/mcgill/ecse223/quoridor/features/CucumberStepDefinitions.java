@@ -272,6 +272,7 @@ public class CucumberStepDefinitions {
 	}
 	@Then ("I shall be notified that my wall move is invalid")
 	public void iShallBeNotifiedThatMyWallMoveIsInvalid() {
+		//GUI
 		throw new PendingException();
 	}
 	@And("I shall have a wall in my hand over the board")
