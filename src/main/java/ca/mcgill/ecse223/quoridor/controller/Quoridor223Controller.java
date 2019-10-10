@@ -3,6 +3,8 @@ package ca.mcgill.ecse223.quoridor.controller;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 
 import ca.mcgill.ecse223.quoridor.model.*;
+import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
+import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,6 +12,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import java.sql.Time;
 import java.security.InvalidAlgorithmParameterException;
 
@@ -64,10 +67,9 @@ public class Quoridor223Controller {
 	 * @param playerName
 	 * @throws UnsupportedOperationException
 	 */
-	public void setThinkingTime(Time thinkingTime, String playerName) throws UnsupportedOperationException {
-		if (!isRunning())
-			return; // if the game is not running, return
-
+	public static void setThinkingTime(Time thinkingTime, String playerName) throws UnsupportedOperationException{
+		if(!isRunning()) return; //if the game is not running, return
+		
 		// get current player
 		Player currentPlayer = getCurrentPlayer(playerName);
 
@@ -83,10 +85,9 @@ public class Quoridor223Controller {
 	 * @return Time
 	 * @throws UnsupportedOperationException
 	 */
-	public Time getThinkingTime(String playerName) throws UnsupportedOperationException {
-		if (!isRunning())
-			return null; // if the game is not running, return
-
+	public static Time getThinkingTime(String playerName) throws UnsupportedOperationException{
+		if(!isRunning()) return null; //if the game is not running, return
+		
 		// get current player
 		Player currentPlayer = getCurrentPlayer(playerName);
 
@@ -99,19 +100,53 @@ public class Quoridor223Controller {
 	 * @author Andrew Ta
 	 * @throws UnsupportedOperationException
 	 */
-	public void initializeBoard() throws UnsupportedOperationException {
-		if (!isRunning())
-			return;
-
+	public static void initializeBoard() throws UnsupportedOperationException{
 		// get quoridor object
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Board board;
-
-		// if there is no board, create a new board
-		if (quoridor.hasBoard()) {
-			board = new Board(quoridor);
-			quoridor.setBoard(board);
+		Board board = new Board(quoridor);
+		
+		// add tiles
+		for (int i = 1; i <= 9; i++) { // rows
+			for (int j = 1; j <= 9; j++) { // columns
+				board.addTile(i, j);
+			}
 		}
+		
+		// add user and create players
+		User user1 = quoridor.addUser("user1");
+		User user2 = quoridor.addUser("user2");
+		Player player1 = new Player(new Time(100), user1, 9, Direction.Horizontal);
+		Player player2 = new Player(new Time(100), user2, 1, Direction.Horizontal);
+		
+		// create walls
+		for (int i = 0; i < 10; i++) {
+			new Wall(0 * 10 + i, player1);
+		}
+		for (int i = 0; i < 10; i++) {
+			new Wall(1 * 10 + i, player2);
+		}
+		
+		// create players' positions
+		Tile player1StartPos = quoridor.getBoard().getTile(44);
+		Tile player2StartPos = quoridor.getBoard().getTile(36);
+		
+		// create a game
+		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, player1, player2, quoridor);
+		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
+		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, player1, game);
+
+		// Add the walls as in stock for the players
+		for (int j = 0; j < 10; j++) {
+			Wall wall = Wall.getWithId(j);
+			gamePosition.addWhiteWallsInStock(wall);
+		}
+		for (int j = 0; j < 10; j++) {
+			Wall wall = Wall.getWithId(j + 10);
+			gamePosition.addBlackWallsInStock(wall);
+		}
+
+		game.setCurrentPosition(gamePosition);
 	}
 
 	/**
@@ -121,18 +156,13 @@ public class Quoridor223Controller {
 	 * @return
 	 * @throws UnsupportedOperationException
 	 */
-	public Board getBoard() throws UnsupportedOperationException {
-		if (!isRunning())
-			return null;
-
+	public static Board getBoard() throws UnsupportedOperationException{
+		if(!isRunning()) return null;
+		
 		// get quoridor object
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		
-		if(quoridor.hasBoard()) {
-			return quoridor.getBoard();
-		} else {
-			return null;
-		}
+		return quoridor.getBoard();
 	}
 
 	// under feature 5
@@ -172,7 +202,7 @@ public class Quoridor223Controller {
 		WallMove candidate =  curGame.getWallMoveCandidate();
 		//check if newRow and newCol are within the board if not throw exception
 		int newRow = candidate.getTargetTile().getRow()+ (side.equalsIgnoreCase("up")?-1:side.equalsIgnoreCase("down")?1:0);
-		int newCol = candidate.getTargetTile().getRow()+ (side.equalsIgnoreCase("left")?-1:side.equalsIgnoreCase("right")?1:0);
+		int newCol = candidate.getTargetTile().getColumn()+ (side.equalsIgnoreCase("left")?-1:side.equalsIgnoreCase("right")?1:0);
 		if(!isWallPositionValid(newRow,newCol))throw new InvalidOperationException("Move invalid");
 		//update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow,newCol));
@@ -183,6 +213,21 @@ public class Quoridor223Controller {
 	 * @author Le-Li Mao
 	 * @throws UnsupportedOperationException
 	 */
+	public static void dropWall() throws GameNotRunningException, InvalidOperationException {
+		//check if the Game is running if not throw exception
+		if(!isRunning())throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		//check if the it is player's turn if not throw exception
+		//HOW to do this??
+		//check if there is wall in my hand if not throw exception
+		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
+		//finalize drop by putting the move into the movelist and update the gamePosition TODO.
+		curGame.addMove(curGame.getWallMoveCandidate());
+		curGame.setWallMoveCandidate(null);
+		
+		//set my hand as empty and switch turn TODO
+	}
+	
 	// under feature 9
 	public void savePosition(String filename) throws UnsupportedOperationException, IOException {
 
@@ -220,9 +265,7 @@ public class Quoridor223Controller {
 		// File");
 		GamePosition currentGamePosition = QuoridorApplication.getCurrentGamePosition();
 
-		// if the file is valid and writable, write the current game position to the
-		// file
-		
+		// if the file is valid and writable, write the current game position to the file
 		try {
 
 			FileWriter fileWriter = new FileWriter(filename,false);
@@ -371,8 +414,4 @@ public class Quoridor223Controller {
 		return newGamePosition;
 	}
 
-	public static void dropWall() {
-		// TODO Auto-generated method stub
-		
-	}
 }
