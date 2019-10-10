@@ -1,37 +1,78 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication.Quoridor223Application;
+import ca.mcgill.ecse223.quoridor.QuoridorApplication.Quoridor223Application.Side;
 import ca.mcgill.ecse223.quoridor.model.*;
 import java.sql.Time;
 import java.security.InvalidAlgorithmParameterException;
 
 public class Quoridor223Controller {
-	private enum side{up,down,left,right};
+	
 	//under feature 1
-	public void createGame() {
+	public static void createGame() {
 	
 	}
 	//under feature 2
-	public void selectUser(String playerName1, String playerName2) {
+	public static void selectUser(String playerName1, String playerName2) {
 		
 	}
 	//under feature 2
-	public void createUser(String name) {
+	public static void createUser(String name) {
 		
 	}
-	//under feature 3
-	public void setThinkingTime(Time thinkingTime, String playerName) {
+	
+	/**
+	 * Feature 3: set total thinking time
+	 * @author Andrew Ta
+	 * @param thinkingTime
+	 * @param playerName
+	 * @throws UnsupportedOperationException
+	 */
+	public void setThinkingTime(Time thinkingTime, String playerName) throws UnsupportedOperationException{
+		if(!isRunning()) return; //if the game is not running, return
 		
-	}
-	//under feature 4
-	public void initializeBoard() {
+		// get current game
+		Game currentGame = Quoridor223Application.getCurrentGame();
 		
+		Player currentPlayer;
+		// get currentPlayer
+		if(currentGame.getBlackPlayer().getUser().getName().equals(playerName)) {
+			currentPlayer = currentGame.getBlackPlayer();
+		}else {
+			currentPlayer = currentGame.getWhitePlayer();
+		}
+		
+		// set thinking time of that player
+		currentPlayer.setRemainingTime(thinkingTime);
 	}
+	
+	/**
+	 * Feature 4: set total thinking time
+	 * @author Andrew Ta
+	 * @throws UnsupportedOperationException
+	 */
+	public void initializeBoard() throws UnsupportedOperationException {
+		if(!isRunning()) return;
+		
+		// get quoridor object
+		Quoridor quoridor = Quoridor223Application.getQuoridor();
+		Board board;
+		
+		// if there is no board, create a new board
+		if(quoridor.getBoard() == null) {
+			board = new Board(quoridor);
+			quoridor.setBoard(board);
+		}
+	}
+	
 	//under feature 5
-	public void rotateWall()(int row, int col, side s) throws UnsupportedOperationException {
+	public static void rotateWall() throws UnsupportedOperationException {
 		//check if the Game is running. If not, thrown an exception.
 		Game curGame = Quoridor223Application.getCurrentGame();
 		if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
+		
+	
+	}
 		//check if it is the player's turn. If not, thrown an excpetion. 
 		//check if there is no wall in my hand. If no wall, thrown an excpetion. 
 		//if there is a wall in my hand
@@ -39,88 +80,92 @@ public class Quoridor223Controller {
 			//get coordinates for the wall position
 			//
 		//else if
-			//Notify player there is no wall in hand.
-	}
+		//Notify player there is no wall in hand.
+
+	
 	//under feature 6
-	public void grabWall()  throws UnsupportedOperationException{
+	public static void grabWall(Game game)  throws UnsupportedOperationException{
 		//check if the Game is running if not throw exception
 		Game curGame = Quoridor223Application.getCurrentGame();
 		if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
 		//check if the it is player's turn if not throw exception
 		//check if there is no wall in my hand if not throw exception
-		if(curGame.getWallMoveCandidate()==null)
+		//if(curGame.getWallMoveCandidate()==null)
 		//check if there is wall leftover
 		//if Player has more wall
 			//move the wall into player's hand
 			//Remove one wall from stock
 			//create a wallmoveCandidate in the game model.
+		//move the wall into my hand
+		//Remove wall from stock
+		//create a wallmoveCandidate in the game model.
+
 		//else if player have no wall
-			//Notify the user that they don't have any wall.	
+		//Notify the user that they don't have any wall.	
 	}
 	
 	/**
-	 * @param player
-	 * @param Row
-	 * @param Col
+	 * @param side
+	 * @throws UnsupportedOperationException
 	 */
-	public void moveWall(int row, int col, side s) throws UnsupportedOperationException{
+	public static void moveWall(String side) throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
 		//check if the Game is running if not throw exception
-		Game curGame = Quoridor223Application.getCurrentGame();
-		if(!isRunning())throw new UnsupportedOperationException("Game is not running");
 		//check if the it is player's turn if not throw exception
-		if(curGame.getWallMoveCandidate()==null) {
-			
-		}
+
+//		if(curGame.getWallMoveCandidate()==null) {
+//			
+//		}
+
 		//check if there is wall in my hand if not throw exception
-		
 		//check if newRow and newCol are within the board if not throw exception
-		int nRow = row +(s==side.up?-1:s==side.down?1:0);
-		int nCol = col +(s==side.left?1:s==side.right?-1:0);
-		if(!isWallValid(nRow,nCol))throw new UnsupportedOperationException("Move is illegal.");
 		//update the move candidate according to the change.
-		
 	}
 	
 	/**
-	 * @param player
-	 * @param newRow
-	 * @param newCol
+	 * @throws UnsupportedOperationException
 	 */
-	public void dropWall() throws UnsupportedOperationException{
+	public static void dropWall() throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
 		//check if the Game is running if not throw exception
 		//check if the it is player's turn if not throw exception
 		//check if there is wall in my hand if not throw exception
-		//check if the Row and Col are valid for the given wall parameter if not throw exception
 		//finalize drop by putting the move into the movelist and update the gamePosition.
 		//set my hand as empty and switch turn
 	}
+	
 	//under feature 9
-	public void savePosition() {
+	public static void savePosition() {
 		
 	}
 	//under feature 10
-	public void loadPosition() {
+	public static void loadPosition() {
 	
 	}
 	
 	//under feature 11
-	public void validatePosition(Tile tile) {
+	public static void validatePosition(Tile tile) {
 		// need parameter to know whether it is a pawn or a wall ?
 		
 		// validate pawn position
 		// validate wall position
 	}
 	//under feature 12
-	public void UpdateBoard() {
+	public static void UpdateBoard() {
 		
 	}
+
 	
-	private boolean isRunning() {
+//	private boolean isRunning() {
+
+	private static boolean isRunning() {
+
 		Game current = Quoridor223Application.getCurrentGame();
 		if(current == null || current.getGameStatus()!=Game.GameStatus.Running)return false;
 		return true;
 	}
-	private boolean isWallValid(int row, int col) {
+	
+	private static boolean isWallValid(int row, int col) {
 		return (row>0 && col>0 && row<9 && col <9);
 	}
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication.*;
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -18,9 +19,13 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
+import cucumber.api.PendingException;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+import io.cucumber.java.en.But;
 
 public class CucumberStepDefinitions {
 
@@ -99,6 +104,7 @@ public class CucumberStepDefinitions {
 	@And("I do not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand() {
 		// Walls are in stock for all players
+		
 	}
 	
 	// ***********************************************
@@ -112,8 +118,75 @@ public class CucumberStepDefinitions {
 	 * are implemented
 	 * 
 	 */
-
-	// ***********************************************
+	
+	
+	@And ("I have a wall in my hand over the board")
+	public void iHaveAWallInMyHandOverTheBoard() {
+		throw new PendingException(); //GUI STEP
+	}
+	@Given("A wall move candidate exists with (.*) at position ((.*), (.*))")
+	public void wallMoveCandidateExists(String dir, int row, int col) {
+		getWallMoveCandidate(dir,row,col);
+	}
+	@And("The wall candidate is at the (.*) edge of the board")
+	public void Thewallcandidateisattheedgeoftheboard(String side) {
+		throw new PendingException();
+	}
+	@And("The wall candidate is not at the (.*) edge of the board")
+	public void Thewallcandidateisnotattheedgeoftheboard(String side) {
+		throw new PendingException();
+	}
+	@When("I try to move the wall (.*)")
+	public void iTryToMoveTheWall(String side) {
+		Quoridor223Controller.moveWall(side);
+	}
+	
+    @Then("The wall shall be moved over the board to position ((.*), (.*))")
+    public void theWallShallBeMovedOverTheBoardToPosition(int row, int col) {
+    	throw new PendingException();
+    }
+    @And("A wall move candidate shall exist with (.*) at position ((.*), (.*))")
+    public void aWallMoveCandidateShallExist(String dir, int row, int col) {
+    	throw new PendingException();
+    }
+    @Then("I should be notified that my move is illegal")
+    public void IShouldBeNotifiedThatMyMoveIsIllegal() {
+    	//Feel like this is GUI
+    	throw new PendingException();
+    }
+    @Given ("The wall move candidate with (.*) at position ((.*), (.*)) is valid")
+    public void theWallMoveCandidateIsValid(String dir, int row, int col) {
+    	setWall(dir, row, col);
+    }
+    @Given("The wall move candidate with (.*) at position ((.*), (.*)) is invalid")
+    public void TheWallMoveCandidateWithIsInvalid(String dir, int row, int col) {
+    	setWall(dir, row, col);
+    }
+    @When("I release the wall in my hand")
+    public void iReleaseTheWallInMyHand() {
+    	Quoridor223Controller.dropWall();
+    }
+    @But("A wall move is registered with (.*) at position ((.*), (.*))")
+    public void aWallMoveIsRegistered() {
+    	throw new PendingException();
+    }
+    @And("My move is completed")
+    public void myMoveIsCompleted() {
+    	throw new PendingException();
+    }
+    @And ("It is not my turn to move")
+    public void itIsNotMyTurnToMove() {
+    	throw new PendingException();
+    }
+    @Then ("I shall be notified that my wall move is invalid")
+    public void iShallBeNotifiedThatMyWallMoveIsInvalid() {
+    	//Feel like this is GUI
+    }
+    @But("No wall move is registered with (.*) at position ((.*), (.*))")
+    public void noWallMoveIsRegistered(String direction, int row, int col){
+    	
+    }
+    // ***********************************************
 	// Clean up
 	// ***********************************************
 
@@ -200,44 +273,48 @@ public class CucumberStepDefinitions {
 
 		game.setCurrentPosition(gamePosition);
 	}
+
 	
 //	Grab Wall Feature
 	//Scenario: Start wall placement
 	@Given("I have more walls on stock")
 	public void iHaveMoreWallsOnStock() {
-		//
+		//query methods and modifier methods get and set methods. 
+		int walls = player1.getWalls().size();
+		assert walls > 0;
 	}
 	
 	@When("I try to grab a wall from my stock")
 	public void iTryToGrabAWallFromMyStock() {
-		//
+		Quoridor223Controller.grabWall(game);
 	}
 	
-	@Then("I have a wall in my hand over the board")
-	public void iHaveAWallInMyHandOverTheBoard() {
-		//
-	}
+//	@Then("I have a wall in my hand over the board")
+//	public void iHaveAWallInMyHandOverTheBoard2() { //Duplicate method
+//		//GUI STEP
+//	}
 	
 	@And("The wall in my hand should disappear from my stock")
 	public void theWallInMyHandShouldDisappearFromMyStock() {
-		//
+		//And is an extension #THEN2.0
 	}
 	
 	@And("A wall move candidate shall be created at the initial position")
 	public void aWallMoveCandidateShallBeCraetedAtInitialPosition() {
-		//
+		//THEN3.0
 	}
 	
 	//Scenario: No more walls in stock
 	@Given("I have no more walls on stock")
 	public void iHaveNoMoreWallsOnStock() {
-		//
+		int walls = player1.getWalls().size();
+		assert walls == 0;
 	}
 	
-	@When("I try to grab a wall from my stock")
-	public void iTryToGrabAWallFromMyStock() { //Duplicate method
-		//
-	}
+//	@When("I try to grab a wall from my stock")
+//	public void iTryToGrabAWallFromMyStock2() { //Duplicate method
+//		//
+//	}
 	
 	@Then("I should be notified that I have no more walls")
 	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
@@ -246,24 +323,45 @@ public class CucumberStepDefinitions {
 	
 //	Rotate Wall Feature
 	//Scenario: Flip wall from horizontal to vertical or vice versa
-	@Given("A wall move candidate exists with <dir> at position (<row>, <col>")
-	public void aWallMoveCandidateExistswithDirAtPosition() {
-		//
-	}
+//	@Given("A wall move candidate exists with (.*) at position ((.*), (.*))")
+//	public void aWallMoveCandidateExistswithDirAtPosition() {
+//		//
+//	}
 	
 	@When("I try to flip the wall")
 	public void iTryToFlipTheWall(){
-		//
+		Quoridor223Controller.rotateWall();
 	}
 	
-	@Then("The wall shall be rotated over the board to <newdir>")
+	@Then("The wall shall be rotated over the board to (.*)")
 	public void theWallShallBeRotatedOverTheBoardToNewdir() {
-		//
+		//GUI STEP
 	}
 	
-	@And("A wall move candidate shall exist with <newdir> at position (<row>, <col>")
-	public void aWallMoveCandidateShallExistWithNewdirAtPosition() {
-		//
-	}
+//	@And("A wall move candidate shall exist with (.*) at position ((.*), (.*))")
+//	public void aWallMoveCandidateShallExistWithNewdirAtPosition() {
+//		//
+//	}
 
+
+	/**
+	 * Create select the wall and set it to the wall candidate in the game
+	 * @param dir
+	 * @param row
+	 * @param col
+	 */
+	private void getWallMoveCandidate(String dir, int row, int col) {
+		//create a new WallMove Candidate and place the corresponding tile
+		Direction wallDirection = dir.equals("horizontal")?Direction.Horizontal:Direction.Vertical;
+		game.setWallMoveCandidate(new WallMove(0, 1, player1, board.getTile((row-1)*9+(col-1)), game, wallDirection, game.getCurrentPosition().getBlackWallsInStock(0)));
+	}
+	private void setWall(String dir, int row, int col) {
+		//25 is a valid position of 3 row and 8th column
+		if(game.getWallMoveCandidate()!=null) {
+		game.getWallMoveCandidate().setTargetTile(board.getTile((row-1)*9+(col-1)));
+		}
+		else {
+			getWallMoveCandidate(dir, row, col);
+		}
+	}
 }
