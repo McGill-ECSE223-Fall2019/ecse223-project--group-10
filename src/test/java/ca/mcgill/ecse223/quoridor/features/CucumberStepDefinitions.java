@@ -161,11 +161,12 @@ public class CucumberStepDefinitions {
 	public void aWallMoveIsRegisteredWithDirAtPositionRowCol(String direction, int row, int col) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
-		WallMove move = (WallMove) curGame.getMove(curGame.numberOfMoves()-1);
+		WallMove move = (WallMove) curGame.getMove(0);
 		Tile target = move.getTargetTile();
-		Direction expected = direction.equalsIgnoreCase("horizontal")?Direction.Horizontal:Direction.Vertical;
-		boolean match = move.getWallDirection()==expected&& target.getRow()==row && target.getColumn()==col;
-		Assert.assertEquals(true,match);
+		Direction expected = (direction.equalsIgnoreCase("horizontal")?Direction.Horizontal:Direction.Vertical);
+		Assert.assertEquals(expected, move.getWallDirection());
+		Assert.assertEquals(row, target.getRow());
+		Assert.assertEquals(col, target.getColumn());
 	}
 	/**
 	 * @author Le-Li Mao
@@ -185,14 +186,14 @@ public class CucumberStepDefinitions {
 	 * @author Le-Li Mao
 	 */
 	@Given("The wall move candidate with {string} at position \\({int}, {int}) is invalid")
-	public void theWallMoveCandidateWithDirAtPositionRowColIsInvalid(String orientation, int col, int row) {
-		throw new PendingException();
+	public void theWallMoveCandidateWithDirAtPositionRowColIsInvalid(String direction, int row, int col) {
+		setWall(direction,row,col);
 	}
 	/**
 	 * @author Le-Li Mao
 	 */
 	@But("No wall move shall be registered with {string} at position \\({int}, {int})")
-	public void noWallMoveIsRegisteredWithDirAtPositionRowCol(String orientation, int col, int row) {
+	public void noWallMoveIsRegisteredWithDirAtPositionRowCol(String direction, int row, int col) {
 		throw new PendingException();
 	}
 	/**
@@ -221,13 +222,15 @@ public class CucumberStepDefinitions {
 	 * @author Le-Li Mao
 	 */
 	@Then("The wall shall be moved over the board to position \\({int}, {int})")
-	public void theWallShallBeMovedOverTheBoardToPositionNrowNcol(int col, int row) {
+	public void theWallShallBeMovedOverTheBoardToPositionNrowNcol(int row, int col) {
 		Quoridor quoridor =QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		WallMove candidate = curGame.getWallMoveCandidate();
 		Tile tile= candidate.getTargetTile();
-		boolean reached = isCordEqual(row,col,tile.getRow(),tile.getColumn());
-		Assert.assertEquals(true,reached);
+//		boolean reached = isCordEqual(row,col,tile.getRow(),tile.getColumn());
+		Assert.assertEquals(row,tile.getRow());
+		Assert.assertEquals(col,tile.getColumn());
+//		Assert.assertEquals(true,reached);
 	}
 	/**
 	 * @author Le-Li Mao
@@ -255,7 +258,7 @@ public class CucumberStepDefinitions {
 		else if (side.equalsIgnoreCase("DOWN")){
 			Assert.assertEquals(8,row);
 		}
-		else if (side.equalsIgnoreCase("RIHGT")){
+		else if (side.equalsIgnoreCase("RIGHT")){
 			Assert.assertEquals(8,col);
 		}
 		else {

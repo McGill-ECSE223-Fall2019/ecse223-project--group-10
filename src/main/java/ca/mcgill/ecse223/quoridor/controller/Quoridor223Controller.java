@@ -148,7 +148,7 @@ public class Quoridor223Controller {
 		WallMove candidate =  curGame.getWallMoveCandidate();
 		//check if newRow and newCol are within the board if not throw exception
 		int newRow = candidate.getTargetTile().getRow()+ (side.equalsIgnoreCase("up")?-1:side.equalsIgnoreCase("down")?1:0);
-		int newCol = candidate.getTargetTile().getRow()+ (side.equalsIgnoreCase("left")?-1:side.equalsIgnoreCase("right")?1:0);
+		int newCol = candidate.getTargetTile().getColumn()+ (side.equalsIgnoreCase("left")?-1:side.equalsIgnoreCase("right")?1:0);
 		if(!isWallPositionValid(newRow,newCol))throw new InvalidOperationException("Move invalid");
 		//update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow,newCol));
@@ -170,7 +170,7 @@ public class Quoridor223Controller {
 		//finalize drop by putting the move into the movelist and update the gamePosition TODO.
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
-
+		
 		//set my hand as empty and switch turn TODO
 	}
 	
