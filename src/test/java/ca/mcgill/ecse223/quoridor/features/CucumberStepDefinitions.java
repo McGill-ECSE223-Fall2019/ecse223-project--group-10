@@ -27,7 +27,7 @@ import io.cucumber.java.en.But;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import junit.framework.Assert;
+import junit.framework.Assert.*;
 
 public class CucumberStepDefinitions {
 
@@ -173,6 +173,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("My move shall be completed")
 	public void myMoveIsCompleted() {
+		//
 		throw new PendingException();
 	}
 	/**

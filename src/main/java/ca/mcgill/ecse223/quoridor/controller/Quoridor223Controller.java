@@ -163,8 +163,6 @@ public class Quoridor223Controller {
 		//check if the Game is running if not throw exception
 		if(!isRunning())throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		//check if the it is player's turn if not throw exception
-		//HOW to do this??
 		//check if there is wall in my hand if not throw exception
 		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
 		//finalize drop by putting the move into the movelist and update the gamePosition TODO.
