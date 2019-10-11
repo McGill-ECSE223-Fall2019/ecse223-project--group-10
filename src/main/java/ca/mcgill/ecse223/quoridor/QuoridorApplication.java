@@ -1,13 +1,11 @@
-package ca.mcgill.ecse223.quoridor.QuoridorApplication;
+package ca.mcgill.ecse223.quoridor;
 import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.GamePosition;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
-public class Quoridor223Application {
+public class QuoridorApplication {
 	private static Quoridor quoridor;
-	private static Game currentGame;
-	public enum Side{up,down,left,right};
 	public static void main(String[] args) {
 	
 	}
@@ -16,8 +14,5 @@ public class Quoridor223Application {
 			quoridor = new Quoridor();
 		}
  		return quoridor;
-	}
-	public static Game getCurrentGame() {
-		return currentGame;
 	}
 }
