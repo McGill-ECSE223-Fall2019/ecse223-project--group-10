@@ -25,12 +25,11 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * helper method to get current player
+	 * helper method to get player by name
 	 * @author Andrew Ta
 	 * @param playerName
-	 * @return
 	 */
-	public static Player getCurrentPlayer(String playerName) {
+	public static Player getPlayerByName(String playerName) {
 		// get current game
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player currentPlayer;
@@ -45,40 +44,39 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * Feature 3: set total thinking time
+	 * Feature 3: Set Total Thinking Time
 	 * @author Andrew Ta
 	 * @param thinkingTime
 	 * @param playerName
 	 * @throws UnsupportedOperationException
 	 */
 	public static void setThinkingTime(Time thinkingTime, String playerName) throws UnsupportedOperationException{
-		if(!isRunning()) return; //if the game is not running, return
-		
 		// get current player
-		Player currentPlayer = getCurrentPlayer(playerName);
+		Player currentPlayer = getPlayerByName(playerName);
 		
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
 	}
 	
 	/**
-	 * get remaining time
+	 * Get Remaining Time of A Player
 	 * @author Andrew Ta
 	 * @param playerName
-	 * @return Time
+	 * @return
 	 * @throws UnsupportedOperationException
+	 * @throws GameNotRunningException
 	 */
-	public static Time getThinkingTime(String playerName) throws UnsupportedOperationException{
-		if(!isRunning()) return null; //if the game is not running, return
+	public static Time getRemainingTime(String playerName) throws UnsupportedOperationException, GameNotRunningException{
+		if(!isRunning()) throw new GameNotRunningException("Game is not running."); //if the game is not running, return
 		
 		// get current player
-		Player currentPlayer = getCurrentPlayer(playerName);
+		Player currentPlayer = getPlayerByName(playerName);
 		
 		return currentPlayer.getRemainingTime();	
 	}
 	
 	/**
-	 * Feature 4: initialize board
+	 * Feature 4: Initialize Board
 	 * @author Andrew Ta
 	 * @throws UnsupportedOperationException
 	 */
@@ -130,21 +128,7 @@ public class Quoridor223Controller {
 
 		game.setCurrentPosition(gamePosition);
 	}
-	
-	/**
-	 * return board
-	 * @author Andrew Ta
-	 * @return
-	 * @throws UnsupportedOperationException
-	 */
-	public static Board getBoard() throws UnsupportedOperationException{
-		if(!isRunning()) return null;
-		
-		// get quoridor object
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		
-		return quoridor.getBoard();
-	}
+
 	
 	//under feature 5
 	/**
