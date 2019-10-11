@@ -310,12 +310,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I release the wall in my hand")
 	public void iReleaseTheWallInMyHand() {
-		try{
-			Quoridor223Controller.dropWall();
-		}
-		catch (Exception e){
-
-		}
+		Wall wallDroped = Quoridor223Controller.dropWall();
 	}
 	
 	/**
