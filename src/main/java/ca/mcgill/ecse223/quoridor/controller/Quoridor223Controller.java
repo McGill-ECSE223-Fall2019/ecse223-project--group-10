@@ -233,27 +233,26 @@ public class Quoridor223Controller {
 	 * @author Mitchell Keeley
 	 * @param filename
 	 * @return true if the game position was saved, otherwise returns false 
-	 * @throws Throwable 
+	 * @throws IOException 
 	 */
-	public static boolean savePosition(String filename) throws Throwable {
-		
-		// when a player clicks the save game button in the save game dialog box
-		// GUI: register button press of the save game button
-		// GUI
-		// the user types the filename into a dialog box and then clicks the save button
-		// if the file is invalid, prompt the user to write a valid path
-		// if the file exists already, prompt the user to agree to overwrite the file
+	// when a player clicks the save game button in the save game dialog box
+	// GUI: register button press of the save game button
+	// GUI
+	// the user types the filename into a dialog box and then clicks the save button
+	// if the file is invalid, prompt the user to write a valid path
+	// if the file exists already, prompt the user to agree to overwrite the file
+	public static boolean savePosition(String filename) throws IOException {
 		
 		// create a new File instance
 		File saveFile = new File(filename);
-		
-		// check that it is a valid file
-		saveFile.createNewFile();
-		if(!saveFile.isFile()) {
-			saveFile.delete();
-			throw new IOException("Invalid File");
+				
+		// if the File doesn't exist, set it to writable and create it
+		if (!saveFile.exists()) {
+			createSaveFile(filename);
+			saveFile.setWritable(true);
+			if (saveFile.createNewFile() == false)
+				throw new IOException("File cannot be created");
 		}
-		saveFile.delete();
 		
 		// if the file exists
 		if (saveFile.exists()) {
@@ -262,13 +261,6 @@ public class Quoridor223Controller {
 			if (overwrite == false) {
 				return false;
 			}
-		}
-		
-		// if the File doesn't exist, set it to writable and create it
-		if (!saveFile.exists()) {
-			saveFile.setWritable(true);
-			if (saveFile.createNewFile() == false)
-				throw new IOException("File cannot be created");
 		}
 		
 		saveCurrentGamePositionAsFile(filename);

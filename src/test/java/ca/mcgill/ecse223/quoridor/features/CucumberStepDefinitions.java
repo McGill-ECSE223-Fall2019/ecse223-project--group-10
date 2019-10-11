@@ -474,11 +474,7 @@ public class CucumberStepDefinitions {
 	 */	
 	@Given("No file {string} exists in the filesystem")
 	public void noFileFilenameExistsInTheFilesystem(String filename) {
-		File file = new File(filename);
-		// adding this verification since running the test creates a file <filename> in the filesystem
-		if(file.exists() && file.isFile()) {
-			file.delete();
-		}
+		deleteFileIfItExists(filename);
 	}	
 	
 	/**
@@ -503,12 +499,11 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Mitchell Keeley
-	 * @throws Throwable 
+	 * @throws IOException 
 	 */
 	@Given("File {string} exists in the filesystem")
-	public void fileFilenameExistsInTheFilesystem(String filename) throws Throwable {
-		File file = new File(filename);
-		file.createNewFile();
+	public void fileFilenameExistsInTheFilesystem(String filename) throws IOException {
+		ensureFileExists(filename);
 	}
 	
 	/**
@@ -765,19 +760,32 @@ public class CucumberStepDefinitions {
 		return row1==row2 && col1==col2;
 	}
 	
+	
+	
 	/**
-	 * A function that checks if a file with the given file path exists
+	 * A function that deletes the specified filename if it exists in the filesystem
+	 * @author Mitchell Keeley
+	 * @param filename
+	 */
+	public void deleteFileIfItExists(String filename) {
+		File file = new File(filename);
+		if(file.exists() && file.isFile()) {
+			file.delete();
+		}
+	}
+	
+	/**
+	 * A function that creates the specified file if it does not already exist
 	 * @author Mitchell Keeley
 	 * @param filename
 	 * @return fileExists
+	 * @throws IOException 
 	 */
-	public boolean doesFileExistInSystem(String filename) {
+	public void ensureFileExists(String filename) throws IOException {
 		File file = new File(filename);
-		
-		if (file.isFile() && file.exists()) {
-			return true;
+		if (!file.exists()) {
+			file.createNewFile();
 		}
-		return false;
 	}
 	
 	
