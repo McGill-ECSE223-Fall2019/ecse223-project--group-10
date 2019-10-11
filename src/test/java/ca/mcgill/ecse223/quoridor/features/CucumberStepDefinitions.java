@@ -2,7 +2,9 @@ package ca.mcgill.ecse223.quoridor.features;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -465,7 +467,7 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	
 	// **********************************************
-	// Save Position and Load Position start here
+	// TODO: Save Position starts here
 	// **********************************************
 	/**
 	 * @author Mitchell Keeley
@@ -473,27 +475,30 @@ public class CucumberStepDefinitions {
 	@Given("No file {string} exists in the filesystem")
 	public void noFileFilenameExistsInTheFilesystem(String filename) {
 		File file = new File(filename);
-		file.delete();
+		// adding this verification since running the test creates a file <filename> in the filesystem
+		if(file.exists() && file.isFile()) {
+			file.delete();
+		}
 	}	
-	
-	/**
-	 * @author Mitchell Keeley
-	 */
-	@When("The user initiates to save the game with name {string}")
-	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) {
-		//GUI
-		//the user types the filename into a dialog box and then clicks the save button
-		//throw new UnsupportedOperationException();
-	}
 	
 	/**
 	 * @author Mitchell Keeley
 	 * @throws Throwable 
 	 */
+	@When("The user initiates to save the game with name {string}")
+	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) throws Throwable {
+		Quoridor223Controller.savePosition(filename);
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws UnsupportedOperationException, IOExceptionable 
+	 */
 	@Then("A file with {string} shall be created in the filesystem")
-	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws Throwable {
+	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) {
 		File file = new File(filename);
-		file.createNewFile();
+		assertTrue("File does not exist in the filesystem", file.exists());
+		assertTrue("File is not a File", file.isFile());
 	}
 	
 	/**
@@ -512,7 +517,8 @@ public class CucumberStepDefinitions {
 	@And("The user confirms to overwrite existing file")
 	public void theUserConfirmsToOverwriteExistingFile() {
 		//GUI
-		//The user clicks yes when prompted by the GUI to overwrite the existing file
+		//The user clicks yes when prompted by the GUI to overwrite an existing file
+		throw new PendingException();
 	}
 	
 	/**
@@ -521,11 +527,78 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("File with {string} shall be updated in the filesystem")
 	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
-		saveCurrentGamePositionAsFile(filename);
+		assertTrue("The file was not modified", Quoridor223Controller.savePosition(filename));
+	}
+	
+	/**
+	 * @author Mitchell Keeley 
+	 */
+	@And("The user cancels to overwrite existing file")
+	public void theUserCancelsToOverwriteExistingFile() {
+		//GUI
+		//The user clicks no when prompted by the GUI to overwrite an existing file
+		throw new PendingException();
+	}
+	
+	/**
+	 * @author Mitchell Keeley 
+	 * @throws Throwable 
+	 */
+	@Then("File {string} shall not be changed in the filesystem")
+	public void fileFilenameShallNotBeChangedInTheFilesystem(String filename) throws Throwable {
+		assertFalse("The file was modified", Quoridor223Controller.savePosition(filename));
 	}
 	
 	// **********************************************
-	// Save Position and Load Position end here
+	// TODO: Load Position starts here
+	// **********************************************
+	
+	@When("I initiate to load a saved game {string}")
+	public void iInitiateToLoadASavedGame(String filename) {
+		Quoridor223Controller.loadPosition(filename);
+	}
+	
+	@And("The position to load is valid")
+	public void thePositionToLoadIsValid() {
+		Quoridor223Controller.loadValidGamePosition();
+		//Quoridor223Controller.startValidGame();
+	}
+	
+	@Then("It shall be {string}'s turn")
+	//@And("It shall be {player}'s turn")
+	public void itShallBePlayersTurn(String playerColor) {
+		assertTrue("Could not set nextPlayer to that player", Quoridor223Controller.setCurrentPlayerToMoveByColor(playerColor));
+		//assertTrue("It is not that player's turn", Quoridor223Controller.getPlayerColorToMove().equals(playerColor));
+	}
+	
+	@And("{string} shall be at {int}:{int}") // this is for both the player and opponent
+	public void playerShallbeAtRowCol(String playerColor, int row, int col) {
+		assertTrue("Could not set player's position", Quoridor223Controller.setPlayerPositionByColor(playerColor, row, col));
+		//assertTrue("Could not set player's position", Quoridor223Controller.getPlayerPositionByColor(player).equals(row+col));
+	}
+	
+	@And("{string} shall have a {string} wall at {int}:{int}") // this is for both the player and the opponent
+	public void playerShallHaveADirectionWallAtRowCol(String playerColor, String direction, int row, int col) {
+		assertTrue("Could not set a wall's direction and position", Quoridor223Controller.addPlayerWallPositionByColor(player, direction, row, col));
+		//assertTrue("Could not set that wall's direction and position", Quoridor223Controller.getPlayerWallPositionByColor(player).equals(row+col));
+	}
+	
+	@And("Both players shall have {int} in their stacks")
+	public void bothPlayersShallHaveRemainingWallsInTheirStacks(int remainingWalls) {
+		assertTrue("White player does not have the correct number of walls in their stack", 
+				Quoridor223Controller.getCurrentPlayer("white").numberOfWalls() == remainingWalls);
+		assertTrue("Black player does not have the correct number of walls in their stack", 
+				Quoridor223Controller.getCurrentPlayer("black").numberOfWalls() == remainingWalls);
+	}
+	
+	@And("The position to load is invalid")
+	public void thePositionToLoadIsInvalid() {
+		Quoridor223Controller.loadInvalidGamePosition();
+		//Quoridor223Controller.startInvalidGame();
+	}
+	
+	// **********************************************
+	// TODO: Save Position and Load Position end here
 	// **********************************************
 	
 	// ***********************************************
@@ -707,68 +780,7 @@ public class CucumberStepDefinitions {
 		return false;
 	}
 	
-	/**
-	 * A function to save the current GamePosition as a file
-	 * @author Mitchell Keeley
-	 * @param filename
-	 * @throws Throwable 
-	 */
-	public void saveCurrentGamePositionAsFile(String filename) throws Throwable {
-		Game currentGame = QuoridorApplication.getCurrentGame();
-		GamePosition currentGamePosition = QuoridorApplication.getCurrentGamePosition();
-		
-		// get the player information strings to write to the file
-		String WhitePlayer = "W: " + tileToString(currentGamePosition.getWhitePosition().getTile());
-		// continue with wall list converted to string 
-		String BlackPlayer = "B: " + tileToString(currentGamePosition.getBlackPosition().getTile());
-		
-		// add the wall positions
-		for( Move move : currentGame.getMoves()) {
-			if (move instanceof WallMove){
-				WhitePlayer.concat(tileToString(move.getTargetTile()) + ((WallMove) move).getWallDirection());
-			}
-		}
-		// TODO: Finish, starting from here, verify wall position for loop
-		
-		
-		// initialize the printWriter
-		PrintWriter printWriter = new PrintWriter(new FileWriter(filename));
-	    
-		// if the next player to move is the White Player
-		if(currentGamePosition.getPlayerToMove().equals(currentGamePosition.getGame().getWhitePlayer())){
-			printWriter.printf("%s\n", WhitePlayer);
-			printWriter.printf("%s", BlackPlayer);
-		}else {
-			printWriter.printf("%s\n",BlackPlayer);
-			printWriter.printf("%s", WhitePlayer);
-		} 
-		printWriter.close();
-	}
 	
-	/**
-	 * A function to translate tile into the correct string to write to the save file
-	 * @author Mitchell Keeley
-	 * @param tile
-	 * @return
-	 */
-	public String tileToString(Tile tile) {
-		int asciiNumberOffset = 48;
-		int asciiLetterOffset = 96;
-		
-		String tileString = String.valueOf(asciiLetterOffset + tile.getRow())
-				+ String.valueOf(asciiNumberOffset + tile.getColumn());
-		
-		return tileString;
-	}
-	
-	public String directionToString(Direction direction) {
-		if( direction.equals(Direction.Horizontal)){
-			return "h";
-		}
-		else {
-			return "v";
-		}
-	}
 	
 	
 	
