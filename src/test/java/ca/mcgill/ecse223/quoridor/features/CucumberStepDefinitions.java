@@ -274,26 +274,35 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Le-Li Mao
+	 * @param direction
+	 * @param row
+	 * @param col
 	 */
 	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
-	public void aWallMoveCandidateExistsWithAtPosition(String orientation, int row, int col) {
-		setWall(orientation,row, col);
+	public void aWallMoveCandidateExistsWithAtPosition(String direction, int row, int col) {
+		setWall(direction,row, col);
 	}
 	
 	/**
 	 * @author Le-Li Mao
+	 * @param direction
+	 * @param row
+	 * @param col
 	 */
 	@And("A wall move candidate shall exist with {string} at position \\({int}, {int})")
-	public void aWallMoveCandidateShallExistWithDirAtPositionNrowNcol(String orientation, int row, int col) {
-		assertEquals(true, hasWallCandidate(orientation,row,col));
+	public void aWallMoveCandidateShallExistWithDirAtPositionNrowNcol(String direction, int row, int col) {
+		assertEquals(true, hasWallCandidate(direction,row,col));
 	}
 	
 	/**
 	 * @author Le-Li Mao
+	 * @param direction
+	 * @param row
+	 * @param col
 	 */
 	@Given("The wall move candidate with {string} at position \\({int}, {int}) is valid")
-	public void theWallMoveCandidateWithDirAtPositionRowColIsValid(String orientation, int row, int col) {
-		setWall(orientation,row, col);
+	public void theWallMoveCandidateWithDirAtPositionRowColIsValid(String direction, int row, int col) {
+		setWall(direction,row, col);
 	}
 	
 	/**
@@ -316,8 +325,12 @@ public class CucumberStepDefinitions {
 	public void itShallBeMyTurnToMove() {
 		assertEquals(initialPlayer, QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove());
 	}
+	
 	/**
 	 * @author Le-Li Mao
+	 * @param direction
+	 * @param row
+	 * @param col
 	 */
 	@Then("A wall move shall be registered with {string} at position \\({int}, {int})")
 	public void aWallMoveIsRegisteredWithDirAtPositionRowCol(String direction, int row, int col) {
@@ -353,6 +366,9 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Le-Li Mao
+	 * @param direction
+	 * @param row
+	 * @param col
 	 */
 	@Given("The wall move candidate with {string} at position \\({int}, {int}) is invalid")
 	public void theWallMoveCandidateWithDirAtPositionRowColIsInvalid(String direction, int row, int col) {
@@ -361,6 +377,9 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Le-Li Mao
+	 * @param direction
+	 * @param row
+	 * @param col
 	 */
 	@But("No wall move shall be registered with {string} at position \\({int}, {int})")
 	public void noWallMoveIsRegisteredWithDirAtPositionRowCol(String direction, int row, int col) {
@@ -370,6 +389,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Le-Li Mao
+	 * @param side
 	 */
 	@And("The wall candidate is not at the {string} edge of the board")
 	public void theWallCandidateIsNotAtTheSideEdgeOfTheBoard(String side) {
@@ -393,6 +413,8 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Le-Li Mao
+	 * @param row
+	 * @param col
 	 */
 	@Then("The wall shall be moved over the board to position \\({int}, {int})")
 	public void theWallShallBeMovedOverTheBoardToPositionNrowNcol(int row, int col) {
@@ -406,6 +428,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Le-Li Mao
+	 * @param side
 	 */
 	@When("I try to move the wall {string}")
 	public void iTryToMoveTheWallSide(String side) {
@@ -419,6 +442,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Le-Li Mao
+	 * @param side
 	 */
 	@And("The wall candidate is at the {string} edge of the board")
 	public void theWallCandidateIsAtTheSideEdgeOfTheBoard(String side) {
