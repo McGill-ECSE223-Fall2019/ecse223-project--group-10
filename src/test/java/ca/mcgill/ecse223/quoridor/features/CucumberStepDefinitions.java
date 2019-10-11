@@ -126,6 +126,55 @@ public class CucumberStepDefinitions {
 	 * 
 	 */
 	
+	
+	// **********************************************
+	// StartNewGame and ProvideSelectUserName start here
+	// **********************************************
+
+	/**
+	 * @author Vanessa Ifrah
+	 */
+	@When("A new game is being initialized")
+	public void aNewGameIsBeingInitialized() {
+
+		// create the new game
+		Quoridor223Controller.createGame();
+
+	}
+
+	/**
+	 * @author Vanessa Ifrah
+	 */
+	@And("White player chooses a username")
+	public void whitePlayerChoosesAUsername(String playerName1) {
+
+		// white/first player chooses their name
+		Quoridor223Controller.createUser(playerName1);
+
+	}
+
+	/**
+	 * @author Vanessa Ifrah
+	 */
+	@And("Black player chooses a username")
+	public void blackPlayerChoosesAUsername(String playerName2) {
+
+		// black/second player chooses their name
+		Quoridor223Controller.createUser(playerName2);
+
+	}
+
+	/**
+	 * @author Vanessa Ifrah
+	 */
+	@Then("The game shall become ready to start")
+	public void theGameShallBecomeReadyToStart() {
+
+		//assertEquals(GameStatus.Initializing, true);
+
+	}
+		
+	
 	// **********************************************
 	// SetTotalThinkingTime and InitializeBoard start here
 	// **********************************************
