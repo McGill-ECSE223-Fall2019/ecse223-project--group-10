@@ -159,17 +159,23 @@ public class Quoridor223Controller {
 	 * @author Le-Li Mao
 	 * @throws UnsupportedOperationException
 	 */
-	public static void dropWall() throws GameNotRunningException, InvalidOperationException {
+	public static Wall dropWall(){
 		//check if the Game is running if not throw exception
-		if(!isRunning())throw new GameNotRunningException("Game not running");
+		if(!isRunning())return null;
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if there is wall in my hand if not throw exception
-		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
+		if(curGame.getWallMoveCandidate()==null)return null;
 		//finalize drop by putting the move into the movelist and update the gamePosition TODO.
+		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
-		
-		//set my hand as empty and switch turn TODO
+		if(isWhitePlayer())curGame.getCurrentPosition().addWhiteWallsOnBoard(wallToDrop);
+		else curGame.getCurrentPosition().addBlackWallsOnBoard(wallToDrop);
+		Player next = curGame.getCurrentPosition().getPlayerToMove().getNextPlayer();
+		curGame.getCurrentPosition().setPlayerToMove(next);
+		if(!isPlacementValid())return null;
+		//set my hand as empty and switch turn
+		return wallToDrop;
 	}
 	
 	//under feature 9
@@ -216,6 +222,19 @@ public class Quoridor223Controller {
 	private static Tile getTile(int row, int col){
 		Board board = QuoridorApplication.getQuoridor().getBoard();
 		return board.getTile((row-1)*9+(col-1));
+	}
+	private static boolean isWhitePlayer() {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		return curGame.getCurrentPosition().getPlayerToMove().equals(curGame.getWhitePlayer());
+	}
+	private static boolean isPlacementValid() {
+		//will implement this later
+		return true;
+	}
+	private static Move getPreviousMove() {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.numberOfMoves()==0)return null;
+		return curGame.getMove(0);
 	}
 }
 	
