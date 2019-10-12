@@ -760,12 +760,19 @@ public class CucumberStepDefinitions {
 	// TODO: Load Position starts here
 	// **********************************************
 	
+	/**
+	 * @author Micthell
+	 * @param filename
+	 */
 	@When("I initiate to load a saved game {string}")
 	public void iInitiateToLoadASavedGame(String filename) {
 		Quoridor223Controller.loadPosition(filename);
 		loadFileName = filename;
 	}
 	
+	/**
+	 * @author Mitchell
+	 */
 	@And("The position to load is valid")
 	public void thePositionToLoadIsValid() {
 		startLoadedGame(loadFileName);

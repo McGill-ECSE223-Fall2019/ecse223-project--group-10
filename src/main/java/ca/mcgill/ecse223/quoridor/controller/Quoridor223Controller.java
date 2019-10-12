@@ -162,7 +162,8 @@ public class Quoridor223Controller {
 	
 	//under feature 5
 	/**
-	 * Perform a rotate wall operation on the wall od the respective player
+	 * Feature 5: Rotate Wall
+	 * Perform a rotate wall operation on the wall of the respective player
 	 * @author Enan Ashaduzzaman
 	 * @throws UnsupportedOperationException
 	 */
@@ -182,6 +183,7 @@ public class Quoridor223Controller {
 	}
 	//under feature 6
 	/**
+	 * Feature 6: Grab Wall
 	 * Perform a grab wall operation on the stock of the respective player
 	 * @author Enan Ashaduzzaman
 	 * @throws UnsupportedOperationException
@@ -214,7 +216,7 @@ public class Quoridor223Controller {
 
 	/**
 	 * Perform a move operation on a currently selected wall
-	 * Gherkin Feature: MoveWall.feature
+	 * Gherkin Feature 7: MoveWall.feature
 	 * @author Le-Li Mao
 	 * @param side
 	 * @throws GameNotRunningException
@@ -238,7 +240,7 @@ public class Quoridor223Controller {
 
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall
-	 * Gerkin Feature: DropWall.feature
+	 * Gerkin Feature 8: DropWall.feature
 	 * @author Le-Li Mao
 	 */
 	public static Wall dropWall(){
@@ -292,6 +294,12 @@ public class Quoridor223Controller {
 	}
 	
 	// under feature 10
+	/**
+	 * Feature 10: Load game
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @return
+	 */
 	public static boolean loadPosition(String filename) {
 		// check if the Game is running, if it is, throw exception
 		if (isRunning()) {
@@ -358,6 +366,7 @@ public class Quoridor223Controller {
 		return true;
 	}
 	/**
+	 * Feature 11: Validate Position
 	 * @author Sacha Lévy
 	 * @param row
 	 * @param col
@@ -379,6 +388,7 @@ public class Quoridor223Controller {
 		
 	//under feature 12
 	/**
+	 * Feature 12: Switch Player
 	 * Switch player continuous operation
 	 * @throws UnsupportedOperationException, GameNotRunningException
 	 * @author Sacha Lévy
