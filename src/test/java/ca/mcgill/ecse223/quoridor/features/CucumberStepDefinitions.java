@@ -46,6 +46,9 @@ public class CucumberStepDefinitions {
 	private int curRound = 0;
 	private Player initialPlayer = null;
 	private Move initialMove = null;
+	private GamePosition loadedGamePosition = null;
+	private String loadFileName	= null;
+	
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
@@ -517,13 +520,15 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Mitchell Keeley
+	 * @throws IOException 
 	 * @throws UnsupportedOperationException, IOExceptionable 
 	 */
 	@Then("A file with {string} shall be created in the filesystem")
-	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) {
+	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws IOException {
 		File file = new File(filename);
 		assertTrue("File does not exist in the filesystem", file.exists());
 		assertTrue("File is not a File", file.isFile());
+		assertTrue("File is not a valid save file", Quoridor223Controller.writeToNewFile(filename));
 	}
 	
 	/**
@@ -542,6 +547,7 @@ public class CucumberStepDefinitions {
 	public void theUserConfirmsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks yes when prompted by the GUI to overwrite an existing file
+		//assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt());
 		throw new PendingException();
 	}
 	
@@ -551,7 +557,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("File with {string} shall be updated in the filesystem")
 	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
-		assertTrue("The file was not modified", Quoridor223Controller.savePosition(filename));
+		assertTrue("The file was not successfully modified", Quoridor223Controller.writeToExistingFile(filename));
 	}
 	
 	/**
@@ -561,6 +567,7 @@ public class CucumberStepDefinitions {
 	public void theUserCancelsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks no when prompted by the GUI to overwrite an existing file
+		//assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt());
 		throw new PendingException();
 	}
 	
@@ -580,12 +587,12 @@ public class CucumberStepDefinitions {
 	@When("I initiate to load a saved game {string}")
 	public void iInitiateToLoadASavedGame(String filename) {
 		Quoridor223Controller.loadPosition(filename);
+		loadFileName = filename;
 	}
 	
 	@And("The position to load is valid")
 	public void thePositionToLoadIsValid() {
-		Quoridor223Controller.loadValidGamePosition();
-		//Quoridor223Controller.startValidGame();
+		startLoadedGame(loadFileName);
 	}
 	
 	@Then("It shall be {string}'s turn")
@@ -601,25 +608,30 @@ public class CucumberStepDefinitions {
 		//assertTrue("Could not set player's position", Quoridor223Controller.getPlayerPositionByColor(player).equals(row+col));
 	}
 	
-	@And("{string} shall have a {string} wall at {int}:{int}") // this is for both the player and the opponent
+	@And("{string} shall have a {} wall at {int}:{int}") // this is for both the player and the opponent
 	public void playerShallHaveADirectionWallAtRowCol(String playerColor, String direction, int row, int col) {
-		assertTrue("Could not set a wall's direction and position", Quoridor223Controller.addPlayerWallPositionByColor(player, direction, row, col));
+		assertTrue("Could not set a wall's direction and position", Quoridor223Controller.addPlayerWallPositionByColor(playerColor, direction, row, col));
 		//assertTrue("Could not set that wall's direction and position", Quoridor223Controller.getPlayerWallPositionByColor(player).equals(row+col));
 	}
 	
 	@And("Both players shall have {int} in their stacks")
 	public void bothPlayersShallHaveRemainingWallsInTheirStacks(int remainingWalls) {
 		assertTrue("White player does not have the correct number of walls in their stack", 
-				Quoridor223Controller.getCurrentPlayer("white").numberOfWalls() == remainingWalls);
+				Quoridor223Controller.getPlayerByColor("white").numberOfWalls() == remainingWalls);
 		assertTrue("Black player does not have the correct number of walls in their stack", 
-				Quoridor223Controller.getCurrentPlayer("black").numberOfWalls() == remainingWalls);
+				Quoridor223Controller.getPlayerByColor("black").numberOfWalls() == remainingWalls);
 	}
 	
 	@And("The position to load is invalid")
 	public void thePositionToLoadIsInvalid() {
-		Quoridor223Controller.loadInvalidGamePosition();
-		//Quoridor223Controller.startInvalidGame();
+		Quoridor223Controller.whenInvalidLoadGamePosition();
 	}
+	
+	@Then("The load shall return an error")
+	public void theLoadShallReturnAnError() {
+		assertFalse("Invalid load does not return an error", Quoridor223Controller.loadPosition(loadFileName));
+	}
+	
 	
 	// **********************************************
 	// TODO: Save Position and Load Position end here
@@ -727,9 +739,7 @@ public class CucumberStepDefinitions {
 
 		game.setCurrentPosition(gamePosition);
 	}
-
-
-	
+		
 //	Grab Wall Feature
 	//Scenario: Start wall placement
 	/**
@@ -920,7 +930,7 @@ public class CucumberStepDefinitions {
 	 * @author Mitchell Keeley
 	 * @param filename
 	 */
-	public void deleteFileIfItExists(String filename) {
+	private void deleteFileIfItExists(String filename) {
 		File file = new File(filename);
 		if(file.exists() && file.isFile()) {
 			file.delete();
@@ -934,11 +944,23 @@ public class CucumberStepDefinitions {
 	 * @return fileExists
 	 * @throws IOException 
 	 */
-	public void ensureFileExists(String filename) throws IOException {
+	private void ensureFileExists(String filename) throws IOException {
 		File file = new File(filename);
 		if (!file.exists()) {
 			file.createNewFile();
 		}
+	}
+	
+	
+	/**
+	 * A function that starts a new game with the GamePosition loaded from a file
+	 * @author Mitchell Keeley
+	 * @param players, loadedGamePosition
+	 */
+	private void startLoadedGame(String loadFileName) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		game.setCurrentPosition(Quoridor223Controller.validateFile(loadFileName));
 	}
 	
 }

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.sql.Time;
+import java.util.List;
 import java.security.InvalidAlgorithmParameterException;
 
 public class Quoridor223Controller {
@@ -243,43 +244,34 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * Save the current game position as a file in the filesystem
+	 * Feature 9: Save the current game position as a file in the filesystem
 	 * @author Mitchell Keeley
 	 * @param filename
 	 * @return true if the game position was saved, otherwise returns false 
 	 * @throws IOException 
 	 */
-	// when a player clicks the save game button in the save game dialog box
-	// GUI: register button press of the save game button
-	// GUI
-	// the user types the filename into a dialog box and then clicks the save button
-	// if the file is invalid, prompt the user to write a valid path
-	// if the file exists already, prompt the user to agree to overwrite the file
 	public static boolean savePosition(String filename) throws IOException {
+		// GUI: register button press of the save game button
+		// ie: this method is called when a player clicks the save game button in the save game dialog box
+		// the user types the filename into a dialog box and then clicks the save button
+		// if the file is invalid, prompt the user to write a valid path
+		// if the file exists already, prompt the user to agree to overwrite the file
+		boolean savedPosition;
 		
 		// create a new File instance
 		File saveFile = new File(filename);
 				
-		// if the File doesn't exist, set it to writable and create it
+		// if the File doesn't exist
 		if (!saveFile.exists()) {
-			createSaveFile(filename);
-			saveFile.setWritable(true);
-			if (saveFile.createNewFile() == false)
-				throw new IOException("File cannot be created");
+			savedPosition = writeToNewFile(filename);
 		}
 		
 		// if the file exists
-		if (saveFile.exists()) {
-			// prompt user to overwrite the current file
-			boolean overwrite = userOverwritePrompt();
-			if (overwrite == false) {
-				return false;
-			}
+		else {
+			savedPosition = writeToExistingFile(filename);
 		}
 		
-		saveCurrentGamePositionAsFile(filename);
-		
-		return true;
+		return savedPosition;
 	}
 	
 	// under feature 10
@@ -402,6 +394,33 @@ public class Quoridor223Controller {
 		return curGame.getMove(0);
 	}
 	
+	public static boolean writeToExistingFile(String filename) throws IOException {
+		boolean savefileUpdated = false;
+		
+		// verify the file is a file, and is writable
+		// prompt the user to overwrite the file
+		if (userOverwritePrompt() == true) {
+			// save the current GamePositon as the specified file
+			savefileUpdated = saveCurrentGamePositionAsFile(filename);
+		}		
+		
+		//return savefileUpdated;
+		throw new UnsupportedOperationException();
+	}
+
+	public static boolean writeToNewFile(String filename) throws IOException {
+		boolean saveFileCreated = false;
+		File saveFile = new File(filename);
+		
+		if(saveFile.createNewFile() && saveFile.isFile()) {
+			saveFileCreated = saveCurrentGamePositionAsFile(filename);
+		}
+		
+		//return saveFileCreated;
+		throw new UnsupportedOperationException();
+	}
+
+	
 	/**
 	 * GUI function to prompt the user for permission to overwrite the existing file
 	 * @author Mitchell Keeley
@@ -420,10 +439,9 @@ public class Quoridor223Controller {
 	 * A function to save the current GamePosition as a file
 	 * @author Mitchell Keeley
 	 * @param filename
-	 * @throws Throwable 
+	 * @throws IOException
 	 */
-	public static void saveCurrentGamePositionAsFile(String filename) throws Throwable {
-		
+	public static boolean saveCurrentGamePositionAsFile(String filename) throws IOException {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game currentGame = quoridor.getCurrentGame();
 		GamePosition currentGamePosition = currentGame.getCurrentPosition();
@@ -472,6 +490,7 @@ public class Quoridor223Controller {
 		} 
 		printWriter.close();
 		
+		// return true;
 		throw new UnsupportedOperationException();
 	}
 	
@@ -553,6 +572,110 @@ public class Quoridor223Controller {
 	 * @return
 	 */
 	private static String getColorOfNextPlayerFromFile(String filename) {
+		// check first line of file
+		// if it contains "W:" and doesn't contain "B:"
+		// if so, set the next player as the white player
+		// check the next line for if it contains "B:" and doesn't contain "W:"
+		// if so, set the next player as the black player
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * A function to validate the file information being passed to the new GamePosition
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @return
+	 */
+	public static GamePosition validateFile(String filename) {
+		// validate the file
+		// will implement later but will validate the contents of the file
+		// to verify it fits the correct data format
+		// and that when a new GamePosition is created with that data
+		// all the information (player and wall positions, nextPlayer)
+		// doesn't add any invalid information to the GamePosition
+		// returns the valid GamePosition updated with all the valid data
+		
+		
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * A function to set the current player to move by color
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @return
+	 */
+	public static boolean setCurrentPlayerToMoveByColor(String playerColor) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		return game.getCurrentPosition().setPlayerToMove(getPlayerByColor(playerColor));
+	}
+	
+	/**
+	 * A function to set the player position by color
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	public static boolean setPlayerPositionByColor(String playerColor, int row, int col) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Board board = quoridor.getBoard();
+		Game game = quoridor.getCurrentGame();
+		
+		if(playerColor.equals("white")	) {
+			return game.getCurrentPosition().setWhitePosition(new PlayerPosition(getPlayerByColor(playerColor), new Tile(row, col, board)));
+		}
+		else {
+			return game.getCurrentPosition().setBlackPosition(new PlayerPosition(getPlayerByColor(playerColor), new Tile(row, col, board)));
+		}
+	}
+	
+	/**
+	 * A function to add a wall position to the player specified by the given color
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @param direction
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	public static boolean addPlayerWallPositionByColor(String playerColor, String direction, int row, int col) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		List<Move> moveList = game.getMoves();
+		
+		// create new wall move
+		// add the wall move to the moveList
+		// GUI: place the wall on the board		
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * A function to get the player specified by the color
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @return
+	 */
+	public static Player getPlayerByColor(String playerColor) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		
+		if(playerColor.equals("white")) {
+			return game.getWhitePlayer();
+		}
+		else {
+			return game.getBlackPlayer();
+		}
+	}
+	
+	/**
+	 * A function to throw an error to be handled by the GUI when loading an invalid file
+	 * @author Mitchell Keeley
+	 */
+	public static void whenInvalidLoadGamePosition() {
+		// throw error to be caught by the GUI to prompt user to load a different file
 		throw new UnsupportedOperationException();
 	}
 
