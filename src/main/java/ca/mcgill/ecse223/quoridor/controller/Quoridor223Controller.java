@@ -25,12 +25,11 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * helper method to get current player
+	 * helper method to get player by name
 	 * @author Andrew Ta
 	 * @param playerName
-	 * @return
 	 */
-	public static Player getCurrentPlayer(String playerName) {
+	public static Player getPlayerByName(String playerName) {
 		// get current game
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player currentPlayer;
@@ -45,40 +44,39 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * Feature 3: set total thinking time
+	 * Feature 3: Set Total Thinking Time
 	 * @author Andrew Ta
 	 * @param thinkingTime
 	 * @param playerName
 	 * @throws UnsupportedOperationException
 	 */
 	public static void setThinkingTime(Time thinkingTime, String playerName) throws UnsupportedOperationException{
-		if(!isRunning()) return; //if the game is not running, return
-		
 		// get current player
-		Player currentPlayer = getCurrentPlayer(playerName);
+		Player currentPlayer = getPlayerByName(playerName);
 		
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
 	}
 	
 	/**
-	 * get remaining time
+	 * Get Remaining Time of A Player
 	 * @author Andrew Ta
 	 * @param playerName
-	 * @return Time
+	 * @return
 	 * @throws UnsupportedOperationException
+	 * @throws GameNotRunningException
 	 */
-	public static Time getThinkingTime(String playerName) throws UnsupportedOperationException{
-		if(!isRunning()) return null; //if the game is not running, return
+	public static Time getRemainingTime(String playerName) throws UnsupportedOperationException, GameNotRunningException{
+		if(!isRunning()) throw new GameNotRunningException("Game is not running."); //if the game is not running, return
 		
 		// get current player
-		Player currentPlayer = getCurrentPlayer(playerName);
+		Player currentPlayer = getPlayerByName(playerName);
 		
 		return currentPlayer.getRemainingTime();	
 	}
 	
 	/**
-	 * Feature 4: initialize board
+	 * Feature 4: Initialize Board
 	 * @author Andrew Ta
 	 * @throws UnsupportedOperationException
 	 */
@@ -130,21 +128,7 @@ public class Quoridor223Controller {
 
 		game.setCurrentPosition(gamePosition);
 	}
-	
-	/**
-	 * return board
-	 * @author Andrew Ta
-	 * @return
-	 * @throws UnsupportedOperationException
-	 */
-	public static Board getBoard() throws UnsupportedOperationException{
-		if(!isRunning()) return null;
-		
-		// get quoridor object
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		
-		return quoridor.getBoard();
-	}
+
 	
 	//under feature 5
 	/**
@@ -203,6 +187,7 @@ public class Quoridor223Controller {
 
 	/**
 	 * Perform a move operation on a currently selected wall
+	 * Gherkin Feature: MoveWall.feature
 	 * @author Le-Li Mao
 	 * @param side
 	 * @throws GameNotRunningException
@@ -226,8 +211,8 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall
+	 * Gerkin Feature: DropWall.feature
 	 * @author Le-Li Mao
-	 * @throws UnsupportedOperationException
 	 */
 	public static Wall dropWall(){
 		//check if the Game is running if not throw exception
@@ -235,7 +220,7 @@ public class Quoridor223Controller {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if there is wall in my hand if not throw exception
 		if(curGame.getWallMoveCandidate()==null)return null;
-		//finalize drop by putting the move into the movelist and update the gamePosition TODO.
+		//finalize drop by putting the move into the movelist.
 		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
@@ -244,7 +229,7 @@ public class Quoridor223Controller {
 		Player next = curGame.getCurrentPosition().getPlayerToMove().getNextPlayer();
 		curGame.getCurrentPosition().setPlayerToMove(next);
 		if(!isPlacementValid())return null;
-		//set my hand as empty and switch turn
+		//set my hand as empty, update the gamePosition and switch turn yet to be implemented
 		return wallToDrop;
 	}
 	

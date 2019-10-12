@@ -147,18 +147,13 @@ public class CucumberStepDefinitions {
 		
 		// create new users and players
 		ArrayList<Player> players = createUsersAndPlayers("user1", "user2");
-		
-		// initialize game
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game newGame = new Game(GameStatus.Initializing, MoveMode.PlayerMove, players.get(0), players.get(1), quoridor);
-		
 	}
 	
 	/**
 	 * @author Andrew Ta
 	 * @param newTime
 	 */
-	@When("{int} : {int} is set as the thinking time")
+	@When("{int}:{int} is set as the thinking time")
 	public void setThinkingTime(Time newTime) {
 		Quoridor223Controller.setThinkingTime(newTime, "user1");
 		Quoridor223Controller.setThinkingTime(newTime, "user2");
@@ -167,7 +162,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Andrew Ta
 	 */
-	@Then("Both players shall have {int} : {int} remaining time left")
+	@Then("Both players shall have {int}:{int} remaining time left")
 	public void bothPlayerShallHaveSameRemainingTime() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		
@@ -319,12 +314,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I release the wall in my hand")
 	public void iReleaseTheWallInMyHand() {
-		try{
-			Quoridor223Controller.dropWall();
-		}
-		catch (Exception e){
-
-		}
+		Wall wallDroped = Quoridor223Controller.dropWall();
 	}
 	
 	/**
