@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
@@ -280,7 +281,133 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	// SetTotalThinkingTime and InitializeBoard end here
 	// **********************************************
+	
+	// **********************************************
+	// GrabWall and RotateWall
+	// **********************************************
+		
+	
+//	Grab Wall Feature
+	//Scenario: Start wall placement
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@Given("I have more walls on stock")
+	public void iHaveMoreWallsOnStock() {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
+		
+		if (curPlayer.equals(game.getWhitePlayer())) {
+			int curPlayerWalls = game.getCurrentPosition().getWhiteWallsInStock().size();
+			if (curPlayerWalls == 0) {
+				Wall wallOnBoard = game.getCurrentPosition().getWhiteWallsOnBoard(0);
+				game.getCurrentPosition().addWhiteWallsInStock(wallOnBoard);
+			}
+		} else if (curPlayer.equals(game.getBlackPlayer())) {
+			int curPlayerWalls = game.getCurrentPosition().getBlackWallsInStock().size();
+			if (curPlayerWalls == 0) {
+				Wall wallOnBoard = game.getCurrentPosition().getBlackWallsOnBoard(0);
+				game.getCurrentPosition().addBlackWallsInStock(wallOnBoard);
+			}
+		}
+	}
+	
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@When("I try to grab a wall from my stock")
+	public void iTryToGrabAWallFromMyStock() {
+			Quoridor223Controller.grabWall();
+	}
+	
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@Then("A wall move candidate shall be created at initial position")
+	public void aWallMoveCandidateShallBeCraetedAtInitialPosition() {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		boolean hasWallCandidate = true;
+		if (game.getWallMoveCandidate() == null) {
+			hasWallCandidate = false;
+		}
+		assertEquals(true, hasWallCandidate);
+	}
+	
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@And("The wall in my hand shall disappear from my stock")
+	public void theWallInMyHandShouldDisappearFromMyStock() {
+		//GUI (?)
+		throw new PendingException();
+	}
+	
+	//Scenario: No more walls in stock
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@Given("I have no more walls on stock")
+	public void iHaveNoMoreWallsOnStock() {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
+		
+		if (curPlayer.equals(game.getWhitePlayer())) {
+			for (Wall wall: game.getCurrentPosition().getWhiteWallsInStock()){
+				if(wall!=null)game.getCurrentPosition().addWhiteWallsOnBoard(wall);
+			}
+			
+		} else if(curPlayer.equals(game.getBlackPlayer())) {
+			for (Wall wall: game.getCurrentPosition().getBlackWallsInStock()){
+				if(wall!=null)game.getCurrentPosition().addBlackWallsOnBoard(wall);
+			}
+		}
+	}
+	
+	
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@Then("I shall be notified that I have no more walls")
+	public void iShallBeNotifiedThatIHaveNoMoreWalls() {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
+		
+		if(curPlayer.equals(game.getWhitePlayer())) {
+			int wall = game.getCurrentPosition().numberOfWhiteWallsInStock();
+			assertEquals("You have no more walls in stock!", 0, wall);
+		}
+		// GUI STEP (Mentor Confirmed) (?)
+	}
 
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@And("I shall have no walls in my hand")
+	public void iShallHaveNoWallsInMyHand() {
+		//GUI STEP
+		throw new PendingException(); 
+	}
+
+	
+//	Rotate Wall Feature
+	//Scenario: Flip wall from horizontal to vertical or vice versa	
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@When("I try to flip the wall")
+	public void iTryToFlipTheWall(){
+			Quoridor223Controller.rotateWall();
+	}
+	
+	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param direction
+	 */
+	@Then("The wall shall be rotated over the board to {string}")
+	public void theWallShallBeRotatedOverTheBoardToNewdir(String direction) {
+		throw new PendingException(); //GUI Step
+	}
 	// ***********************************************
 	// Move Wall and Drop Wall start here
 	// ***********************************************
@@ -739,8 +866,7 @@ public class CucumberStepDefinitions {
 
 		game.setCurrentPosition(gamePosition);
 	}
-		
-//	Grab Wall Feature
+	//	Grab Wall Feature
 	//Scenario: Start wall placement
 	/**
 	 * @author Enan Ashaduzzaman
@@ -842,26 +968,7 @@ public class CucumberStepDefinitions {
 		throw new PendingException(); 
 	}
 
-	
-//	Rotate Wall Feature
-	//Scenario: Flip wall from horizontal to vertical or vice versa	
-	/**
-	 * @author Enan Ashaduzzaman
-	 */
-	@When("I try to flip the wall")
-	public void iTryToFlipTheWall(){
-			Quoridor223Controller.rotateWall();
-	}
-	
-	
-	/**
-	 * @author Enan Ashaduzzaman
-	 * @param direction
-	 */
-	@Then("The wall shall be rotated over the board to {string}")
-	public void theWallShallBeRotatedOverTheBoardToNewdir(String direction) {
-		throw new PendingException(); //GUI Step
-	}
+
 	
 	
 	/**
@@ -931,8 +1038,6 @@ public class CucumberStepDefinitions {
 		return row1==row2 && col1==col2;
 	}
 	
-	
-	
 	/**
 	 * A function that deletes the specified filename if it exists in the filesystem
 	 * @author Mitchell Keeley
@@ -969,6 +1074,124 @@ public class CucumberStepDefinitions {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game game = quoridor.getCurrentGame();
 		game.setCurrentPosition(Quoridor223Controller.validateFile(loadFileName));
+// note: no need to implement the given lines, they are given and supposed available
+	
+// Validate Position feature
+	// Scenario: Validate pawn position	
+	/**
+	 * @author Sacha Lévy
+	 * @param tile
+	 * @return
+	 */
+	@When("Validation of the position is initiated")
+	public void validationOfThenPositionIsInitiated(Tile tile) throws UnsupportedOperationException, GameNotRunningException {
+		assertEquals(true, Quoridor223Controller.validatePosition(tile));
+	}
+
+	/**
+	 * @author Sacha Lévy
+	 * @return
+	 */
+	@Then("The position shall be <result>")
+	public void thePositionShallBeResult() {
+		throw new PendingException();
+	}
+		
+	//Scenario: Validate overlapping walls (all valid)
+	/**
+	 * @author Sacha Lévy
+	 * @return
+	 */
+	@Then("The position shall be valid")
+	public void thePositionShallBeValid() {
+		// check position given is valid
+		throw new PendingException();
+	}
+	
+	//Scenario: Validate overlapping walls (invalid-1)
+	/**
+	 * @author Sacha Lévy
+	 * @return
+	 */
+	@Then("The position shall be invalid")
+	public void thePositionShallBeInvalid() {
+		// check position given is invalid
+		throw new PendingException();
+	}
+	
+	//Scenario: Validate overlapping walls (invalid-2)
+	//Scenario: Validate overlapping walls (invalid-3)
+	
+// Switch Current Player feature
+	//Scenario: Switch current player
+	@When("Player <player> completes his move")
+	/**
+	 * @author Sacha Lévy
+	 * @param player
+	 * @return
+	 */
+	public void playerCompletesHisMove(Player player) {
+		// check player completes his move
+		throw new PendingException();
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * @param other
+	 * @return
+	 */
+	@Then("The user interface shall be showing it is <other> turn")
+	public void theUserIntefaceShallBeShowingItIs(Player other) {
+		// check state of the user interface - not yet implemented
+		throw new PendingException(); // GUI STEP (Mentor Confirmed)
+	}
+	/**
+	 * @author Sacha Lévy
+	 * @param player
+	 * @return
+	 */
+	@And("The clock of <player> shall be stopped")
+	public void theClockOfPlayerShallBeStopped(Player player) {
+		// check player clock is stopped
+		assertEquals(false, isClockRunning(player));
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * @param player
+	 * @return
+	 */
+	@And("The clock of <other> shall be running")
+	public void theClockOfOtherShallBeRunning(Player other) {
+		// check other players clock is running
+		assertEquals(true, isClockRunning(other));
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * @param player
+	 * @return
+	 */
+	@And("The next player to move shall be <other>")
+	public void theNextPlayeToMoveShallBe(Player other) {
+		// check the next player to move is other
+		assertEquals(true, isNextPlayerToMove(other));
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * @param player
+	 * @return
+	 */
+	private boolean isClockRunning(Player player){
+		Time tmp_time = player.getRemainingTime();
+		if (tmp_time.equals(player.getRemainingTime()))return true;
+		else return false;
+	}
+	
+	private boolean isNextPlayerToMove(Player other){
+		if (other.equals(QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove())) return true;
+		else return false;
 	}
 	
 }

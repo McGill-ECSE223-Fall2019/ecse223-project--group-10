@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 
 import java.sql.Time;
 import java.util.List;
+
 import java.security.InvalidAlgorithmParameterException;
 
 public class Quoridor223Controller {
@@ -142,6 +143,8 @@ public class Quoridor223Controller {
 		}
 
 		game.setCurrentPosition(gamePosition);
+		
+		// remains to implement switch player method in the game
 	}
 	
 	//under feature 5
@@ -164,7 +167,6 @@ public class Quoridor223Controller {
 		//else if
 		//Notify player there is no wall in hand.
 	}
-
 	//under feature 6
 	/**
 	 * Perform a grab wall operation on the stock of the respective player
@@ -342,18 +344,81 @@ public class Quoridor223Controller {
 
 		return true;
 	}
-
-	// under feature 11
-	public static void validatePosition(Tile tile) {
-		// need parameter to know whether it is a pawn or a wall ?
-
-		// validate pawn position
-		// validate wall position
+	/**
+	 * @author Sacha Lévy
+	 * @param row
+	 * @param col
+	 * @throws UnsupportedOperationException, GameNotRunningException 
+	 */
+	// definition overriding first definition applied for testing the validity of wall moves
+	public static boolean validatePosition(Tile tile) throws UnsupportedOperationException, GameNotRunningException{
+		if (!isRunning()) {throw new GameNotRunningException("Game not running");}
+		Quoridor curr_quoridor = QuoridorApplication.getQuoridor();
+		int curr_row = tile.getRow();
+		int curr_col = tile.getColumn();
+		// check if there is an overlap between the tiles on board and the next move
+		for(Tile tmp_tile: curr_quoridor.getBoard().getTiles()) {
+			if(tmp_tile.getRow() == (curr_row) || tmp_tile.getColumn() == (curr_col));
+			else return false;
+		}
+		return true;
 	}
-
-	// under feature 12
-	public static void UpdateBoard() {
-
+		
+	//under feature 12
+	/**
+	 * Switch player continuous operation
+	 * @throws UnsupportedOperationException, GameNotRunningException
+	 * @author Sacha Lévy
+	 */
+	public void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException{
+		// method constantly running while in-game
+		while(true) {
+			if (!isRunning()) {throw new GameNotRunningException("Game not running");}
+			// get the current player
+			Game curr_game = QuoridorApplication.getQuoridor().getCurrentGame();
+			Player current_player;
+			Player other_player;
+			if(curr_game.getBlackPlayer().equals(curr_game.getCurrentPosition().getPlayerToMove())){
+				// player moving is the black player
+				current_player = curr_game.getBlackPlayer();
+				other_player = curr_game.getWhitePlayer();
+			}
+			else {
+				// player moving is the white player 
+				current_player = curr_game.getWhitePlayer();
+				other_player = curr_game.getBlackPlayer();
+			}
+			// check if the clock of the current player is not running
+			if (isClockRunning(current_player) == false) {
+				// set the player to move as the other player
+				curr_game.getCurrentPosition().setPlayerToMove(other_player);
+				updateGUI(current_player, other_player);
+			}
+		}
+	}
+	
+	/**
+	 * Update the GUI when performing the Switch Player operation
+	 * @param player
+	 * @param other
+	 * @author Sacha Lévy
+	 */
+	private void updateGUI(Player other, Player player) throws UnsupportedOperationException{
+		// load to the GUI a dialog box indicating his turn to the player
+		// unshade the current player to move buttons
+		// shade the other player's buttons
+	}
+	
+	/**
+	 * Check if the clock of the given player is running
+	 * @param player
+	 * @return boolean
+	 * @author Sacha Lévy
+	 */
+	private boolean isClockRunning(Player player)throws UnsupportedOperationException{
+		Time tmp_time = player.getRemainingTime();
+		if (tmp_time.equals(player.getRemainingTime())) return true;
+		else return false;
 	}
 
 	/**
