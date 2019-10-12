@@ -6,27 +6,39 @@ import ca.mcgill.ecse223.quoridor.model.*;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 import java.sql.Time;
 import java.util.List;
-
 
 import java.security.InvalidAlgorithmParameterException;
 
 public class Quoridor223Controller {
-	
-	//under feature 1
+
+	private enum side {
+		up, down, left, right
+	};
+
+	// under feature 1
 	public static void createGame() {
-	
+
 	}
-	//under feature 2
+
+	// under feature 2
 	public static void selectUser(String playerName1, String playerName2) {
-		
+
 	}
-	//under feature 2
+
+	// under feature 2
 	public static void createUser(String name) {
-		
+
 	}
-	
+
 	/**
 	 * helper method to get player by name
 	 * @author Andrew Ta
@@ -34,18 +46,19 @@ public class Quoridor223Controller {
 	 */
 	public static Player getPlayerByName(String playerName) {
 		// get current game
+
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player currentPlayer;
 		// get currentPlayer
-		if(currentGame.getBlackPlayer().getUser().getName().equals(playerName)) {
+		if (currentGame.getBlackPlayer().getUser().getName().equals(playerName)) {
 			currentPlayer = currentGame.getBlackPlayer();
-		}else {
+		} else {
 			currentPlayer = currentGame.getWhitePlayer();
 		}
-		
+
 		return currentPlayer;
 	}
-	
+
 	/**
 	 * Feature 3: Set Total Thinking Time
 	 * @author Andrew Ta
@@ -60,7 +73,7 @@ public class Quoridor223Controller {
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
 	}
-	
+
 	/**
 	 * Get Remaining Time of A Player
 	 * @author Andrew Ta
@@ -77,7 +90,7 @@ public class Quoridor223Controller {
 		
 		return currentPlayer.getRemainingTime();	
 	}
-	
+
 	/**
 	 * Feature 4: Initialize Board
 	 * @author Andrew Ta
@@ -133,7 +146,6 @@ public class Quoridor223Controller {
 		
 		// remains to implement switch player method in the game
 	}
-
 	
 	//under feature 5
 	/**
@@ -155,9 +167,6 @@ public class Quoridor223Controller {
 		//else if
 		//Notify player there is no wall in hand.
 	}
-	
-	
-	
 	//under feature 6
 	/**
 	 * Perform a grab wall operation on the stock of the respective player
@@ -213,7 +222,7 @@ public class Quoridor223Controller {
 		//update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow,newCol));
 	}
-	
+
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall
 	 * Gerkin Feature: DropWall.feature
@@ -238,16 +247,103 @@ public class Quoridor223Controller {
 		return wallToDrop;
 	}
 	
-	//under feature 9
-	public static void savePosition() {
+	/**
+	 * Feature 9: Save the current game position as a file in the filesystem
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @return true if the game position was saved, otherwise returns false 
+	 * @throws IOException 
+	 */
+	public static boolean savePosition(String filename) throws IOException {
+		// GUI: register button press of the save game button
+		// ie: this method is called when a player clicks the save game button in the save game dialog box
+		// the user types the filename into a dialog box and then clicks the save button
+		// if the file is invalid, prompt the user to write a valid path
+		// if the file exists already, prompt the user to agree to overwrite the file
+		boolean savedPosition;
 		
+		// create a new File instance
+		File saveFile = new File(filename);
+				
+		// if the File doesn't exist
+		if (!saveFile.exists()) {
+			savedPosition = writeToNewFile(filename);
+		}
+		
+		// if the file exists
+		else {
+			savedPosition = writeToExistingFile(filename);
+		}
+		
+		return savedPosition;
 	}
-	//under feature 10
-	public static void loadPosition() {
 	
+	// under feature 10
+	public static boolean loadPosition(String filename) {
+		// check if the Game is running, if it is, throw exception
+		if (isRunning()) {
+			throw new UnsupportedOperationException("Game is currently running");
+		}
+
+		File loadFile = new File(filename);
+		if (!loadFile.isFile() || !loadFile.canRead()) {
+			// throw new IOException("Invalid File");
+			return false;
+		}
+		
+		// get the current Game and GamePosition
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game currentGame = quoridor.getCurrentGame();		
+		GamePosition currentGamePosition = currentGame.getCurrentPosition();
+		Player playerToMove;
+		
+		// get the new GamePosition data from the loadFile
+		PlayerPosition whitePlayerPosition = getPlayerPositionDataFromFile(filename, "whitePosition");
+		PlayerPosition blackPlayerPosition = getPlayerPositionDataFromFile(filename, "blackPosition");
+		if (getColorOfNextPlayerFromFile(filename).equals("white")) {
+			playerToMove = currentGame.getWhitePlayer();
+		}else {
+			playerToMove = currentGame.getBlackPlayer();
+		}
+		
+		// get the new Game data from the loaFile
+		
+		// validate the positions and moves
+		
+		// add the data obtained from the file to the current Game
+		// TODO: add walls and moves based on the data from the file
+		
+		// add the data obtained from the file to the current GamePosition
+		currentGamePosition = new GamePosition(currentGamePosition.getId(), whitePlayerPosition, blackPlayerPosition, playerToMove, currentGame);
+
+		// validate the tile position for the current player
+		
+		/*for(PlayerPosition playerPosition : loadGamePosition.getPlayerPositions()) {
+			for(Tile tilePosition : playerPosition) {
+			  
+				boolean isPositionValid = validatePosition(tilePosition);
+				if (isPositionValid == false) {
+					//throw new UnsupportedOperationException("Invalid load File");
+				}
+				return false;  
+				
+				if(tilePosition.isPlayerWhite()) {
+					//set player White to tile Position
+				}else if(tilePosition.isPlayerBlack()) {
+					//set player Black to tile Position 
+				}else if(tilePosition.isPlayerBlackWall()) {
+					//set wall in tile position 
+				}
+						  
+				//decrement player Black's wall reserve by 1 } else
+				if(tilePosition.isPlayerWhiteWall()) { //set wall in tile position
+				//decrement player White's wall reserve by 1
+				}
+			} 
+		}*/
+
+		return true;
 	}
-	
-	
 	/**
 	 * @author Sacha Lévy
 	 * @param row
@@ -350,6 +446,7 @@ public class Quoridor223Controller {
 		Board board = QuoridorApplication.getQuoridor().getBoard();
 		return board.getTile((row-1)*9+(col-1));
 	}
+
 	private static boolean isWhitePlayer() {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		return curGame.getCurrentPosition().getPlayerToMove().equals(curGame.getWhitePlayer());
@@ -363,7 +460,290 @@ public class Quoridor223Controller {
 		if(curGame.numberOfMoves()==0)return null;
 		return curGame.getMove(0);
 	}
-}
 	
-	
+	public static boolean writeToExistingFile(String filename) throws IOException {
+		boolean savefileUpdated = false;
+		
+		// verify the file is a file, and is writable
+		// prompt the user to overwrite the file
+		if (userOverwritePrompt() == true) {
+			// save the current GamePositon as the specified file
+			savefileUpdated = saveCurrentGamePositionAsFile(filename);
+		}		
+		
+		//return savefileUpdated;
+		throw new UnsupportedOperationException();
+	}
 
+	public static boolean writeToNewFile(String filename) throws IOException {
+		boolean saveFileCreated = false;
+		File saveFile = new File(filename);
+		
+		if(saveFile.createNewFile() && saveFile.isFile()) {
+			saveFileCreated = saveCurrentGamePositionAsFile(filename);
+		}
+		
+		//return saveFileCreated;
+		throw new UnsupportedOperationException();
+	}
+
+	
+	/**
+	 * GUI function to prompt the user for permission to overwrite the existing file
+	 * @author Mitchell Keeley
+	 * @return overwriteApproved
+	 */
+	public static boolean userOverwritePrompt() {
+		
+		//boolean overwriteApproved;
+		// use UI to prompt user to overwrite the existing file filename
+		// overwriteApproved = result of user input using the ui;
+		//return overwriteApproved;
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * A function to save the current GamePosition as a file
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @throws IOException
+	 */
+	public static boolean saveCurrentGamePositionAsFile(String filename) throws IOException {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game currentGame = quoridor.getCurrentGame();
+		GamePosition currentGamePosition = currentGame.getCurrentPosition();
+		Player whitePlayer = currentGame.getWhitePlayer();
+		Player blackPlayer = currentGame.getBlackPlayer();
+		
+		// get the player information strings to write to the file
+		// TODO: verify that player1 is actually the whitePlayer
+		// TODO: if so, verify the coordinates for the start positions are correct and aligned with the spec for the game coordinate system
+		String whitePlayerData = "W: " + tileToString(currentGamePosition.getWhitePosition().getTile());
+		//System.out.printf(whitePlayerData);
+		// continue with wall list converted to string 
+		String blackPlayerData = "B: " + tileToString(currentGamePosition.getBlackPosition().getTile());
+		//System.out.printf(blackPlayerData);
+		
+		//currentGame.addMove(new WallMove(1,1,whitePlayer,new Tile(1,2,quoridor.getBoard()),
+				//currentGame,Direction.Horizontal,new Wall(0,whitePlayer)));
+		//currentGame.addMove(new WallMove(2,1,blackPlayer,new Tile(5,2,quoridor.getBoard()),
+				//currentGame,Direction.Horizontal,new Wall(10,blackPlayer)));
+		
+		// add the wall positions
+		// TODO: when able to add wall Moves in test, verify wall moves are also recorded
+		for( Move move : currentGame.getMoves()) {
+			if (move instanceof WallMove){
+				if(move.getPlayer().equals(whitePlayer)) {
+					whitePlayerData.concat(", " + tileToString(move.getTargetTile()) + ((WallMove) move).getWallDirection());
+					//printWriter.printf("%s\n", whitePlayerData);
+				}
+				else if(move.getPlayer().equals(blackPlayer)) {
+					blackPlayerData.concat(", " + tileToString(move.getTargetTile()) + ((WallMove) move).getWallDirection());
+					//printWriter.printf("%s\n", blackPlayerData);
+				}
+			}
+		}
+		
+		// initialize the printWriter
+		PrintWriter printWriter = new PrintWriter(new FileWriter(filename));
+		
+		// if the next player to move is the White Player
+		if(currentGamePosition.getPlayerToMove().equals(currentGamePosition.getGame().getWhitePlayer())){
+			printWriter.printf("%s\n", whitePlayerData);
+			printWriter.printf("%s", blackPlayerData);
+		}else {
+			printWriter.printf("%s\n",blackPlayerData);
+			printWriter.printf("%s", whitePlayerData);
+		} 
+		printWriter.close();
+		
+		// return true;
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * A function to translate a tile into the correct string to write to the save file
+	 * @author Mitchell Keeley
+	 * @param tile
+	 * @return
+	 */
+	public static String tileToString(Tile tile) {
+		int asciiNumberOffset = 48;
+		int asciiLetterOffset = 96;
+		
+		String tileString = "" + (char)(asciiLetterOffset + tile.getRow()) + (char)(asciiNumberOffset + tile.getColumn());
+		
+		return tileString;
+	}
+	
+	/**
+	 * A function to translate a Direction into the correct string to write to the save file
+	 * @author Mitchell Keeley
+	 * @param direction
+	 * @return
+	 */
+	public String directionToString(Direction direction) {
+		if(direction.equals(Direction.Horizontal)){
+			return "h";
+		}
+		else {
+			return "v";
+		}
+	}
+	
+	/**
+	 * A function to load a new GamePosition
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @return
+	 */
+	private GamePosition getLoadGamePosition(File filename) {
+
+		// initialize the new GamePosition
+		GamePosition newGamePosition = new GamePosition(0, null, null, null, null);
+
+		try {
+			// create a file reader
+			// BufferedReader fileReader = new BufferedReader(new FileReader(filename));
+
+			// read the file to load the GamePosition
+			// newGamePosition.nextPlayer = fileReader.readLine();
+			// newGamePosition.CurrentPlayer = fileReader.readLine();
+
+			// set the current player color by the first entry in the Current player
+			// set the next player as the other color
+
+		} catch (Exception e) {
+			throw new UnsupportedOperationException(e);
+		}
+
+		return newGamePosition;
+	}
+	
+	/**
+	 * A function to get the PlayerPosition for a specified player
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @param playerPosition
+	 * @return
+	 */
+	private static PlayerPosition getPlayerPositionDataFromFile(String filename, String playerPosition){
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * A function to get the color of the next player from the file
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @param playerPosition
+	 * @return
+	 */
+	private static String getColorOfNextPlayerFromFile(String filename) {
+		// check first line of file
+		// if it contains "W:" and doesn't contain "B:"
+		// if so, set the next player as the white player
+		// check the next line for if it contains "B:" and doesn't contain "W:"
+		// if so, set the next player as the black player
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * A function to validate the file information being passed to the new GamePosition
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @return
+	 */
+	public static GamePosition validateFile(String filename) {
+		// validate the file
+		// will implement later but will validate the contents of the file
+		// to verify it fits the correct data format
+		// and that when a new GamePosition is created with that data
+		// all the information (player and wall positions, nextPlayer)
+		// doesn't add any invalid information to the GamePosition
+		// returns the valid GamePosition updated with all the valid data
+		
+		
+		throw new UnsupportedOperationException();
+	}
+	
+	/**
+	 * A function to set the current player to move by color
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @return
+	 */
+	public static boolean setCurrentPlayerToMoveByColor(String playerColor) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		return game.getCurrentPosition().setPlayerToMove(getPlayerByColor(playerColor));
+	}
+	
+	/**
+	 * A function to set the player position by color
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	public static boolean setPlayerPositionByColor(String playerColor, int row, int col) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Board board = quoridor.getBoard();
+		Game game = quoridor.getCurrentGame();
+		
+		if(playerColor.equals("white")	) {
+			return game.getCurrentPosition().setWhitePosition(new PlayerPosition(getPlayerByColor(playerColor), new Tile(row, col, board)));
+		}
+		else {
+			return game.getCurrentPosition().setBlackPosition(new PlayerPosition(getPlayerByColor(playerColor), new Tile(row, col, board)));
+		}
+	}
+	
+	/**
+	 * A function to add a wall position to the player specified by the given color
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @param direction
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	public static boolean addPlayerWallPositionByColor(String playerColor, String direction, int row, int col) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		List<Move> moveList = game.getMoves();
+		
+		// create new wall move
+		// add the wall move to the moveList
+		// GUI: place the wall on the board		
+		throw new UnsupportedOperationException();
+	}
+
+	/**
+	 * A function to get the player specified by the color
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @return
+	 */
+	public static Player getPlayerByColor(String playerColor) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		
+		if(playerColor.equals("white")) {
+			return game.getWhitePlayer();
+		}
+		else {
+			return game.getBlackPlayer();
+		}
+	}
+	
+	/**
+	 * A function to throw an error to be handled by the GUI when loading an invalid file
+	 * @author Mitchell Keeley
+	 */
+	public static void whenInvalidLoadGamePosition() {
+		// throw error to be caught by the GUI to prompt user to load a different file
+		throw new UnsupportedOperationException();
+	}
+
+}

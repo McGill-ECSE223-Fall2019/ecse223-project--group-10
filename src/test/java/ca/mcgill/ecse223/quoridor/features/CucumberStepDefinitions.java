@@ -1,5 +1,10 @@
 package ca.mcgill.ecse223.quoridor.features;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +35,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 public class CucumberStepDefinitions {
 
 	// ***********************************************
@@ -39,6 +47,9 @@ public class CucumberStepDefinitions {
 	private int curRound = 0;
 	private Player initialPlayer = null;
 	private Move initialMove = null;
+	private GamePosition loadedGamePosition = null;
+	private String loadFileName	= null;
+	
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
@@ -119,7 +130,6 @@ public class CucumberStepDefinitions {
 	public void iDoNotHaveAWallInMyHand2() {
 		// GUI-related feature -- TODO for later
 	}
-	
 	
 	// ***********************************************
 	// Scenario and scenario outline step definitions
@@ -614,6 +624,146 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	// Drop Wall and Move Wall end here
 	// **********************************************
+	
+	// **********************************************
+	// TODO: Save Position starts here
+	// **********************************************
+	/**
+	 * @author Mitchell Keeley
+	 */	
+	@Given("No file {string} exists in the filesystem")
+	public void noFileFilenameExistsInTheFilesystem(String filename) {
+		deleteFileIfItExists(filename);
+	}	
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws Throwable 
+	 */
+	@When("The user initiates to save the game with name {string}")
+	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) throws Throwable {
+		Quoridor223Controller.savePosition(filename);
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws IOException 
+	 * @throws UnsupportedOperationException, IOExceptionable 
+	 */
+	@Then("A file with {string} shall be created in the filesystem")
+	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws IOException {
+		File file = new File(filename);
+		assertTrue("File does not exist in the filesystem", file.exists());
+		assertTrue("File is not a File", file.isFile());
+		assertTrue("File is not a valid save file", Quoridor223Controller.writeToNewFile(filename));
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws IOException 
+	 */
+	@Given("File {string} exists in the filesystem")
+	public void fileFilenameExistsInTheFilesystem(String filename) throws IOException {
+		ensureFileExists(filename);
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 */
+	@And("The user confirms to overwrite existing file")
+	public void theUserConfirmsToOverwriteExistingFile() {
+		//GUI
+		//The user clicks yes when prompted by the GUI to overwrite an existing file
+		//assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt());
+		throw new PendingException();
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws Throwable 
+	 */
+	@Then("File with {string} shall be updated in the filesystem")
+	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
+		assertTrue("The file was not successfully modified", Quoridor223Controller.writeToExistingFile(filename));
+	}
+	
+	/**
+	 * @author Mitchell Keeley 
+	 */
+	@And("The user cancels to overwrite existing file")
+	public void theUserCancelsToOverwriteExistingFile() {
+		//GUI
+		//The user clicks no when prompted by the GUI to overwrite an existing file
+		//assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt());
+		throw new PendingException();
+	}
+	
+	/**
+	 * @author Mitchell Keeley 
+	 * @throws Throwable 
+	 */
+	@Then("File {string} shall not be changed in the filesystem")
+	public void fileFilenameShallNotBeChangedInTheFilesystem(String filename) throws Throwable {
+		assertFalse("The file was modified", Quoridor223Controller.savePosition(filename));
+	}
+	
+	// **********************************************
+	// TODO: Load Position starts here
+	// **********************************************
+	
+	@When("I initiate to load a saved game {string}")
+	public void iInitiateToLoadASavedGame(String filename) {
+		Quoridor223Controller.loadPosition(filename);
+		loadFileName = filename;
+	}
+	
+	@And("The position to load is valid")
+	public void thePositionToLoadIsValid() {
+		startLoadedGame(loadFileName);
+	}
+	
+	@Then("It shall be {string}'s turn")
+	//@And("It shall be {player}'s turn")
+	public void itShallBePlayersTurn(String playerColor) {
+		assertTrue("Could not set nextPlayer to that player", Quoridor223Controller.setCurrentPlayerToMoveByColor(playerColor));
+		//assertTrue("It is not that player's turn", Quoridor223Controller.getPlayerColorToMove().equals(playerColor));
+	}
+	
+	@And("{string} shall be at {int}:{int}") // this is for both the player and opponent
+	public void playerShallbeAtRowCol(String playerColor, int row, int col) {
+		assertTrue("Could not set player's position", Quoridor223Controller.setPlayerPositionByColor(playerColor, row, col));
+		//assertTrue("Could not set player's position", Quoridor223Controller.getPlayerPositionByColor(player).equals(row+col));
+	}
+	
+	@And("{string} shall have a {} wall at {int}:{int}") // this is for both the player and the opponent
+	public void playerShallHaveADirectionWallAtRowCol(String playerColor, String direction, int row, int col) {
+		assertTrue("Could not set a wall's direction and position", Quoridor223Controller.addPlayerWallPositionByColor(playerColor, direction, row, col));
+		//assertTrue("Could not set that wall's direction and position", Quoridor223Controller.getPlayerWallPositionByColor(player).equals(row+col));
+	}
+	
+	@And("Both players shall have {int} in their stacks")
+	public void bothPlayersShallHaveRemainingWallsInTheirStacks(int remainingWalls) {
+		assertTrue("White player does not have the correct number of walls in their stack", 
+				Quoridor223Controller.getPlayerByColor("white").numberOfWalls() == remainingWalls);
+		assertTrue("Black player does not have the correct number of walls in their stack", 
+				Quoridor223Controller.getPlayerByColor("black").numberOfWalls() == remainingWalls);
+	}
+	
+	@And("The position to load is invalid")
+	public void thePositionToLoadIsInvalid() {
+		Quoridor223Controller.whenInvalidLoadGamePosition();
+	}
+	
+	@Then("The load shall return an error")
+	public void theLoadShallReturnAnError() {
+		assertFalse("Invalid load does not return an error", Quoridor223Controller.loadPosition(loadFileName));
+	}
+	
+	
+	// **********************************************
+	// TODO: Save Position and Load Position end here
+	// **********************************************
+	
 	// ***********************************************
 	// Clean up
 	// ***********************************************
@@ -662,16 +812,12 @@ public class CucumberStepDefinitions {
 
 		// Players are assumed to start on opposite sides and need to make progress
 		// horizontally to get to the other side
-		//@formatter:off
+		// @formatter:off
 		/*
-		 *  __________
-		 * |          |
-		 * |          |
-		 * |x->    <-x|
-		 * |          |
-		 * |__________|
+		 * __________ | | | | |x-> <-x| | | |__________|
 		 * 
 		 */
+
 		//@formatter:on
 		Player player1 = new Player(new Time(thinkingTime), user1, 9, Direction.Horizontal);
 		Player player2 = new Player(new Time(thinkingTime), user2, 1, Direction.Horizontal);
@@ -720,7 +866,107 @@ public class CucumberStepDefinitions {
 
 		game.setCurrentPosition(gamePosition);
 	}
+	//	Grab Wall Feature
+	//Scenario: Start wall placement
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@Given("I have more walls on stock")
+	public void iHaveMoreWallsOnStock() {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
+		
+		if (curPlayer.equals(game.getWhitePlayer())) {
+			int curPlayerWalls = game.getCurrentPosition().getWhiteWallsInStock().size();
+			if (curPlayerWalls == 0) {
+				Wall wallOnBoard = game.getCurrentPosition().getWhiteWallsOnBoard(0);
+				game.getCurrentPosition().addWhiteWallsInStock(wallOnBoard);
+			}
+		} else if (curPlayer.equals(game.getBlackPlayer())) {
+			int curPlayerWalls = game.getCurrentPosition().getBlackWallsInStock().size();
+			if (curPlayerWalls == 0) {
+				Wall wallOnBoard = game.getCurrentPosition().getBlackWallsOnBoard(0);
+				game.getCurrentPosition().addBlackWallsInStock(wallOnBoard);
+			}
+		}
+	}
+	
+	
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@When("I try to grab a wall from my stock")
+	public void iTryToGrabAWallFromMyStock() {
+			Quoridor223Controller.grabWall();
+	}
+	
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@Then("A wall move candidate shall be created at initial position")
+	public void aWallMoveCandidateShallBeCraetedAtInitialPosition() {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		boolean hasWallCandidate = true;
+		if (game.getWallMoveCandidate() == null) {
+			hasWallCandidate = false;
+		}
+		assertEquals(true, hasWallCandidate);
+	}
+	
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@And("The wall in my hand shall disappear from my stock")
+	public void theWallInMyHandShouldDisappearFromMyStock() {
+		//GUI (?)
+		throw new PendingException();
+	}
+	
+	//Scenario: No more walls in stock
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@Given("I have no more walls on stock")
+	public void iHaveNoMoreWallsOnStock() {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
+		
+		if (curPlayer.equals(game.getWhitePlayer())) {
+			for (Wall wall: game.getCurrentPosition().getWhiteWallsInStock()){
+				if(wall!=null)game.getCurrentPosition().addWhiteWallsOnBoard(wall);
+			}
+			
+		} else if(curPlayer.equals(game.getBlackPlayer())) {
+			for (Wall wall: game.getCurrentPosition().getBlackWallsInStock()){
+				if(wall!=null)game.getCurrentPosition().addBlackWallsOnBoard(wall);
+			}
+		}
+	}
+	
+	
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@Then("I shall be notified that I have no more walls")
+	public void iShallBeNotifiedThatIHaveNoMoreWalls() {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
+		
+		if(curPlayer.equals(game.getWhitePlayer())) {
+			int wall = game.getCurrentPosition().numberOfWhiteWallsInStock();
+			assertEquals("You have no more walls in stock!", 0, wall);
+		}
+		// GUI STEP (Mentor Confirmed) (?)
+	}
 
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@And("I shall have no walls in my hand")
+	public void iShallHaveNoWallsInMyHand() {
+		//GUI STEP
+		throw new PendingException(); 
+	}
 
 
 	
@@ -792,6 +1038,42 @@ public class CucumberStepDefinitions {
 		return row1==row2 && col1==col2;
 	}
 	
+	/**
+	 * A function that deletes the specified filename if it exists in the filesystem
+	 * @author Mitchell Keeley
+	 * @param filename
+	 */
+	private void deleteFileIfItExists(String filename) {
+		File file = new File(filename);
+		if(file.exists() && file.isFile()) {
+			file.delete();
+		}
+	}
+	
+	/**
+	 * A function that creates the specified file if it does not already exist
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @return fileExists
+	 * @throws IOException 
+	 */
+	private void ensureFileExists(String filename) throws IOException {
+		File file = new File(filename);
+		if (!file.exists()) {
+			file.createNewFile();
+		}
+	}
+	
+	
+	/**
+	 * A function that starts a new game with the GamePosition loaded from a file
+	 * @author Mitchell Keeley
+	 * @param players, loadedGamePosition
+	 */
+	private void startLoadedGame(String loadFileName) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		game.setCurrentPosition(Quoridor223Controller.validateFile(loadFileName));
 // note: no need to implement the given lines, they are given and supposed available
 	
 // Validate Position feature
