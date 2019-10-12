@@ -114,6 +114,12 @@ public class CucumberStepDefinitions {
 
 	}
 	
+	@And("I do not have a wall in my hand")
+	public void iDoNotHaveAWallInMyHand2() {
+		// GUI-related feature -- TODO for later
+	}
+	
+	
 	// ***********************************************
 	// Scenario and scenario outline step definitions
 	// ***********************************************
@@ -608,18 +614,18 @@ public class CucumberStepDefinitions {
 	@Given("I have more walls on stock")
 	public void iHaveMoreWallsOnStock() {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Player curPlayer = game.getCurrentPosition().getPlayerToMove().getNextPlayer();
+		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
 		
 		if (curPlayer.equals(game.getWhitePlayer())) {
 			int curPlayerWalls = game.getCurrentPosition().getWhiteWallsInStock().size();
 			if (curPlayerWalls == 0) {
-				Wall wallOnBoard = (Wall) game.getCurrentPosition().getWhiteWallsOnBoard();
+				Wall wallOnBoard = game.getCurrentPosition().getWhiteWallsOnBoard(0);
 				game.getCurrentPosition().addWhiteWallsInStock(wallOnBoard);
 			}
 		} else if (curPlayer.equals(game.getBlackPlayer())) {
 			int curPlayerWalls = game.getCurrentPosition().getBlackWallsInStock().size();
 			if (curPlayerWalls == 0) {
-				Wall wallOnBoard = (Wall) game.getCurrentPosition().getBlackWallsOnBoard();
+				Wall wallOnBoard = game.getCurrentPosition().getBlackWallsOnBoard(0);
 				game.getCurrentPosition().addBlackWallsInStock(wallOnBoard);
 			}
 		}
@@ -631,34 +637,29 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I try to grab a wall from my stock")
 	public void iTryToGrabAWallFromMyStock() {
-		try {
 			Quoridor223Controller.grabWall();
-		}
-		catch (Exception e) {
-	
-		}
-	}
-	
-	
-	/**
-	 * @author Enan Ashaduzzaman
-	 */
-	@And("The wall in my hand should disappear from my stock")
-	public void theWallInMyHandShouldDisappearFromMyStock() {
-		throw new PendingException();
 	}
 	
 	/**
 	 * @author Enan Ashaduzzaman
 	 */
-	@And("A wall move candidate shall be created at the initial position")
+	@Then("A wall move candidate shall be created at initial position")
 	public void aWallMoveCandidateShallBeCraetedAtInitialPosition() {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		boolean hasWallCandidate = true;
 		if (game.getWallMoveCandidate() == null) {
 			hasWallCandidate = false;
 		}
-		assertEquals(hasWallCandidate, true);
+		assertEquals(true, hasWallCandidate);
+	}
+	
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@And("The wall in my hand shall disappear from my stock")
+	public void theWallInMyHandShouldDisappearFromMyStock() {
+		//GUI (?)
+		throw new PendingException();
 	}
 	
 	//Scenario: No more walls in stock
@@ -668,28 +669,45 @@ public class CucumberStepDefinitions {
 	@Given("I have no more walls on stock")
 	public void iHaveNoMoreWallsOnStock() {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Player curPlayer = game.getCurrentPosition().getPlayerToMove().getNextPlayer();
+		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
 		
 		if (curPlayer.equals(game.getWhitePlayer())) {
 			for (Wall wall: game.getCurrentPosition().getWhiteWallsInStock()){
-				game.getCurrentPosition().addWhiteWallsOnBoard(wall);
+				if(wall!=null)game.getCurrentPosition().addWhiteWallsOnBoard(wall);
 			}
 			
 		} else if(curPlayer.equals(game.getBlackPlayer())) {
 			for (Wall wall: game.getCurrentPosition().getBlackWallsInStock()){
-				game.getCurrentPosition().addBlackWallsOnBoard(wall);
+				if(wall!=null)game.getCurrentPosition().addBlackWallsOnBoard(wall);
 			}
 		}
 	}
 	
+	
 	/**
 	 * @author Enan Ashaduzzaman
 	 */
-	@Then("I should be notified that I have no more walls")
-	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
-		throw new PendingException(); // GUI STEP (Mentor Confirmed)
+	@Then("I shall be notified that I have no more walls")
+	public void iShallBeNotifiedThatIHaveNoMoreWalls() {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
+		
+		if(curPlayer.equals(game.getWhitePlayer())) {
+			int wall = game.getCurrentPosition().numberOfWhiteWallsInStock();
+			assertEquals("You have no more walls in stock!", 0, wall);
+		}
+		// GUI STEP (Mentor Confirmed) (?)
 	}
-	
+
+	/**
+	 * @author Enan Ashaduzzaman
+	 */
+	@And("I shall have no walls in my hand")
+	public void iShallHaveNoWallsInMyHand() {
+		//GUI STEP
+		throw new PendingException(); 
+	}
+
 	
 //	Rotate Wall Feature
 	//Scenario: Flip wall from horizontal to vertical or vice versa	
@@ -698,13 +716,9 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I try to flip the wall")
 	public void iTryToFlipTheWall(){
-		try {
 			Quoridor223Controller.rotateWall();
-		}
-		catch (Exception e) {
-	
-		}
 	}
+	
 	
 	/**
 	 * @author Enan Ashaduzzaman
@@ -712,7 +726,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The wall shall be rotated over the board to {string}")
 	public void theWallShallBeRotatedOverTheBoardToNewdir(String direction) {
-		throw new PendingException();
+		throw new PendingException(); //GUI Step
 	}
 	
 	

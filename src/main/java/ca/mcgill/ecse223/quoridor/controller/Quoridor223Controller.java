@@ -153,13 +153,14 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException
 	 */
 	public static void rotateWall() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException();
 		//check if the Game is running. If not, thrown an exception.
 		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
 		//check if it is the player's turn. If not, thrown an excpetion. 
 		//check if there is no wall in my hand. If no wall, thrown an excpetion. 
 		//if there is a wall in my hand
-			//rotate walls with the "A" and "D" keys.
+			//rotate walls with the "R" keys.
 			//get coordinates for the wall position
 			//
 		//else if
@@ -175,6 +176,7 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException
 	 */
 	public static void grabWall() throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
 		//check if the Game is running if not throw exception
 		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
