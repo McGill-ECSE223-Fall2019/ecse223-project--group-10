@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
@@ -776,5 +777,126 @@ public class CucumberStepDefinitions {
 	 */
 	private boolean isCordEqual(int row1,int col1, int row2, int col2){
 		return row1==row2 && col1==col2;
-	}	
+	}
+	
+// note: no need to implement the given lines, they are given and supposed available
+	
+// Validate Position feature
+	// Scenario: Validate pawn position	
+	/**
+	 * @author Sacha Lévy
+	 * @param tile
+	 * @return
+	 */
+	@When("Validation of the position is initiated")
+	public void validationOfThenPositionIsInitiated(Tile tile) throws UnsupportedOperationException, GameNotRunningException {
+		assertEquals(true, Quoridor223Controller.validatePosition(tile));
+	}
+
+	/**
+	 * @author Sacha Lévy
+	 * @return
+	 */
+	@Then("The position shall be <result>")
+	public void thePositionShallBeResult() {
+		throw new PendingException();
+	}
+		
+	//Scenario: Validate overlapping walls (all valid)
+	/**
+	 * @author Sacha Lévy
+	 * @return
+	 */
+	@Then("The position shall be valid")
+	public void thePositionShallBeValid() {
+		// check position given is valid
+		throw new PendingException();
+	}
+	
+	//Scenario: Validate overlapping walls (invalid-1)
+	/**
+	 * @author Sacha Lévy
+	 * @return
+	 */
+	@Then("The position shall be invalid")
+	public void thePositionShallBeInvalid() {
+		// check position given is invalid
+		throw new PendingException();
+	}
+	
+	//Scenario: Validate overlapping walls (invalid-2)
+	//Scenario: Validate overlapping walls (invalid-3)
+	
+// Switch Current Player feature
+	//Scenario: Switch current player
+	@When("Player <player> completes his move")
+	/**
+	 * @author Sacha Lévy
+	 * @param player
+	 * @return
+	 */
+	public void playerCompletesHisMove(Player player) {
+		// check player completes his move
+		throw new PendingException();
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * @param other
+	 * @return
+	 */
+	@Then("The user interface shall be showing it is <other> turn")
+	public void theUserIntefaceShallBeShowingItIs(Player other) {
+		// check state of the user interface - not yet implemented
+		throw new PendingException(); // GUI STEP (Mentor Confirmed)
+	}
+	/**
+	 * @author Sacha Lévy
+	 * @param player
+	 * @return
+	 */
+	@And("The clock of <player> shall be stopped")
+	public void theClockOfPlayerShallBeStopped(Player player) {
+		// check player clock is stopped
+		assertEquals(false, isClockRunning(player));
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * @param player
+	 * @return
+	 */
+	@And("The clock of <other> shall be running")
+	public void theClockOfOtherShallBeRunning(Player other) {
+		// check other players clock is running
+		assertEquals(true, isClockRunning(other));
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * @param player
+	 * @return
+	 */
+	@And("The next player to move shall be <other>")
+	public void theNextPlayeToMoveShallBe(Player other) {
+		// check the next player to move is other
+		assertEquals(true, isNextPlayerToMove(other));
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * @param player
+	 * @return
+	 */
+	private boolean isClockRunning(Player player){
+		Time tmp_time = player.getRemainingTime();
+		if (tmp_time.equals(player.getRemainingTime()))return true;
+		else return false;
+	}
+	
+	private boolean isNextPlayerToMove(Player other){
+		if (other.equals(QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove())) return true;
+		else return false;
+	}
+	
 }
