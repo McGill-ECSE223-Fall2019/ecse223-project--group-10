@@ -20,10 +20,6 @@ import java.security.InvalidAlgorithmParameterException;
 
 public class Quoridor223Controller {
 
-	private enum side {
-		up, down, left, right
-	};
-
 	// under feature 1
 	public static void createGame() {
 
