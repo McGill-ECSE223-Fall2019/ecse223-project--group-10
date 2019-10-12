@@ -151,7 +151,7 @@ public class Quoridor223Controller {
 		//Notify player there is no wall in hand.
 	}
 	
-
+	
 	
 	//under feature 6
 	/**
