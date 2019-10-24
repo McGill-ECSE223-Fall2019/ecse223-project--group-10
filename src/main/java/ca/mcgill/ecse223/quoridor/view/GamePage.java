@@ -46,9 +46,9 @@ public class GamePage extends JFrame{
 	private void initComponent(){
 		initFrame();
 		//initialize the board
-				boardComponent = new BoardComponent();
+				boardComponent = new BoardComponent(500);
 				boardComponent.setSize(new Dimension(500,500));
-				boardComponent.setBackground(new Color(50, 50, 50));
+				boardComponent.setBackground(new Color(206,159,111));
 		
 		JButton btnNewButton = new JButton("New button");
 		
@@ -56,6 +56,9 @@ public class GamePage extends JFrame{
 		
 		JButton btnNewButton_2 = new JButton("New button");
 		GroupLayout layout = new GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(layout.createSequentialGroup()
@@ -81,9 +84,7 @@ public class GamePage extends JFrame{
 						.addComponent(btnNewButton_1))
 					.addContainerGap(224, Short.MAX_VALUE))
 		);
-		getContentPane().setLayout(layout);
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
+		
 	}
 	private void initFrame() {
 		this.setSize(800,800);
