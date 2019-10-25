@@ -4,11 +4,6 @@ import ca.mcgill.ecse223.quoridor.model.Quoridor;
 
 public class QuoridorApplication {
 	private static Quoridor quoridor;
-
-	public enum Side {
-		up, down, left, right
-	};
-
 	public static void main(String[] args) {
 
 	}

@@ -19,24 +19,37 @@ import java.util.List;
 import java.security.InvalidAlgorithmParameterException;
 
 public class Quoridor223Controller {
-
-	private enum side {
-		up, down, left, right
-	};
-
-	// under feature 1
-	public static void createGame() {
-
+	
+	/**
+	 * Create a new game for the players
+	 * @author Vanessa Ifrah
+	 * @throws UnsupportedOperationException
+	 */
+	public static void createGame() throws UnsupportedOperationException {
+		//check if the game is being initialized
+		//throw an exception if not
+	
 	}
-
-	// under feature 2
-	public static void selectUser(String playerName1, String playerName2) {
-
+	
+	/**
+	 * Feature 2: Select an existing user
+	 * @author Vanessa Ifrah
+	 * @throws UnsupportedOperationException
+	 */
+	//under feature 2
+	public static void selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
+		// load the user
+		// if not throw an exception
 	}
-
-	// under feature 2
-	public static void createUser(String name) {
-
+	
+	/**
+	 * Feature 2: Creating a new user with new username
+	 * @author Vanessa Ifrah
+	 * @throws UnsupportedOperationException
+	 */
+	public static void createUser(String name) throws UnsupportedOperationException{
+		// create a new user
+		// throw an exception if user not created
 	}
 
 	/**
