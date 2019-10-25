@@ -39,6 +39,7 @@ public class BoardComponent extends JPanel {
 	private float[] whiteWallInHand;
 	private float[] blackWallInHand;
 	private HashMap<playerColor,Ellipse2D> players = new HashMap<>();
+	
 	public BoardComponent(int size) {
 		// TODO Auto-generated constructor stub
 		super();
@@ -55,10 +56,12 @@ public class BoardComponent extends JPanel {
 		}
 		init();
 	}
+	
 	private void init() {
 		setupGrid();
 		loadWall();
 	}
+	
 	private void doDrawing(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g.create();
 		BasicStroke thickStroke = new BasicStroke(8);
@@ -82,9 +85,10 @@ public class BoardComponent extends JPanel {
 		for(float[] wallCord: whiteWallInStock)g2d.drawImage(wall, (int)wallCord[0], (int)wallCord[1], this);
 
 	}
+	
 	private void setupGrid() {
 		for(int i = 0; i < 9; i++) {
-			for(int j = 0; j<9 ;j++) {
+			for(int j = 0; j < 9 ;j++) {
 				rects.add(new Rectangle2D.Float(margin+i*width,margin+j*width,width,width));
 			}
 		}
@@ -98,6 +102,7 @@ public class BoardComponent extends JPanel {
 		players.put(playerColor.black,new Ellipse2D.Float(getcord(1),getcord(5),width*2/3,width*2/3));
 		players.put(playerColor.white,new Ellipse2D.Float(getcord(9),getcord(5),width*2/3,width*2/3));
 	}
+	
 	private void loadWall() {
 		blackWallInHand=null;
 		whiteWallInHand=null;
@@ -113,13 +118,16 @@ public class BoardComponent extends JPanel {
 			y+=width;
 		}
 	}
+	
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		doDrawing(g);
 	}
+	
 	private float getcord(int index) {
 		return (float)(index-5.0/6)*width+margin;
 	}
+	
 	private File getFileFromResources(String fileName) {
         ClassLoader classLoader = getClass().getClassLoader();
         URL resource = classLoader.getResource(fileName);
@@ -129,6 +137,7 @@ public class BoardComponent extends JPanel {
             return new File(resource.getFile());
         }
     }
+	
 	private static BufferedImage resize(BufferedImage img, int height, int width) {
         Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
         BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
