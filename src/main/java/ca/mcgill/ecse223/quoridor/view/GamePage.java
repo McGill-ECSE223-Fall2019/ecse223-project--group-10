@@ -7,6 +7,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Properties;
+import java.sql.Time;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -38,32 +39,41 @@ import java.awt.CardLayout;
 import javax.swing.JTextArea;
 
 public class GamePage extends JFrame{
+	
+	// board
 	private BoardComponent boardComponent;
+
+	// username
+	private JLabel userName1;
+	private JLabel userName2;
 	
-	private JButton upBtn;
-	private JButton downBtn;
-	private JButton leftBtn;
-	private JButton rightBtn;
+	// remaining time
+	private Time whiteRemainingTime;
+	private Time blackRemainingTime;
+	private JLabel whiteTime;
+	private JLabel blackTime;
 	
-	private JButton grabBtn;
-	private JButton dropBtn;
-	private JButton rotateBtn;
-	private JButton forfeitBtn;
+	// grab, drop, rotate wall button
+	private JButton whiteGrabWall;
+	private JButton whiteDropWall;
+	private JButton whiteRotateWall;
 	
-	private JButton newGameBtn;
-	private JButton replayGameBtn;
-	private JButton saveGameBtn;
-	private JButton loadGameBtn;
+	private JButton blackGrabWall;
+	private JButton blackDropWall;
+	private JButton blackRotateWall;
 	
-	private JTextArea notificationText;
-	private JTextArea whitePlayerName;
-	private JTextArea whitePlayerTime;
-	private JTextArea blackPlayerName;
-	private JTextArea blackPlayerTime;
+	// forfeit game
+	private JButton whiteForfeit;
+	private JButton blackForfeit;
 	
-	private JTextArea quoridor;
-	private JTextArea white;
-	private JTextArea black;
+	// load, save, new, replay
+	private JButton loadGame;
+	private JButton saveGame;
+	private JButton newGame;
+	private JButton replayGame;
+	
+	// player's turn
+	private JLabel playerTurn;
 	
 	public GamePage(){
 		initComponent();
@@ -71,90 +81,210 @@ public class GamePage extends JFrame{
 	
 	private void initComponent(){
 		initFrame();
+		
 		//initialize the board
-				boardComponent = new BoardComponent();
-				boardComponent.setSize(new Dimension(500,500));
-				boardComponent.setBackground(new Color(50, 50, 50));
+		boardComponent = new BoardComponent(500);
+		boardComponent.setSize(new Dimension(500,500));
+		boardComponent.setBackground(new Color(206,159,111));
 		
-		upBtn = new JButton("^");
-		downBtn = new JButton("v");
-		leftBtn = new JButton("<");
-		rightBtn = new JButton(">");
+		//initialize username
+		userName1 = new JLabel("White", SwingConstants.CENTER);
+		userName2 = new JLabel("Black", SwingConstants.CENTER);
 		
-		grabBtn = new JButton("Grab Wall");
-		dropBtn = new JButton("Drop Wall");
-		rotateBtn = new JButton("Rotate Wall");
-		forfeitBtn = new JButton("Forfeit Game");
+		//initialize time (for now default to 10, later will get from model through controller)
+		whiteRemainingTime = new Time(10);
+		blackRemainingTime = new Time(10);
+		whiteTime = new JLabel(whiteRemainingTime.toString(), SwingConstants.CENTER);
+		blackTime = new JLabel(blackRemainingTime.toString(), SwingConstants.CENTER);
 		
-		newGameBtn = new JButton("New Game");
-		replayGameBtn = new JButton("Replay Game");
-		saveGameBtn = new JButton("Save Game");
-		loadGameBtn = new JButton("Load Game");
+		//initialize grab, drop, rotate wall
+		whiteGrabWall = new JButton("Grab Wall");
+		whiteDropWall = new JButton("Drop Wall");
+		whiteRotateWall = new JButton("Rotate Wall");
+		blackGrabWall = new JButton("Grab Wall");
+		blackDropWall = new JButton("Drop Wall");
+		blackRotateWall = new JButton("Rotate Wall");
 		
-		notificationText = new JTextArea("Notification Center");
-		whitePlayerName = new JTextArea("Player Name");
-		whitePlayerTime = new JTextArea("00:00");
-		blackPlayerName = new JTextArea("Player Name");
-		blackPlayerTime = new JTextArea("00:00");
+		//initialize forfeit 
+		whiteForfeit = new JButton("Forfeit");
+		blackForfeit = new JButton("Forfeit");
 		
-		quoridor = new JTextArea("Quoridor");
-		white = new JTextArea("White:");
-		black = new JTextArea("Black:");
+		//initialize save, load, replay, new game
+		saveGame = new JButton("Save Game");
+		loadGame = new JButton("Load Game");
+		replayGame = new JButton("Replay Game");
+		newGame = new JButton("New Game");
 		
-		JButton btnNewButton = new JButton("New button");
+		//player turn
+		playerTurn = new JLabel("White Player: Your turn", SwingConstants.CENTER);
 		
-		JButton btnNewButton_1 = new JButton("New button");
 		
-		JButton btnNewButton_2 = new JButton("New button");
+		//------------------------- Add Event Listener ----------------------------//
+		whiteGrabWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
 		
+		whiteDropWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		whiteRotateWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		blackGrabWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		blackDropWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		blackRotateWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		whiteForfeit.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+
+		blackForfeit.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		newGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		saveGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		loadGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		replayGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		
+		//--------------------- Construct Page's Layout ----------------------------//
+
 		GroupLayout layout = new GroupLayout(getContentPane());
+		
+		getContentPane().setLayout(layout);
+		
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+		
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(layout.createSequentialGroup()
-					.addContainerGap(70, Short.MAX_VALUE)
-					.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
-						.addComponent(notificationText)
-						.addComponent(boardComponent, 500, 500, Short.MAX_VALUE))
-					.addGap(18)
-					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(black)
-						.addComponent(white))
-					.addGap(18)
-					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(whitePlayerName)
-						.addComponent(blackPlayerName))
-					.addGap(18)
-					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(whitePlayerTime)
-						.addComponent(blackPlayerTime))
-					.addGap(95))
+				.addGroup(layout.createParallelGroup()
+					.addGroup(layout.createSequentialGroup()
+						.addGap(400)
+						.addComponent(playerTurn, 500, 500, 500))
+					.addGroup(layout.createSequentialGroup()
+							.addGroup(layout.createParallelGroup()
+								.addComponent(userName1, 400, 400, 400)
+								.addComponent(whiteTime, 400, 400, 400)
+								.addGroup(layout.createSequentialGroup()
+									.addGap(45)
+									.addComponent(whiteGrabWall)
+									.addComponent(whiteDropWall)
+									.addComponent(whiteRotateWall))
+							)
+							.addGroup(layout.createParallelGroup()
+								.addComponent(boardComponent,500, 500, 500)	
+								.addGroup(layout.createSequentialGroup()
+									.addGap(35)
+									.addComponent(newGame)
+									.addComponent(saveGame)
+									.addComponent(loadGame)
+									.addComponent(replayGame)))
+							.addGroup(layout.createParallelGroup()
+								.addComponent(userName2, 400, 400, 400)
+								.addComponent(blackTime, 400, 400, 400)
+								.addGroup(layout.createSequentialGroup()
+									.addGap(45)
+									.addComponent(blackGrabWall)
+									.addComponent(blackDropWall)
+									.addComponent(blackRotateWall))
+								)
+					)
+			)
 		);
+		
 		layout.setVerticalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
-					.addGap(92)
-					.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(notificationText, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(white, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(whitePlayerName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(whitePlayerTime, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						)
-					.addGap(26)
-					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-							.addComponent(black, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(blackPlayerName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addComponent(blackPlayerTime, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(boardComponent, 500, 500, 500))
-					.addContainerGap(29, Short.MAX_VALUE))
+					.addGap(30)
+					.addComponent(playerTurn)
+					.addGap(30)
+					.addGroup(layout.createParallelGroup()
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(userName1)
+							.addGap(50)
+							.addComponent(whiteTime)
+							.addGap(50)
+							.addGroup(layout.createParallelGroup()
+								.addComponent(whiteGrabWall)
+								.addComponent(whiteDropWall)
+								.addComponent(whiteRotateWall)))
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(boardComponent,500, 500, 500)
+							.addGap(40)
+							.addGroup(layout.createParallelGroup()
+								.addComponent(newGame)
+								.addComponent(saveGame)
+								.addComponent(loadGame)
+								.addComponent(replayGame)))
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(userName2)
+							.addGap(50)
+							.addComponent(blackTime)
+							.addGap(50)
+							.addGroup(layout.createParallelGroup()
+								.addComponent(blackGrabWall)
+								.addComponent(blackDropWall)
+								.addComponent(blackRotateWall)))
+					)
+			)
 		);
-		getContentPane().setLayout(layout);
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
 	}
+	
+	
+	private void refreshData() {
+		// TODO: call transfer objects' method to query data and update the game's states
+	}
+	
 	private void initFrame() {
-		this.setSize(800,800);
+		this.setSize(1400, 720);
 		setTitle("Quoridor Game");
 		this.setBackground(Color.LIGHT_GRAY);
 	}
