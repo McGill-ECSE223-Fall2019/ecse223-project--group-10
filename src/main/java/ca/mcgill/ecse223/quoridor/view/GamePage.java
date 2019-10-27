@@ -53,17 +53,13 @@ public class GamePage extends JFrame{
 	private JLabel blackTime;
 	
 	// grab, drop, rotate wall button
-	private JButton whiteGrabWall;
-	private JButton whiteDropWall;
-	private JButton whiteRotateWall;
-	
-	private JButton blackGrabWall;
-	private JButton blackDropWall;
-	private JButton blackRotateWall;
+	private JButton grabWall;
+	private JButton dropWall;
+	private JButton rotateWall;
 	
 	// forfeit game
-	private JButton whiteForfeit;
-	private JButton blackForfeit;
+	private JButton forfeit;
+	private JButton confirm;
 	
 	// load, save, new, replay
 	private JButton loadGame;
@@ -97,16 +93,13 @@ public class GamePage extends JFrame{
 		blackTime = new JLabel(blackRemainingTime.toString(), SwingConstants.CENTER);
 		
 		//initialize grab, drop, rotate wall
-		whiteGrabWall = new JButton("Grab Wall");
-		whiteDropWall = new JButton("Drop Wall");
-		whiteRotateWall = new JButton("Rotate Wall");
-		blackGrabWall = new JButton("Grab Wall");
-		blackDropWall = new JButton("Drop Wall");
-		blackRotateWall = new JButton("Rotate Wall");
+		grabWall = new JButton("Grab Wall");
+		dropWall = new JButton("Drop Wall");
+		rotateWall = new JButton("Rotate Wall");
 		
 		//initialize forfeit 
-		whiteForfeit = new JButton("Forfeit");
-		blackForfeit = new JButton("Forfeit");
+		forfeit = new JButton("Forfeit");
+		confirm = new JButton("Confirm");
 		
 		//initialize save, load, replay, new game
 		saveGame = new JButton("Save Game");
@@ -119,49 +112,26 @@ public class GamePage extends JFrame{
 		
 		
 		//------------------------- Add Event Listener ----------------------------//
-		whiteGrabWall.addActionListener(new java.awt.event.ActionListener() {
+		grabWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 			}
 		});
 		
-		whiteDropWall.addActionListener(new java.awt.event.ActionListener() {
+		dropWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 			}
 		});
 		
-		whiteRotateWall.addActionListener(new java.awt.event.ActionListener() {
+		rotateWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 			}
 		});
 		
-		blackGrabWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
 		
-		blackDropWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		blackRotateWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		whiteForfeit.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		blackForfeit.addActionListener(new java.awt.event.ActionListener() {
+		forfeit.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 			}
@@ -203,36 +173,30 @@ public class GamePage extends JFrame{
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(layout.createParallelGroup()
+					.addComponent(playerTurn, 500, 500, 500)
 					.addGroup(layout.createSequentialGroup()
-						.addGap(400)
-						.addComponent(playerTurn, 500, 500, 500))
-					.addGroup(layout.createSequentialGroup()
+							.addGap(100)
 							.addGroup(layout.createParallelGroup()
-								.addComponent(userName1, 400, 400, 400)
-								.addComponent(whiteTime, 400, 400, 400)
+								.addComponent(boardComponent, 500, 500, 500)
 								.addGroup(layout.createSequentialGroup()
-									.addGap(45)
-									.addComponent(whiteGrabWall)
-									.addComponent(whiteDropWall)
-									.addComponent(whiteRotateWall))
-							)
-							.addGroup(layout.createParallelGroup()
-								.addComponent(boardComponent,500, 500, 500)	
-								.addGroup(layout.createSequentialGroup()
-									.addGap(35)
+									.addGap(30)
 									.addComponent(newGame)
 									.addComponent(saveGame)
 									.addComponent(loadGame)
-									.addComponent(replayGame)))
+									.addComponent(replayGame))
+							)
 							.addGroup(layout.createParallelGroup()
-								.addComponent(userName2, 400, 400, 400)
-								.addComponent(blackTime, 400, 400, 400)
 								.addGroup(layout.createSequentialGroup()
-									.addGap(45)
-									.addComponent(blackGrabWall)
-									.addComponent(blackDropWall)
-									.addComponent(blackRotateWall))
-								)
+									.addComponent(userName1)
+									.addComponent(whiteTime))
+								.addGroup(layout.createSequentialGroup()
+									.addComponent(userName2)
+									.addComponent(blackTime))
+								.addGroup(layout.createSequentialGroup()
+									.addComponent(grabWall)
+									.addComponent(dropWall)
+									.addComponent(rotateWall))
+							)
 					)
 			)
 		);
@@ -245,31 +209,26 @@ public class GamePage extends JFrame{
 					.addGap(30)
 					.addGroup(layout.createParallelGroup()
 						.addGroup(layout.createSequentialGroup()
-							.addComponent(userName1)
-							.addGap(50)
-							.addComponent(whiteTime)
-							.addGap(50)
-							.addGroup(layout.createParallelGroup()
-								.addComponent(whiteGrabWall)
-								.addComponent(whiteDropWall)
-								.addComponent(whiteRotateWall)))
-						.addGroup(layout.createSequentialGroup()
-							.addComponent(boardComponent,500, 500, 500)
-							.addGap(40)
+							.addComponent(boardComponent, 500, 500, 500)
+							.addGap(30)
 							.addGroup(layout.createParallelGroup()
 								.addComponent(newGame)
 								.addComponent(saveGame)
 								.addComponent(loadGame)
-								.addComponent(replayGame)))
+								.addComponent(replayGame))
+							)
 						.addGroup(layout.createSequentialGroup()
-							.addComponent(userName2)
-							.addGap(50)
-							.addComponent(blackTime)
-							.addGap(50)
 							.addGroup(layout.createParallelGroup()
-								.addComponent(blackGrabWall)
-								.addComponent(blackDropWall)
-								.addComponent(blackRotateWall)))
+								.addComponent(userName1)
+								.addComponent(whiteTime))
+							.addGroup(layout.createParallelGroup()
+								.addComponent(userName2)
+								.addComponent(blackTime))
+							.addGroup(layout.createParallelGroup()
+								.addComponent(grabWall)
+								.addComponent(dropWall)
+								.addComponent(rotateWall))
+							)
 					)
 			)
 		);
