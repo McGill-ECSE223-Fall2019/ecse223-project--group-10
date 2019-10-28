@@ -5,6 +5,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
+import ca.mcgill.ecse223.quoridor.view.GamePage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -269,6 +270,7 @@ public class Quoridor223Controller {
 	 * @return true if the game position was saved, otherwise returns false 
 	 * @throws IOException 
 	 */
+	// TODO: Feature 9: Save Game
 	public static boolean savePosition(String filename) throws IOException {
 		// GUI: register button press of the save game button
 		// ie: this method is called when a player clicks the save game button in the save game dialog box
@@ -300,7 +302,9 @@ public class Quoridor223Controller {
 	 * @param filename
 	 * @return
 	 */
+	// TODO: Feature 10: Load Game
 	public static boolean loadPosition(String filename) {
+		System.out.println("called load position");
 		// check if the Game is running, if it is, throw exception
 		if (isRunning()) {
 			throw new UnsupportedOperationException("Game is currently running");
@@ -317,6 +321,8 @@ public class Quoridor223Controller {
 		Game currentGame = quoridor.getCurrentGame();		
 		GamePosition currentGamePosition = currentGame.getCurrentPosition();
 		Player playerToMove;
+		
+		GamePosition newGamePosition = getLoadGamePosition(loadFile);
 		
 		// get the new GamePosition data from the loadFile
 		PlayerPosition whitePlayerPosition = getPlayerPositionDataFromFile(filename, "whitePosition");
@@ -483,46 +489,24 @@ public class Quoridor223Controller {
 		if(curGame.numberOfMoves()==0)return null;
 		return curGame.getMove(0);
 	}
-	
-	public static boolean writeToExistingFile(String filename) throws IOException {
-		boolean savefileUpdated = false;
 		
-		// verify the file is a file, and is writable
-		// prompt the user to overwrite the file
-		if (userOverwritePrompt() == true) {
-			// save the current GamePositon as the specified file
-			savefileUpdated = saveCurrentGamePositionAsFile(filename);
-		}		
-		
-		return savefileUpdated;
-		//throw new UnsupportedOperationException();
-	}
-
-	public static boolean writeToNewFile(String filename) throws IOException {
-		boolean saveFileCreated = false;
-		File saveFile = new File(filename);
-		
-		if(saveFile.createNewFile() && saveFile.isFile()) {
-			saveFileCreated = saveCurrentGamePositionAsFile(filename);
-		}
-		
-		return saveFileCreated;
-		//throw new UnsupportedOperationException();
-	}
-
-	
 	/**
 	 * GUI function to prompt the user for permission to overwrite the existing file
 	 * @author Mitchell Keeley
 	 * @return overwriteApproved
 	 */
-	public static boolean userOverwritePrompt() {
+	public static boolean userOverwritePrompt(String filename) {
+		boolean overwriteApproved = false;
 		
-		//boolean overwriteApproved;
 		// use UI to prompt user to overwrite the existing file filename
-		// overwriteApproved = result of user input using the ui;
-		//return overwriteApproved;
-		throw new UnsupportedOperationException();
+		if(GamePage.userOverwritePrompt(filename) == 0) {	
+			overwriteApproved = true;
+		}
+		
+		// overwrite the existing file
+		// TODO: implement this
+		
+		return overwriteApproved;
 	}
 	
 	/**
@@ -531,9 +515,8 @@ public class Quoridor223Controller {
 	 * @param filename
 	 * @throws IOException
 	 */
-	// TODO: Feature 9: Save Position
 	public static boolean saveCurrentGamePositionAsFile(String filename) throws IOException {
-		System.out.printf("called save position");
+		System.out.println("called save position");
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game currentGame = quoridor.getCurrentGame();
 		GamePosition currentGamePosition = currentGame.getCurrentPosition();
@@ -617,14 +600,39 @@ public class Quoridor223Controller {
 		}
 	}
 	
+	public static boolean writeToExistingFile(String filename) throws IOException {
+		boolean savefileUpdated = false;
+		
+		// verify the file is a file, and is writable
+		// prompt the user to overwrite the file
+		if (userOverwritePrompt(filename) == true) {
+			// save the current GamePositon as the specified file
+			savefileUpdated = saveCurrentGamePositionAsFile(filename);
+		}		
+		
+		return savefileUpdated;
+		//throw new UnsupportedOperationException();
+	}
+
+	public static boolean writeToNewFile(String filename) throws IOException {
+		boolean saveFileCreated = false;
+		File saveFile = new File(filename);
+		
+		if(saveFile.createNewFile() && saveFile.isFile()) {
+			saveFileCreated = saveCurrentGamePositionAsFile(filename);
+		}
+		
+		return saveFileCreated;
+		//throw new UnsupportedOperationException();
+	}
+	
 	/**
 	 * A function to load a new GamePosition
 	 * @author Mitchell Keeley
 	 * @param filename
 	 * @return
 	 */
-	// TODO: Feature 10: Load Position
-	private GamePosition getLoadGamePosition(File filename) {
+	private static GamePosition getLoadGamePosition(File filename) {
 		System.out.printf("called load position");
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game currentGame = quoridor.getCurrentGame();
