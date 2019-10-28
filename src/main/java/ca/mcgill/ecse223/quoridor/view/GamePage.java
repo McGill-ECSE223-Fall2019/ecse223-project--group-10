@@ -60,7 +60,6 @@ public class GamePage extends JFrame{
 	
 	// forfeit game
 	private JButton forfeit;
-	private JButton confirm;
 	
 	// load, save, new, replay
 	private JButton loadGame;
@@ -100,7 +99,6 @@ public class GamePage extends JFrame{
 		
 		//initialize forfeit, confirm
 		forfeit = new JButton("Forfeit Game");
-		confirm = new JButton("Confirm Move");
 		
 		//initialize save, load, replay, new game
 		saveGame = new JButton("Save Game");
@@ -110,10 +108,9 @@ public class GamePage extends JFrame{
 		
 		//button size
 		forfeit.setPreferredSize(new Dimension(40, 40));
-		confirm.setPreferredSize(new Dimension(40, 40));
 		
 		//button color
-		forfeit.setBackground(new Color(120, 60, 120));
+//		forfeit.setBackground(Color.BLUE);
 		
 		//player turn
 		playerTurn = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
@@ -201,15 +198,13 @@ public class GamePage extends JFrame{
 								.addGroup(layout.createSequentialGroup()
 									.addComponent(userName2)
 									.addComponent(blackTime))
-								.addGroup(layout.createSequentialGroup()
+								.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
 									.addGap(6)
 									.addComponent(grabWall, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
 									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(layout.createParallelGroup(Alignment.LEADING)
-										.addComponent(dropWall, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-										.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
-											.addComponent(confirm, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-											.addComponent(forfeit, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+									.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+										.addComponent(forfeit, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 118, Short.MAX_VALUE)
+										.addComponent(dropWall, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))
 									.addPreferredGap(ComponentPlacement.RELATED)
 									.addComponent(rotateWall)))))
 					.addGap(421))
@@ -241,9 +236,7 @@ public class GamePage extends JFrame{
 								.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 									.addComponent(dropWall, GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
 									.addComponent(grabWall, GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
-							.addGap(21)
-							.addComponent(confirm, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addGap(159)
+							.addGap(220)
 							.addComponent(forfeit, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))))
 		);
 		
