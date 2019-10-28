@@ -21,13 +21,13 @@ import java.security.InvalidAlgorithmParameterException;
 public class Quoridor223Controller {
 	
 	/**
-	 * Create a new game for the players
+	 * Feature 1: Create a new game for the players
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
 	public static void createGame() throws UnsupportedOperationException {
-		//check if the game is being initialized
-		//throw an exception if not
+		// check if the game is being initialized
+		// if not throw an exception
 	
 	}
 	
@@ -36,7 +36,6 @@ public class Quoridor223Controller {
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-	//under feature 2
 	public static void selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
 		// load the user
 		// if not throw an exception
