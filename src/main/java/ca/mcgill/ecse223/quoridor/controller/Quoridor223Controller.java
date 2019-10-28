@@ -307,7 +307,8 @@ public class Quoridor223Controller {
 		System.out.println("called load position");
 		// check if the Game is running, if it is, throw exception
 		if (isRunning()) {
-			throw new UnsupportedOperationException("Game is currently running");
+			GamePage.errorPrompt("Cannot Load Game since Game is currently running");
+			return false;
 		}
 
 		File loadFile = new File(filename);

@@ -181,9 +181,6 @@ public class GamePage extends JFrame{
 			}
 		});
 		
-		JTextPane saveLoadtextPane = new JTextPane();
-		saveLoadtextPane.setBackground(new Color(238, 238, 238));
-		
 		
 		//--------------------- Construct Page's Layout ----------------------------//
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -199,14 +196,10 @@ public class GamePage extends JFrame{
 								.addComponent(boardComponent, 500, 500, 500)
 								.addGroup(layout.createSequentialGroup()
 									.addGap(30)
-									.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
-										.addComponent(saveLoadtextPane, Alignment.LEADING)
-										.addGroup(Alignment.LEADING, layout.createSequentialGroup()
-											.addComponent(newGame)
-											.addComponent(saveGame)
-											.addComponent(loadGame)
-											.addComponent(replayGame)))
-									.addGap(53)))
+									.addComponent(newGame)
+									.addComponent(saveGame)
+									.addComponent(loadGame)
+									.addComponent(replayGame)))
 							.addGroup(layout.createParallelGroup(Alignment.LEADING)
 								.addGroup(layout.createSequentialGroup()
 									.addComponent(userName1)
@@ -228,9 +221,7 @@ public class GamePage extends JFrame{
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
 						.addGroup(layout.createSequentialGroup()
 							.addComponent(boardComponent, 500, 500, 500)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(saveLoadtextPane, GroupLayout.PREFERRED_SIZE, 20, GroupLayout.PREFERRED_SIZE)
-							.addGap(4)
+							.addGap(30)
 							.addGroup(layout.createParallelGroup(Alignment.LEADING)
 								.addComponent(newGame)
 								.addComponent(saveGame)
@@ -342,5 +333,10 @@ public class GamePage extends JFrame{
 		return userInput;
 	}
 	
+	public static void errorPrompt(String error) {
+		JOptionPane.showConfirmDialog((Component)boardComponent,
+				(Object)"The Following Error Has Occurred:\n\"" + error + "\"", "Operation Error",
+				JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, (Icon)null);
+	}
 	
 }
