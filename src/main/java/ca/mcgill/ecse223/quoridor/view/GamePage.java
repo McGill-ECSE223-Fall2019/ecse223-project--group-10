@@ -54,17 +54,13 @@ public class GamePage extends JFrame{
 	private JLabel blackTime;
 	
 	// grab, drop, rotate wall button
-	private JButton whiteGrabWall;
-	private JButton whiteDropWall;
-	private JButton whiteRotateWall;
-	
-	private JButton blackGrabWall;
-	private JButton blackDropWall;
-	private JButton blackRotateWall;
+	private JButton grabWall;
+	private JButton dropWall;
+	private JButton rotateWall;
 	
 	// forfeit game
-	private JButton whiteForfeit;
-	private JButton blackForfeit;
+	private JButton forfeit;
+	private JButton confirm;
 	
 	// load, save, new, replay
 	private JButton loadGame;
@@ -98,16 +94,13 @@ public class GamePage extends JFrame{
 		blackTime = new JLabel(blackRemainingTime.toString(), SwingConstants.CENTER);
 		
 		//initialize grab, drop, rotate wall
-		whiteGrabWall = new JButton("Grab Wall");
-		whiteDropWall = new JButton("Drop Wall");
-		whiteRotateWall = new JButton("Rotate Wall");
-		blackGrabWall = new JButton("Grab Wall");
-		blackDropWall = new JButton("Drop Wall");
-		blackRotateWall = new JButton("Rotate Wall");
+		grabWall = new JButton("Grab Wall");
+		dropWall = new JButton("Drop Wall");
+		rotateWall = new JButton("Rotate Wall");
 		
-		//initialize forfeit 
-		whiteForfeit = new JButton("Forfeit");
-		blackForfeit = new JButton("Forfeit");
+		//initialize forfeit, confirm
+		forfeit = new JButton("Forfeit Game");
+		confirm = new JButton("Confirm Move");
 		
 		//initialize save, load, replay, new game
 		saveGame = new JButton("Save Game");
@@ -115,55 +108,39 @@ public class GamePage extends JFrame{
 		replayGame = new JButton("Replay Game");
 		newGame = new JButton("New Game");
 		
+		//button size
+		forfeit.setPreferredSize(new Dimension(40, 40));
+		confirm.setPreferredSize(new Dimension(40, 40));
+		
+		//button color
+		forfeit.setBackground(new Color(120, 60, 120));
+		
 		//player turn
-		playerTurn = new JLabel("White Player: Your turn", SwingConstants.CENTER);
+		playerTurn = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
 		
 		
 		//------------------------- Add Event Listener ----------------------------//
-		whiteGrabWall.addActionListener(new java.awt.event.ActionListener() {
+		grabWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 			}
 		});
 		
-		whiteDropWall.addActionListener(new java.awt.event.ActionListener() {
+		dropWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 			}
 		});
 		
-		whiteRotateWall.addActionListener(new java.awt.event.ActionListener() {
+		rotateWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 			}
 		});
 		
-		blackGrabWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		blackDropWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		blackRotateWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		whiteForfeit.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
 		
 
-		blackForfeit.addActionListener(new java.awt.event.ActionListener() {
+		forfeit.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 			}
@@ -197,85 +174,83 @@ public class GamePage extends JFrame{
 		//--------------------- Construct Page's Layout ----------------------------//
 
 		GroupLayout layout = new GroupLayout(getContentPane());
-		
-		getContentPane().setLayout(layout);
-		
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
-		
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(layout.createParallelGroup()
-					.addGroup(layout.createSequentialGroup()
-						.addGap(400)
-						.addComponent(playerTurn, 500, 500, 500))
-					.addGroup(layout.createSequentialGroup()
-							.addGroup(layout.createParallelGroup()
-								.addComponent(userName1, 400, 400, 400)
-								.addComponent(whiteTime, 400, 400, 400)
+				.addGroup(layout.createSequentialGroup()
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(playerTurn, 500, 500, 500)
+						.addGroup(layout.createSequentialGroup()
+							.addGap(100)
+							.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
 								.addGroup(layout.createSequentialGroup()
-									.addGap(45)
-									.addComponent(whiteGrabWall)
-									.addComponent(whiteDropWall)
-									.addComponent(whiteRotateWall))
-							)
-							.addGroup(layout.createParallelGroup()
-								.addComponent(boardComponent,500, 500, 500)	
-								.addGroup(layout.createSequentialGroup()
-									.addGap(35)
 									.addComponent(newGame)
+									.addGap(18)
 									.addComponent(saveGame)
+									.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 									.addComponent(loadGame)
-									.addComponent(replayGame)))
-							.addGroup(layout.createParallelGroup()
-								.addComponent(userName2, 400, 400, 400)
-								.addComponent(blackTime, 400, 400, 400)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(replayGame)
+									.addGap(6))
 								.addGroup(layout.createSequentialGroup()
-									.addGap(45)
-									.addComponent(blackGrabWall)
-									.addComponent(blackDropWall)
-									.addComponent(blackRotateWall))
-								)
-					)
-			)
+									.addComponent(boardComponent, 500, 500, 500)
+									.addPreferredGap(ComponentPlacement.UNRELATED)))
+							.addGroup(layout.createParallelGroup(Alignment.LEADING)
+								.addGroup(layout.createSequentialGroup()
+									.addComponent(userName1)
+									.addComponent(whiteTime))
+								.addGroup(layout.createSequentialGroup()
+									.addComponent(userName2)
+									.addComponent(blackTime))
+								.addGroup(layout.createSequentialGroup()
+									.addGap(6)
+									.addComponent(grabWall, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(layout.createParallelGroup(Alignment.LEADING)
+										.addComponent(dropWall, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+										.addGroup(layout.createParallelGroup(Alignment.LEADING, false)
+											.addComponent(confirm, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+											.addComponent(forfeit, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(rotateWall)))))
+					.addGap(421))
 		);
-		
 		layout.setVerticalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
 					.addGap(30)
 					.addComponent(playerTurn)
 					.addGap(30)
-					.addGroup(layout.createParallelGroup()
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(userName1)
+						.addComponent(whiteTime))
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
 						.addGroup(layout.createSequentialGroup()
-							.addComponent(userName1)
-							.addGap(50)
-							.addComponent(whiteTime)
-							.addGap(50)
-							.addGroup(layout.createParallelGroup()
-								.addComponent(whiteGrabWall)
-								.addComponent(whiteDropWall)
-								.addComponent(whiteRotateWall)))
-						.addGroup(layout.createSequentialGroup()
-							.addComponent(boardComponent,500, 500, 500)
-							.addGap(40)
-							.addGroup(layout.createParallelGroup()
+							.addComponent(boardComponent, 500, 500, 500)
+							.addGap(8)
+							.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(newGame)
 								.addComponent(saveGame)
 								.addComponent(loadGame)
 								.addComponent(replayGame)))
 						.addGroup(layout.createSequentialGroup()
-							.addComponent(userName2)
-							.addGap(50)
-							.addComponent(blackTime)
-							.addGap(50)
-							.addGroup(layout.createParallelGroup()
-								.addComponent(blackGrabWall)
-								.addComponent(blackDropWall)
-								.addComponent(blackRotateWall)))
-					)
-			)
+							.addGroup(layout.createParallelGroup(Alignment.LEADING)
+								.addComponent(userName2)
+								.addComponent(blackTime))
+							.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
+								.addComponent(rotateWall, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+									.addComponent(dropWall, GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+									.addComponent(grabWall, GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
+							.addGap(21)
+							.addComponent(confirm, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addGap(159)
+							.addComponent(forfeit, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))))
 		);
+		
+		getContentPane().setLayout(layout);
+		
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
 	}
 	
 	

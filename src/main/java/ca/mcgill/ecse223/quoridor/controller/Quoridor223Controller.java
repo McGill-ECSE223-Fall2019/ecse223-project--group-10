@@ -174,8 +174,13 @@ public class Quoridor223Controller {
 		//check if the Game is running. If not, thrown an exception.
 		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
-		//check if it is the player's turn. If not, thrown an excpetion. 
-		//check if there is no wall in my hand. If no wall, thrown an excpetion. 
+		if(curGame.getWallMoveCandidate().equals(null)) {
+			return false;
+		}
+		
+		
+		//check if it is the player's turn. If not, thrown an exception. 
+		//check if there is no wall in my hand. If no wall, thrown an exception. 
 		//if there is a wall in my hand
 			//rotate walls with the "R" keys.
 			//get coordinates for the wall position
