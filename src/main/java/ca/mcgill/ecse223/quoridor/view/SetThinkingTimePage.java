@@ -42,14 +42,14 @@ public class SetThinkingTimePage extends JFrame {
 	
 		// initialize username
 		userName1 = new JLabel("<html><font color='white' >WHITE PLAYER</font></html>");
-		userName1.setFont(new Font("Serif", Font.PLAIN, 25));
+		userName1.setFont(new Font("Arial", Font.PLAIN, 25));
 		userName2 = new JLabel("<html><font color='black' >BLACK PLAYER</font></html>");
-		userName2.setFont(new Font("Serif", Font.PLAIN, 25));
+		userName2.setFont(new Font("Arial", Font.PLAIN, 25));
 				
 		// intialize start-game button
 		startGame = new JButton("<html><font color='white' >START GAME</font></html>");
 		startGame.setBackground(Color.BLUE);
-		startGame.setFont(new Font("Serif", Font.PLAIN, 30));
+		startGame.setFont(new Font("Arial", Font.PLAIN, 30));
 		
 		// initialize time picker
 		try {
@@ -60,17 +60,17 @@ public class SetThinkingTimePage extends JFrame {
         }
         mask.setPlaceholderCharacter('#');
 		whiteTimePicker = new JFormattedTextField(mask);
-		whiteTimePicker.setFont(new Font("Serif", Font.PLAIN, 25));
+		whiteTimePicker.setFont(new Font("Arial", Font.PLAIN, 25));
 		blackTimePicker = new JFormattedTextField(mask);
-		blackTimePicker.setFont(new Font("Serif", Font.PLAIN, 25));
+		blackTimePicker.setFont(new Font("Arial", Font.PLAIN, 25));
 		
 		// initialize title 
 		title = new JLabel("<html><font color='blue' >SET THINKING TIME</font></html>");
-		title.setFont(new Font("Serif", Font.PLAIN, 50));
+		title.setFont(new Font("Arial", Font.PLAIN, 50));
 		
 		// initialize error component
 		setTimeError = new JLabel("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
-		setTimeError.setFont(new Font("Serif", Font.PLAIN, 25));
+		setTimeError.setFont(new Font("Arial", Font.PLAIN, 25));
 		
 		
 		//--------------------- Construct Page's Layout ----------------------------//
