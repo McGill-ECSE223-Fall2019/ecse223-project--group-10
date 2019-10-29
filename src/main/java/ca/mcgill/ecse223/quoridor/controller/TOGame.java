@@ -4,7 +4,7 @@
 package ca.mcgill.ecse223.quoridor.controller;
 import java.sql.Time;
 
-// line 3 "../../../../../TO.ump"
+// line 3 "../../../../../QuoridorTransferObject.ump"
 public class TOGame
 {
 

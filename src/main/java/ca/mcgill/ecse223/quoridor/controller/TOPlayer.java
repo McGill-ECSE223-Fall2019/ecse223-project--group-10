@@ -3,7 +3,7 @@
 
 package ca.mcgill.ecse223.quoridor.controller;
 
-// line 15 "../../../../../TO.ump"
+// line 16 "../../../../../QuoridorTransferObject.ump"
 public class TOPlayer
 {
 
@@ -20,15 +20,17 @@ public class TOPlayer
   //TOPlayer Attributes
   private int row;
   private int col;
+  private Color color;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public TOPlayer(int aRow, int aCol)
+  public TOPlayer(int aRow, int aCol, Color aColor)
   {
     row = aRow;
     col = aCol;
+    color = aColor;
   }
 
   //------------------------
@@ -51,6 +53,14 @@ public class TOPlayer
     return wasSet;
   }
 
+  public boolean setColor(Color aColor)
+  {
+    boolean wasSet = false;
+    color = aColor;
+    wasSet = true;
+    return wasSet;
+  }
+
   public int getRow()
   {
     return row;
@@ -61,6 +71,11 @@ public class TOPlayer
     return col;
   }
 
+  public Color getColor()
+  {
+    return color;
+  }
+
   public void delete()
   {}
 
@@ -69,6 +84,7 @@ public class TOPlayer
   {
     return super.toString() + "["+
             "row" + ":" + getRow()+ "," +
-            "col" + ":" + getCol()+ "]";
+            "col" + ":" + getCol()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "color" + "=" + (getColor() != null ? !getColor().equals(this)  ? getColor().toString().replaceAll("  ","    ") : "this" : "null");
   }
 }
