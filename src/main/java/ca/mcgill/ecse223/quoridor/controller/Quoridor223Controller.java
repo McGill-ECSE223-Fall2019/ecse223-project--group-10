@@ -175,7 +175,7 @@ public class Quoridor223Controller {
 		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
 		if(curGame.getWallMoveCandidate().equals(null)) {
-			return false;
+			return;
 		}
 		
 		
