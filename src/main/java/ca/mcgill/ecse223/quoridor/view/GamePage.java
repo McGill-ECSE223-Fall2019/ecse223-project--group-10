@@ -36,6 +36,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Font;
 import javax.swing.JPanel;
 import java.awt.CardLayout;
+import javax.swing.JTextArea;
 
 public class GamePage extends JFrame{
 	
@@ -59,7 +60,6 @@ public class GamePage extends JFrame{
 	
 	// forfeit game
 	private JButton forfeit;
-	private JButton confirm;
 	
 	// load, save, new, replay
 	private JButton loadGame;
@@ -97,9 +97,8 @@ public class GamePage extends JFrame{
 		dropWall = new JButton("Drop Wall");
 		rotateWall = new JButton("Rotate Wall");
 		
-		//initialize forfeit 
-		forfeit = new JButton("Forfeit");
-		confirm = new JButton("Confirm");
+		//initialize forfeit, confirm
+		forfeit = new JButton("Forfeit Game");
 		
 		//initialize save, load, replay, new game
 		saveGame = new JButton("Save Game");
@@ -107,8 +106,14 @@ public class GamePage extends JFrame{
 		replayGame = new JButton("Replay Game");
 		newGame = new JButton("New Game");
 		
+		//button size
+		forfeit.setPreferredSize(new Dimension(40, 40));
+		
+		//button color
+//		forfeit.setBackground(Color.BLUE);
+		
 		//player turn
-		playerTurn = new JLabel("White Player: Your turn", SwingConstants.CENTER);
+		playerTurn = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
 		
 		
 		//------------------------- Add Event Listener ----------------------------//
@@ -131,6 +136,7 @@ public class GamePage extends JFrame{
 		});
 		
 		
+
 		forfeit.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
@@ -163,75 +169,81 @@ public class GamePage extends JFrame{
 		
 		
 		//--------------------- Construct Page's Layout ----------------------------//
+
 		GroupLayout layout = new GroupLayout(getContentPane());
-		
-		getContentPane().setLayout(layout);
-		
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
-		
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(layout.createParallelGroup()
-					.addComponent(playerTurn, 500, 500, 500)
-					.addGroup(layout.createSequentialGroup()
+				.addGroup(layout.createSequentialGroup()
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(playerTurn, 500, 500, 500)
+						.addGroup(layout.createSequentialGroup()
 							.addGap(100)
-							.addGroup(layout.createParallelGroup()
-								.addComponent(boardComponent, 500, 500, 500)
+							.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
 								.addGroup(layout.createSequentialGroup()
-									.addGap(30)
 									.addComponent(newGame)
+									.addGap(18)
 									.addComponent(saveGame)
+									.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 									.addComponent(loadGame)
-									.addComponent(replayGame))
-							)
-							.addGroup(layout.createParallelGroup()
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(replayGame)
+									.addGap(6))
+								.addGroup(layout.createSequentialGroup()
+									.addComponent(boardComponent, 500, 500, 500)
+									.addPreferredGap(ComponentPlacement.UNRELATED)))
+							.addGroup(layout.createParallelGroup(Alignment.LEADING)
 								.addGroup(layout.createSequentialGroup()
 									.addComponent(userName1)
 									.addComponent(whiteTime))
 								.addGroup(layout.createSequentialGroup()
 									.addComponent(userName2)
 									.addComponent(blackTime))
-								.addGroup(layout.createSequentialGroup()
-									.addComponent(grabWall)
-									.addComponent(dropWall)
-									.addComponent(rotateWall))
-							)
-					)
-			)
+								.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+									.addGap(6)
+									.addComponent(grabWall, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+										.addComponent(forfeit, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 118, Short.MAX_VALUE)
+										.addComponent(dropWall, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(rotateWall)))))
+					.addGap(421))
 		);
-		
 		layout.setVerticalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
 					.addGap(30)
 					.addComponent(playerTurn)
 					.addGap(30)
-					.addGroup(layout.createParallelGroup()
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(userName1)
+						.addComponent(whiteTime))
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
 						.addGroup(layout.createSequentialGroup()
 							.addComponent(boardComponent, 500, 500, 500)
-							.addGap(30)
-							.addGroup(layout.createParallelGroup()
+							.addGap(8)
+							.addGroup(layout.createParallelGroup(Alignment.BASELINE)
 								.addComponent(newGame)
 								.addComponent(saveGame)
 								.addComponent(loadGame)
-								.addComponent(replayGame))
-							)
+								.addComponent(replayGame)))
 						.addGroup(layout.createSequentialGroup()
-							.addGroup(layout.createParallelGroup()
-								.addComponent(userName1)
-								.addComponent(whiteTime))
-							.addGroup(layout.createParallelGroup()
+							.addGroup(layout.createParallelGroup(Alignment.LEADING)
 								.addComponent(userName2)
 								.addComponent(blackTime))
-							.addGroup(layout.createParallelGroup()
-								.addComponent(grabWall)
-								.addComponent(dropWall)
-								.addComponent(rotateWall))
-							)
-					)
-			)
+							.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
+								.addComponent(rotateWall, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addGroup(layout.createParallelGroup(Alignment.BASELINE)
+									.addComponent(dropWall, GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+									.addComponent(grabWall, GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
+							.addGap(220)
+							.addComponent(forfeit, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))))
 		);
+		
+		getContentPane().setLayout(layout);
+		
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
 	}
 	
 	

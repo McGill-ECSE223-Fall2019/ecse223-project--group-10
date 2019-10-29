@@ -2,34 +2,34 @@ package ca.mcgill.ecse223.quoridor.view;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JSpinner;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.text.DateFormatter;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.GroupLayout;
+import javax.swing.text.MaskFormatter;
+import java.awt.Font;
 
-import java.sql.Time;
 import java.awt.Color;
+import java.text.ParseException;
 
 public class SetThinkingTimePage extends JFrame {
-	// TODO: implement the UI for this page
 	//username and thinking time
 	private JLabel userName1;
 	private JLabel userName2;
 			
 	//thinking time
-	private Time whiteThinkingTime;
-	private Time blackThinkingTime;
-	private JSpinner whiteTimePicker;
-	private JSpinner blackTimePicker;
+	private JFormattedTextField whiteTimePicker;
+	private JFormattedTextField blackTimePicker;
 	
 	//set time, start game button
-	private JButton setTime;
 	private JButton startGame;
+	private MaskFormatter mask;
 	
 	// page title
 	private JLabel title;
 	
+	// time error
+	private JLabel setTimeError;
 	
 	public SetThinkingTimePage() {
 		initPage();
@@ -37,25 +37,41 @@ public class SetThinkingTimePage extends JFrame {
 	
 	public void initPage(){
 		this.setSize(1400, 720);
-		this.setTitle("Set Thinking Time");
-		this.setBackground(Color.LIGHT_GRAY);
+		this.setTitle("Set Time Page");
+		this.getContentPane().setBackground(Color.LIGHT_GRAY);
+	
+		// initialize username
+		userName1 = new JLabel("<html><font color='white' >WHITE PLAYER</font></html>");
+		userName1.setFont(new Font("Arial", Font.PLAIN, 25));
+		userName2 = new JLabel("<html><font color='black' >BLACK PLAYER</font></html>");
+		userName2.setFont(new Font("Arial", Font.PLAIN, 25));
+				
+		// intialize start-game button
+		startGame = new JButton("<html><font color='white' >START GAME</font></html>");
+		startGame.setBackground(Color.BLUE);
+		startGame.setFont(new Font("Arial", Font.PLAIN, 30));
 		
-		userName1 = new JLabel("Player 1");
-		userName2 = new JLabel("Player 2");
+		// initialize time picker
+		try {
+            mask = new MaskFormatter("##min ##sec");
+            mask.setPlaceholderCharacter('#');
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        mask.setPlaceholderCharacter('#');
+		whiteTimePicker = new JFormattedTextField(mask);
+		whiteTimePicker.setFont(new Font("Arial", Font.PLAIN, 25));
+		blackTimePicker = new JFormattedTextField(mask);
+		blackTimePicker.setFont(new Font("Arial", Font.PLAIN, 25));
 		
-		whiteThinkingTime = new Time(10);
-		blackThinkingTime = new Time(10);
+		// initialize title 
+		title = new JLabel("<html><font color='blue' >SET THINKING TIME</font></html>");
+		title.setFont(new Font("Arial", Font.PLAIN, 50));
 		
-		setTime = new JButton("Set Time");
-		startGame = new JButton("Start Game");
+		// initialize error component
+		setTimeError = new JLabel("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
+		setTimeError.setFont(new Font("Arial", Font.PLAIN, 25));
 		
-		whiteTimePicker = new JSpinner();
-		blackTimePicker = new JSpinner();
-		
-		title = new JLabel("Set Thinking Time");
-		
-//		configSpinner(whiteTimePicker);
-//		configSpinner(blackTimePicker);
 		
 		//--------------------- Construct Page's Layout ----------------------------//
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -69,20 +85,28 @@ public class SetThinkingTimePage extends JFrame {
 			layout.createParallelGroup(Alignment.TRAILING)
 			.addGroup(layout.createParallelGroup()
 				.addGroup(layout.createSequentialGroup()
-					.addGap(600)
-					.addComponent(title))
-				.addGroup(layout.createSequentialGroup()
-					.addGap(250)
-					.addGroup(layout.createParallelGroup()
-						.addComponent(userName1)
-						.addComponent(whiteTimePicker, 150, 150, 150)
-						.addComponent(setTime))
-					.addGap(500)
-					.addGroup(layout.createParallelGroup()
-						.addComponent(userName2)
-						.addComponent(blackTimePicker, 150, 150, 150)
-						.addComponent(startGame)))
+					.addGap(400)
+					.addComponent(title)
 				)
+				.addGroup(layout.createSequentialGroup()
+					.addGap(485)
+					.addComponent(setTimeError))
+				.addGroup(layout.createParallelGroup()
+					.addGroup(layout.createSequentialGroup()
+						.addGap(300)
+						.addComponent(userName1, 200, 200, 200)
+						.addGap(310)
+						.addComponent(whiteTimePicker, 200, 200, 200))
+					.addGroup(layout.createSequentialGroup()
+						.addGap(300)
+						.addComponent(userName2, 200, 200, 200)
+						.addGap(310)
+						.addComponent(blackTimePicker, 200, 200, 200))
+				)
+				.addGroup(layout.createSequentialGroup()
+					.addGap(500)
+					.addComponent(startGame, 300, 300, 300))
+			)
 		);
 		
 		layout.setVerticalGroup(
@@ -90,29 +114,20 @@ public class SetThinkingTimePage extends JFrame {
 			.addGroup(layout.createSequentialGroup()
 				.addGap(50)
 				.addComponent(title)
-				.addGroup(layout.createParallelGroup()
-					.addGroup(layout.createSequentialGroup()
-						.addGap(100)
+				.addGap(75)
+				.addComponent(setTimeError)
+				.addGap(75)
+				.addGroup(layout.createSequentialGroup()
+					.addGroup(layout.createParallelGroup()
 						.addComponent(userName1)
-						.addGap(50)
-						.addComponent(whiteTimePicker, 50, 50, 50)
-						.addGap(200)
-						.addComponent(setTime))
-					.addGroup(layout.createSequentialGroup()
-						.addGap(100)
+						.addComponent(whiteTimePicker, 50, 50, 50))
+					.addGap(70)
+					.addGroup(layout.createParallelGroup()
 						.addComponent(userName2)
-						.addGap(50)
-						.addComponent(blackTimePicker, 50, 50, 50)
-						.addGap(200)
-						.addComponent(startGame)))
-				)
+						.addComponent(blackTimePicker, 50, 50, 50)))
+				.addGap(70)
+				.addComponent(startGame)
+			)
 		);
 	};
-	
-	private static void configSpinner(JSpinner spinner) {
-		JSpinner.DateEditor editor = new JSpinner.DateEditor(spinner, "HH:mm:ss");
-		DateFormatter formatter = (DateFormatter)editor.getTextField().getFormatter();
-		formatter.setAllowsInvalid(false);
-		formatter.setOverwriteMode(true);
-	}
 }
