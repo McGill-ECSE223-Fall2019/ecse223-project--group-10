@@ -363,9 +363,10 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Enan Ashaduzzaman
+	 * @throws GameNotRunningException 
 	 */
 	@When("I try to grab a wall from my stock")
-	public void iTryToGrabAWallFromMyStock() {
+	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException {
 			Quoridor223Controller.grabWall();
 	}
 	
@@ -442,9 +443,10 @@ public class CucumberStepDefinitions {
 	//Scenario: Flip wall from horizontal to vertical or vice versa	
 	/**
 	 * @author Enan Ashaduzzaman
+	 * @throws GameNotRunningException 
 	 */
 	@When("I try to flip the wall")
-	public void iTryToFlipTheWall(){
+	public void iTryToFlipTheWall() throws GameNotRunningException{
 			Quoridor223Controller.rotateWall();
 	}
 	
@@ -723,8 +725,8 @@ public class CucumberStepDefinitions {
 	public void theUserConfirmsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks yes when prompted by the GUI to overwrite an existing file
-		//assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt());
-		throw new PendingException();
+		assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt("yes"));
+		//throw new PendingException();
 	}
 	
 	/**
@@ -743,8 +745,8 @@ public class CucumberStepDefinitions {
 	public void theUserCancelsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks no when prompted by the GUI to overwrite an existing file
-		//assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt());
-		throw new PendingException();
+		assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt("no"));
+		//throw new PendingException();
 	}
 	
 	/**
