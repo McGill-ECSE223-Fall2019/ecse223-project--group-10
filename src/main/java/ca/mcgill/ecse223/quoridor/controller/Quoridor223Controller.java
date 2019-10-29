@@ -169,6 +169,7 @@ public class Quoridor223Controller {
 	 * @author Enan Ashaduzzaman
 	 * @throws UnsupportedOperationException
 	 */
+
 	public static void rotateWall() throws GameNotRunningException{
 //		throw new UnsupportedOperationException();
 		if(!isRunning())throw new GameNotRunningException("Game not running");
@@ -176,11 +177,9 @@ public class Quoridor223Controller {
 		//check if the Game is running. If not, thrown an exception.
 		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
-		if(curGame.getWallMoveCandidate().equals(null)) {
+		if(curGame.getWallMoveCandidate() == null) {
 			return;
 		}
-		
-		
 		//check if it is the player's turn. If not, thrown an exception. 
 		//check if there is no wall in my hand. If no wall, thrown an exception. 
 		//if there is a wall in my hand
@@ -202,7 +201,9 @@ public class Quoridor223Controller {
 		if(!isRunning())throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if the Game is running if not throw exception
-		
+		if(curGame.getWallMoveCandidate() == null) {
+			return;
+		}
 		//check if the it is player's turn if not throw exception
 		//check if there is no wall in my hand if not throw exception
 		//if(curGame.getWallMoveCandidate()==null)
