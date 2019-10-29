@@ -4,7 +4,7 @@
 package ca.mcgill.ecse223.quoridor.controller;
 import java.util.*;
 
-// line 9 "../../../../../TO.ump"
+// line 9 "../../../../../QuoridorTransferObject.ump"
 public class TOWall
 {
 

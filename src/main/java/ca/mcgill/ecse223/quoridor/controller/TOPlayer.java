@@ -3,7 +3,7 @@
 
 package ca.mcgill.ecse223.quoridor.controller;
 
-// line 15 "../../../../../TO.ump"
+// line 15 "../../../../../QuoridorTransferObject.ump"
 public class TOPlayer
 {
 
