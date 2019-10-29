@@ -108,11 +108,11 @@ public class BoardComponent extends JPanel {
 		blackWallInStock = new ArrayList<>();
 		whiteWallOnBoard = new ArrayList<>();
 		blackWallOnBoard = new ArrayList<>();
-		Controller.getWallInHand()
-		Controller.getWhiteWallInStock();
-		Controller.getBlackWallInStock();
-		Controller.getWhiteWallOnBoard();
-		Controller.getBlackWallOnBoard();
+//		Controller.getWallInHand()
+//		Controller.getWhiteWallInStock();
+//		Controller.getBlackWallInStock();
+//		Controller.getWhiteWallOnBoard();
+//		Controller.getBlackWallOnBoard();
 		float lx =0, rx=size-2*width;
 		float y = margin-7;
 		for(int i = 0;i<10;i++) {
