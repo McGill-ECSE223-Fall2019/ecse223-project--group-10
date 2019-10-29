@@ -363,9 +363,10 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Enan Ashaduzzaman
+	 * @throws GameNotRunningException 
 	 */
 	@When("I try to grab a wall from my stock")
-	public void iTryToGrabAWallFromMyStock() {
+	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException {
 			Quoridor223Controller.grabWall();
 	}
 	
@@ -442,9 +443,10 @@ public class CucumberStepDefinitions {
 	//Scenario: Flip wall from horizontal to vertical or vice versa	
 	/**
 	 * @author Enan Ashaduzzaman
+	 * @throws GameNotRunningException 
 	 */
 	@When("I try to flip the wall")
-	public void iTryToFlipTheWall(){
+	public void iTryToFlipTheWall() throws GameNotRunningException{
 			Quoridor223Controller.rotateWall();
 	}
 	

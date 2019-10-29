@@ -168,13 +168,20 @@ public class Quoridor223Controller {
 	 * @author Enan Ashaduzzaman
 	 * @throws UnsupportedOperationException
 	 */
-	public static void rotateWall() throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
+	public static void rotateWall() throws GameNotRunningException{
+//		throw new UnsupportedOperationException();
+		if(!isRunning())throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if the Game is running. If not, thrown an exception.
 		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
-		//check if it is the player's turn. If not, thrown an excpetion. 
-		//check if there is no wall in my hand. If no wall, thrown an excpetion. 
+		if(curGame.getWallMoveCandidate().equals(null)) {
+			return;
+		}
+		
+		
+		//check if it is the player's turn. If not, thrown an exception. 
+		//check if there is no wall in my hand. If no wall, thrown an exception. 
 		//if there is a wall in my hand
 			//rotate walls with the "R" keys.
 			//get coordinates for the wall position
@@ -189,11 +196,12 @@ public class Quoridor223Controller {
 	 * @author Enan Ashaduzzaman
 	 * @throws UnsupportedOperationException
 	 */
-	public static void grabWall() throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
+	public static void grabWall() throws GameNotRunningException{
+//		throw new UnsupportedOperationException();
+		if(!isRunning())throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if the Game is running if not throw exception
-		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
+		
 		//check if the it is player's turn if not throw exception
 		//check if there is no wall in my hand if not throw exception
 		//if(curGame.getWallMoveCandidate()==null)
