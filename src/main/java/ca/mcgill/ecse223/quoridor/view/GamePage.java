@@ -70,7 +70,6 @@ public class GamePage extends JFrame{
 	// grab, drop, rotate wall button
 	private JButton grabWall;
 	private JButton dropWall;
-	private JButton rotateWall;
 	
 	// forfeit game
 	private JButton forfeit;
@@ -83,6 +82,11 @@ public class GamePage extends JFrame{
 	
 	// player's turn
 	private JLabel playerTurn;
+	private JButton btnRotateWall;
+	private JButton btnUp;
+	private JButton btnDown;
+	private JButton btnRight;
+	private JButton btnLeft;
 	
 	public GamePage(){
 		initComponent();
@@ -93,32 +97,55 @@ public class GamePage extends JFrame{
 		
 		//initialize the board
 		boardComponent = new BoardComponent(500);
-		boardComponent.setSize(new Dimension(500,500));
+		boardComponent.setLocation(90, 95);
+		boardComponent.setSize(new Dimension(500, 500));
 		boardComponent.setBackground(new Color(206,159,111));
 		
 		//initialize username
 		userName1 = new JLabel("White", SwingConstants.CENTER);
+		userName1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		userName1.setBounds(876, 94, 50, 32);
 		userName2 = new JLabel("Black", SwingConstants.CENTER);
+		userName2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		userName2.setBounds(620, 94, 46, 33);
 		
 		//initialize time (for now default to 10, later will get from model through controller)
 		whiteRemainingTime = new Time(10);
 		blackRemainingTime = new Time(10);
 		whiteTime = new JLabel(whiteRemainingTime.toString(), SwingConstants.CENTER);
+		whiteTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		whiteTime.setBounds(936, 94, 64, 33);
 		blackTime = new JLabel(blackRemainingTime.toString(), SwingConstants.CENTER);
+		blackTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		blackTime.setBounds(676, 94, 64, 33);
 		
 		//initialize grab, drop, rotate wall
 		grabWall = new JButton("Grab Wall");
+		grabWall.setBackground(new Color(184, 134, 11));
+		grabWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		grabWall.setBounds(620, 145, 120, 40);
 		dropWall = new JButton("Drop Wall");
-		rotateWall = new JButton("Rotate Wall");
+		dropWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		dropWall.setBounds(750, 145, 120, 40);
 		
 		//initialize forfeit, confirm
 		forfeit = new JButton("Forfeit Game");
+		forfeit.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		forfeit.setBounds(750, 498, 120, 40);
 		
 		//initialize save, load, replay, new game
 		saveGame = new JButton("Save Game");
+		saveGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		saveGame.setBounds(220, 606, 110, 40);
 		loadGame = new JButton("Load Game");
+		loadGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		loadGame.setBounds(350, 606, 110, 40);
 		replayGame = new JButton("Replay Game");
+		replayGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		replayGame.setBounds(480, 606, 110, 40);
 		newGame = new JButton("New Game");
+		newGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		newGame.setBounds(90, 606, 110, 40);
 		
 		//button size
 		forfeit.setPreferredSize(new Dimension(40, 40));
@@ -128,6 +155,8 @@ public class GamePage extends JFrame{
 		
 		//player turn
 		playerTurn = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
+		playerTurn.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		playerTurn.setBounds(90, 28, 500, 46);
 		
 		
 		//------------------------- Add Event Listener ----------------------------//
@@ -138,12 +167,6 @@ public class GamePage extends JFrame{
 		});
 		
 		dropWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		rotateWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
 			}
@@ -187,83 +210,44 @@ public class GamePage extends JFrame{
 			}
 		});
 		
+		btnRotateWall = new JButton("Rotate Wall");
+		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnRotateWall.setBounds(880, 145, 120, 40);
+		getContentPane().setLayout(null);
+		getContentPane().add(playerTurn);
+		getContentPane().add(newGame);
+		getContentPane().add(saveGame);
+		getContentPane().add(loadGame);
+		getContentPane().add(replayGame);
+		getContentPane().add(boardComponent);
+		getContentPane().add(userName1);
+		getContentPane().add(whiteTime);
+		getContentPane().add(userName2);
+		getContentPane().add(blackTime);
+		getContentPane().add(grabWall);
+		getContentPane().add(forfeit);
+		getContentPane().add(dropWall);
+		getContentPane().add(btnRotateWall);
 		
-		//--------------------- Construct Page's Layout ----------------------------//
-
-		GroupLayout layout = new GroupLayout(getContentPane());
-		layout.setHorizontalGroup(
-			layout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(layout.createSequentialGroup()
-					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(playerTurn, 500, 500, 500)
-						.addGroup(layout.createSequentialGroup()
-							.addGap(100)
-							.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
-								.addGroup(layout.createSequentialGroup()
-									.addComponent(newGame)
-									.addGap(18)
-									.addComponent(saveGame)
-									.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-									.addComponent(loadGame)
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(replayGame)
-									.addGap(6))
-								.addGroup(layout.createSequentialGroup()
-									.addComponent(boardComponent, 500, 500, 500)
-									.addPreferredGap(ComponentPlacement.UNRELATED)))
-							.addGroup(layout.createParallelGroup(Alignment.LEADING)
-								.addGroup(layout.createSequentialGroup()
-									.addComponent(userName1)
-									.addComponent(whiteTime))
-								.addGroup(layout.createSequentialGroup()
-									.addComponent(userName2)
-									.addComponent(blackTime))
-								.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-									.addGap(6)
-									.addComponent(grabWall, GroupLayout.PREFERRED_SIZE, 111, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addGroup(layout.createParallelGroup(Alignment.TRAILING)
-										.addComponent(forfeit, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 118, Short.MAX_VALUE)
-										.addComponent(dropWall, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE))
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(rotateWall)))))
-					.addGap(421))
-		);
-		layout.setVerticalGroup(
-			layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup()
-					.addGap(30)
-					.addComponent(playerTurn)
-					.addGap(30)
-					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(userName1)
-						.addComponent(whiteTime))
-					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(layout.createSequentialGroup()
-							.addComponent(boardComponent, 500, 500, 500)
-							.addGap(8)
-							.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(newGame)
-								.addComponent(saveGame)
-								.addComponent(loadGame)
-								.addComponent(replayGame)))
-						.addGroup(layout.createSequentialGroup()
-							.addGroup(layout.createParallelGroup(Alignment.LEADING)
-								.addComponent(userName2)
-								.addComponent(blackTime))
-							.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
-								.addComponent(rotateWall, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-								.addGroup(layout.createParallelGroup(Alignment.BASELINE)
-									.addComponent(dropWall, GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
-									.addComponent(grabWall, GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
-							.addGap(220)
-							.addComponent(forfeit, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE))))
-		);
+		btnUp = new JButton("UP");
+		btnUp.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnUp.setBounds(770, 246, 80, 80);
+		getContentPane().add(btnUp);
 		
-		getContentPane().setLayout(layout);
+		btnDown = new JButton("DOWN");
+		btnDown.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnDown.setBounds(770, 336, 80, 80);
+		getContentPane().add(btnDown);
 		
-		layout.setAutoCreateGaps(true);
-		layout.setAutoCreateContainerGaps(true);
+		btnRight = new JButton("RIGHT");
+		btnRight.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnRight.setBounds(860, 336, 80, 80);
+		getContentPane().add(btnRight);
+		
+		btnLeft = new JButton("LEFT");
+		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnLeft.setBounds(680, 336, 80, 80);
+		getContentPane().add(btnLeft);
 	}
 	
 	
@@ -272,7 +256,7 @@ public class GamePage extends JFrame{
 	}
 	
 	private void initFrame() {
-		this.setSize(1400, 720);
+		this.setSize(1035, 720);
 		setTitle("Quoridor Game");
 		this.setBackground(Color.LIGHT_GRAY);
 	}
@@ -357,5 +341,4 @@ public class GamePage extends JFrame{
 				(Object)"The Following Error Has Occurred:\n\"" + error + "\"", "Operation Error",
 				JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, (Icon)null);
 	}
-	
 }
