@@ -48,7 +48,7 @@ public class CucumberStepDefinitions {
 	private Player initialPlayer = null;
 	private Move initialMove = null;
 	private GamePosition loadedGamePosition = null;
-	private String loadFileName	= null;
+	private String cucumberFilename	= null;
 	
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
@@ -363,9 +363,10 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Enan Ashaduzzaman
+	 * @throws GameNotRunningException 
 	 */
 	@When("I try to grab a wall from my stock")
-	public void iTryToGrabAWallFromMyStock() {
+	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException {
 			Quoridor223Controller.grabWall();
 	}
 	
@@ -442,9 +443,10 @@ public class CucumberStepDefinitions {
 	//Scenario: Flip wall from horizontal to vertical or vice versa	
 	/**
 	 * @author Enan Ashaduzzaman
+	 * @throws GameNotRunningException 
 	 */
 	@When("I try to flip the wall")
-	public void iTryToFlipTheWall(){
+	public void iTryToFlipTheWall() throws GameNotRunningException{
 			Quoridor223Controller.rotateWall();
 	}
 	
@@ -682,6 +684,7 @@ public class CucumberStepDefinitions {
 	 */	
 	@Given("No file {string} exists in the filesystem")
 	public void noFileFilenameExistsInTheFilesystem(String filename) {
+		cucumberFilename = filename;
 		deleteFileIfItExists(filename);
 	}	
 	
@@ -691,6 +694,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("The user initiates to save the game with name {string}")
 	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) throws Throwable {
+		cucumberFilename = filename;
 		Quoridor223Controller.savePosition(filename);
 	}
 	
@@ -701,6 +705,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("A file with {string} shall be created in the filesystem")
 	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws IOException {
+		cucumberFilename = filename;
 		File file = new File(filename);
 		assertTrue("File does not exist in the filesystem", file.exists());
 		assertTrue("File is not a File", file.isFile());
@@ -713,6 +718,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("File {string} exists in the filesystem")
 	public void fileFilenameExistsInTheFilesystem(String filename) throws IOException {
+		cucumberFilename = filename;
 		ensureFileExists(filename);
 	}
 	
@@ -723,8 +729,8 @@ public class CucumberStepDefinitions {
 	public void theUserConfirmsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks yes when prompted by the GUI to overwrite an existing file
-		//assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt());
-		throw new PendingException();
+		assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt(cucumberFilename));
+		//throw new PendingException();
 	}
 	
 	/**
@@ -733,6 +739,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("File with {string} shall be updated in the filesystem")
 	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
+		cucumberFilename = filename;
 		assertTrue("The file was not successfully modified", Quoridor223Controller.writeToExistingFile(filename));
 	}
 	
@@ -743,8 +750,8 @@ public class CucumberStepDefinitions {
 	public void theUserCancelsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks no when prompted by the GUI to overwrite an existing file
-		//assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt());
-		throw new PendingException();
+		assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt(cucumberFilename));
+		//throw new PendingException();
 	}
 	
 	/**
@@ -753,6 +760,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("File {string} shall not be changed in the filesystem")
 	public void fileFilenameShallNotBeChangedInTheFilesystem(String filename) throws Throwable {
+		cucumberFilename = filename;
 		assertFalse("The file was modified", Quoridor223Controller.savePosition(filename));
 	}
 	
@@ -766,8 +774,8 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I initiate to load a saved game {string}")
 	public void iInitiateToLoadASavedGame(String filename) {
+		cucumberFilename = filename;
 		Quoridor223Controller.loadPosition(filename);
-		loadFileName = filename;
 	}
 	
 	/**
@@ -775,7 +783,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The position to load is valid")
 	public void thePositionToLoadIsValid() {
-		startLoadedGame(loadFileName);
+		startLoadedGame(cucumberFilename);
 	}
 	
 	@Then("It shall be {string}'s turn")
@@ -812,7 +820,7 @@ public class CucumberStepDefinitions {
 	
 	@Then("The load shall return an error")
 	public void theLoadShallReturnAnError() {
-		assertFalse("Invalid load does not return an error", Quoridor223Controller.loadPosition(loadFileName));
+		assertFalse("Invalid load does not return an error", Quoridor223Controller.loadPosition(cucumberFilename));
 	}
 	
 	
@@ -825,103 +833,110 @@ public class CucumberStepDefinitions {
 	// ***********************************************
 
 	// After each scenario, the test model is discarded
-	@After
-	public void tearDown() {
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		// Avoid null pointer for step definitions that are not yet implemented.
-		if (quoridor != null) {
-			quoridor.delete();
-			quoridor = null;
-		}
-		for (int i = 0; i < 20; i++) {
-			Wall wall = Wall.getWithId(i);
-			if(wall != null) {
-				wall.delete();
+		@After
+		public void tearDown() {
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			// Avoid null pointer for step definitions that are not yet implemented.
+			if (quoridor != null) {
+				quoridor.delete();
+				quoridor = null;
+			}
+			for (int i = 0; i < 20; i++) {
+				Wall wall = Wall.getWithId(i);
+				if(wall != null) {
+					wall.delete();
+				}
 			}
 		}
-	}
 
-	// ***********************************************
-	// Extracted helper methods
-	// ***********************************************
+		// ***********************************************
+		// Extracted helper methods
+		// ***********************************************
 
-	// Place your extracted methods below
+		// Place your extracted methods below
 
-	private void initQuoridorAndBoard() {
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Board board = new Board(quoridor);
-		// Creating tiles by rows, i.e., the column index changes with every tile
-		// creation
-		for (int i = 1; i <= 9; i++) { // rows
-			for (int j = 1; j <= 9; j++) { // columns
-				board.addTile(i, j);
+		private void initQuoridorAndBoard() {
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			Board board = new Board(quoridor);
+			// Creating tiles by rows, i.e., the column index changes with every tile
+			// creation
+			for (int i = 1; i <= 9; i++) { // rows
+				for (int j = 1; j <= 9; j++) { // columns
+					board.addTile(i, j);
+				}
 			}
 		}
-	}
 
-	private ArrayList<Player> createUsersAndPlayers(String userName1, String userName2) {
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		User user1 = quoridor.addUser(userName1);
-		User user2 = quoridor.addUser(userName2);
+		private ArrayList<Player> createUsersAndPlayers(String userName1, String userName2) {
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			User user1 = quoridor.addUser(userName1);
+			User user2 = quoridor.addUser(userName2);
 
-		int thinkingTime = 180;
+			int thinkingTime = 180;
 
-		// Players are assumed to start on opposite sides and need to make progress
-		// horizontally to get to the other side
-		// @formatter:off
-		/*
-		 * __________ | | | | |x-> <-x| | | |__________|
-		 * 
-		 */
+			// Players are assumed to start on opposite sides and need to make progress
+			// horizontally to get to the other side
+			//@formatter:off
+			/*
+			 *  __________
+			 * |          |
+			 * |          |
+			 * |x->    <-x|
+			 * |          |
+			 * |__________|
+			 * 
+			 */
+			//@formatter:on
+			Player player1 = new Player(new Time(thinkingTime), user1, 9, Direction.Horizontal);
+			Player player2 = new Player(new Time(thinkingTime), user2, 1, Direction.Horizontal);
 
-		//@formatter:on
-		Player player1 = new Player(new Time(thinkingTime), user1, 9, Direction.Horizontal);
-		Player player2 = new Player(new Time(thinkingTime), user2, 1, Direction.Horizontal);
+			Player[] players = { player1, player2 };
 
-		Player[] players = { player1, player2 };
+			// Create all walls. Walls with lower ID belong to player1,
+			// while the second half belongs to player 2
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 10; j++) {
+					new Wall(i * 10 + j, players[i]);
+				}
+			}
+			
+			ArrayList<Player> playersList = new ArrayList<Player>();
+			playersList.add(player1);
+			playersList.add(player2);
+			
+			return playersList;
+		}
 
-		// Create all walls. Walls with lower ID belong to player1,
-		// while the second half belongs to player 2
-		for (int i = 0; i < 2; i++) {
+
+		private void createAndStartGame(ArrayList<Player> players) {
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			// There are total 36 tiles in the first four rows and
+			// indexing starts from 0 -> tiles with indices 36 and 36+8=44 are the starting
+			// positions
+			Tile player1StartPos = quoridor.getBoard().getTile(36);
+			Tile player2StartPos = quoridor.getBoard().getTile(44);
+			
+			Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, quoridor);
+			game.setWhitePlayer(players.get(0));
+			game.setBlackPlayer(players.get(1));
+
+			PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
+			PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+
+			GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
+
+			// Add the walls as in stock for the players
 			for (int j = 0; j < 10; j++) {
-				new Wall(i * 10 + j, players[i]);
+				Wall wall = Wall.getWithId(j);
+				gamePosition.addWhiteWallsInStock(wall);
 			}
+			for (int j = 0; j < 10; j++) {
+				Wall wall = Wall.getWithId(j + 10);
+				gamePosition.addBlackWallsInStock(wall);
+			}
+
+			game.setCurrentPosition(gamePosition);
 		}
-		
-		ArrayList<Player> playersList = new ArrayList<Player>();
-		playersList.add(player1);
-		playersList.add(player2);
-		
-		return playersList;
-	}
-
-	private void createAndStartGame(ArrayList<Player> players) {
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		// There are total 36 tiles in the first four rows and
-		// indexing starts from 0 -> tiles with indices 36 and 36+8=44 are the starting
-		// positions
-		Tile player1StartPos = quoridor.getBoard().getTile(36);
-		Tile player2StartPos = quoridor.getBoard().getTile(44);
-		
-		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, players.get(0), players.get(1), quoridor);
-
-		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
-		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
-
-		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
-
-		// Add the walls as in stock for the players
-		for (int j = 0; j < 10; j++) {
-			Wall wall = Wall.getWithId(j);
-			gamePosition.addWhiteWallsInStock(wall);
-		}
-		for (int j = 0; j < 10; j++) {
-			Wall wall = Wall.getWithId(j + 10);
-			gamePosition.addBlackWallsInStock(wall);
-		}
-
-		game.setCurrentPosition(gamePosition);
-	}
 	/**
 	 * Set a MoveCandidate based on the given parameter
 	 * @author Le-Li Mao

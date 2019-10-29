@@ -1,0 +1,21 @@
+namespace ca.mcgill.ecse223.quoridor.controller;
+
+class TOGame{
+	Time playerOneTime;
+	Time playerTwoTime;
+	playerOne;
+	playerTwo;
+}
+class TOWall {
+	enum Direction {Horizontal,Vertical};
+	unique Integer id;
+	Integer row;
+	Integer col;
+	Direction dir;
+}
+class TOPlayer {
+	enum Color {White,Black};
+	Integer row;
+	Integer col;
+	Color color;
+}

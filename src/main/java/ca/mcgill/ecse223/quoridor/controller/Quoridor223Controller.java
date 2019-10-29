@@ -5,6 +5,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
+import ca.mcgill.ecse223.quoridor.view.GamePage;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 import java.security.InvalidAlgorithmParameterException;
@@ -139,7 +141,7 @@ public class Quoridor223Controller {
 		Tile player2StartPos = quoridor.getBoard().getTile(36);
 		
 		// create a game
-		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, player1, player2, quoridor);
+		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, quoridor);
 		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
 		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, player1, game);
@@ -166,13 +168,19 @@ public class Quoridor223Controller {
 	 * @author Enan Ashaduzzaman
 	 * @throws UnsupportedOperationException
 	 */
-	public static void rotateWall() throws UnsupportedOperationException {
-		throw new UnsupportedOperationException();
+
+	public static void rotateWall() throws GameNotRunningException{
+//		throw new UnsupportedOperationException();
+		if(!isRunning())throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if the Game is running. If not, thrown an exception.
 		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
-		//check if it is the player's turn. If not, thrown an excpetion. 
-		//check if there is no wall in my hand. If no wall, thrown an excpetion. 
+		if(curGame.getWallMoveCandidate() == null) {
+			return;
+		}
+		//check if it is the player's turn. If not, thrown an exception. 
+		//check if there is no wall in my hand. If no wall, thrown an exception. 
 		//if there is a wall in my hand
 			//rotate walls with the "R" keys.
 			//get coordinates for the wall position
@@ -187,11 +195,14 @@ public class Quoridor223Controller {
 	 * @author Enan Ashaduzzaman
 	 * @throws UnsupportedOperationException
 	 */
-	public static void grabWall() throws UnsupportedOperationException{
-		throw new UnsupportedOperationException();
+	public static void grabWall() throws GameNotRunningException{
+//		throw new UnsupportedOperationException();
+		if(!isRunning())throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if the Game is running if not throw exception
-		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
+		if(curGame.getWallMoveCandidate() == null) {
+			return;
+		}
 		//check if the it is player's turn if not throw exception
 		//check if there is no wall in my hand if not throw exception
 		//if(curGame.getWallMoveCandidate()==null)
@@ -268,6 +279,7 @@ public class Quoridor223Controller {
 	 * @return true if the game position was saved, otherwise returns false 
 	 * @throws IOException 
 	 */
+	// TODO: Feature 9: Save Game
 	public static boolean savePosition(String filename) throws IOException {
 		// GUI: register button press of the save game button
 		// ie: this method is called when a player clicks the save game button in the save game dialog box
@@ -299,10 +311,13 @@ public class Quoridor223Controller {
 	 * @param filename
 	 * @return
 	 */
+	// TODO: Feature 10: Load Game
 	public static boolean loadPosition(String filename) {
+		System.out.println("called load position");
 		// check if the Game is running, if it is, throw exception
 		if (isRunning()) {
-			throw new UnsupportedOperationException("Game is currently running");
+			GamePage.errorPrompt("Cannot Load Game since Game is currently running");
+			return false;
 		}
 
 		File loadFile = new File(filename);
@@ -316,6 +331,8 @@ public class Quoridor223Controller {
 		Game currentGame = quoridor.getCurrentGame();		
 		GamePosition currentGamePosition = currentGame.getCurrentPosition();
 		Player playerToMove;
+		
+		GamePosition newGamePosition = getLoadGamePosition(loadFile);
 		
 		// get the new GamePosition data from the loadFile
 		PlayerPosition whitePlayerPosition = getPlayerPositionDataFromFile(filename, "whitePosition");
@@ -468,11 +485,12 @@ public class Quoridor223Controller {
 		Board board = QuoridorApplication.getQuoridor().getBoard();
 		return board.getTile((row-1)*9+(col-1));
 	}
-
+	
 	private static boolean isWhitePlayer() {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		return curGame.getCurrentPosition().getPlayerToMove().equals(curGame.getWhitePlayer());
 	}
+	
 	private static boolean isPlacementValid() {
 		//will implement this later
 		return true;
@@ -482,46 +500,58 @@ public class Quoridor223Controller {
 		if(curGame.numberOfMoves()==0)return null;
 		return curGame.getMove(0);
 	}
-	
-	public static boolean writeToExistingFile(String filename) throws IOException {
-		boolean savefileUpdated = false;
-		
-		// verify the file is a file, and is writable
-		// prompt the user to overwrite the file
-		if (userOverwritePrompt() == true) {
-			// save the current GamePositon as the specified file
-			savefileUpdated = saveCurrentGamePositionAsFile(filename);
-		}		
-		
-		//return savefileUpdated;
-		throw new UnsupportedOperationException();
+	public static int getWhiteWallInStock(){
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.numberOfMoves()==0)return -1;
+		return curGame.getCurrentPosition().getWhiteWallsInStock().size();
 	}
-
-	public static boolean writeToNewFile(String filename) throws IOException {
-		boolean saveFileCreated = false;
-		File saveFile = new File(filename);
-		
-		if(saveFile.createNewFile() && saveFile.isFile()) {
-			saveFileCreated = saveCurrentGamePositionAsFile(filename);
-		}
-		
-		//return saveFileCreated;
-		throw new UnsupportedOperationException();
-	}
-
 	
+	public static int getBlackWallInStock(){
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.numberOfMoves()==0)return -1;
+		return curGame.getCurrentPosition().getBlackWallsInStock().size();
+	}
+	
+	public static ArrayList<TOWall> getWhiteWallOnBoard(){
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.numberOfMoves()==0)return null;
+		ArrayList<TOWall> wallList = new ArrayList<TOWall>();
+		for(Wall wall: curGame.getCurrentPosition().getWhiteWallsOnBoard())wallList.add(convertWall(wall));
+		return wallList;
+	}
+	
+	public static ArrayList<TOWall> getBlackWallOnBoard(){
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.numberOfMoves()==0)return null;
+		ArrayList<TOWall> wallList = new ArrayList<TOWall>();
+		for(Wall wall: curGame.getCurrentPosition().getBlackWallsOnBoard())wallList.add(convertWall(wall));
+		return wallList;
+	}
+	private static TOWall convertWall(Wall aWall) {
+		int row = aWall.getMove().getTargetTile().getRow();
+		int col = aWall.getMove().getTargetTile().getColumn();
+		int id = aWall.getId();
+		TOWall.Direction dir = aWall.getMove().getWallDirection()==Direction.Horizontal?TOWall.Direction.Horizontal:TOWall.Direction.Vertical;
+		TOWall wall = new TOWall(id, row, col, dir);
+		return wall;
+	}
 	/**
 	 * GUI function to prompt the user for permission to overwrite the existing file
 	 * @author Mitchell Keeley
 	 * @return overwriteApproved
 	 */
-	public static boolean userOverwritePrompt() {
+	public static boolean userOverwritePrompt(String filename) {
+		boolean overwriteApproved = false;
 		
-		//boolean overwriteApproved;
 		// use UI to prompt user to overwrite the existing file filename
-		// overwriteApproved = result of user input using the ui;
-		//return overwriteApproved;
-		throw new UnsupportedOperationException();
+		if(GamePage.userOverwritePrompt(filename) == 0) {	
+			overwriteApproved = true;
+		}
+		
+		// overwrite the existing file
+		// this is done automatically when writing to the file
+		
+		return overwriteApproved;
 	}
 	
 	/**
@@ -531,19 +561,47 @@ public class Quoridor223Controller {
 	 * @throws IOException
 	 */
 	public static boolean saveCurrentGamePositionAsFile(String filename) throws IOException {
+		System.out.println("called save position");
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game currentGame = quoridor.getCurrentGame();
-		GamePosition currentGamePosition = currentGame.getCurrentPosition();
-		Player whitePlayer = currentGame.getWhitePlayer();
-		Player blackPlayer = currentGame.getBlackPlayer();
 		
-		// get the player information strings to write to the file
-		// TODO: verify that player1 is actually the whitePlayer
-		// TODO: if so, verify the coordinates for the start positions are correct and aligned with the spec for the game coordinate system
+		// fetch game and gamePosition from quoridor
+		//Game currentGame = quoridor.getCurrentGame();
+		//GamePosition currentGamePosition = currentGame.getCurrentPosition();
+		//Player whitePlayer = currentGame.getWhitePlayer();
+		//Player blackPlayer = currentGame.getBlackPlayer();
+		
+		// for testing: create temp game and gamePosition
+		Game currentGame = new Game(Game.GameStatus.Running, MoveMode.PlayerMove, quoridor);
+		Board board = new Board(quoridor);
+		Tile whiteTile = new Tile(5,9,board);
+		Tile blackTile = new Tile(5,1,board);
+		User user0 = new User("user0", quoridor);
+		User user1 = new User("user1", quoridor);
+		Player whitePlayer = new Player(new Time(0,15,0), user0, 1, Direction.Horizontal);
+		Player blackPlayer = new Player(new Time(0,15,0), user1, 9, Direction.Horizontal);
+		PlayerPosition whitePos = new PlayerPosition(whitePlayer, whiteTile);
+		PlayerPosition blackPos = new PlayerPosition(blackPlayer, blackTile);	
+		GamePosition currentGamePosition = new GamePosition(1,whitePos,blackPos, whitePlayer, currentGame);
+		currentGame.setCurrentPosition(currentGamePosition);
+		currentGame.setBlackPlayer(blackPlayer);
+		currentGame.setWhitePlayer(whitePlayer);
+		currentGamePosition.setGame(currentGame);
+		
+		// for testing, add moves to the moveList
+		Move move1 = new WallMove(0, 0, whitePlayer, new Tile(5,3,board), currentGame,
+				Direction.Vertical, new Wall(0,whitePlayer));
+		Move move2 = new WallMove(1, 0, blackPlayer, new Tile(2,6,board), currentGame,
+				Direction.Horizontal, new Wall(1,blackPlayer));
+		Move move3 = new WallMove(2, 1, whitePlayer, new Tile(4,3,board), currentGame,
+				Direction.Vertical, new Wall(2,whitePlayer));
+		currentGame.addMove(move1);
+		currentGame.addMove(move2);
+		currentGame.addMove(move3);		
+		
+		// initialize the player information strings to write to the file
 		String whitePlayerData = "W: " + tileToString(currentGamePosition.getWhitePosition().getTile());
-		//System.out.printf(whitePlayerData);
-		// continue with wall list converted to string 
 		String blackPlayerData = "B: " + tileToString(currentGamePosition.getBlackPosition().getTile());
+		//System.out.printf(whitePlayerData);
 		//System.out.printf(blackPlayerData);
 		
 		//currentGame.addMove(new WallMove(1,1,whitePlayer,new Tile(1,2,quoridor.getBoard()),
@@ -552,18 +610,21 @@ public class Quoridor223Controller {
 				//currentGame,Direction.Horizontal,new Wall(10,blackPlayer)));
 		
 		// add the wall positions
-		// TODO: when able to add wall Moves in test, verify wall moves are also recorded
 		for( Move move : currentGame.getMoves()) {
+			// if the move is a wallMove
+			// TODO: validate that instanceof can correctly identify WallMove, may need to verify if hasDirection
 			if (move instanceof WallMove){
 				if(move.getPlayer().equals(whitePlayer)) {
-					whitePlayerData.concat(", " + tileToString(move.getTargetTile()) + ((WallMove) move).getWallDirection());
+					whitePlayerData = whitePlayerData.concat(", " + tileToString(move.getTargetTile()) + directionToString(((WallMove) move).getWallDirection()));
 					//printWriter.printf("%s\n", whitePlayerData);
 				}
 				else if(move.getPlayer().equals(blackPlayer)) {
-					blackPlayerData.concat(", " + tileToString(move.getTargetTile()) + ((WallMove) move).getWallDirection());
+					blackPlayerData = blackPlayerData.concat(", " + tileToString(move.getTargetTile()) + directionToString(((WallMove) move).getWallDirection()));
 					//printWriter.printf("%s\n", blackPlayerData);
 				}
 			}
+			// else if the move is a player move
+			// TODO: do nothing since the only relevent player position is the current player position (for now)
 		}
 		
 		// initialize the printWriter
@@ -573,14 +634,15 @@ public class Quoridor223Controller {
 		if(currentGamePosition.getPlayerToMove().equals(currentGamePosition.getGame().getWhitePlayer())){
 			printWriter.printf("%s\n", whitePlayerData);
 			printWriter.printf("%s", blackPlayerData);
+		// else the next player to move is the Black player
 		}else {
 			printWriter.printf("%s\n",blackPlayerData);
 			printWriter.printf("%s", whitePlayerData);
 		} 
 		printWriter.close();
 		
-		// return true;
-		throw new UnsupportedOperationException();
+		return true;
+		//throw new UnsupportedOperationException();
 	}
 	
 	/**
@@ -604,7 +666,7 @@ public class Quoridor223Controller {
 	 * @param direction
 	 * @return
 	 */
-	public String directionToString(Direction direction) {
+	public static String directionToString(Direction direction) {
 		if(direction.equals(Direction.Horizontal)){
 			return "h";
 		}
@@ -613,27 +675,66 @@ public class Quoridor223Controller {
 		}
 	}
 	
+	public static boolean writeToExistingFile(String filename) throws IOException {
+		boolean savefileUpdated = false;
+		
+		// verify the file is a file, and is writable
+		// prompt the user to overwrite the file
+		if (userOverwritePrompt(filename) == true) {
+			// save the current GamePositon as the specified file
+			savefileUpdated = saveCurrentGamePositionAsFile(filename);
+		}		
+		
+		return savefileUpdated;
+		//throw new UnsupportedOperationException();
+	}
+
+	public static boolean writeToNewFile(String filename) throws IOException {
+		boolean saveFileCreated = false;
+		File saveFile = new File(filename);
+		
+		if(saveFile.createNewFile() && saveFile.isFile()) {
+			saveFileCreated = saveCurrentGamePositionAsFile(filename);
+		}
+		
+		return saveFileCreated;
+		//throw new UnsupportedOperationException();
+	}
+	
 	/**
 	 * A function to load a new GamePosition
 	 * @author Mitchell Keeley
 	 * @param filename
 	 * @return
 	 */
-	private GamePosition getLoadGamePosition(File filename) {
-
+	private static GamePosition getLoadGamePosition(File filename) {
+		System.out.printf("called load position");
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game currentGame = quoridor.getCurrentGame();
+		//GamePosition currentGamePosition = currentGame.getCurrentPosition();
+		Player whitePlayer = currentGame.getWhitePlayer();
+		Player blackPlayer = currentGame.getBlackPlayer();
+		
 		// initialize the new GamePosition
 		GamePosition newGamePosition = new GamePosition(0, null, null, null, null);
 
 		try {
 			// create a file reader
-			// BufferedReader fileReader = new BufferedReader(new FileReader(filename));
+			BufferedReader fileReader = new BufferedReader(new FileReader(filename));
 
 			// read the file to load the GamePosition
-			// newGamePosition.nextPlayer = fileReader.readLine();
-			// newGamePosition.CurrentPlayer = fileReader.readLine();
+			String saveFileFirstLine = fileReader.readLine();
+			String saveFileSecondLine = fileReader.readLine();
+			
+			// if the first line is the white player's data, set the black player as the player to move
+			if(saveFileFirstLine.contains("W:")) {
+				newGamePosition.setPlayerToMove(whitePlayer);
+			}
+			// else, set the white player as the player to move
+			else {
+				newGamePosition.setPlayerToMove(blackPlayer);
+			}
 
-			// set the current player color by the first entry in the Current player
-			// set the next player as the other color
 
 		} catch (Exception e) {
 			throw new UnsupportedOperationException(e);

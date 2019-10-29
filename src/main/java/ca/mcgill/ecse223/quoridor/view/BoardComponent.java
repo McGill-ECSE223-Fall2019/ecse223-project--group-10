@@ -28,7 +28,7 @@ public class BoardComponent extends JPanel {
 	private int size;
 	private float width;
 	private float margin;
-	private BufferedImage wall;
+	private BufferedImage hWall, vWall, hHighlightedWall,vHighlightedWall;
 	enum playerColor{black,white}
 	private ArrayList<Rectangle2D> rects = new ArrayList<>();
 	private ArrayList<Line2D> lines = new ArrayList<>();
@@ -47,9 +47,14 @@ public class BoardComponent extends JPanel {
 		width = size/13;
 		margin = (size- width*9)/2;
 		try {
-			wall = ImageIO.read(getFileFromResources("Wall.png"));
-			System.out.println(wall.getHeight() +" "+ wall.getWidth());
-			wall = resize(wall, 15, (int)width*2);
+			hWall = ImageIO.read(getFileFromResources("Wall.png"));
+			hWall = resize(hWall, 15, (int)width*2);
+			vWall = ImageIO.read(getFileFromResources("WallV.png"));
+			vWall = resize(vWall, (int)width*2,15);
+			hHighlightedWall = ImageIO.read(getFileFromResources("HighlightedWall.png"));
+			hHighlightedWall = resize(hHighlightedWall, 15, (int)width*2);
+			vHighlightedWall = ImageIO.read(getFileFromResources("HighlightedWallV.png"));
+			vHighlightedWall = resize(vHighlightedWall, (int)width*2,15);
 		}
 		catch(IOException e) {
 			System.out.println(e.getMessage());
@@ -81,9 +86,8 @@ public class BoardComponent extends JPanel {
 		g2d.fill(players.get(playerColor.white));
 		g2d.setColor(Color.black);
 		g2d.draw(players.get(playerColor.white));
-		for(float[] wallCord: blackWallInStock)g2d.drawImage(wall, (int)wallCord[0], (int)wallCord[1], this);
-		for(float[] wallCord: whiteWallInStock)g2d.drawImage(wall, (int)wallCord[0], (int)wallCord[1], this);
-
+		for(float[] wallCord: blackWallInStock)g2d.drawImage(hWall, (int)wallCord[0], (int)wallCord[1], this);
+		for(float[] wallCord: whiteWallInStock)g2d.drawImage(hWall, (int)wallCord[0], (int)wallCord[1], this);
 	}
 	
 	private void setupGrid() {
@@ -99,17 +103,21 @@ public class BoardComponent extends JPanel {
 			lines.add(new Line2D.Float(new Point2D.Float(size,y), new Point2D.Float(size-l,y)));
 			y+=width;
 		}
-		players.put(playerColor.black,new Ellipse2D.Float(getcord(1),getcord(5),width*2/3,width*2/3));
-		players.put(playerColor.white,new Ellipse2D.Float(getcord(9),getcord(5),width*2/3,width*2/3));
+		players.put(playerColor.black,new Ellipse2D.Float(getTileCord(1),getTileCord(5),width*2/3,width*2/3));
+		players.put(playerColor.white,new Ellipse2D.Float(getTileCord(9),getTileCord(5),width*2/3,width*2/3));
 	}
 	
 	private void loadWall() {
-		blackWallInHand=null;
 		whiteWallInHand=null;
 		whiteWallInStock = new ArrayList<>();
 		blackWallInStock = new ArrayList<>();
 		whiteWallOnBoard = new ArrayList<>();
 		blackWallOnBoard = new ArrayList<>();
+//		Controller.getWallInHand()
+//		Controller.getWhiteWallInStock();
+//		Controller.getBlackWallInStock();
+//		Controller.getWhiteWallOnBoard();
+//		Controller.getBlackWallOnBoard();
 		float lx =0, rx=size-2*width;
 		float y = margin-7;
 		for(int i = 0;i<10;i++) {
@@ -124,7 +132,7 @@ public class BoardComponent extends JPanel {
 		doDrawing(g);
 	}
 	
-	private float getcord(int index) {
+	private float getTileCord(int index) {
 		return (float)(index-5.0/6)*width+margin;
 	}
 	
@@ -136,7 +144,7 @@ public class BoardComponent extends JPanel {
         } else {
             return new File(resource.getFile());
         }
-    }
+    	}
 	
 	private static BufferedImage resize(BufferedImage img, int height, int width) {
         Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
@@ -145,5 +153,8 @@ public class BoardComponent extends JPanel {
         g2d.drawImage(tmp, 0, 0, null);
         g2d.dispose();
         return resized;
-    }
+    	}
+	private void getWallCord(){
+		
+	}
 }
