@@ -11,9 +11,11 @@ class TOWall {
 	unique Integer id;
 	Integer row;
 	Integer col;
+	Direction dir;
 }
 class TOPlayer {
 	enum Color {White,Black};
 	Integer row;
 	Integer col;
+	Color color;
 }

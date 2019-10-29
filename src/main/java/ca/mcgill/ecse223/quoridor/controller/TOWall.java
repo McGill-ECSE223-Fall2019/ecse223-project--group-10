@@ -28,15 +28,17 @@ public class TOWall
   private int id;
   private int row;
   private int col;
+  private Direction dir;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public TOWall(int aId, int aRow, int aCol)
+  public TOWall(int aId, int aRow, int aCol, Direction aDir)
   {
     row = aRow;
     col = aCol;
+    dir = aDir;
     if (!setId(aId))
     {
       throw new RuntimeException("Cannot create due to duplicate id");
@@ -79,6 +81,14 @@ public class TOWall
     return wasSet;
   }
 
+  public boolean setDir(Direction aDir)
+  {
+    boolean wasSet = false;
+    dir = aDir;
+    wasSet = true;
+    return wasSet;
+  }
+
   public int getId()
   {
     return id;
@@ -104,6 +114,11 @@ public class TOWall
     return col;
   }
 
+  public Direction getDir()
+  {
+    return dir;
+  }
+
   public void delete()
   {
     towallsById.remove(getId());
@@ -115,6 +130,7 @@ public class TOWall
     return super.toString() + "["+
             "id" + ":" + getId()+ "," +
             "row" + ":" + getRow()+ "," +
-            "col" + ":" + getCol()+ "]";
+            "col" + ":" + getCol()+ "]" + System.getProperties().getProperty("line.separator") +
+            "  " + "dir" + "=" + (getDir() != null ? !getDir().equals(this)  ? getDir().toString().replaceAll("  ","    ") : "this" : "null");
   }
 }

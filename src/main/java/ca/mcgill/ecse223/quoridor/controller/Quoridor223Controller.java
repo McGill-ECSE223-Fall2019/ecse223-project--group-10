@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 import java.security.InvalidAlgorithmParameterException;
@@ -485,11 +486,12 @@ public class Quoridor223Controller {
 		Board board = QuoridorApplication.getQuoridor().getBoard();
 		return board.getTile((row-1)*9+(col-1));
 	}
-
+	
 	private static boolean isWhitePlayer() {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		return curGame.getCurrentPosition().getPlayerToMove().equals(curGame.getWhitePlayer());
 	}
+	
 	private static boolean isPlacementValid() {
 		//will implement this later
 		return true;
@@ -499,7 +501,41 @@ public class Quoridor223Controller {
 		if(curGame.numberOfMoves()==0)return null;
 		return curGame.getMove(0);
 	}
-		
+	public static int getWhiteWallInStock(){
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.numberOfMoves()==0)return -1;
+		return curGame.getCurrentPosition().getWhiteWallsInStock().size();
+	}
+	
+	public static int getBlackWallInStock(){
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.numberOfMoves()==0)return -1;
+		return curGame.getCurrentPosition().getBlackWallsInStock().size();
+	}
+	
+	public static ArrayList<TOWall> getWhiteWallOnBoard(){
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.numberOfMoves()==0)return null;
+		ArrayList<TOWall> wallList = new ArrayList<TOWall>();
+		for(Wall wall: curGame.getCurrentPosition().getWhiteWallsOnBoard())wallList.add(convertWall(wall));
+		return wallList;
+	}
+	
+	public static ArrayList<TOWall> getBlackWallOnBoard(){
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.numberOfMoves()==0)return null;
+		ArrayList<TOWall> wallList = new ArrayList<TOWall>();
+		for(Wall wall: curGame.getCurrentPosition().getBlackWallsOnBoard())wallList.add(convertWall(wall));
+		return wallList;
+	}
+	private static TOWall convertWall(Wall aWall) {
+		int row = aWall.getMove().getTargetTile().getRow();
+		int col = aWall.getMove().getTargetTile().getColumn();
+		int id = aWall.getId();
+		TOWall.Direction dir = aWall.getMove().getWallDirection()==Direction.Horizontal?TOWall.Direction.Horizontal:TOWall.Direction.Vertical;
+		TOWall wall = new TOWall(id, row, col, dir);
+		return wall;
+	}
 	/**
 	 * GUI function to prompt the user for permission to overwrite the existing file
 	 * @author Mitchell Keeley
