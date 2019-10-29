@@ -28,7 +28,7 @@ public class BoardComponent extends JPanel {
 	private int size;
 	private float width;
 	private float margin;
-	private BufferedImage hWall;
+	private BufferedImage hWall, vWall, hHighlightedWall,vHighlightedWall;
 	enum playerColor{black,white}
 	private ArrayList<Rectangle2D> rects = new ArrayList<>();
 	private ArrayList<Line2D> lines = new ArrayList<>();
@@ -48,8 +48,13 @@ public class BoardComponent extends JPanel {
 		margin = (size- width*9)/2;
 		try {
 			hWall = ImageIO.read(getFileFromResources("Wall.png"));
-			System.out.println(hWall.getHeight() +" "+ hWall.getWidth());
 			hWall = resize(hWall, 15, (int)width*2);
+			vWall = ImageIO.read(getFileFromResources("WallV.png"));
+			vWall = resize(vWall, (int)width*2,15);
+			hHighlightedWall = ImageIO.read(getFileFromResources("HighlightedWall.png"));
+			hHighlightedWall = resize(hHighlightedWall, 15, (int)width*2);
+			vHighlightedWall = ImageIO.read(getFileFromResources("HighlightedWallV.png"));
+			vHighlightedWall = resize(vHighlightedWall, (int)width*2,15);
 		}
 		catch(IOException e) {
 			System.out.println(e.getMessage());
