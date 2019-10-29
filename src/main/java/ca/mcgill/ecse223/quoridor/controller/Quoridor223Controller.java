@@ -550,7 +550,7 @@ public class Quoridor223Controller {
 		}
 		
 		// overwrite the existing file
-		// TODO: implement this
+		// this is done automatically when writing to the file
 		
 		return overwriteApproved;
 	}
@@ -564,10 +564,40 @@ public class Quoridor223Controller {
 	public static boolean saveCurrentGamePositionAsFile(String filename) throws IOException {
 		System.out.println("called save position");
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game currentGame = quoridor.getCurrentGame();
-		GamePosition currentGamePosition = currentGame.getCurrentPosition();
-		Player whitePlayer = currentGame.getWhitePlayer();
-		Player blackPlayer = currentGame.getBlackPlayer();
+		
+		// fetch game and gamePosition from quoridor
+		//Game currentGame = quoridor.getCurrentGame();
+		//GamePosition currentGamePosition = currentGame.getCurrentPosition();
+		//Player whitePlayer = currentGame.getWhitePlayer();
+		//Player blackPlayer = currentGame.getBlackPlayer();
+		
+		// for testing: create temp game and gamePosition
+		Game currentGame = new Game(Game.GameStatus.Running, MoveMode.PlayerMove, quoridor);
+		Board board = new Board(quoridor);
+		Tile whiteTile = new Tile(5,9,board);
+		Tile blackTile = new Tile(5,1,board);
+		User user0 = new User("user0", quoridor);
+		User user1 = new User("user1", quoridor);
+		Player whitePlayer = new Player(new Time(0,15,0), user0, 1, Direction.Horizontal);
+		Player blackPlayer = new Player(new Time(0,15,0), user1, 9, Direction.Horizontal);
+		PlayerPosition whitePos = new PlayerPosition(whitePlayer, whiteTile);
+		PlayerPosition blackPos = new PlayerPosition(blackPlayer, blackTile);	
+		GamePosition currentGamePosition = new GamePosition(1,whitePos,blackPos, whitePlayer, currentGame);
+		currentGame.setCurrentPosition(currentGamePosition);
+		currentGame.setBlackPlayer(blackPlayer);
+		currentGame.setWhitePlayer(whitePlayer);
+		currentGamePosition.setGame(currentGame);
+		
+		// for testing, add moves to the moveList
+		Move move1 = new WallMove(0, 0, whitePlayer, new Tile(5,3,board), currentGame,
+				Direction.Vertical, new Wall(0,whitePlayer));
+		Move move2 = new WallMove(1, 0, blackPlayer, new Tile(2,6,board), currentGame,
+				Direction.Horizontal, new Wall(1,blackPlayer));
+		Move move3 = new WallMove(2, 1, whitePlayer, new Tile(4,3,board), currentGame,
+				Direction.Vertical, new Wall(2,whitePlayer));
+		currentGame.addMove(move1);
+		currentGame.addMove(move2);
+		currentGame.addMove(move3);		
 		
 		// initialize the player information strings to write to the file
 		String whitePlayerData = "W: " + tileToString(currentGamePosition.getWhitePosition().getTile());
@@ -586,11 +616,11 @@ public class Quoridor223Controller {
 			// TODO: validate that instanceof can correctly identify WallMove, may need to verify if hasDirection
 			if (move instanceof WallMove){
 				if(move.getPlayer().equals(whitePlayer)) {
-					whitePlayerData.concat(", " + tileToString(move.getTargetTile()) + directionToString(((WallMove) move).getWallDirection()));
+					whitePlayerData = whitePlayerData.concat(", " + tileToString(move.getTargetTile()) + directionToString(((WallMove) move).getWallDirection()));
 					//printWriter.printf("%s\n", whitePlayerData);
 				}
 				else if(move.getPlayer().equals(blackPlayer)) {
-					blackPlayerData.concat(", " + tileToString(move.getTargetTile()) + directionToString(((WallMove) move).getWallDirection()));
+					blackPlayerData = blackPlayerData.concat(", " + tileToString(move.getTargetTile()) + directionToString(((WallMove) move).getWallDirection()));
 					//printWriter.printf("%s\n", blackPlayerData);
 				}
 			}

@@ -48,7 +48,7 @@ public class CucumberStepDefinitions {
 	private Player initialPlayer = null;
 	private Move initialMove = null;
 	private GamePosition loadedGamePosition = null;
-	private String loadFileName	= null;
+	private String cucumberFilename	= null;
 	
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
@@ -684,6 +684,7 @@ public class CucumberStepDefinitions {
 	 */	
 	@Given("No file {string} exists in the filesystem")
 	public void noFileFilenameExistsInTheFilesystem(String filename) {
+		cucumberFilename = filename;
 		deleteFileIfItExists(filename);
 	}	
 	
@@ -693,6 +694,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("The user initiates to save the game with name {string}")
 	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) throws Throwable {
+		cucumberFilename = filename;
 		Quoridor223Controller.savePosition(filename);
 	}
 	
@@ -703,6 +705,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("A file with {string} shall be created in the filesystem")
 	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws IOException {
+		cucumberFilename = filename;
 		File file = new File(filename);
 		assertTrue("File does not exist in the filesystem", file.exists());
 		assertTrue("File is not a File", file.isFile());
@@ -715,6 +718,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("File {string} exists in the filesystem")
 	public void fileFilenameExistsInTheFilesystem(String filename) throws IOException {
+		cucumberFilename = filename;
 		ensureFileExists(filename);
 	}
 	
@@ -725,7 +729,7 @@ public class CucumberStepDefinitions {
 	public void theUserConfirmsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks yes when prompted by the GUI to overwrite an existing file
-		assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt("yes"));
+		assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt(cucumberFilename));
 		//throw new PendingException();
 	}
 	
@@ -735,6 +739,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("File with {string} shall be updated in the filesystem")
 	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
+		cucumberFilename = filename;
 		assertTrue("The file was not successfully modified", Quoridor223Controller.writeToExistingFile(filename));
 	}
 	
@@ -745,7 +750,7 @@ public class CucumberStepDefinitions {
 	public void theUserCancelsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks no when prompted by the GUI to overwrite an existing file
-		assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt("no"));
+		assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt(cucumberFilename));
 		//throw new PendingException();
 	}
 	
@@ -755,6 +760,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("File {string} shall not be changed in the filesystem")
 	public void fileFilenameShallNotBeChangedInTheFilesystem(String filename) throws Throwable {
+		cucumberFilename = filename;
 		assertFalse("The file was modified", Quoridor223Controller.savePosition(filename));
 	}
 	
@@ -768,8 +774,8 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I initiate to load a saved game {string}")
 	public void iInitiateToLoadASavedGame(String filename) {
+		cucumberFilename = filename;
 		Quoridor223Controller.loadPosition(filename);
-		loadFileName = filename;
 	}
 	
 	/**
@@ -777,7 +783,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The position to load is valid")
 	public void thePositionToLoadIsValid() {
-		startLoadedGame(loadFileName);
+		startLoadedGame(cucumberFilename);
 	}
 	
 	@Then("It shall be {string}'s turn")
@@ -814,7 +820,7 @@ public class CucumberStepDefinitions {
 	
 	@Then("The load shall return an error")
 	public void theLoadShallReturnAnError() {
-		assertFalse("Invalid load does not return an error", Quoridor223Controller.loadPosition(loadFileName));
+		assertFalse("Invalid load does not return an error", Quoridor223Controller.loadPosition(cucumberFilename));
 	}
 	
 	
