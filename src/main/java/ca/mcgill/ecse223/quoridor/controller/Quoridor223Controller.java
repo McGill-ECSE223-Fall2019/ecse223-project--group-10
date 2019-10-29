@@ -167,17 +167,17 @@ public class Quoridor223Controller {
 	 * @author Enan Ashaduzzaman
 	 * @throws UnsupportedOperationException
 	 */
-	public static void rotateWall() throws GameNotRunningException{
-//		throw new UnsupportedOperationException();
-		if(!isRunning())throw new GameNotRunningException("Game not running");
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		//check if the Game is running. If not, thrown an exception.
-		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
-		if(curGame.getWallMoveCandidate().equals(null)) {
-			return false;
-		}
-		
+	public static void rotateWall() throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+//		if(!isRunning())throw new GameNotRunningException("Game not running");
+//		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+//		//check if the Game is running. If not, thrown an exception.
+//		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+//		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
+//		if(curGame.getWallMoveCandidate().equals(null)) {
+////			return false;
+//		}
+//		
 		
 		//check if it is the player's turn. If not, thrown an exception. 
 		//check if there is no wall in my hand. If no wall, thrown an exception. 
@@ -195,10 +195,10 @@ public class Quoridor223Controller {
 	 * @author Enan Ashaduzzaman
 	 * @throws UnsupportedOperationException
 	 */
-	public static void grabWall() throws GameNotRunningException{
-//		throw new UnsupportedOperationException();
-		if(!isRunning())throw new GameNotRunningException("Game not running");
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+	public static void grabWall() throws UnsupportedOperationException{
+		throw new UnsupportedOperationException();
+//		if(!isRunning())throw new GameNotRunningException("Game not running");
+//		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if the Game is running if not throw exception
 		
 		//check if the it is player's turn if not throw exception
