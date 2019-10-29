@@ -725,8 +725,8 @@ public class CucumberStepDefinitions {
 	public void theUserConfirmsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks yes when prompted by the GUI to overwrite an existing file
-		//assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt());
-		throw new PendingException();
+		assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt("yes"));
+		//throw new PendingException();
 	}
 	
 	/**
@@ -745,8 +745,8 @@ public class CucumberStepDefinitions {
 	public void theUserCancelsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks no when prompted by the GUI to overwrite an existing file
-		//assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt());
-		throw new PendingException();
+		assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt("no"));
+		//throw new PendingException();
 	}
 	
 	/**
