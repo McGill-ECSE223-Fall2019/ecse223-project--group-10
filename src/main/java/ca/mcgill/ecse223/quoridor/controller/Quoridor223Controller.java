@@ -232,7 +232,7 @@ public class Quoridor223Controller {
 	 * @throws GameNotRunningException
 	 * @throws InvalidOperationException
 	 */
-	public static void moveWall(String side) throws GameNotRunningException, InvalidOperationException {
+	public static void moveWall(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
 		//check if the Game is running if not throw exception
 		if(!isRunning())throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -241,8 +241,8 @@ public class Quoridor223Controller {
 		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
 		WallMove candidate =  curGame.getWallMoveCandidate();
 		//check if newRow and newCol are within the board if not throw exception
-		int newRow = candidate.getTargetTile().getRow()+ (side.equalsIgnoreCase("up")?-1:side.equalsIgnoreCase("down")?1:0);
-		int newCol = candidate.getTargetTile().getColumn()+ (side.equalsIgnoreCase("left")?-1:side.equalsIgnoreCase("right")?1:0);
+		int newRow = candidate.getTargetTile().getRow()+ (side==TOWall.Side.Up?-1:side==TOWall.Side.Down?1:0);
+		int newCol = candidate.getTargetTile().getColumn()+ (side==TOWall.Side.Left?-1:side==TOWall.Side.Right?1:0);
 		if(!isWallPositionValid(newRow,newCol))throw new InvalidOperationException("Move invalid");
 		//update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow,newCol));
@@ -526,6 +526,12 @@ public class Quoridor223Controller {
 		ArrayList<TOWall> wallList = new ArrayList<TOWall>();
 		for(Wall wall: curGame.getCurrentPosition().getBlackWallsOnBoard())wallList.add(convertWall(wall));
 		return wallList;
+	}
+	public static TOWall getWallInHand() {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.numberOfMoves()==0)return null;
+		if(curGame.getWallMoveCandidate()==null)return null;
+		return convertWall(curGame.getWallMoveCandidate().getWallPlaced());
 	}
 	private static TOWall convertWall(Wall aWall) {
 		int row = aWall.getMove().getTargetTile().getRow();

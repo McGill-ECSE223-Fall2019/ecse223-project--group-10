@@ -24,6 +24,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+
 public class BoardComponent extends JPanel {
 	private int size;
 	private float width;
@@ -36,8 +38,7 @@ public class BoardComponent extends JPanel {
 	private ArrayList<float[]> blackWallInStock;
 	private ArrayList<float[]> whiteWallOnBoard;
 	private ArrayList<float[]> blackWallOnBoard;
-	private float[] whiteWallInHand;
-	private float[] blackWallInHand;
+	private float[] wallInHand;
 	private HashMap<playerColor,Ellipse2D> players = new HashMap<>();
 	
 	public BoardComponent(int size) {
@@ -60,6 +61,8 @@ public class BoardComponent extends JPanel {
 			System.out.println(e.getMessage());
 		}
 		init();
+	}
+	public void refresh() {
 	}
 	
 	private void init() {
@@ -107,13 +110,14 @@ public class BoardComponent extends JPanel {
 		players.put(playerColor.white,new Ellipse2D.Float(getTileCord(9),getTileCord(5),width*2/3,width*2/3));
 	}
 	
+	
 	private void loadWall() {
-		whiteWallInHand=null;
+		wallInHand=null;
 		whiteWallInStock = new ArrayList<>();
 		blackWallInStock = new ArrayList<>();
 		whiteWallOnBoard = new ArrayList<>();
 		blackWallOnBoard = new ArrayList<>();
-//		Controller.getWallInHand()
+		wallInHand = ConvertTOWall(Quoridor223Controller.getWallInHand());
 //		Controller.getWhiteWallInStock();
 //		Controller.getBlackWallInStock();
 //		Controller.getWhiteWallOnBoard();
@@ -153,7 +157,7 @@ public class BoardComponent extends JPanel {
         g2d.drawImage(tmp, 0, 0, null);
         g2d.dispose();
         return resized;
-    	}
+    }
 	private void getWallCord(){
 		
 	}

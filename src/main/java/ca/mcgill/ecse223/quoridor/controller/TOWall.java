@@ -13,6 +13,7 @@ public class TOWall
   //------------------------
 
   public enum Direction { Horizontal, Vertical }
+  public enum Side { Up, Down, Left, Right }
 
   //------------------------
   // STATIC VARIABLES
