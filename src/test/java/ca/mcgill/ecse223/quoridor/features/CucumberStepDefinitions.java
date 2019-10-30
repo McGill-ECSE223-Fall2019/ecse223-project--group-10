@@ -13,6 +13,7 @@ import java.util.Map;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -607,7 +608,12 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I release the wall in my hand")
 	public void iReleaseTheWallInMyHand() {
-		Wall wallDroped = Quoridor223Controller.dropWall();
+		try {
+			Quoridor223Controller.dropWall();
+		}catch(Exception e) {
+			
+		}
+		
 	}
 	
 	/**
@@ -727,7 +733,8 @@ public class CucumberStepDefinitions {
 	@When("I try to move the wall {string}")
 	public void iTryToMoveTheWallSide(String side) {
 		try {
-			Quoridor223Controller.moveWall(side);
+			TOWall.Side direction = side.equalsIgnoreCase("UP")?TOWall.Side.Up:side.equalsIgnoreCase("DOWN")?TOWall.Side.Down:side.equalsIgnoreCase("LEFT")?TOWall.Side.Left:TOWall.Side.Right;
+			Quoridor223Controller.moveWall(direction);
 		}
 		catch (Exception e){
 

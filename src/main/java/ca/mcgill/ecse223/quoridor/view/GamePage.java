@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
@@ -70,6 +71,7 @@ public class GamePage extends JFrame{
 	// grab, drop, rotate wall button
 	private JButton grabWall;
 	private JButton dropWall;
+	private JButton btnRotateWall;
 	
 	// forfeit game
 	private JButton forfeit;
@@ -82,7 +84,8 @@ public class GamePage extends JFrame{
 	
 	// player's turn
 	private JLabel playerTurn;
-	private JButton btnRotateWall;
+	
+	//Move buttons
 	private JButton btnUp;
 	private JButton btnDown;
 	private JButton btnRight;
@@ -127,7 +130,9 @@ public class GamePage extends JFrame{
 		dropWall = new JButton("Drop Wall");
 		dropWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		dropWall.setBounds(750, 145, 120, 40);
-		
+		btnRotateWall = new JButton("Rotate Wall");
+		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnRotateWall.setBounds(880, 145, 120, 40);
 		//initialize forfeit, confirm
 		forfeit = new JButton("Forfeit Game");
 		forfeit.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -158,6 +163,19 @@ public class GamePage extends JFrame{
 		playerTurn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		playerTurn.setBounds(90, 28, 500, 46);
 		
+		//move button
+		btnLeft = new JButton("LEFT");
+		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnLeft.setBounds(680, 336, 80, 80);
+		btnRight = new JButton("RIGHT");
+		btnRight.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnRight.setBounds(860, 336, 80, 80);
+		btnDown = new JButton("DOWN");
+		btnDown.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnDown.setBounds(770, 336, 80, 80);
+		btnUp = new JButton("UP");
+		btnUp.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnUp.setBounds(770, 246, 80, 80);
 		
 		//------------------------- Add Event Listener ----------------------------//
 		grabWall.addActionListener(new java.awt.event.ActionListener() {
@@ -168,6 +186,11 @@ public class GamePage extends JFrame{
 		
 		dropWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					Quoridor223Controller.dropWall();
+				}catch(Exception e) {
+					
+				}
 				
 			}
 		});
@@ -210,9 +233,56 @@ public class GamePage extends JFrame{
 			}
 		});
 		
-		btnRotateWall = new JButton("Rotate Wall");
-		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnRotateWall.setBounds(880, 145, 120, 40);
+		btnUp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Quoridor223Controller.moveWall(TOWall.Side.Up);
+				}
+				catch(Exception ex) {
+					//set the notification panel to message
+				}
+				boardComponent.repaint();
+			}
+			
+		});
+		
+		btnDown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Quoridor223Controller.moveWall(TOWall.Side.Down);
+				}
+				catch(Exception ex) {
+					//set the notification panel to message
+				}
+				boardComponent.repaint();
+			}
+		});
+		
+		btnLeft.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Quoridor223Controller.moveWall(TOWall.Side.Left);
+				}
+				catch(Exception ex) {
+					//set the notification panel to message
+				}
+				boardComponent.repaint();
+			}
+		});
+		
+		btnRight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Quoridor223Controller.moveWall(TOWall.Side.Right);
+				}
+				catch(Exception ex) {
+					//set the notification panel to message
+				}
+				boardComponent.repaint();
+			}
+			
+		});
+		
 		getContentPane().setLayout(null);
 		getContentPane().add(playerTurn);
 		getContentPane().add(newGame);
@@ -228,25 +298,9 @@ public class GamePage extends JFrame{
 		getContentPane().add(forfeit);
 		getContentPane().add(dropWall);
 		getContentPane().add(btnRotateWall);
-		
-		btnUp = new JButton("UP");
-		btnUp.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnUp.setBounds(770, 246, 80, 80);
 		getContentPane().add(btnUp);
-		
-		btnDown = new JButton("DOWN");
-		btnDown.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnDown.setBounds(770, 336, 80, 80);
 		getContentPane().add(btnDown);
-		
-		btnRight = new JButton("RIGHT");
-		btnRight.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnRight.setBounds(860, 336, 80, 80);
 		getContentPane().add(btnRight);
-		
-		btnLeft = new JButton("LEFT");
-		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnLeft.setBounds(680, 336, 80, 80);
 		getContentPane().add(btnLeft);
 	}
 	

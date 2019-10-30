@@ -2,7 +2,6 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package ca.mcgill.ecse223.quoridor.controller;
-import java.util.*;
 
 // line 9 "../../../../../QuoridorTransferObject.ump"
 public class TOWall
@@ -13,12 +12,7 @@ public class TOWall
   //------------------------
 
   public enum Direction { Horizontal, Vertical }
-
-  //------------------------
-  // STATIC VARIABLES
-  //------------------------
-
-  private static Map<Integer, TOWall> towallsById = new HashMap<Integer, TOWall>();
+  public enum Side { Up, Down, Left, Right }
 
   //------------------------
   // MEMBER VARIABLES
@@ -36,13 +30,10 @@ public class TOWall
 
   public TOWall(int aId, int aRow, int aCol, Direction aDir)
   {
+    id = aId;
     row = aRow;
     col = aCol;
     dir = aDir;
-    if (!setId(aId))
-    {
-      throw new RuntimeException("Cannot create due to duplicate id");
-    }
   }
 
   //------------------------
@@ -52,16 +43,8 @@ public class TOWall
   public boolean setId(int aId)
   {
     boolean wasSet = false;
-    Integer anOldId = getId();
-    if (hasWithId(aId)) {
-      return wasSet;
-    }
     id = aId;
     wasSet = true;
-    if (anOldId != null) {
-      towallsById.remove(anOldId);
-    }
-    towallsById.put(aId, this);
     return wasSet;
   }
 
@@ -93,16 +76,6 @@ public class TOWall
   {
     return id;
   }
-  /* Code from template attribute_GetUnique */
-  public static TOWall getWithId(int aId)
-  {
-    return towallsById.get(aId);
-  }
-  /* Code from template attribute_HasUnique */
-  public static boolean hasWithId(int aId)
-  {
-    return getWithId(aId) != null;
-  }
 
   public int getRow()
   {
@@ -120,9 +93,7 @@ public class TOWall
   }
 
   public void delete()
-  {
-    towallsById.remove(getId());
-  }
+  {}
 
 
   public String toString()
