@@ -446,8 +446,12 @@ public class CucumberStepDefinitions {
 	 * @throws GameNotRunningException 
 	 */
 	@When("I try to flip the wall")
-	public void iTryToFlipTheWall() throws GameNotRunningException{
-			Quoridor223Controller.rotateWall();
+	public void iTryToFlipTheWall(){
+			try {
+				Quoridor223Controller.rotateWall();
+			} catch(Exception e) {
+				
+			}
 	}
 	
 	

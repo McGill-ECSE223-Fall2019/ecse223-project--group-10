@@ -245,6 +245,7 @@ public class GamePage extends JFrame{
 		getContentPane().add(btnRight);
 		
 		btnLeft = new JButton("LEFT");
+		btnLeft.setBackground(new Color(51, 204, 102));
 		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnLeft.setBounds(680, 336, 80, 80);
 		getContentPane().add(btnLeft);
