@@ -25,6 +25,8 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
+import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 
 import javax.swing.JSplitPane;
@@ -158,58 +160,6 @@ public class GamePage extends JFrame{
 		playerTurn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		playerTurn.setBounds(90, 28, 500, 46);
 		
-		
-		//------------------------- Add Event Listener ----------------------------//
-		grabWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		dropWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		
-
-		forfeit.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		newGame.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		saveGame.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(e.getButton() == MouseEvent.BUTTON1){
-					userClicksToSaveGame();
-				}
-			}
-		});
-		
-		loadGame.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(e.getButton() == MouseEvent.BUTTON1){
-					userClicksToLoadGame();
-				}
-			}
-		});
-				
-		replayGame.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
 		btnRotateWall = new JButton("Rotate Wall");
 		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnRotateWall.setBounds(880, 145, 120, 40);
@@ -249,6 +199,75 @@ public class GamePage extends JFrame{
 		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnLeft.setBounds(680, 336, 80, 80);
 		getContentPane().add(btnLeft);
+		
+		//------------------------- Add Event Listener ----------------------------//
+				grabWall.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						try {
+							Quoridor223Controller.grabWall();
+						} catch (InvalidOperationException eGrab) {
+							
+						} catch (GameNotRunningException eGrab) {
+							
+						}
+					}
+				});
+				
+				btnRotateWall.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Quoridor223Controller.rotateWall();
+						} catch (InvalidOperationException eRotate) {
+							
+						} catch (GameNotRunningException eRotate) {
+							
+						}
+					}
+				});
+				
+				dropWall.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						
+					}
+				});
+				
+				
+
+				forfeit.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						
+					}
+				});
+				
+				newGame.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						
+					}
+				});
+				
+				saveGame.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if(e.getButton() == MouseEvent.BUTTON1){
+							userClicksToSaveGame();
+						}
+					}
+				});
+				
+				loadGame.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if(e.getButton() == MouseEvent.BUTTON1){
+							userClicksToLoadGame();
+						}
+					}
+				});
+						
+				replayGame.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						
+					}
+				});
 	}
 	
 	
