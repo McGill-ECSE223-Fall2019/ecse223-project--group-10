@@ -9,8 +9,6 @@ import ca.mcgill.ecse223.quoridor.model.GamePosition;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
-<<<<<<< HEAD
-=======
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
@@ -18,7 +16,6 @@ import ca.mcgill.ecse223.quoridor.model.WallMove;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.view.BoardComponent;
->>>>>>> a0c5f2e24cee66451b906af21aaa7940b6a08425
 import ca.mcgill.ecse223.quoridor.view.GamePage;
 import ca.mcgill.ecse223.quoridor.view.SetThinkingTimePage;
 
@@ -27,14 +24,8 @@ public class QuoridorApplication {
 	private static SetThinkingTimePage timePage;
 	private static GamePage game;
 	public static void main(String[] args) {
-<<<<<<< HEAD
 		timePage = new SetThinkingTimePage();
 		timePage.setVisible(true);
-=======
-		createWall();
-		GamePage mainPage = new GamePage();
-		mainPage.setVisible(true);
->>>>>>> a0c5f2e24cee66451b906af21aaa7940b6a08425
 	}
 
 	public static Quoridor getQuoridor() {
