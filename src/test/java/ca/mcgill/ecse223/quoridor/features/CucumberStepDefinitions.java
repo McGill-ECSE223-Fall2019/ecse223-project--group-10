@@ -269,7 +269,7 @@ public class CucumberStepDefinitions {
 
 	}
 	
-	@When("The player sprovides new user name: {String}")
+	@When("The player sprovides new user name: {string}")
 	public void thePlayerProvidesNewUserName(String usernName) {
 		
 		//

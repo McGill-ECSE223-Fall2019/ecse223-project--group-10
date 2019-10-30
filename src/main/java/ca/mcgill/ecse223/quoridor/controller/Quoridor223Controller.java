@@ -148,7 +148,7 @@ public class Quoridor223Controller {
 		Tile blackPlayerTile = quoridor.getBoard().getTile(76);
 		
 		Game currentGame = quoridor.getCurrentGame();
-	
+		
 		// create players' initial positions
 		PlayerPosition whitePlayerPosition = new PlayerPosition(currentGame.getWhitePlayer(), whitePlayerTile);
 		PlayerPosition blackPlayerPosition = new PlayerPosition(currentGame.getBlackPlayer(), blackPlayerTile);

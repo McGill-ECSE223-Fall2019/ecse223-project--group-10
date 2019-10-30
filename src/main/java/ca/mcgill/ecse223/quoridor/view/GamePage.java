@@ -118,11 +118,13 @@ public class GamePage extends JFrame{
 		
 		//initialize time (for now default to 10, later will get from model through controller)
 		whiteRemainingTime = players.getPlayerOneTime();
+		String wTime[] = whiteRemainingTime.toString().split(":");
 		blackRemainingTime = players.getPlayerTwoTime();
-		whiteTime = new JLabel(whiteRemainingTime.toString(), SwingConstants.CENTER);
+		String bTime[] = blackRemainingTime.toString().split(":");
+		whiteTime = new JLabel(wTime[1] + ":" + wTime[2], SwingConstants.CENTER);
 		whiteTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		whiteTime.setBounds(936, 94, 64, 33);
-		blackTime = new JLabel(blackRemainingTime.toString(), SwingConstants.CENTER);
+		blackTime = new JLabel(bTime[1] + ":" + bTime[2], SwingConstants.CENTER);
 		blackTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		blackTime.setBounds(676, 94, 64, 33);
 		
