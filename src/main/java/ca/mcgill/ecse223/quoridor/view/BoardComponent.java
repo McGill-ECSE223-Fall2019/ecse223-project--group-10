@@ -137,6 +137,7 @@ public class BoardComponent extends JPanel {
 		whiteWallOnBoard=Quoridor223Controller.getWhiteWallOnBoard();
 		blackWallOnBoard=Quoridor223Controller.getBlackWallOnBoard();
 	}
+	
 	private void initStock() {
 		float lx =0, rx=size-2*width;
 		float y = margin-9;

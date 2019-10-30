@@ -1019,7 +1019,6 @@ public class CucumberStepDefinitions {
 			return playersList;
 		}
 
-
 		private void createAndStartGame(ArrayList<Player> players) {
 			Quoridor quoridor = QuoridorApplication.getQuoridor();
 			// There are total 36 tiles in the first four rows and

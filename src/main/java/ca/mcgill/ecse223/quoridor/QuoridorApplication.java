@@ -17,13 +17,15 @@ import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.view.BoardComponent;
 import ca.mcgill.ecse223.quoridor.view.GamePage;
+import ca.mcgill.ecse223.quoridor.view.SetThinkingTimePage;
 
 public class QuoridorApplication {
 	private static Quoridor quoridor;
+	private static SetThinkingTimePage timePage;
+	private static GamePage game;
 	public static void main(String[] args) {
-		createWall();
-		GamePage mainPage = new GamePage();
-		mainPage.setVisible(true);
+		timePage = new SetThinkingTimePage();
+		timePage.setVisible(true);
 	}
 
 	public static Quoridor getQuoridor() {
@@ -81,5 +83,12 @@ public class QuoridorApplication {
 		boolean test =game.setWallMoveCandidate(new WallMove(1, 1, player, board.getTile((row-1)*9+(col-1)), game, wallDirection, toBeUsed));
 	}
 	
+	public static void setMainPage() {
+		if(timePage.getPageStatus()) {
+			timePage.setVisible(false);
+			game = new GamePage();
+			game.setVisible(true);
+		}
+	}
 	
 }
