@@ -14,6 +14,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -49,7 +50,7 @@ public class CucumberStepDefinitions {
 	private Player initialPlayer = null;
 	private Move initialMove = null;
 	private GamePosition loadedGamePosition = null;
-	private String loadFileName	= null;
+	private String cucumberFilename	= null;
 	
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
@@ -149,49 +150,153 @@ public class CucumberStepDefinitions {
 	// StartNewGame and ProvideSelectUserName start here
 	// **********************************************
 
-	/**
-	 * @author Vanessa Ifrah
-	 */
-	@When("A new game is being initialized")
-	public void aNewGameIsBeingInitialized() {
-
-		// create the new game
-		Quoridor223Controller.createGame();
-
-	}
-
-	/**
-	 * @author Vanessa Ifrah
-	 */
-	@And("White player chooses a username")
-	public void whitePlayerChoosesAUsername(String playerName1) {
-
-		// white/first player chooses their name
-		Quoridor223Controller.createUser(playerName1);
-
-	}
-
-	/**
-	 * @author Vanessa Ifrah
-	 */
-	@And("Black player chooses a username")
-	public void blackPlayerChoosesAUsername(String playerName2) {
-
-		// black/second player chooses their name
-		Quoridor223Controller.createUser(playerName2);
-
-	}
-
-	/**
-	 * @author Vanessa Ifrah
-	 */
-	@Then("The game shall become ready to start")
-	public void theGameShallBecomeReadyToStart() {
-
-		//assertEquals(GameStatus.Initializing, true);
-
-	}
-		
+//	/**
+//	 * Scenario: Initiate a new game
+//	 * @author Vanessa Ifrah
+//	 */
+//	@When("A new game is being initialized")
+//	public void aNewGameIsBeingInitialized() {
+//		
+//		// create the new game
+//		Quoridor223Controller.createGame();
+//
+//	}
+//
+//	@And("White player chooses a username")
+//	public void whitePlayerChoosesAUsername(String playerName1) {
+//
+//		// white/first player chooses their name
+//		Quoridor223Controller.createUser(playerName1);
+//
+//	}
+//
+//	@And("Black player chooses a username")
+//	public void blackPlayerChoosesAUsername(String playerName2) {
+//
+//		// black/second player chooses their name
+//		Quoridor223Controller.createUser(playerName2);
+//
+//	}
+//
+//	@And("Total thinking time is set")
+//	public void totalThinkingTimeIsSet(Time thinkingTime, String playerName) {
+//
+//		// black/second player chooses their name
+//		Quoridor223Controller.setThinkingTime(thinkingTime, playerName);
+//
+//	}
+//
+//	@Then("The game shall become ready to start")
+//	public void theGameShallBecomeReadyToStart() {
+//
+//		//assertEquals(GameStatus.Initializing, true);
+//
+//	}
+//	
+//	
+//	/**
+//	 * Scenario: Start Clock
+//	 * @author Vanessa Ifrah
+//	 */
+//	@Given("The game is ready to start")
+//	public void theGameIsReadyToStart() {
+//		
+//		// 
+//		//		Quoridor223Controller.createGame();
+//
+//	}
+//
+//	@When("I start the clock")
+//	public void iStartTheClock() {
+//		
+//		// 
+//		//		Quoridor223Controller.createGame();
+//
+//	}
+//		
+//	@Then("The game shall become ready to start")
+//	public void theGameShallBeRunning() {
+//
+//		//assertEquals(GameStatus.Initializing, true);
+//
+//	}
+//
+//	@And("The board shall be initialized")
+//	public void theBoardShallBeInitialized() {
+//
+//		//assertEquals(GameStatus.Initializing, true);
+//
+//	}
+//	
+//	/**
+//	 * Scenario: Select existing user name
+//	 * @author Vanessa Ifrah
+//	 */
+//	@Given("Next player to set user name is {string}")
+//	public void nextPlayerToSetUserNameIs(String playerColor) {
+//		
+//
+//	}
+//
+//	@And("There is existing user {string}")
+//	public void thereIsExistingUser(String userName) {
+//		
+//
+//	}
+//	
+//	@When("The player selects existing {string}")
+//	public void thePlayerSelectsExisting(String usernName) {
+//
+//		//
+//
+//	}
+//	
+//	@Then("The name of player {string} in the new game shall be {string}")
+//	public void theNameOfPlayerInTheNewGameShallBe(String playerColor, String userName) {
+//		
+//		//assertEquals(GameStatus.Initializing, true);
+//
+//	}
+//	
+//	
+//	/**
+//	 * Scenario: Create new user name
+//	 * @author Vanessa Ifrah
+//	 */
+//	@And("There is no existing user {string}")
+//	public void thereIsNoExistingUser(String userName) {
+//		
+//		//
+//
+//	}
+//	
+////	@When("The player sprovides new user name: {String}")
+////	public void thePlayerProvidesNewUserName(String usernName) {
+////		
+////		//
+////
+////	}
+//	
+//	
+//	/**
+//	 * Scenario: User name already exists
+//	 * @author Vanessa Ifrah
+//	 */
+//	@Then("The player shall be warned that {string} already exists")
+//	public void thePlayerShallBeWarnedThatUserNameAlreadyExists(String usernName) {
+//
+//		//assertion
+//		
+//	}
+//
+//	@And("Next player to set user name shall be {string}")
+//	public void nextPlayerToSetUserNameShallBe(String userName) {
+//
+//		//assertion
+//		
+//	}
+	
+	
 	
 	// **********************************************
 	// SetTotalThinkingTime and InitializeBoard start here
@@ -331,6 +436,7 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	// SetTotalThinkingTime and InitializeBoard end here
 	// **********************************************
+	
 	
 	// **********************************************
 	// GrabWall and RotateWall
@@ -516,7 +622,12 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I release the wall in my hand")
 	public void iReleaseTheWallInMyHand() {
-		Wall wallDroped = Quoridor223Controller.dropWall();
+		try {
+			Quoridor223Controller.dropWall();
+		}catch(Exception e) {
+			
+		}
+		
 	}
 	
 	/**
@@ -636,7 +747,8 @@ public class CucumberStepDefinitions {
 	@When("I try to move the wall {string}")
 	public void iTryToMoveTheWallSide(String side) {
 		try {
-			Quoridor223Controller.moveWall(side);
+			TOWall.Side direction = side.equalsIgnoreCase("UP")?TOWall.Side.Up:side.equalsIgnoreCase("DOWN")?TOWall.Side.Down:side.equalsIgnoreCase("LEFT")?TOWall.Side.Left:TOWall.Side.Right;
+			Quoridor223Controller.moveWall(direction);
 		}
 		catch (Exception e){
 
@@ -698,6 +810,7 @@ public class CucumberStepDefinitions {
 	 */	
 	@Given("No file {string} exists in the filesystem")
 	public void noFileFilenameExistsInTheFilesystem(String filename) {
+		cucumberFilename = filename;
 		deleteFileIfItExists(filename);
 	}	
 	
@@ -707,6 +820,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("The user initiates to save the game with name {string}")
 	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) throws Throwable {
+		cucumberFilename = filename;
 		Quoridor223Controller.savePosition(filename);
 	}
 	
@@ -717,6 +831,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("A file with {string} shall be created in the filesystem")
 	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws IOException {
+		cucumberFilename = filename;
 		File file = new File(filename);
 		assertTrue("File does not exist in the filesystem", file.exists());
 		assertTrue("File is not a File", file.isFile());
@@ -729,6 +844,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("File {string} exists in the filesystem")
 	public void fileFilenameExistsInTheFilesystem(String filename) throws IOException {
+		cucumberFilename = filename;
 		ensureFileExists(filename);
 	}
 	
@@ -739,7 +855,7 @@ public class CucumberStepDefinitions {
 	public void theUserConfirmsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks yes when prompted by the GUI to overwrite an existing file
-		assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt("yes"));
+		assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt(cucumberFilename));
 		//throw new PendingException();
 	}
 	
@@ -749,6 +865,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("File with {string} shall be updated in the filesystem")
 	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
+		cucumberFilename = filename;
 		assertTrue("The file was not successfully modified", Quoridor223Controller.writeToExistingFile(filename));
 	}
 	
@@ -759,7 +876,7 @@ public class CucumberStepDefinitions {
 	public void theUserCancelsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks no when prompted by the GUI to overwrite an existing file
-		assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt("no"));
+		assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt(cucumberFilename));
 		//throw new PendingException();
 	}
 	
@@ -769,6 +886,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("File {string} shall not be changed in the filesystem")
 	public void fileFilenameShallNotBeChangedInTheFilesystem(String filename) throws Throwable {
+		cucumberFilename = filename;
 		assertFalse("The file was modified", Quoridor223Controller.savePosition(filename));
 	}
 	
@@ -782,8 +900,8 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I initiate to load a saved game {string}")
 	public void iInitiateToLoadASavedGame(String filename) {
+		cucumberFilename = filename;
 		Quoridor223Controller.loadPosition(filename);
-		loadFileName = filename;
 	}
 	
 	/**
@@ -791,7 +909,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The position to load is valid")
 	public void thePositionToLoadIsValid() {
-		startLoadedGame(loadFileName);
+		startLoadedGame(cucumberFilename);
 	}
 	
 	@Then("It shall be {string}'s turn")
@@ -828,7 +946,7 @@ public class CucumberStepDefinitions {
 	
 	@Then("The load shall return an error")
 	public void theLoadShallReturnAnError() {
-		assertFalse("Invalid load does not return an error", Quoridor223Controller.loadPosition(loadFileName));
+		assertFalse("Invalid load does not return an error", Quoridor223Controller.loadPosition(cucumberFilename));
 	}
 	
 	
@@ -914,7 +1032,6 @@ public class CucumberStepDefinitions {
 			
 			return playersList;
 		}
-
 
 		private void createAndStartGame(ArrayList<Player> players) {
 			Quoridor quoridor = QuoridorApplication.getQuoridor();

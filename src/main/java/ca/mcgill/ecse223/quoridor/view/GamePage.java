@@ -28,6 +28,8 @@ import javax.swing.table.TableCellRenderer;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOGame;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
@@ -62,6 +64,8 @@ public class GamePage extends JFrame{
 	// username
 	private JLabel userName1;
 	private JLabel userName2;
+	private String name1;
+	private String name2;
 	
 	// remaining time
 	private Time whiteRemainingTime;
@@ -72,6 +76,7 @@ public class GamePage extends JFrame{
 	// grab, drop, rotate wall button
 	private JButton grabWall;
 	private JButton dropWall;
+	private JButton btnRotateWall;
 	
 	// forfeit game
 	private JButton forfeit;
@@ -84,7 +89,8 @@ public class GamePage extends JFrame{
 	
 	// player's turn
 	private JLabel playerTurn;
-	private JButton btnRotateWall;
+	
+	//Move buttons
 	private JButton btnUp;
 	private JButton btnDown;
 	private JButton btnRight;
@@ -104,16 +110,17 @@ public class GamePage extends JFrame{
 		boardComponent.setBackground(new Color(206,159,111));
 		
 		//initialize username
-		userName1 = new JLabel("White", SwingConstants.CENTER);
+		TOGame players = Quoridor223Controller.getListOfPlayers();
+		userName1 = new JLabel(players.getPlayerOne(), SwingConstants.CENTER);
 		userName1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		userName1.setBounds(876, 94, 50, 32);
-		userName2 = new JLabel("Black", SwingConstants.CENTER);
+		userName2 = new JLabel(players.getPlayerTwo(), SwingConstants.CENTER);
 		userName2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		userName2.setBounds(620, 94, 46, 33);
 		
 		//initialize time (for now default to 10, later will get from model through controller)
-		whiteRemainingTime = new Time(10);
-		blackRemainingTime = new Time(10);
+		whiteRemainingTime = players.getPlayerOneTime();
+		blackRemainingTime = players.getPlayerTwoTime();
 		whiteTime = new JLabel(whiteRemainingTime.toString(), SwingConstants.CENTER);
 		whiteTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		whiteTime.setBounds(936, 94, 64, 33);
@@ -129,7 +136,9 @@ public class GamePage extends JFrame{
 		dropWall = new JButton("Drop Wall");
 		dropWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		dropWall.setBounds(750, 145, 120, 40);
-		
+		btnRotateWall = new JButton("Rotate Wall");
+		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnRotateWall.setBounds(880, 145, 120, 40);
 		//initialize forfeit, confirm
 		forfeit = new JButton("Forfeit Game");
 		forfeit.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -160,9 +169,27 @@ public class GamePage extends JFrame{
 		playerTurn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		playerTurn.setBounds(90, 28, 500, 46);
 		
+
 		btnRotateWall = new JButton("Rotate Wall");
 		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnRotateWall.setBounds(880, 145, 120, 40);
+
+		//move button
+		btnLeft = new JButton("LEFT");
+		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnLeft.setBounds(680, 336, 80, 80);
+		btnRight = new JButton("RIGHT");
+		btnRight.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnRight.setBounds(860, 336, 80, 80);
+		btnDown = new JButton("DOWN");
+		btnDown.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnDown.setBounds(770, 336, 80, 80);
+		btnUp = new JButton("UP");
+		btnUp.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnUp.setBounds(770, 246, 80, 80);
+		
+		
+		
 		getContentPane().setLayout(null);
 		getContentPane().add(playerTurn);
 		getContentPane().add(newGame);
@@ -178,96 +205,136 @@ public class GamePage extends JFrame{
 		getContentPane().add(forfeit);
 		getContentPane().add(dropWall);
 		getContentPane().add(btnRotateWall);
-		
-		btnUp = new JButton("UP");
-		btnUp.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnUp.setBounds(770, 246, 80, 80);
 		getContentPane().add(btnUp);
-		
-		btnDown = new JButton("DOWN");
-		btnDown.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnDown.setBounds(770, 336, 80, 80);
 		getContentPane().add(btnDown);
-		
-		btnRight = new JButton("RIGHT");
-		btnRight.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnRight.setBounds(860, 336, 80, 80);
 		getContentPane().add(btnRight);
 		
-		btnLeft = new JButton("LEFT");
-		btnLeft.setBackground(new Color(51, 204, 102));
-		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnLeft.setBounds(680, 336, 80, 80);
+
 		getContentPane().add(btnLeft);
 		
 		//------------------------- Add Event Listener ----------------------------//
-				grabWall.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						try {
-							Quoridor223Controller.grabWall();
-						} catch (InvalidOperationException eGrab) {
-							
-						} catch (GameNotRunningException eGrab) {
-							
-						}
-					}
-				});
+		grabWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					Quoridor223Controller.grabWall();
+				} catch (InvalidOperationException eGrab) {
+					
+				} catch (GameNotRunningException eGrab) {
+					
+				}
+				boardComponent.repaint();
+			}
+		});
+		
+		btnRotateWall.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Quoridor223Controller.rotateWall();
+				} catch (InvalidOperationException eRotate) {
+					
+				} catch (GameNotRunningException eRotate) {
+					
+				}
+				boardComponent.repaint();
+			}
+		});
+		
+		dropWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					Quoridor223Controller.dropWall();
+				}catch(Exception e) {
+					
+				}
 				
-				btnRotateWall.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						try {
-							Quoridor223Controller.rotateWall();
-						} catch (InvalidOperationException eRotate) {
-							
-						} catch (GameNotRunningException eRotate) {
-							
-						}
-					}
-				});
-				
-				dropWall.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						
-					}
-				});
-				
-				
+			}
+		});
 
-				forfeit.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						
-					}
-				});
+		forfeit.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
-				newGame.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						
-					}
-				});
+			}
+		});
+		
+		newGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
-				saveGame.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						if(e.getButton() == MouseEvent.BUTTON1){
-							userClicksToSaveGame();
-						}
-					}
-				});
+			}
+		});
+		
+		saveGame.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON1){
+					userClicksToSaveGame();
+				}
+			}
+		});
+		
+		loadGame.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton() == MouseEvent.BUTTON1){
+					userClicksToLoadGame();
+				}
+			}
+		});
 				
-				loadGame.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						if(e.getButton() == MouseEvent.BUTTON1){
-							userClicksToLoadGame();
-						}
-					}
-				});
-						
-				replayGame.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						
-					}
-				});
+		replayGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		btnUp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Quoridor223Controller.moveWall(TOWall.Side.Up);
+				}
+				catch(Exception ex) {
+					//set the notification panel to message
+				}
+				boardComponent.repaint();
+			}
+			
+		});
+		
+		btnDown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Quoridor223Controller.moveWall(TOWall.Side.Down);
+				}
+				catch(Exception ex) {
+					//set the notification panel to message
+				}
+				boardComponent.repaint();
+			}
+		});
+		
+		btnLeft.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Quoridor223Controller.moveWall(TOWall.Side.Left);
+				}
+				catch(Exception ex) {
+					//set the notification panel to message
+				}
+				boardComponent.repaint();
+			}
+		});
+		
+		btnRight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Quoridor223Controller.moveWall(TOWall.Side.Right);
+				}
+				catch(Exception ex) {
+					//set the notification panel to message
+				}
+				boardComponent.repaint();
+			}
+			
+		});
 	}
 	
 	
