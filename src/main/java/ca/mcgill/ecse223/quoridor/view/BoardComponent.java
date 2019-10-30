@@ -35,8 +35,8 @@ public class BoardComponent extends JPanel {
 	enum playerColor{black,white}
 	private ArrayList<Rectangle2D> rects = new ArrayList<>();
 	private ArrayList<Line2D> lines = new ArrayList<>();
-	private float[][] whiteWallInStock;
-	private float[][] blackWallInStock;
+	private float[][] whiteWallInStock = new float[10][2];
+	private float[][] blackWallInStock= new float[10][2];
 	private ArrayList<TOWall> whiteWallOnBoard;
 	private ArrayList<TOWall> blackWallOnBoard;
 	private TOWall wallInHand;
@@ -63,12 +63,15 @@ public class BoardComponent extends JPanel {
 		}
 		init();
 	}
-	public void refresh() {
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		loadWall();
+		doDrawing(g);
 	}
-	
 	private void init() {
 		setupGrid();
 		loadWall();
+		initStock();
 	}
 	
 	private void doDrawing(Graphics g) {
@@ -93,8 +96,19 @@ public class BoardComponent extends JPanel {
 		
 		int wn = Quoridor223Controller.getBlackWallInStock();
 		int bn = Quoridor223Controller.getWhiteWallInStock();
+		if(wallInHand!=null) {
+			if(bn>wn) {
+				bn--;
+			}
+			else {
+				wn--;
+			}
+		}
 		for(int i = 0; i < bn; i++) g2d.drawImage(hWall, (int)blackWallInStock[i][0], (int)blackWallInStock[i][1], this);
 		for(int i = 0; i < wn; i++) g2d.drawImage(hWall, (int)whiteWallInStock[wn-1-i][0], (int)whiteWallInStock[wn-i-1][1], this);
+		if(wallInHand!=null)drawWall(wallInHand, g2d, true);
+		for(TOWall wall: whiteWallOnBoard)drawWall(wall,g2d,false);
+		for(TOWall wall: blackWallOnBoard)drawWall(wall,g2d,false);
 	}
 	
 	private void setupGrid() {
@@ -120,12 +134,12 @@ public class BoardComponent extends JPanel {
 		whiteWallOnBoard = new ArrayList<>();
 		blackWallOnBoard = new ArrayList<>();
 		wallInHand = Quoridor223Controller.getWallInHand();
-//		Controller.getWhiteWallInStock();
-//		Controller.getBlackWallInStock();
-//		Controller.getWhiteWallOnBoard();
-//		Controller.getBlackWallOnBoard();
+		whiteWallOnBoard=Quoridor223Controller.getWhiteWallOnBoard();
+		blackWallOnBoard=Quoridor223Controller.getBlackWallOnBoard();
+	}
+	private void initStock() {
 		float lx =0, rx=size-2*width;
-		float y = margin-7;
+		float y = margin-9;
 		for(int i = 0;i<10;i++) {
 			blackWallInStock[i]=new float[] {lx,y};
 			whiteWallInStock[i]=new float[] {rx,y};
@@ -133,10 +147,6 @@ public class BoardComponent extends JPanel {
 		}
 	}
 	
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		doDrawing(g);
-	}
 	
 	private float getTileCord(int index) {
 		return (float)(index-5.0/6)*width+margin;
@@ -169,8 +179,12 @@ public class BoardComponent extends JPanel {
 	}
 	private int[] getWallCord(TOWall wall){
 		int[] cord = new int[2];
-		cord[1]=(int)(margin-7+wall.getRow()*width);
-		cord[0]=(int)(margin-7+wall.getCol()*width);
+		boolean isHorizontal = wall.getDir()==TOWall.Direction.Horizontal;
+		int adj = isHorizontal?9:5;
+		int horizontalOffset = isHorizontal?1:0;
+		int verticalOffset = (!isHorizontal)?1:0;
+		cord[1]=(int)(margin-adj+(wall.getRow()-verticalOffset)*width);
+		cord[0]=(int)(margin-adj+(wall.getCol()-horizontalOffset)*width);
 		return cord;
 	}
 }

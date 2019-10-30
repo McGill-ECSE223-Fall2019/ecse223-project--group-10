@@ -186,7 +186,11 @@ public class GamePage extends JFrame{
 		
 		dropWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller.dropWall();
+				try {
+					Quoridor223Controller.dropWall();
+				}catch(Exception e) {
+					
+				}
 				
 			}
 		});
