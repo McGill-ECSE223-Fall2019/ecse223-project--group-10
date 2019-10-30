@@ -100,6 +100,7 @@ public class GamePage extends JFrame{
 		//initialize forfeit 
 		forfeit = new JButton("Forfeit");
 		confirm = new JButton("Confirm");
+		confirm.setBackground(Color.blue);
 		
 		//initialize save, load, replay, new game
 		saveGame = new JButton("Save Game");

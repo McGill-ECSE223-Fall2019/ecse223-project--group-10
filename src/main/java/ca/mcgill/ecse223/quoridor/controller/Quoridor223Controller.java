@@ -140,7 +140,7 @@ public class Quoridor223Controller {
 		Tile player2StartPos = quoridor.getBoard().getTile(36);
 		
 		// create a game
-		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, player1, player2, quoridor);
+		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, quoridor);
 		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
 		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, player1, game);
