@@ -213,13 +213,6 @@ public class CucumberStepDefinitions {
 		//		Quoridor223Controller.createGame();
 
 	}
-		
-	@Then("The game shall become ready to start")
-	public void theGameShallBeRunning() {
-
-		//assertEquals(GameStatus.Initializing, true);
-
-	}
 
 	@And("The board shall be initialized")
 	public void theBoardShallBeInitialized() {
@@ -270,7 +263,7 @@ public class CucumberStepDefinitions {
 
 	}
 	
-	@When("The player sprovides new user name: {String}")
+	@When("The player provides new user name: {string}")
 	public void thePlayerProvidesNewUserName(String usernName) {
 		
 		//
