@@ -193,10 +193,11 @@ public class GamePage extends JFrame{
 				try {
 					Quoridor223Controller.dropWall();
 				}catch(Exception e) {
-					
+					System.out.println(e.getMessage());
 				}
-				
+				boardComponent.repaint();
 			}
+			
 		});
 
 		forfeit.addActionListener(new java.awt.event.ActionListener() {

@@ -267,15 +267,17 @@ public class Quoridor223Controller {
 		//check if there is wall in my hand if not throw exception
 		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
 		//validate the position
-		
+
 		//finalize drop by putting the move into the movelist.
 		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
 		GamePosition currentPosition = curGame.getCurrentPosition();
 		GamePosition clone = clonePosition(currentPosition);
-		curGame.setCurrentPosition(clone);
+		boolean set =curGame.setCurrentPosition(clone);
+		System.out.println(set);
 		if(isWhitePlayer()) {
 			clone.removeWhiteWallsInStock(wallToDrop);
 			clone.addWhiteWallsOnBoard(wallToDrop);
+			System.out.println("reach");
 		}
 		else {
 			clone.removeBlackWallsInStock(wallToDrop);
@@ -283,8 +285,6 @@ public class Quoridor223Controller {
 		}
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
-		if(isWhitePlayer())curGame.getCurrentPosition().addWhiteWallsOnBoard(wallToDrop);
-		else curGame.getCurrentPosition().addBlackWallsOnBoard(wallToDrop);
 		//Switch Player here
 	}
 	
@@ -560,8 +560,17 @@ public class Quoridor223Controller {
 		return wall;
 	}
 	private static GamePosition clonePosition(GamePosition oldPosition) {
-		GamePosition newPosition = new GamePosition(oldPosition.getId()+1, oldPosition.getWhitePosition(), oldPosition.getWhitePosition(), oldPosition.getPlayerToMove(), oldPosition.getGame());
+		PlayerPosition newWhitePosition = clonePlayerPosition(oldPosition.getWhitePosition());
+		PlayerPosition newBlackPosition = clonePlayerPosition(oldPosition.getBlackPosition());
+		GamePosition newPosition = new GamePosition(oldPosition.getId()+1, newWhitePosition, newBlackPosition, oldPosition.getPlayerToMove(), oldPosition.getGame());
+		for(Wall wall: oldPosition.getBlackWallsInStock())newPosition.addBlackWallsInStock(wall);
+		for(Wall wall: oldPosition.getWhiteWallsInStock())newPosition.addWhiteWallsInStock(wall);
+		for(Wall wall: oldPosition.getBlackWallsOnBoard())newPosition.addBlackWallsOnBoard(wall);
+		for(Wall wall: oldPosition.getWhiteWallsOnBoard())newPosition.addWhiteWallsOnBoard(wall);
 		return newPosition;
+	}
+	private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
+		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
 	}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
