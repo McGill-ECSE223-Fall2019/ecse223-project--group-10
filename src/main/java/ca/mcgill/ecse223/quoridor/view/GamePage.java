@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOGame;
 
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
@@ -60,6 +61,8 @@ public class GamePage extends JFrame{
 	// username
 	private JLabel userName1;
 	private JLabel userName2;
+	private String name1;
+	private String name2;
 	
 	// remaining time
 	private Time whiteRemainingTime;
@@ -102,16 +105,17 @@ public class GamePage extends JFrame{
 		boardComponent.setBackground(new Color(206,159,111));
 		
 		//initialize username
-		userName1 = new JLabel("White", SwingConstants.CENTER);
+		TOGame players = Quoridor223Controller.getListOfPlayers();
+		userName1 = new JLabel(players.getPlayerOne(), SwingConstants.CENTER);
 		userName1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		userName1.setBounds(876, 94, 50, 32);
-		userName2 = new JLabel("Black", SwingConstants.CENTER);
+		userName2 = new JLabel(players.getPlayerTwo(), SwingConstants.CENTER);
 		userName2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		userName2.setBounds(620, 94, 46, 33);
 		
 		//initialize time (for now default to 10, later will get from model through controller)
-		whiteRemainingTime = new Time(10);
-		blackRemainingTime = new Time(10);
+		whiteRemainingTime = players.getPlayerOneTime();
+		blackRemainingTime = players.getPlayerTwoTime();
 		whiteTime = new JLabel(whiteRemainingTime.toString(), SwingConstants.CENTER);
 		whiteTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		whiteTime.setBounds(936, 94, 64, 33);
@@ -171,8 +175,6 @@ public class GamePage extends JFrame{
 				
 			}
 		});
-		
-		
 
 		forfeit.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {

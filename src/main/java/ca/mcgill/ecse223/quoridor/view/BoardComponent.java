@@ -24,6 +24,8 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+
 public class BoardComponent extends JPanel {
 	private int size;
 	private float width;
@@ -86,6 +88,7 @@ public class BoardComponent extends JPanel {
 		g2d.fill(players.get(playerColor.white));
 		g2d.setColor(Color.black);
 		g2d.draw(players.get(playerColor.white));
+		
 		for(float[] wallCord: blackWallInStock)g2d.drawImage(hWall, (int)wallCord[0], (int)wallCord[1], this);
 		for(float[] wallCord: whiteWallInStock)g2d.drawImage(hWall, (int)wallCord[0], (int)wallCord[1], this);
 	}
@@ -120,7 +123,7 @@ public class BoardComponent extends JPanel {
 //		Controller.getBlackWallOnBoard();
 		float lx =0, rx=size-2*width;
 		float y = margin-7;
-		for(int i = 0;i<10;i++) {
+		for(int i = 0; i < Quoridor223Controller.getBlackWallInStock();i++) {
 			blackWallInStock.add(new float[] {lx,y});
 			whiteWallInStock.add(new float[] {rx,y});
 			y+=width;
