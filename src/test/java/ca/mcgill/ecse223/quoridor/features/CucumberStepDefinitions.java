@@ -150,151 +150,146 @@ public class CucumberStepDefinitions {
 	// StartNewGame and ProvideSelectUserName start here
 	// **********************************************
 
-//	/**
-//	 * Scenario: Initiate a new game
-//	 * @author Vanessa Ifrah
-//	 */
-//	@When("A new game is being initialized")
-//	public void aNewGameIsBeingInitialized() {
-//		
-//		// create the new game
-//		Quoridor223Controller.createGame();
-//
-//	}
-//
-//	@And("White player chooses a username")
-//	public void whitePlayerChoosesAUsername(String playerName1) {
-//
-//		// white/first player chooses their name
-//		Quoridor223Controller.createUser(playerName1);
-//
-//	}
-//
-//	@And("Black player chooses a username")
-//	public void blackPlayerChoosesAUsername(String playerName2) {
-//
-//		// black/second player chooses their name
-//		Quoridor223Controller.createUser(playerName2);
-//
-//	}
-//
-//	@And("Total thinking time is set")
-//	public void totalThinkingTimeIsSet(Time thinkingTime, String playerName) {
-//
-//		// black/second player chooses their name
-//		Quoridor223Controller.setThinkingTime(thinkingTime, playerName);
-//
-//	}
-//
-//	@Then("The game shall become ready to start")
-//	public void theGameShallBecomeReadyToStart() {
-//
-//		//assertEquals(GameStatus.Initializing, true);
-//
-//	}
-//	
-//	
-//	/**
-//	 * Scenario: Start Clock
-//	 * @author Vanessa Ifrah
-//	 */
-//	@Given("The game is ready to start")
-//	public void theGameIsReadyToStart() {
-//		
-//		// 
-//		//		Quoridor223Controller.createGame();
-//
-//	}
-//
-//	@When("I start the clock")
-//	public void iStartTheClock() {
-//		
-//		// 
-//		//		Quoridor223Controller.createGame();
-//
-//	}
-//		
-//	@Then("The game shall become ready to start")
-//	public void theGameShallBeRunning() {
-//
-//		//assertEquals(GameStatus.Initializing, true);
-//
-//	}
-//
-//	@And("The board shall be initialized")
-//	public void theBoardShallBeInitialized() {
-//
-//		//assertEquals(GameStatus.Initializing, true);
-//
-//	}
-//	
-//	/**
-//	 * Scenario: Select existing user name
-//	 * @author Vanessa Ifrah
-//	 */
-//	@Given("Next player to set user name is {string}")
-//	public void nextPlayerToSetUserNameIs(String playerColor) {
-//		
-//
-//	}
-//
-//	@And("There is existing user {string}")
-//	public void thereIsExistingUser(String userName) {
-//		
-//
-//	}
-//	
-//	@When("The player selects existing {string}")
-//	public void thePlayerSelectsExisting(String usernName) {
-//
-//		//
-//
-//	}
-//	
-//	@Then("The name of player {string} in the new game shall be {string}")
-//	public void theNameOfPlayerInTheNewGameShallBe(String playerColor, String userName) {
-//		
-//		//assertEquals(GameStatus.Initializing, true);
-//
-//	}
-//	
-//	
-//	/**
-//	 * Scenario: Create new user name
-//	 * @author Vanessa Ifrah
-//	 */
-//	@And("There is no existing user {string}")
-//	public void thereIsNoExistingUser(String userName) {
-//		
-//		//
-//
-//	}
-//	
-////	@When("The player sprovides new user name: {String}")
-////	public void thePlayerProvidesNewUserName(String usernName) {
-////		
-////		//
-////
-////	}
-//	
-//	
-//	/**
-//	 * Scenario: User name already exists
-//	 * @author Vanessa Ifrah
-//	 */
-//	@Then("The player shall be warned that {string} already exists")
-//	public void thePlayerShallBeWarnedThatUserNameAlreadyExists(String usernName) {
-//
-//		//assertion
-//		
-//	}
-//
-//	@And("Next player to set user name shall be {string}")
-//	public void nextPlayerToSetUserNameShallBe(String userName) {
-//
-//		//assertion
-//		
-//	}
+
+	/**
+	 * Scenario: Initiate a new game
+	 * @author Vanessa Ifrah
+	 */
+	@When("A new game is being initialized")
+	public void aNewGameIsBeingInitialized() {
+		
+		// create the new game
+		Quoridor223Controller.createGame();
+
+	}
+
+	@And("White player chooses a username")
+	public void whitePlayerChoosesAUsername(String playerName1) {
+
+		// white/first player chooses their name
+		Quoridor223Controller.createUser(playerName1);
+
+	}
+
+	@And("Black player chooses a username")
+	public void blackPlayerChoosesAUsername(String playerName2) {
+
+		// black/second player chooses their name
+		Quoridor223Controller.createUser(playerName2);
+
+	}
+
+	@And("Total thinking time is set")
+	public void totalThinkingTimeIsSet(Time thinkingTime, String playerName) {
+
+		// black/second player chooses their name
+		Quoridor223Controller.setThinkingTime(thinkingTime, playerName);
+
+	}
+
+	@Then("The game shall become ready to start")
+	public void theGameShallBecomeReadyToStart() {
+
+		//assertEquals(GameStatus.Initializing, true);
+
+	}
+	
+	
+	/**
+	 * Scenario: Start Clock
+	 * @author Vanessa Ifrah
+	 */
+	@Given("The game is ready to start")
+	public void theGameIsReadyToStart() {
+		
+		// 
+		//		Quoridor223Controller.createGame();
+
+	}
+
+	@When("I start the clock")
+	public void iStartTheClock() {
+		
+		// 
+		//		Quoridor223Controller.createGame();
+
+	}
+
+	@And("The board shall be initialized")
+	public void theBoardShallBeInitialized() {
+
+		//assertEquals(GameStatus.Initializing, true);
+
+	}
+	
+	/**
+	 * Scenario: Select existing user name
+	 * @author Vanessa Ifrah
+	 */
+	@Given("Next player to set user name is {string}")
+	public void nextPlayerToSetUserNameIs(String playerColor) {
+		
+
+	}
+
+	@And("There is existing user {string}")
+	public void thereIsExistingUser(String userName) {
+		
+
+	}
+	
+	@When("The player selects existing {string}")
+	public void thePlayerSelectsExisting(String usernName) {
+
+		//
+
+	}
+	
+	@Then("The name of player {string} in the new game shall be {string}")
+	public void theNameOfPlayerInTheNewGameShallBe(String playerColor, String userName) {
+		
+		//assertEquals(GameStatus.Initializing, true);
+
+	}
+	
+	
+	/**
+	 * Scenario: Create new user name
+	 * @author Vanessa Ifrah
+	 */
+	@And("There is no existing user {string}")
+	public void thereIsNoExistingUser(String userName) {
+		
+		//
+
+	}
+	
+	@When("The player provides new user name: {string}")
+	public void thePlayerProvidesNewUserName(String usernName) {
+		
+		//
+
+	}
+	
+	
+	/**
+	 * Scenario: User name already exists
+	 * @author Vanessa Ifrah
+	 */
+	@Then("The player shall be warned that {string} already exists")
+	public void thePlayerShallBeWarnedThatUserNameAlreadyExists(String usernName) {
+
+		//assertion
+		
+	}
+
+	@And("Next player to set user name shall be {string}")
+	public void nextPlayerToSetUserNameShallBe(String userName) {
+
+		//assertion
+		
+	}
+
 	
 	
 	

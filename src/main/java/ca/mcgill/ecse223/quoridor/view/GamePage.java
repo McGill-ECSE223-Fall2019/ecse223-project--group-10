@@ -221,6 +221,7 @@ public class GamePage extends JFrame{
 						} catch (GameNotRunningException eGrab) {
 							
 						}
+						boardComponent.repaint();
 					}
 				});
 				btnUp.addActionListener(new ActionListener() {
@@ -281,6 +282,7 @@ public class GamePage extends JFrame{
 						} catch (GameNotRunningException eRotate) {
 							
 						}
+						boardComponent.repaint();
 					}
 				});
 				
