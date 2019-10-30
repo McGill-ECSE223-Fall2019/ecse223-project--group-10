@@ -13,6 +13,7 @@ import java.util.Map;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -149,19 +150,17 @@ public class CucumberStepDefinitions {
 	// **********************************************
 
 	/**
+	 * Scenario: Initiate a new game
 	 * @author Vanessa Ifrah
 	 */
 	@When("A new game is being initialized")
 	public void aNewGameIsBeingInitialized() {
-
+		
 		// create the new game
 		Quoridor223Controller.createGame();
 
 	}
 
-	/**
-	 * @author Vanessa Ifrah
-	 */
 	@And("White player chooses a username")
 	public void whitePlayerChoosesAUsername(String playerName1) {
 
@@ -170,9 +169,6 @@ public class CucumberStepDefinitions {
 
 	}
 
-	/**
-	 * @author Vanessa Ifrah
-	 */
 	@And("Black player chooses a username")
 	public void blackPlayerChoosesAUsername(String playerName2) {
 
@@ -181,16 +177,125 @@ public class CucumberStepDefinitions {
 
 	}
 
-	/**
-	 * @author Vanessa Ifrah
-	 */
+	@And("Total thinking time is set")
+	public void totalThinkingTimeIsSet(Time thinkingTime, String playerName) {
+
+		// black/second player chooses their name
+		Quoridor223Controller.setThinkingTime(thinkingTime, playerName);
+
+	}
+
 	@Then("The game shall become ready to start")
 	public void theGameShallBecomeReadyToStart() {
 
 		//assertEquals(GameStatus.Initializing, true);
 
 	}
+	
+	
+	/**
+	 * Scenario: Start Clock
+	 * @author Vanessa Ifrah
+	 */
+	@Given("The game is ready to start")
+	public void theGameIsReadyToStart() {
 		
+		// 
+		//		Quoridor223Controller.createGame();
+
+	}
+
+	@When("I start the clock")
+	public void iStartTheClock() {
+		
+		// 
+		//		Quoridor223Controller.createGame();
+
+	}
+		
+	@Then("The game shall become ready to start")
+	public void theGameShallBeRunning() {
+
+		//assertEquals(GameStatus.Initializing, true);
+
+	}
+
+	@And("The board shall be initialized")
+	public void theBoardShallBeInitialized() {
+
+		//assertEquals(GameStatus.Initializing, true);
+
+	}
+	
+	/**
+	 * Scenario: Select existing user name
+	 * @author Vanessa Ifrah
+	 */
+	@Given("Next player to set user name is {string}")
+	public void nextPlayerToSetUserNameIs(String playerColor) {
+		
+
+	}
+
+	@And("There is existing user {string}")
+	public void thereIsExistingUser(String userName) {
+		
+
+	}
+	
+	@When("The player selects existing {string}")
+	public void thePlayerSelectsExisting(String usernName) {
+
+		//
+
+	}
+	
+	@Then("The name of player {string} in the new game shall be {string}")
+	public void theNameOfPlayerInTheNewGameShallBe(String playerColor, String userName) {
+		
+		//assertEquals(GameStatus.Initializing, true);
+
+	}
+	
+	
+	/**
+	 * Scenario: Create new user name
+	 * @author Vanessa Ifrah
+	 */
+	@And("There is no existing user {string}")
+	public void thereIsNoExistingUser(String userName) {
+		
+		//
+
+	}
+	
+	@When("The player sprovides new user name: {String}")
+	public void thePlayerProvidesNewUserName(String usernName) {
+		
+		//
+
+	}
+	
+	
+	/**
+	 * Scenario: User name already exists
+	 * @author Vanessa Ifrah
+	 */
+	@Then("The player shall be warned that {string} already exists")
+	public void thePlayerShallBeWarnedThatUserNameAlreadyExists(String usernName) {
+
+		//assertion
+		
+	}
+
+	@And("Next player to set user name shall be {string}")
+	public void nextPlayerToSetUserNameShallBe(String userName) {
+
+		//assertion
+		
+	}
+	
+	
 	
 	// **********************************************
 	// SetTotalThinkingTime and InitializeBoard start here
@@ -330,6 +435,7 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	// SetTotalThinkingTime and InitializeBoard end here
 	// **********************************************
+	
 	
 	// **********************************************
 	// GrabWall and RotateWall
@@ -502,7 +608,12 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I release the wall in my hand")
 	public void iReleaseTheWallInMyHand() {
-		Wall wallDroped = Quoridor223Controller.dropWall();
+		try {
+			Quoridor223Controller.dropWall();
+		}catch(Exception e) {
+			
+		}
+		
 	}
 	
 	/**
@@ -622,7 +733,8 @@ public class CucumberStepDefinitions {
 	@When("I try to move the wall {string}")
 	public void iTryToMoveTheWallSide(String side) {
 		try {
-			Quoridor223Controller.moveWall(side);
+			TOWall.Side direction = side.equalsIgnoreCase("UP")?TOWall.Side.Up:side.equalsIgnoreCase("DOWN")?TOWall.Side.Down:side.equalsIgnoreCase("LEFT")?TOWall.Side.Left:TOWall.Side.Right;
+			Quoridor223Controller.moveWall(direction);
 		}
 		catch (Exception e){
 

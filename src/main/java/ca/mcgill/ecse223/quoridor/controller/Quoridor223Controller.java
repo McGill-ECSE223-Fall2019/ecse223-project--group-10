@@ -23,7 +23,7 @@ import java.security.InvalidAlgorithmParameterException;
 public class Quoridor223Controller {
 	
 	/**
-	 * Create a new game for the players
+	 * Feature 1: Create a new game for the players
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
@@ -44,7 +44,6 @@ public class Quoridor223Controller {
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-	//under feature 2
 	public static void selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
 		// load the user
 		// if not throw an exception
@@ -240,7 +239,7 @@ public class Quoridor223Controller {
 	 * @throws GameNotRunningException
 	 * @throws InvalidOperationException
 	 */
-	public static void moveWall(String side) throws GameNotRunningException, InvalidOperationException {
+	public static void moveWall(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
 		//check if the Game is running if not throw exception
 		if(!isRunning())throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -249,8 +248,8 @@ public class Quoridor223Controller {
 		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
 		WallMove candidate =  curGame.getWallMoveCandidate();
 		//check if newRow and newCol are within the board if not throw exception
-		int newRow = candidate.getTargetTile().getRow()+ (side.equalsIgnoreCase("up")?-1:side.equalsIgnoreCase("down")?1:0);
-		int newCol = candidate.getTargetTile().getColumn()+ (side.equalsIgnoreCase("left")?-1:side.equalsIgnoreCase("right")?1:0);
+		int newRow = candidate.getTargetTile().getRow()+ (side==TOWall.Side.Up?-1:side==TOWall.Side.Down?1:0);
+		int newCol = candidate.getTargetTile().getColumn()+ (side==TOWall.Side.Left?-1:side==TOWall.Side.Right?1:0);
 		if(!isWallPositionValid(newRow,newCol))throw new InvalidOperationException("Move invalid");
 		//update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow,newCol));
@@ -261,23 +260,32 @@ public class Quoridor223Controller {
 	 * Gerkin Feature 8: DropWall.feature
 	 * @author Le-Li Mao
 	 */
-	public static Wall dropWall(){
+	public static void dropWall() throws GameNotRunningException,InvalidOperationException{
 		//check if the Game is running if not throw exception
-		if(!isRunning())return null;
+		if(!isRunning())throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if there is wall in my hand if not throw exception
-		if(curGame.getWallMoveCandidate()==null)return null;
+		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
+		//validate the position
+		
 		//finalize drop by putting the move into the movelist.
 		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
+		GamePosition currentPosition = curGame.getCurrentPosition();
+		GamePosition clone = clonePosition(currentPosition);
+		curGame.setCurrentPosition(clone);
+		if(isWhitePlayer()) {
+			clone.removeWhiteWallsInStock(wallToDrop);
+			clone.addWhiteWallsOnBoard(wallToDrop);
+		}
+		else {
+			clone.removeBlackWallsInStock(wallToDrop);
+			clone.addBlackWallsOnBoard(wallToDrop);
+		}
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
 		if(isWhitePlayer())curGame.getCurrentPosition().addWhiteWallsOnBoard(wallToDrop);
 		else curGame.getCurrentPosition().addBlackWallsOnBoard(wallToDrop);
-		Player next = curGame.getCurrentPosition().getPlayerToMove().getNextPlayer();
-		curGame.getCurrentPosition().setPlayerToMove(next);
-		if(!isPlacementValid())return null;
-		//set my hand as empty, update the gamePosition and switch turn yet to be implemented
-		return wallToDrop;
+		//Switch Player here
 	}
 	
 	/**
@@ -467,7 +475,13 @@ public class Quoridor223Controller {
 		if (tmp_time.equals(player.getRemainingTime())) return true;
 		else return false;
 	}
-
+	
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+//////Le-Li's Helper and Query methods
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+	
 	/**
 	 * @author Le-Li Mao
 	 * @return gameIsRunning
@@ -486,7 +500,6 @@ public class Quoridor223Controller {
 	 * @return
 	 */
 	private static boolean isWallPositionValid(int row, int col) {
-
 		return (row>0 && col>0 && row<9 && col <9);
 	}
 	private static Tile getTile(int row, int col){
@@ -498,21 +511,10 @@ public class Quoridor223Controller {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		return curGame.getCurrentPosition().getPlayerToMove().equals(curGame.getWhitePlayer());
 	}
-	
-	private static boolean isPlacementValid() {
-		//will implement this later
-		return true;
-	}
-	private static Move getPreviousMove() {
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		if(curGame.numberOfMoves()==0)return null;
-		return curGame.getMove(0);
-	}
 	public static int getWhiteWallInStock(){
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		return curGame.getCurrentPosition().getWhiteWallsInStock().size();
 	}
-	
 	public static int getBlackWallInStock(){
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		return curGame.getCurrentPosition().getBlackWallsInStock().size();
@@ -531,7 +533,6 @@ public class Quoridor223Controller {
 	
 	public static ArrayList<TOWall> getWhiteWallOnBoard(){
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		if(curGame.numberOfMoves()==0)return null;
 		ArrayList<TOWall> wallList = new ArrayList<TOWall>();
 		for(Wall wall: curGame.getCurrentPosition().getWhiteWallsOnBoard())wallList.add(convertWall(wall));
 		return wallList;
@@ -539,12 +540,17 @@ public class Quoridor223Controller {
 	
 	public static ArrayList<TOWall> getBlackWallOnBoard(){
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		if(curGame.numberOfMoves()==0)return null;
 		ArrayList<TOWall> wallList = new ArrayList<TOWall>();
 		for(Wall wall: curGame.getCurrentPosition().getBlackWallsOnBoard())wallList.add(convertWall(wall));
 		return wallList;
 	}
-	
+
+	public static TOWall getWallInHand() {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(curGame.getWallMoveCandidate()==null)return null;
+		return convertWall(curGame.getWallMoveCandidate().getWallPlaced());
+	}
+
 	private static TOWall convertWall(Wall aWall) {
 		int row = aWall.getMove().getTargetTile().getRow();
 		int col = aWall.getMove().getTargetTile().getColumn();
@@ -553,6 +559,16 @@ public class Quoridor223Controller {
 		TOWall wall = new TOWall(id, row, col, dir);
 		return wall;
 	}
+	private static GamePosition clonePosition(GamePosition oldPosition) {
+		GamePosition newPosition = new GamePosition(oldPosition.getId()+1, oldPosition.getWhitePosition(), oldPosition.getWhitePosition(), oldPosition.getPlayerToMove(), oldPosition.getGame());
+		return newPosition;
+	}
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+//////Le-Li's Helper and Query methods Ends
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////	
+	
 	/**
 	 * GUI function to prompt the user for permission to overwrite the existing file
 	 * @author Mitchell Keeley

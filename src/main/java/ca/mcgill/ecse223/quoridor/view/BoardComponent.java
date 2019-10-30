@@ -25,6 +25,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 
 public class BoardComponent extends JPanel {
 	private int size;
@@ -34,12 +35,11 @@ public class BoardComponent extends JPanel {
 	enum playerColor{black,white}
 	private ArrayList<Rectangle2D> rects = new ArrayList<>();
 	private ArrayList<Line2D> lines = new ArrayList<>();
-	private ArrayList<float[]> whiteWallInStock;
-	private ArrayList<float[]> blackWallInStock;
-	private ArrayList<float[]> whiteWallOnBoard;
-	private ArrayList<float[]> blackWallOnBoard;
-	private float[] whiteWallInHand;
-	private float[] blackWallInHand;
+	private float[][] whiteWallInStock = new float[10][2];
+	private float[][] blackWallInStock= new float[10][2];
+	private ArrayList<TOWall> whiteWallOnBoard;
+	private ArrayList<TOWall> blackWallOnBoard;
+	private TOWall wallInHand;
 	private HashMap<playerColor,Ellipse2D> players = new HashMap<>();
 	
 	public BoardComponent(int size) {
@@ -63,10 +63,15 @@ public class BoardComponent extends JPanel {
 		}
 		init();
 	}
-	
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		loadWall();
+		doDrawing(g);
+	}
 	private void init() {
 		setupGrid();
 		loadWall();
+		initStock();
 	}
 	
 	private void doDrawing(Graphics g) {
@@ -89,8 +94,21 @@ public class BoardComponent extends JPanel {
 		g2d.setColor(Color.black);
 		g2d.draw(players.get(playerColor.white));
 		
-		for(float[] wallCord: blackWallInStock)g2d.drawImage(hWall, (int)wallCord[0], (int)wallCord[1], this);
-		for(float[] wallCord: whiteWallInStock)g2d.drawImage(hWall, (int)wallCord[0], (int)wallCord[1], this);
+		int wn = Quoridor223Controller.getBlackWallInStock();
+		int bn = Quoridor223Controller.getWhiteWallInStock();
+		if(wallInHand!=null) {
+			if(bn>wn) {
+				bn--;
+			}
+			else {
+				wn--;
+			}
+		}
+		for(int i = 0; i < bn; i++) g2d.drawImage(hWall, (int)blackWallInStock[i][0], (int)blackWallInStock[i][1], this);
+		for(int i = 0; i < wn; i++) g2d.drawImage(hWall, (int)whiteWallInStock[wn-1-i][0], (int)whiteWallInStock[wn-i-1][1], this);
+		if(wallInHand!=null)drawWall(wallInHand, g2d, true);
+		for(TOWall wall: whiteWallOnBoard)drawWall(wall,g2d,false);
+		for(TOWall wall: blackWallOnBoard)drawWall(wall,g2d,false);
 	}
 	
 	private void setupGrid() {
@@ -110,30 +128,25 @@ public class BoardComponent extends JPanel {
 		players.put(playerColor.white,new Ellipse2D.Float(getTileCord(9),getTileCord(5),width*2/3,width*2/3));
 	}
 	
+	
 	private void loadWall() {
-		whiteWallInHand=null;
-		whiteWallInStock = new ArrayList<>();
-		blackWallInStock = new ArrayList<>();
+		wallInHand=null;
 		whiteWallOnBoard = new ArrayList<>();
 		blackWallOnBoard = new ArrayList<>();
-//		Controller.getWallInHand()
-//		Controller.getWhiteWallInStock();
-//		Controller.getBlackWallInStock();
-//		Controller.getWhiteWallOnBoard();
-//		Controller.getBlackWallOnBoard();
+		wallInHand = Quoridor223Controller.getWallInHand();
+		whiteWallOnBoard=Quoridor223Controller.getWhiteWallOnBoard();
+		blackWallOnBoard=Quoridor223Controller.getBlackWallOnBoard();
+	}
+	private void initStock() {
 		float lx =0, rx=size-2*width;
-		float y = margin-7;
-		for(int i = 0; i < Quoridor223Controller.getBlackWallInStock();i++) {
-			blackWallInStock.add(new float[] {lx,y});
-			whiteWallInStock.add(new float[] {rx,y});
+		float y = margin-9;
+		for(int i = 0;i<10;i++) {
+			blackWallInStock[i]=new float[] {lx,y};
+			whiteWallInStock[i]=new float[] {rx,y};
 			y+=width;
 		}
 	}
 	
-	public void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		doDrawing(g);
-	}
 	
 	private float getTileCord(int index) {
 		return (float)(index-5.0/6)*width+margin;
@@ -156,8 +169,22 @@ public class BoardComponent extends JPanel {
         g2d.drawImage(tmp, 0, 0, null);
         g2d.dispose();
         return resized;
-    	}
-	private void getWallCord(){
-		
+    }
+	private void drawWall(TOWall wall,Graphics2D g2d, boolean isHighlighted) {
+		int[] cord = getWallCord(wall);
+		BufferedImage img;
+		if(isHighlighted)img = wall.getDir()==TOWall.Direction.Horizontal?hHighlightedWall:vHighlightedWall;
+		else img = wall.getDir()==TOWall.Direction.Horizontal?hWall:vWall;
+		g2d.drawImage(img, cord[0], cord[1], this);
+	}
+	private int[] getWallCord(TOWall wall){
+		int[] cord = new int[2];
+		boolean isHorizontal = wall.getDir()==TOWall.Direction.Horizontal;
+		int adj = isHorizontal?9:5;
+		int horizontalOffset = isHorizontal?1:0;
+		int verticalOffset = (!isHorizontal)?1:0;
+		cord[1]=(int)(margin-adj+(wall.getRow()-verticalOffset)*width);
+		cord[0]=(int)(margin-adj+(wall.getCol()-horizontalOffset)*width);
+		return cord;
 	}
 }
