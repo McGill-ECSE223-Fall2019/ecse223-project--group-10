@@ -168,7 +168,6 @@ public class GamePage extends JFrame{
 		playerTurn = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
 		playerTurn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		playerTurn.setBounds(90, 28, 500, 46);
-		
 
 		btnRotateWall = new JButton("Rotate Wall");
 		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -188,8 +187,9 @@ public class GamePage extends JFrame{
 		btnUp.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnUp.setBounds(770, 246, 80, 80);
 		
-		
-		
+
+		//------------------------- Add to Panel  ----------------------------//
+
 		getContentPane().setLayout(null);
 		getContentPane().add(playerTurn);
 		getContentPane().add(newGame);
@@ -208,85 +208,22 @@ public class GamePage extends JFrame{
 		getContentPane().add(btnUp);
 		getContentPane().add(btnDown);
 		getContentPane().add(btnRight);
-		
-
 		getContentPane().add(btnLeft);
+
 		
 		//------------------------- Add Event Listener ----------------------------//
-		grabWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					Quoridor223Controller.grabWall();
-				} catch (InvalidOperationException eGrab) {
-					
-				} catch (GameNotRunningException eGrab) {
-					
-				}
-				boardComponent.repaint();
-			}
-		});
-		
-		btnRotateWall.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					Quoridor223Controller.rotateWall();
-				} catch (InvalidOperationException eRotate) {
-					
-				} catch (GameNotRunningException eRotate) {
-					
-				}
-				boardComponent.repaint();
-			}
-		});
-		
-		dropWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					Quoridor223Controller.dropWall();
-				}catch(Exception e) {
-					
-				}
-				
-			}
-		});
-
-		forfeit.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		newGame.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		saveGame.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(e.getButton() == MouseEvent.BUTTON1){
-					userClicksToSaveGame();
-				}
-			}
-		});
-		
-		loadGame.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if(e.getButton() == MouseEvent.BUTTON1){
-					userClicksToLoadGame();
-				}
-			}
-		});
-				
-		replayGame.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
-			}
-		});
-		
-		btnUp.addActionListener(new ActionListener() {
+				grabWall.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						try {
+							Quoridor223Controller.grabWall();
+						} catch (InvalidOperationException eGrab) {
+							
+						} catch (GameNotRunningException eGrab) {
+							
+						}
+					}
+				});
+				btnUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Quoridor223Controller.moveWall(TOWall.Side.Up);
@@ -335,6 +272,65 @@ public class GamePage extends JFrame{
 			}
 			
 		});
+				btnRotateWall.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						try {
+							Quoridor223Controller.rotateWall();
+						} catch (InvalidOperationException eRotate) {
+							
+						} catch (GameNotRunningException eRotate) {
+							
+						}
+					}
+				});
+				
+       dropWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					Quoridor223Controller.dropWall();
+				}catch(Exception e) {
+					System.out.println(e.getMessage());
+				}
+				boardComponent.repaint();
+			}
+			
+		  });
+
+				forfeit.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						
+					}
+				});
+				
+				newGame.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						
+					}
+				});
+				
+				saveGame.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if(e.getButton() == MouseEvent.BUTTON1){
+							userClicksToSaveGame();
+						}
+					}
+				});
+				
+				loadGame.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if(e.getButton() == MouseEvent.BUTTON1){
+							userClicksToLoadGame();
+						}
+					}
+				});
+						
+				replayGame.addActionListener(new java.awt.event.ActionListener() {
+					public void actionPerformed(java.awt.event.ActionEvent evt) {
+						
+					}
+				});
 	}
 	
 	
