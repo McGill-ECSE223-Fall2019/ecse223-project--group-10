@@ -25,6 +25,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 
 public class BoardComponent extends JPanel {
 	private int size;
@@ -34,11 +35,11 @@ public class BoardComponent extends JPanel {
 	enum playerColor{black,white}
 	private ArrayList<Rectangle2D> rects = new ArrayList<>();
 	private ArrayList<Line2D> lines = new ArrayList<>();
-	private ArrayList<float[]> whiteWallInStock;
-	private ArrayList<float[]> blackWallInStock;
-	private ArrayList<float[]> whiteWallOnBoard;
-	private ArrayList<float[]> blackWallOnBoard;
-	private float[] wallInHand;
+	private float[][] whiteWallInStock;
+	private float[][] blackWallInStock;
+	private ArrayList<TOWall> whiteWallOnBoard;
+	private ArrayList<TOWall> blackWallOnBoard;
+	private TOWall wallInHand;
 	private HashMap<playerColor,Ellipse2D> players = new HashMap<>();
 	
 	public BoardComponent(int size) {
@@ -89,8 +90,11 @@ public class BoardComponent extends JPanel {
 		g2d.fill(players.get(playerColor.white));
 		g2d.setColor(Color.black);
 		g2d.draw(players.get(playerColor.white));
-		for(float[] wallCord: blackWallInStock)g2d.drawImage(hWall, (int)wallCord[0], (int)wallCord[1], this);
-		for(float[] wallCord: whiteWallInStock)g2d.drawImage(hWall, (int)wallCord[0], (int)wallCord[1], this);
+		
+		int wn = Quoridor223Controller.getBlackWallInStock();
+		int bn = Quoridor223Controller.getWhiteWallInStock();
+		for(int i = 0; i < bn; i++) g2d.drawImage(hWall, (int)blackWallInStock[i][0], (int)blackWallInStock[i][1], this);
+		for(int i = 0; i < wn; i++) g2d.drawImage(hWall, (int)whiteWallInStock[wn-1-i][0], (int)whiteWallInStock[wn-i-1][1], this);
 	}
 	
 	private void setupGrid() {
@@ -113,11 +117,9 @@ public class BoardComponent extends JPanel {
 	
 	private void loadWall() {
 		wallInHand=null;
-		whiteWallInStock = new ArrayList<>();
-		blackWallInStock = new ArrayList<>();
 		whiteWallOnBoard = new ArrayList<>();
 		blackWallOnBoard = new ArrayList<>();
-		wallInHand = ConvertTOWall(Quoridor223Controller.getWallInHand());
+		wallInHand = Quoridor223Controller.getWallInHand();
 //		Controller.getWhiteWallInStock();
 //		Controller.getBlackWallInStock();
 //		Controller.getWhiteWallOnBoard();
@@ -125,8 +127,8 @@ public class BoardComponent extends JPanel {
 		float lx =0, rx=size-2*width;
 		float y = margin-7;
 		for(int i = 0;i<10;i++) {
-			blackWallInStock.add(new float[] {lx,y});
-			whiteWallInStock.add(new float[] {rx,y});
+			blackWallInStock[i]=new float[] {lx,y};
+			whiteWallInStock[i]=new float[] {rx,y};
 			y+=width;
 		}
 	}
@@ -158,7 +160,17 @@ public class BoardComponent extends JPanel {
         g2d.dispose();
         return resized;
     }
-	private void getWallCord(){
-		
+	private void drawWall(TOWall wall,Graphics2D g2d, boolean isHighlighted) {
+		int[] cord = getWallCord(wall);
+		BufferedImage img;
+		if(isHighlighted)img = wall.getDir()==TOWall.Direction.Horizontal?hHighlightedWall:vHighlightedWall;
+		else img = wall.getDir()==TOWall.Direction.Horizontal?hWall:vWall;
+		g2d.drawImage(img, cord[0], cord[1], this);
+	}
+	private int[] getWallCord(TOWall wall){
+		int[] cord = new int[2];
+		cord[1]=(int)(margin-7+wall.getRow()*width);
+		cord[0]=(int)(margin-7+wall.getCol()*width);
+		return cord;
 	}
 }
