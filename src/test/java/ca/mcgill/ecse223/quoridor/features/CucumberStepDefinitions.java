@@ -12,6 +12,7 @@ import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
+import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -472,8 +473,15 @@ public class CucumberStepDefinitions {
 	 * @throws GameNotRunningException 
 	 */
 	@When("I try to grab a wall from my stock")
-	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException {
-			Quoridor223Controller.grabWall();
+	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException, InvalidOperationException{
+			try {
+				Quoridor223Controller.grabWall();
+			} catch (GameNotRunningException e) {
+				
+			} catch (InvalidOperationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	/**
@@ -552,8 +560,14 @@ public class CucumberStepDefinitions {
 	 * @throws GameNotRunningException 
 	 */
 	@When("I try to flip the wall")
-	public void iTryToFlipTheWall() throws GameNotRunningException{
-			Quoridor223Controller.rotateWall();
+	public void iTryToFlipTheWall() throws GameNotRunningException, InvalidOperationException{
+			try {
+				Quoridor223Controller.rotateWall();
+			} catch(GameNotRunningException e) {
+				
+			} catch(InvalidOperationException e) {
+				
+			}
 	}
 	
 	
