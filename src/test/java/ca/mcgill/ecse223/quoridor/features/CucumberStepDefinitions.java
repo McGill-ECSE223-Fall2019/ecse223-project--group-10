@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Icon;
+import javax.swing.JOptionPane;
+
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
@@ -212,13 +215,6 @@ public class CucumberStepDefinitions {
 
 	}
 		
-	@Then("The game shall become ready to start")
-	public void theGameShallBeRunning() {
-
-		//assertEquals(GameStatus.Initializing, true);
-
-	}
-
 	@And("The board shall be initialized")
 	public void theBoardShallBeInitialized() {
 
@@ -268,7 +264,7 @@ public class CucumberStepDefinitions {
 
 	}
 	
-	@When("The player sprovides new user name: {String}")
+	@When("The player provides new user name: {string}")
 	public void thePlayerProvidesNewUserName(String usernName) {
 		
 		//
@@ -834,7 +830,7 @@ public class CucumberStepDefinitions {
 	public void theUserConfirmsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks yes when prompted by the GUI to overwrite an existing file
-		assertTrue("The user did not agree to overwrite the file", Quoridor223Controller.userOverwritePrompt(cucumberFilename));
+		assertTrue("The user did not agree to overwrite the file", cucumberUserOverwritePrompt(true));
 		//throw new PendingException();
 	}
 	
@@ -855,7 +851,7 @@ public class CucumberStepDefinitions {
 	public void theUserCancelsToOverwriteExistingFile() {
 		//GUI
 		//The user clicks no when prompted by the GUI to overwrite an existing file
-		assertFalse("The user agreed to overwrite the file", Quoridor223Controller.userOverwritePrompt(cucumberFilename));
+		assertFalse("The user agreed to overwrite the file", cucumberUserOverwritePrompt(false));
 		//throw new PendingException();
 	}
 	
@@ -1135,6 +1131,17 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
+	//TODO: add Javadoc
+	private boolean cucumberUserOverwritePrompt(boolean acceptOverwrite) {
+		
+		Quoridor223Controller.userOverwritePrompt(cucumberFilename);
+		if (acceptOverwrite) {
+			JOptionPane test = new JOptionPane((Object)"Permisssion to Overwrite file:\n\"" + cucumberFilename + "\"",
+					JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION, (Icon)null);
+			test.setEnabled(false);
+		}
+		return acceptOverwrite;
+	}
 	
 	/**
 	 * A function that starts a new game with the GamePosition loaded from a file
