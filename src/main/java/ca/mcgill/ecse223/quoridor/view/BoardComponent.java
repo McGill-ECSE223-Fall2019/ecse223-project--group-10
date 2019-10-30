@@ -94,8 +94,9 @@ public class BoardComponent extends JPanel {
 		g2d.setColor(Color.black);
 		g2d.draw(players.get(playerColor.white));
 		
-		int wn = Quoridor223Controller.getBlackWallInStock();
-		int bn = Quoridor223Controller.getWhiteWallInStock();
+		int wn = Quoridor223Controller.getWhiteWallInStock();
+		int bn = Quoridor223Controller.getBlackWallInStock();
+		System.out.println(wn);
 		if(wallInHand!=null) {
 			if(bn>wn) {
 				bn--;
