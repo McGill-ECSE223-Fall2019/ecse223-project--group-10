@@ -25,7 +25,7 @@ public class QuoridorApplication {
 	private static SetThinkingTimePage timePage;
 	private static GamePage game;
 	public static void main(String[] args) {
-		// createWall(); create & init boards later on in UI set uP?
+		// createWall(); // create & init boards later on in UI set uP?
 		//WelcomePage welcomePage = new WelcomePage();
 		//welcomePage.setVisible(true);
 		//GamePage mainPage = new GamePage();

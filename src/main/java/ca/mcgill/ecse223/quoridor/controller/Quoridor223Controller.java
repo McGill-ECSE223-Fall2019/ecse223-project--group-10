@@ -554,9 +554,11 @@ public class Quoridor223Controller {
 	}
 
 	public static String getWhitePlayerName() {
+		
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		return current_game.getWhitePlayer().getUser().getName();
 	}
+	
 	public static void setWhitePlayerTime(Time new_time) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		current_game.getWhitePlayer().setRemainingTime(new_time);
