@@ -176,22 +176,24 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException
 	 */
 
-	public static void rotateWall() throws GameNotRunningException{
-//		throw new UnsupportedOperationException();
+	public static void rotateWall() throws GameNotRunningException, InvalidOperationException{
 		if(!isRunning())throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		//check if the Game is running. If not, thrown an exception.
 		//Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		//if(!isRunning()) throw new UnsupportedOperationException("Game is not running");
 		if(curGame.getWallMoveCandidate() == null) {
-			return;
+			throw new InvalidOperationException("No wall Selected");
+		}
+		Direction wallDir = curGame.getWallMoveCandidate().getWallDirection();
+		if(wallDir == Direction.Horizontal) {
+			curGame.getWallMoveCandidate().setWallDirection(Direction.Vertical);
+		} else {
+			curGame.getWallMoveCandidate().setWallDirection(Direction.Horizontal);
 		}
 		//check if it is the player's turn. If not, thrown an exception. 
 		//check if there is no wall in my hand. If no wall, thrown an exception. 
 		//if there is a wall in my hand
-			//rotate walls with the "R" keys.
 			//get coordinates for the wall position
-			//
 		//else if
 		//Notify player there is no wall in hand.
 	}
@@ -202,33 +204,55 @@ public class Quoridor223Controller {
 	 * @author Enan Ashaduzzaman
 	 * @throws UnsupportedOperationException
 	 */
-	public static void grabWall() throws GameNotRunningException{
-//		throw new UnsupportedOperationException();
+	public static void grabWall() throws GameNotRunningException, InvalidOperationException{
 		if(!isRunning())throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Board curBoard = QuoridorApplication.getQuoridor().getBoard();
+		
+		int moveLength = curGame.getMoves().size();
+		int moveNum; 
+		int roundNum;
+		
+		if(moveLength > 0) {
+			moveNum = curGame.getMoves().get(moveLength-1).getMoveNumber();
+			roundNum = curGame.getMoves().get(moveLength-1).getRoundNumber();
+		} else {
+			moveNum = 0;
+			roundNum = 0;
+		}
 		//check if the Game is running if not throw exception
-		if(curGame.getWallMoveCandidate() == null) {
-			return;
+		if(curGame.getWallMoveCandidate() != null) {
+			throw new InvalidOperationException("Already a wall Selected");
 		}
 		//check if the it is player's turn if not throw exception
 		//check if there is no wall in my hand if not throw exception
-		//if(curGame.getWallMoveCandidate()==null)
-		//check if there is wall leftover
-		//if Player has more wall
-			//move the wall into player's hand
-			//Remove one wall from stock
-			//create a wallmoveCandidate in the game model.
-		//move the wall into my hand
-		//Remove wall from stock
-		//create a wallmoveCandidate in the game model.
-
-		//else if player have no wall
-		//Notify the user that they don't have any wall.	
-		
-		//get quoridor, game
-		//see current position and current game
-		//check if current player has a wall in hand
-		//if there is a wall in stock, create wall move candidate
+		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
+		if(curPlayer.equals(curGame.getWhitePlayer())) {
+			if(curGame.getCurrentPosition().getWhiteWallsInStock().isEmpty()) {
+				//else if player have no wall
+				//Notify the user that they don't have any wall.	
+				throw new InvalidOperationException("No walls in stock");
+			}
+			else {
+				Wall curWall = curGame.getCurrentPosition().getWhiteWallsInStock(1);
+				curGame.getCurrentPosition().removeWhiteWallsInStock(curWall);
+				WallMove curWallMove = new WallMove(moveNum+1,roundNum+1, curPlayer, curBoard.getTile(43), curGame, Direction.Vertical, curWall);
+				curGame.setWallMoveCandidate(curWallMove);
+				//move the wall into player's hand
+				//Remove one wall from stock
+				//create a wallmoveCandidate in the game model.
+			}
+		} else if(curPlayer.equals(curGame.getBlackPlayer())) {
+			if(curGame.getCurrentPosition().getBlackWallsInStock().isEmpty()) {
+				throw new InvalidOperationException("No walls in stock");
+			}
+			else {
+				Wall curWall = curGame.getCurrentPosition().getBlackWallsInStock(1);
+				curGame.getCurrentPosition().removeBlackWallsInStock(curWall);
+				WallMove curWallMove = new WallMove(moveNum,roundNum+1, curPlayer, curBoard.getTile(36), curGame, Direction.Vertical, curWall);
+				curGame.setWallMoveCandidate(curWallMove);
+			}
+		}
 	}
 
 	/**
@@ -267,15 +291,17 @@ public class Quoridor223Controller {
 		//check if there is wall in my hand if not throw exception
 		if(curGame.getWallMoveCandidate()==null)throw new InvalidOperationException("No wall Selected");
 		//validate the position
-		
+
 		//finalize drop by putting the move into the movelist.
 		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
 		GamePosition currentPosition = curGame.getCurrentPosition();
 		GamePosition clone = clonePosition(currentPosition);
-		curGame.setCurrentPosition(clone);
+		boolean set =curGame.setCurrentPosition(clone);
+		System.out.println(set);
 		if(isWhitePlayer()) {
 			clone.removeWhiteWallsInStock(wallToDrop);
 			clone.addWhiteWallsOnBoard(wallToDrop);
+			System.out.println("reach");
 		}
 		else {
 			clone.removeBlackWallsInStock(wallToDrop);
@@ -283,8 +309,6 @@ public class Quoridor223Controller {
 		}
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
-		if(isWhitePlayer())curGame.getCurrentPosition().addWhiteWallsOnBoard(wallToDrop);
-		else curGame.getCurrentPosition().addBlackWallsOnBoard(wallToDrop);
 		//Switch Player here
 	}
 	
@@ -560,8 +584,17 @@ public class Quoridor223Controller {
 		return wall;
 	}
 	private static GamePosition clonePosition(GamePosition oldPosition) {
-		GamePosition newPosition = new GamePosition(oldPosition.getId()+1, oldPosition.getWhitePosition(), oldPosition.getWhitePosition(), oldPosition.getPlayerToMove(), oldPosition.getGame());
+		PlayerPosition newWhitePosition = clonePlayerPosition(oldPosition.getWhitePosition());
+		PlayerPosition newBlackPosition = clonePlayerPosition(oldPosition.getBlackPosition());
+		GamePosition newPosition = new GamePosition(oldPosition.getId()+1, newWhitePosition, newBlackPosition, oldPosition.getPlayerToMove(), oldPosition.getGame());
+		for(Wall wall: oldPosition.getBlackWallsInStock())newPosition.addBlackWallsInStock(wall);
+		for(Wall wall: oldPosition.getWhiteWallsInStock())newPosition.addWhiteWallsInStock(wall);
+		for(Wall wall: oldPosition.getBlackWallsOnBoard())newPosition.addBlackWallsOnBoard(wall);
+		for(Wall wall: oldPosition.getWhiteWallsOnBoard())newPosition.addWhiteWallsOnBoard(wall);
 		return newPosition;
+	}
+	private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
+		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
 	}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
