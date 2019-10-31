@@ -167,7 +167,7 @@ public class CucumberStepDefinitions {
 	public void whitePlayerChoosesAUsername() {
 
 		// white/first player chooses their name
-//		Quoridor223Controller.selectUser("player1");
+		Quoridor223Controller.createUser("Vanessa");;
 
 	}
 
@@ -175,7 +175,7 @@ public class CucumberStepDefinitions {
 	public void blackPlayerChoosesAUsername() {
 
 		// black/second player chooses their name
-//		Quoridor223Controller.selectUser("player2");
+		Quoridor223Controller.createUser("Vanessa");;
 
 	}
 
