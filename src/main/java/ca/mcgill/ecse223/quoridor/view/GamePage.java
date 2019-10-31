@@ -169,10 +169,12 @@ public class GamePage extends JFrame {
 		playerTurn = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
 		playerTurn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		playerTurn.setBounds(90, 28, 500, 46);
+
 		btnRotateWall = new JButton("Rotate Wall");
 		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnRotateWall.setBounds(880, 145, 120, 40);
-		// move button
+
+		// move buttonr
 		btnLeft = new JButton("LEFT");
 		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnLeft.setBounds(680, 336, 80, 80);
@@ -185,6 +187,7 @@ public class GamePage extends JFrame {
 		btnUp = new JButton("UP");
 		btnUp.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnUp.setBounds(770, 246, 80, 80);
+
 
 		// ------------------------- Add to Panel ----------------------------//
 		getContentPane().setLayout(null);
@@ -206,6 +209,7 @@ public class GamePage extends JFrame {
 		getContentPane().add(btnDown);
 		getContentPane().add(btnRight);
 		getContentPane().add(btnLeft);
+
 
 		// ------------------------- Add Event Listener ----------------------------//
 		grabWall.addActionListener(new java.awt.event.ActionListener() {
@@ -277,6 +281,7 @@ public class GamePage extends JFrame {
 				boardComponent.repaint();
 			}
 		});
+
 
 		dropWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
