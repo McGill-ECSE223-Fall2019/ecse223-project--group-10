@@ -212,7 +212,7 @@ public class CucumberStepDefinitions {
 		// 
 
 	}
-<<<<<<< HEAD
+	
 		
 	@Then("The game shall be running")
 	public void theGameShallBeRunning() {
@@ -220,8 +220,6 @@ public class CucumberStepDefinitions {
 		//assertEquals(GameStatus.Initializing, true);
 
 	}
-=======
->>>>>>> master
 
 	@And("The board shall be initialized")
 	public void theBoardShallBeInitialized() {
