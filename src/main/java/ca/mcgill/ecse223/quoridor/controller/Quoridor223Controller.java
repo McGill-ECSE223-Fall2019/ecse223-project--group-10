@@ -36,11 +36,18 @@ public class Quoridor223Controller {
 	/**
 	 * Feature 2: Select an existing user
 	 * @author Vanessa Ifrah
+	 * @param playerName
 	 * @throws UnsupportedOperationException
 	 */
-	public static void selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
+	public static void selectUser(String playerName) throws UnsupportedOperationException {
 		// load the user
 		// if not throw an exception
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		User user = quoridor.addUser(playerName);
+		
+		Game game = quoridor.getCurrentGame();
+//		game.setWhitePlayer(player);
+		
 	}
 	
 	/**
@@ -48,9 +55,15 @@ public class Quoridor223Controller {
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-	public static void createUser(String name) throws UnsupportedOperationException{
+	public static void createUser(String playerName) throws UnsupportedOperationException{
 		// create a new user
 		// throw an exception if user not created
+		
+		
+		
+		
+		// setWhitePlayer(Player aNewWhitePlayer)
+		
 	}
 
 	/**

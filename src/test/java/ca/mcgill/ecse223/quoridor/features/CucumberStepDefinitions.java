@@ -161,33 +161,33 @@ public class CucumberStepDefinitions {
 	}
 
 	@And("White player chooses a username")
-	public void whitePlayerChoosesAUsername(String playerName1) {
+	public void whitePlayerChoosesAUsername() {
 
 		// white/first player chooses their name
-		Quoridor223Controller.createUser(playerName1);
+		Quoridor223Controller.selectUser("player");
 
 	}
 
 	@And("Black player chooses a username")
-	public void blackPlayerChoosesAUsername(String playerName2) {
+	public void blackPlayerChoosesAUsername() {
 
 		// black/second player chooses their name
-		Quoridor223Controller.createUser(playerName2);
+		Quoridor223Controller.selectUser("player");
 
 	}
 
 	@And("Total thinking time is set")
-	public void totalThinkingTimeIsSet(Time thinkingTime, String playerName) {
+	public void totalThinkingTimeIsSet() {
 
 		// black/second player chooses their name
-		Quoridor223Controller.setThinkingTime(thinkingTime, playerName);
+//		Quoridor223Controller.setThinkingTime(thinkingTime, playerName);
 
 	}
 
 	@Then("The game shall become ready to start")
 	public void theGameShallBecomeReadyToStart() {
 
-		//assertEquals(GameStatus.Initializing, true);
+//		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus(), GameStatus.ReadyToStart);
 
 	}
 	
@@ -199,8 +199,7 @@ public class CucumberStepDefinitions {
 	@Given("The game is ready to start")
 	public void theGameIsReadyToStart() {
 		
-		// 
-		//		Quoridor223Controller.createGame();
+//		assertEquals(GameStatus.Initializing, true);
 
 	}
 
@@ -208,11 +207,10 @@ public class CucumberStepDefinitions {
 	public void iStartTheClock() {
 		
 		// 
-		//		Quoridor223Controller.createGame();
 
 	}
 		
-	@Then("The game shall become ready to start")
+	@Then("The game shall be running")
 	public void theGameShallBeRunning() {
 
 		//assertEquals(GameStatus.Initializing, true);
@@ -268,7 +266,7 @@ public class CucumberStepDefinitions {
 
 	}
 	
-	@When("The player sprovides new user name: {String}")
+	@When("The player provides new user name: {string}")
 	public void thePlayerProvidesNewUserName(String usernName) {
 		
 		//
@@ -314,7 +312,7 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
-	 * @author Andrew Ta
+	 * @author Andfrew Ta
 	 * @param newTime
 	 */
 	@When("{int}:{int} is set as the thinking time")
