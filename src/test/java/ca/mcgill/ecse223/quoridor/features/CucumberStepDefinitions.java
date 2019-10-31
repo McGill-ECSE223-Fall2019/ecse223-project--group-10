@@ -1173,7 +1173,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Validation of the position is initiated")
 	public void validationOfThenPositionIsInitiated(Tile tile) throws UnsupportedOperationException, GameNotRunningException {
-		assertEquals(true, Quoridor223Controller.validatePosition(tile));
+		assertEquals(true, Quoridor223Controller.validatePosition());
 	}
 
 	/**

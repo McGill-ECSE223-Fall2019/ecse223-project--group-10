@@ -7,8 +7,13 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.GroupLayout;
 import javax.swing.text.MaskFormatter;
-import java.awt.Font;
 
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Time;
 import java.awt.Color;
 import java.text.ParseException;
 import java.sql.Time;
@@ -41,6 +46,30 @@ public class SetThinkingTimePage extends JFrame {
 	public SetThinkingTimePage() {
 		initPage();
 	}
+
+  // @sacha method for old timer
+  // to delete
+	private Time getWhiteTime() {
+		return Time.valueOf("00:"+whiteTimePicker.getText());
+	}
+	
+  // @sacha method for old timer
+  // to delete
+	private Time getBlackTime() {
+		return Time.valueOf("00:"+blackTimePicker.getText());
+	}
+	
+  // @sacha log users when time format is incorrect
+	private void failToReadTime() {
+		setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
+	}
+	
+  // @sacha method to create main page
+	private void createMainPage() {
+		// if this is clicked then now display the setThinkingTime page
+		GamePage mainPage = new GamePage();
+		mainPage.setVisible(true);
+	}
 	
 	private void initPage(){
 		this.setSize(1400, 720);
@@ -48,16 +77,16 @@ public class SetThinkingTimePage extends JFrame {
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
 	
 		// initialize username
-		userName1 = new JLabel("<html><font color='white' >WHITE PLAYER</font></html>");
+		userName1 = new JLabel(String.format("<html><font color='white' >%s</font></html>", Quoridor223Controller.getWhitePlayerName()));
 		userName1.setFont(new Font("Arial", Font.PLAIN, 25));
-		userName2 = new JLabel("<html><font color='black' >BLACK PLAYER</font></html>");
+		userName2 = new JLabel(String.format("<html><font color='black' >%s</font></html>", Quoridor223Controller.getBlackPlayerName()));
 		userName2.setFont(new Font("Arial", Font.PLAIN, 25));
 				
 		// intialize start-game button
 		startGame = new JButton("<html><font color='white' >START GAME</font></html>");
 		startGame.setBackground(Color.BLUE);
 		startGame.setFont(new Font("Arial", Font.PLAIN, 30));
-		
+	
 		// initialize time picker
 		try {
             mask = new MaskFormatter("##:##");
@@ -65,7 +94,7 @@ public class SetThinkingTimePage extends JFrame {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        mask.setPlaceholderCharacter('#');
+		mask.setPlaceholderCharacter('#');
 		whiteTimePicker = new JFormattedTextField(mask);
 		whiteTimePicker.setFont(new Font("Arial", Font.PLAIN, 25));
 		blackTimePicker = new JFormattedTextField(mask);
@@ -79,6 +108,7 @@ public class SetThinkingTimePage extends JFrame {
 		setTimeError = new JLabel("");
 		setTimeError.setFont(new Font("Arial", Font.PLAIN, 25));
 		
+
 		//--------------------- Add Event Listener ---------------------------------//
 		startGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {

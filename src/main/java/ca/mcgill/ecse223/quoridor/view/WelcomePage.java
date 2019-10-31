@@ -43,6 +43,9 @@ public class WelcomePage extends JFrame {
 		btnStartANew.setFont(new Font("Heiti SC", Font.BOLD, 16));
 		btnStartANew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// link to the set name page
+				SetNamePage setNamePage = new SetNamePage();
+				setNamePage.setVisible(true);
 			}
 		});
 
