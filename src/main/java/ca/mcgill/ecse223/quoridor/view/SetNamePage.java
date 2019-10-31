@@ -110,23 +110,25 @@ public class SetNamePage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String name1 = comboBox.getSelectedItem().toString();
 				String name2 = comboBox_1.getSelectedItem().toString();
-				if(name1.equals(name2)) {
-					return;
-				}else {
-					 try {
-						 File f = new File("names.txt");
-						 FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
-						 if(!usernames.contains(name1)) {
-							 writer.write("\n" + name1);
-						 }
-						 if(!usernames.contains(name2)) {
-							 writer.write("\n" + name2);
-						 }
-				         writer.close();
-				     } catch (IOException exp) {
-				         exp.printStackTrace();
-				     }
+				try {
+					if(name1.equals(name2)) {
+						throw new Exception("Names must be unique");
+					}else {
+						File f = new File("names.txt");
+						FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
+						if(!usernames.contains(name1)) {
+							writer.write("\n" + name1);
+						}
+						if(!usernames.contains(name2)) {
+							writer.write("\n" + name2);
+						}
+					    writer.close();
+					    
+					}
+				}catch(Exception g) {
+					
 				}
+				
 			}
 		});
 		
