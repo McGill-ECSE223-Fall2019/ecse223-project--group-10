@@ -1,12 +1,17 @@
 package ca.mcgill.ecse223.quoridor.view;
 
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JFrame;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.text.MaskFormatter;
+
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Color;
@@ -28,6 +33,10 @@ public class SetNamePage extends JFrame {
 	// username and thinking time
 	private JLabel userName1;
 	private JLabel userName2;
+
+	// name field
+	private JTextField whiteNamePicker;
+	private JTextField blackNamePicker;
 	
 	private static ArrayList<String> usernames;
 	
@@ -42,7 +51,6 @@ public class SetNamePage extends JFrame {
 		this.setSize(1400, 720);
 		this.setTitle("Set Time Page");
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
-	
 		
 		// header: back button brings user back to welcome page
 		JButton btnBack = new JButton("Back");
@@ -89,6 +97,10 @@ public class SetNamePage extends JFrame {
 		comboBox.setEditable(true);
 		comboBox_1.setEditable(true);
 		
+		// previous name implementation with text fields
+		//whiteNamePicker = new JTextField(20);
+		//blackNamePicker = new JTextField(20);
+
 		// button starts a new game
 		btnLetsS = new JButton("Let's Start");
 		btnLetsS.setBackground(new Color(204, 153, 102));

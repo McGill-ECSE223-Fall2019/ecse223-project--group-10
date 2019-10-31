@@ -7,6 +7,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.sql.Time;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -187,7 +189,7 @@ public class GamePage extends JFrame {
 		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnRotateWall.setBounds(880, 145, 120, 40);
 
-		// move buttonr
+		// move buttons
 		btnLeft = new JButton("LEFT");
 		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnLeft.setBounds(680, 336, 80, 80);
@@ -222,7 +224,6 @@ public class GamePage extends JFrame {
 		getContentPane().add(btnRight);
 		getContentPane().add(btnLeft);
 
-
 		// ------------------------- Add Event Listener ----------------------------//
 		timer.scheduleAtFixedRate(
 			new TimerTask() {
@@ -238,10 +239,10 @@ public class GamePage extends JFrame {
 				try {
 					Quoridor223Controller.grabWall();
 				} catch (InvalidOperationException eGrab) {
-
+          
 				} catch (GameNotRunningException eGrab) {
-
-				}
+				
+        }
 				boardComponent.repaint();
 			}
 		});
@@ -303,11 +304,12 @@ public class GamePage extends JFrame {
 			}
 		});
 
-
 		dropWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					Quoridor223Controller.dropWall();
+          // if (!Quoridor223Controller.hasWallMoveCandidate()) failToValidatePosition();
+				  // else logSwitchPlayer();
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
@@ -351,7 +353,55 @@ public class GamePage extends JFrame {
 
 			}
 		});
+    // @sacha: method implemented to refresh the time left for the players & not needed anymore ?
+    // RESOLVING MERGE CONFLICTS
+    // refreshData();				
 	}
+	
+	/* @sacha: making signals if failure to validate position
+   * logging information on current players mvoe & switch players
+	// @sacha: would the refreshData method be the real switch player element for the UI ?
+	private void refreshData() {
+		// TODO: call transfer objects' method to query data and update the game's states
+		Timer timer = new Timer();
+		TimerTask refreshTask = new TimerTask() {
+		    @Override
+		    public void run() {
+		    	String moving_playerName = Quoridor223Controller.getPlayerMovingName();
+				Quoridor223Controller.updateTime();
+		    	refreshTimePanels();
+		    };  		
+		};
+		// update all elements every seconds
+		timer.scheduleAtFixedRate(refreshTask,0,1000);    
+	}
+
+	private void failToValidatePosition() {
+		// interact with the playerTurn element
+		String name = Quoridor223Controller.getPlayerMovingName();
+		playerTurn.setText(String.format("%s: this move is invalid! Please try another.", name));
+	}
+  
+	private void logSwitchPlayer() {
+		// interact witht the playerTurn element
+		try {
+			Quoridor223Controller.SwitchPlayer();
+		} catch (UnsupportedOperationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GameNotRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String name = Quoridor223Controller.getPlayerMovingName();
+		playerTurn.setText(String.format("%s: it is now your turn to move!", name));
+	}
+	
+	private void refreshTimePanels() {
+		whiteTime.setText(Quoridor223Controller.getWhiteRemainingTime().toString());
+		blackTime.setText(Quoridor223Controller.getBlackRemainingTime().toString());
+  }
+  */
 
 	private void refreshTime() {
 		if(userToMove.equals(name1)) {

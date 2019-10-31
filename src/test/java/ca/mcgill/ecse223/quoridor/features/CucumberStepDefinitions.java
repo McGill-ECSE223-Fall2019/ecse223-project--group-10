@@ -159,8 +159,7 @@ public class CucumberStepDefinitions {
 	public void aNewGameIsBeingInitialized() {
 		
 		// create the new game
-		Quoridor223Controller.createGame();
-
+		Quoridor223Controller.createGame("Test1","Test2");
 	}
 
 	@And("White player chooses a username")
@@ -1173,7 +1172,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Validation of the position is initiated")
 	public void validationOfThenPositionIsInitiated(Tile tile) throws UnsupportedOperationException, GameNotRunningException {
-		assertEquals(true, Quoridor223Controller.validatePosition(tile));
+		assertEquals(true, Quoridor223Controller.validatePosition());
 	}
 
 	/**
