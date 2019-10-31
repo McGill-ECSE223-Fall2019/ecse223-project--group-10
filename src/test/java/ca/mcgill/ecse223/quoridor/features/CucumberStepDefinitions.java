@@ -159,8 +159,7 @@ public class CucumberStepDefinitions {
 	public void aNewGameIsBeingInitialized() {
 		
 		// create the new game
-		Quoridor223Controller.createGame();
-
+		Quoridor223Controller.createGame("Test1","Test2");
 	}
 
 	@And("White player chooses a username")
