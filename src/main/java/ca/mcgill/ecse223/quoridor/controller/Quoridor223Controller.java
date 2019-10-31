@@ -156,12 +156,12 @@ public class Quoridor223Controller {
 
 		// Add the walls to stock for the players
 		for (int j = 0; j < 10; j++) {
-			Wall wall = Wall.getWithId(j);
+			Wall wall = Wall.getWithId(j + 1);
 			gamePosition.addWhiteWallsInStock(wall);
 		}
 		
 		for (int j = 0; j < 10; j++) {
-			Wall wall = Wall.getWithId(j + 10);
+			Wall wall = Wall.getWithId(j + 10 + 1);
 			gamePosition.addBlackWallsInStock(wall);
 		}
 
@@ -234,7 +234,7 @@ public class Quoridor223Controller {
 				throw new InvalidOperationException("No walls in stock");
 			}
 			else {
-				Wall curWall = curGame.getCurrentPosition().getWhiteWallsInStock(1);
+				Wall curWall = curGame.getCurrentPosition().getWhiteWallsInStock(0);
 				curGame.getCurrentPosition().removeWhiteWallsInStock(curWall);
 				WallMove curWallMove = new WallMove(moveNum+1,roundNum+1, curPlayer, curBoard.getTile(43), curGame, Direction.Vertical, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
@@ -247,7 +247,7 @@ public class Quoridor223Controller {
 				throw new InvalidOperationException("No walls in stock");
 			}
 			else {
-				Wall curWall = curGame.getCurrentPosition().getBlackWallsInStock(1);
+				Wall curWall = curGame.getCurrentPosition().getBlackWallsInStock(0);
 				curGame.getCurrentPosition().removeBlackWallsInStock(curWall);
 				WallMove curWallMove = new WallMove(moveNum,roundNum+1, curPlayer, curBoard.getTile(36), curGame, Direction.Vertical, curWall);
 				curGame.setWallMoveCandidate(curWallMove);

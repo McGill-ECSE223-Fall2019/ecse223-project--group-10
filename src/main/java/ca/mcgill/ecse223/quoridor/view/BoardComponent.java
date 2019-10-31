@@ -6,6 +6,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
@@ -39,6 +41,7 @@ public class BoardComponent extends JPanel {
 	private float[][] blackWallInStock= new float[10][2];
 	private ArrayList<TOWall> whiteWallOnBoard;
 	private ArrayList<TOWall> blackWallOnBoard;
+	private ArrayList<TOWall> wallOnBoard;
 	private TOWall wallInHand;
 	private HashMap<playerColor,Ellipse2D> players = new HashMap<>();
 	
@@ -50,13 +53,13 @@ public class BoardComponent extends JPanel {
 		margin = (size- width*9)/2;
 		try {
 			hWall = ImageIO.read(getFileFromResources("Wall.png"));
-			hWall = resize(hWall, 15, (int)width*2);
+			hWall = resize(hWall, 15, (int)width*2-5);
 			vWall = ImageIO.read(getFileFromResources("WallV.png"));
-			vWall = resize(vWall, (int)width*2,15);
+			vWall = resize(vWall, (int)width*2-5,15);
 			hHighlightedWall = ImageIO.read(getFileFromResources("HighlightedWall.png"));
-			hHighlightedWall = resize(hHighlightedWall, 15, (int)width*2-7);
+			hHighlightedWall = resize(hHighlightedWall, 15, (int)width*2-5);
 			vHighlightedWall = ImageIO.read(getFileFromResources("HighlightedWallV.png"));
-			vHighlightedWall = resize(vHighlightedWall, (int)width*2-7,15);
+			vHighlightedWall = resize(vHighlightedWall, (int)width*2-5,15);
 		}
 		catch(IOException e) {
 			System.out.println(e.getMessage());
@@ -99,8 +102,7 @@ public class BoardComponent extends JPanel {
 		
 		for(int i = 0; i < bn; i++) g2d.drawImage(hWall, (int)blackWallInStock[i][0], (int)blackWallInStock[i][1], this);
 		for(int i = 0; i < wn; i++) g2d.drawImage(hWall, (int)whiteWallInStock[wn-1-i][0], (int)whiteWallInStock[wn-i-1][1], this);
-		for(TOWall wall: whiteWallOnBoard)drawWall(wall,g2d,false);
-		for(TOWall wall: blackWallOnBoard)drawWall(wall,g2d,false);
+		for(TOWall wall: wallOnBoard)drawWall(wall,g2d,false);
 		if(wallInHand!=null)drawWall(wallInHand, g2d, true);
 	}
 	
@@ -129,6 +131,9 @@ public class BoardComponent extends JPanel {
 		wallInHand = Quoridor223Controller.getWallInHand();
 		whiteWallOnBoard=Quoridor223Controller.getWhiteWallOnBoard();
 		blackWallOnBoard=Quoridor223Controller.getBlackWallOnBoard();
+		wallOnBoard = new ArrayList<>(whiteWallOnBoard);
+		wallOnBoard.addAll(blackWallOnBoard);
+		Collections.sort(wallOnBoard,(a,b)->{return a.getCol()+a.getRow()-b.getCol()-b.getRow();});
 	}
 	
 	private void initStock() {
@@ -174,8 +179,8 @@ public class BoardComponent extends JPanel {
 	private int[] getWallCord(TOWall wall){
 		int[] cord = new int[2];
 		boolean isHorizontal = wall.getDir()==TOWall.Direction.Horizontal;
-		int vadj = isHorizontal? 7:0;
-		int hadj = isHorizontal? 0:9;
+		int vadj = isHorizontal? 7:-4;
+		int hadj = isHorizontal? -2:9;
 		int horizontalOffset = isHorizontal?1:0;
 		int verticalOffset = (!isHorizontal)?1:0;
 		cord[1]=(int)(margin-vadj+(wall.getRow()-verticalOffset)*width);
