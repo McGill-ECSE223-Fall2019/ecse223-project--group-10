@@ -162,14 +162,13 @@ public class CucumberStepDefinitions {
 		//Quoridor223Controller.initializeBoard();
 		// create the new game
 		Quoridor223Controller.createGame();
-
 	}
 
 	@And("White player chooses a username")
 	public void whitePlayerChoosesAUsername() {
 
 		// white/first player chooses their name
-		Quoridor223Controller.selectUser("player1");
+//		Quoridor223Controller.selectUser("player1");
 
 	}
 
@@ -177,7 +176,7 @@ public class CucumberStepDefinitions {
 	public void blackPlayerChoosesAUsername() {
 
 		// black/second player chooses their name
-		Quoridor223Controller.selectUser("player2");
+//		Quoridor223Controller.selectUser("player2");
 
 	}
 
@@ -1181,7 +1180,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Validation of the position is initiated")
 	public void validationOfThenPositionIsInitiated(Tile tile) throws UnsupportedOperationException, GameNotRunningException {
-		assertEquals(true, Quoridor223Controller.validatePosition(tile));
+		assertEquals(true, Quoridor223Controller.validatePosition());
 	}
 
 	/**
