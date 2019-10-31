@@ -28,10 +28,10 @@ public class Quoridor223Controller {
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-	public static void createGame(String user1, String user2) throws UnsupportedOperationException {
+	public static void createGame() throws UnsupportedOperationException {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game newGame = new Game(GameStatus.Running, MoveMode.WallMove, quoridor);
-		List<User> users = selectUser(user1, user2);
+		List<User> users = quoridor.getUsers();
 		// create players
 		Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
 		Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
