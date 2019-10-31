@@ -30,6 +30,7 @@ public class Quoridor223Controller {
 	 */
 	public static void createGame() throws UnsupportedOperationException {
         
+		// create Quoridor game and get users
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
         Game newGame = new Game(GameStatus.Running, MoveMode.WallMove, quoridor);
         List<User> users = quoridor.getUsers();
