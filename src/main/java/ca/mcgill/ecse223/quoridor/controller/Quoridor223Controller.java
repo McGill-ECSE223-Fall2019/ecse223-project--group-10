@@ -57,7 +57,6 @@ public class Quoridor223Controller {
 		list.add(User.getWithName(playerName1));
 		list.add(User.getWithName(playerName2));		
 		return list;
-		
 	}
 
 	/**

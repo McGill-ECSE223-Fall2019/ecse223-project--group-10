@@ -119,7 +119,7 @@ public class SetNamePage extends JFrame {
 						 if(!usernames.contains(name1)) {
 							 writer.write("\n" + name1);
 						 }
-						 if(!usernames.contains(name1)) {
+						 if(!usernames.contains(name2)) {
 							 writer.write("\n" + name2);
 						 }
 				         writer.close();
