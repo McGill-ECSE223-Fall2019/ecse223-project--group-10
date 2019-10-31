@@ -34,8 +34,8 @@ public class Quoridor223Controller {
 		
 		// create players
 		List<User> users = quoridor.getUsers();
-		Player whitePlayer = new Player(new Time(10), users.get(0), 9, Direction.Horizontal);
-		Player blackPlayer = new Player(new Time(10), users.get(1), 1, Direction.Horizontal);
+		Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
+		Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
 		newGame.setBlackPlayer(blackPlayer);
 		newGame.setWhitePlayer(whitePlayer);
 		
@@ -112,16 +112,12 @@ public class Quoridor223Controller {
 	 * @param playerName
 	 * @throws UnsupportedOperationException
 	 */
-	public static void setThinkingTime(Time thinkingTime, String playerName) throws UnsupportedOperationException{
+	public static void setThinkingTime(Time thinkingTime, String playerName) {
 		// get current Game
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game currentGame = quoridor.getCurrentGame();
-		Player currentPlayer;
-		if(playerName.equals("white")) {
-			currentPlayer = currentGame.getWhitePlayer();
-		}else {
-			currentPlayer = currentGame.getBlackPlayer();
-		}
+
+		Player currentPlayer = getPlayerByName(playerName);
+		
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
 	}
@@ -174,7 +170,7 @@ public class Quoridor223Controller {
 		Tile blackPlayerTile = quoridor.getBoard().getTile(76);
 		
 		Game currentGame = quoridor.getCurrentGame();
-	
+		
 		// create players' initial positions
 		PlayerPosition whitePlayerPosition = new PlayerPosition(currentGame.getWhitePlayer(), whitePlayerTile);
 		PlayerPosition blackPlayerPosition = new PlayerPosition(currentGame.getBlackPlayer(), blackPlayerTile);
@@ -182,12 +178,12 @@ public class Quoridor223Controller {
 
 		// Add the walls to stock for the players
 		for (int j = 0; j < 10; j++) {
-			Wall wall = Wall.getWithId(j);
+			Wall wall = Wall.getWithId(j + 1);
 			gamePosition.addWhiteWallsInStock(wall);
 		}
 		
 		for (int j = 0; j < 10; j++) {
-			Wall wall = Wall.getWithId(j + 10);
+			Wall wall = Wall.getWithId(j + 10 + 1);
 			gamePosition.addBlackWallsInStock(wall);
 		}
 
@@ -260,7 +256,7 @@ public class Quoridor223Controller {
 				throw new InvalidOperationException("No walls in stock");
 			}
 			else {
-				Wall curWall = curGame.getCurrentPosition().getWhiteWallsInStock(1);
+				Wall curWall = curGame.getCurrentPosition().getWhiteWallsInStock(0);
 				curGame.getCurrentPosition().removeWhiteWallsInStock(curWall);
 				WallMove curWallMove = new WallMove(moveNum+1,roundNum+1, curPlayer, curBoard.getTile(43), curGame, Direction.Vertical, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
@@ -273,7 +269,7 @@ public class Quoridor223Controller {
 				throw new InvalidOperationException("No walls in stock");
 			}
 			else {
-				Wall curWall = curGame.getCurrentPosition().getBlackWallsInStock(1);
+				Wall curWall = curGame.getCurrentPosition().getBlackWallsInStock(0);
 				curGame.getCurrentPosition().removeBlackWallsInStock(curWall);
 				WallMove curWallMove = new WallMove(moveNum,roundNum+1, curPlayer, curBoard.getTile(36), curGame, Direction.Vertical, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
@@ -323,19 +319,16 @@ public class Quoridor223Controller {
 		GamePosition currentPosition = curGame.getCurrentPosition();
 		GamePosition clone = clonePosition(currentPosition);
 		boolean set =curGame.setCurrentPosition(clone);
-		System.out.println(set);
 		if(isWhitePlayer()) {
-			clone.removeWhiteWallsInStock(wallToDrop);
 			clone.addWhiteWallsOnBoard(wallToDrop);
-			System.out.println("reach");
 		}
 		else {
-			clone.removeBlackWallsInStock(wallToDrop);
 			clone.addBlackWallsOnBoard(wallToDrop);
 		}
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
 		//Switch Player here
+		SwitchPlayer();
 	}
 	
 	/**
@@ -475,9 +468,8 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException, GameNotRunningException
 	 * @author Sacha Lévy
 	 */
-	public void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException{
+	public static void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException{
 		// method constantly running while in-game
-		while(true) {
 			if (!isRunning()) {throw new GameNotRunningException("Game not running");}
 			// get the current player
 			Game curr_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -493,13 +485,7 @@ public class Quoridor223Controller {
 				current_player = curr_game.getWhitePlayer();
 				other_player = curr_game.getBlackPlayer();
 			}
-			// check if the clock of the current player is not running
-			if (isClockRunning(current_player) == false) {
-				// set the player to move as the other player
-				curr_game.getCurrentPosition().setPlayerToMove(other_player);
-				updateGUI(current_player, other_player);
-			}
-		}
+			curr_game.getCurrentPosition().setPlayerToMove(other_player);
 	}
 	
 	/**
@@ -572,12 +558,19 @@ public class Quoridor223Controller {
 	
 	public static TOGame getListOfPlayers(){
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Player playerToMove = quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();
 		ArrayList<String> name = new ArrayList<>();
 		for(User user: quoridor.getUsers()) {
 			name.add(user.getName());
 		}
+		String playerToMoveName;
+		if(playerToMove.getUser().getName().equals(name.get(0))) {
+			playerToMoveName = name.get(0);
+		}else {
+			playerToMoveName = name.get(1);
+		}
 		TOGame listOfPlayers = new TOGame(quoridor.getCurrentGame().getWhitePlayer().getRemainingTime()
-				, quoridor.getCurrentGame().getWhitePlayer().getRemainingTime(), name.get(0), name.get(1));
+				, quoridor.getCurrentGame().getBlackPlayer().getRemainingTime(), name.get(0), name.get(1), playerToMoveName);
 		return listOfPlayers;
 	}
 	
