@@ -92,8 +92,8 @@ public class SetThinkingTimePage extends JFrame {
 					Quoridor223Controller.createUser("White");
 					Quoridor223Controller.createUser("Black");
 					Quoridor223Controller.createGame();
-					Quoridor223Controller.setThinkingTime(new Time(wTime), "white");
-					Quoridor223Controller.setThinkingTime(new Time(bTime), "black");
+					Quoridor223Controller.setThinkingTime(new Time(wTime), "White");
+					Quoridor223Controller.setThinkingTime(new Time(bTime), "Black");
 					status = true;
 					Quoridor223Controller.initializeBoard();
 					QuoridorApplication.setMainPage();
