@@ -34,10 +34,11 @@ public class Quoridor223Controller {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
         Game newGame = new Game(GameStatus.Running, MoveMode.WallMove, quoridor);
         List<User> users = quoridor.getUsers();
-        
         // create players
         Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
         Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
+        whitePlayer.setNextPlayer(blackPlayer);
+        blackPlayer.setNextPlayer(whitePlayer);
         newGame.setBlackPlayer(blackPlayer);
         newGame.setWhitePlayer(whitePlayer);
         
