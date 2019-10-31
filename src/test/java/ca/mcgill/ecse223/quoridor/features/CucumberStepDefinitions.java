@@ -150,6 +150,7 @@ public class CucumberStepDefinitions {
 	// StartNewGame and ProvideSelectUserName start here
 	// **********************************************
 
+
 	/**
 	 * Scenario: Initiate a new game
 	 * @author Vanessa Ifrah
@@ -263,6 +264,7 @@ public class CucumberStepDefinitions {
 
 	}
 	
+
 	@When("The player provides new user name: {string}")
 	public void thePlayerProvidesNewUserName(String usernName) {
 		
@@ -288,6 +290,7 @@ public class CucumberStepDefinitions {
 		//assertion
 		
 	}
+
 	
 	
 	

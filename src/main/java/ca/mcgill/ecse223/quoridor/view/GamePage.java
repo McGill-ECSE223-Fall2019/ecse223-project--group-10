@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Properties;
 import java.sql.Time;
+import java.util.Timer;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -57,7 +58,6 @@ import java.awt.SystemColor;
 import javax.swing.JTextArea;
 
 public class GamePage extends JFrame {
-
 	// board
 	private static BoardComponent boardComponent;
 
@@ -121,11 +121,13 @@ public class GamePage extends JFrame {
 		// initialize time (for now default to 10, later will get from model through
 		// controller)
 		whiteRemainingTime = players.getPlayerOneTime();
+		String wTime[] = whiteRemainingTime.toString().split(":");
 		blackRemainingTime = players.getPlayerTwoTime();
-		whiteTime = new JLabel(whiteRemainingTime.toString(), SwingConstants.CENTER);
+		String bTime[] = blackRemainingTime.toString().split(":");
+		whiteTime = new JLabel(wTime[1] + ":" + wTime[2], SwingConstants.CENTER);
 		whiteTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		whiteTime.setBounds(936, 94, 64, 33);
-		blackTime = new JLabel(blackRemainingTime.toString(), SwingConstants.CENTER);
+		blackTime = new JLabel(bTime[1] + ":" + bTime[2], SwingConstants.CENTER);
 		blackTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		blackTime.setBounds(676, 94, 64, 33);
 
@@ -169,10 +171,12 @@ public class GamePage extends JFrame {
 		playerTurn = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
 		playerTurn.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		playerTurn.setBounds(90, 28, 500, 46);
+
 		btnRotateWall = new JButton("Rotate Wall");
 		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnRotateWall.setBounds(880, 145, 120, 40);
-		// move button
+
+		// move buttonr
 		btnLeft = new JButton("LEFT");
 		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnLeft.setBounds(680, 336, 80, 80);
@@ -206,6 +210,7 @@ public class GamePage extends JFrame {
 		getContentPane().add(btnDown);
 		getContentPane().add(btnRight);
 		getContentPane().add(btnLeft);
+
 
 		// ------------------------- Add Event Listener ----------------------------//
 		grabWall.addActionListener(new java.awt.event.ActionListener() {
@@ -277,6 +282,7 @@ public class GamePage extends JFrame {
 				boardComponent.repaint();
 			}
 		});
+
 
 		dropWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
