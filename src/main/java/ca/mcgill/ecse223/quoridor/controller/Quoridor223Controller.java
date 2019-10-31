@@ -31,18 +31,36 @@ public class Quoridor223Controller {
 	public static void createGame() throws UnsupportedOperationException {
 		// create Quoridor game and get users
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-        Game newGame = new Game(GameStatus.Running, MoveMode.WallMove, quoridor);
-        List<User> users = quoridor.getUsers();
-        // create players
+        Game newGame = new Game(GameStatus.Initializing, MoveMode.WallMove, quoridor);
+        
+    }
+
+	public static void creatPlayers() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		List<User> users = quoridor.getUsers();
+        
+		// create players
         Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
         Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
         whitePlayer.setNextPlayer(blackPlayer);
         blackPlayer.setNextPlayer(whitePlayer);
-        newGame.setBlackPlayer(blackPlayer);
-        newGame.setWhitePlayer(whitePlayer);
-        
-    }
-
+        curGame.setBlackPlayer(blackPlayer);
+        curGame.setWhitePlayer(whitePlayer);
+	}
+	
+	public static void setGameToReady() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.setGameStatus(GameStatus.ReadyToStart);
+	}
+	
+	public static void setGameToRun() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.setGameStatus(GameStatus.Running);
+	}
+	
 	/**
 	 * Feature 2: Select an existing user
 	 * 
