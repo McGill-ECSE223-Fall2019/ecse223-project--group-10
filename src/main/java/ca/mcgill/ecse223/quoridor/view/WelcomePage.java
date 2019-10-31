@@ -1,6 +1,10 @@
 package ca.mcgill.ecse223.quoridor.view;
 
 import javax.swing.JLabel;
+
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+
 import javax.swing.JButton;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JFrame;
@@ -44,8 +48,7 @@ public class WelcomePage extends JFrame {
 		btnStartANew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// link to the set name page
-				SetNamePage setNamePage = new SetNamePage();
-				setNamePage.setVisible(true);
+				QuoridorApplication.setNamePage();
 			}
 		});
 

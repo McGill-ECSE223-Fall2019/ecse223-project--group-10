@@ -118,13 +118,8 @@ public class SetThinkingTimePage extends JFrame {
 				try {
 					String whiteTime[] = whiteTimePicker.getText().split(":");
 					String blackTime[] = blackTimePicker.getText().split(":");
-					
 					long wTime = Integer.parseInt(whiteTime[0])*60*1000 + Integer.parseInt(whiteTime[1])*1000;
 					long bTime = Integer.parseInt(blackTime[0])*60*1000 + Integer.parseInt(blackTime[1])*1000;
-					
-					Quoridor223Controller.createUser("White");
-					Quoridor223Controller.createUser("Black");
-					Quoridor223Controller.createGame();
 					Quoridor223Controller.setThinkingTime(new Time(wTime), "White");
 					Quoridor223Controller.setThinkingTime(new Time(bTime), "Black");
 					status = true;
