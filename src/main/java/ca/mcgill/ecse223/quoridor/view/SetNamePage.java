@@ -15,12 +15,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import java.util.ArrayList;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
 
 
 public class SetNamePage extends JFrame {
 	// username and thinking time
 	private JLabel userName1;
 	private JLabel userName2;
+	
+	private static ArrayList<String> usernames;
 	
 	// time error
 	private JButton btnLetsS;
@@ -58,9 +67,25 @@ public class SetNamePage extends JFrame {
 		userName2.setFont(new Font("Avenir Next", Font.PLAIN, 14));
 		
 		// dropdown menus with usernames
-		String usernames[]={"", "Van","Bob","Laura","Jerry","Nathalie"};
-		JComboBox comboBox = new JComboBox(usernames);
-		JComboBox comboBox_1 = new JComboBox(usernames);
+		usernames = new ArrayList<String>();
+		try {
+			File f = new File("names.txt");
+            FileReader reader = new FileReader(f.getAbsolutePath());
+            BufferedReader bufferedReader = new BufferedReader(reader);
+ 
+            String line;
+ 
+            while ((line = bufferedReader.readLine()) != null) {
+                usernames.add(line);
+            }
+            reader.close();
+ 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		
+		JComboBox comboBox = new JComboBox(usernames.toArray());
+		JComboBox comboBox_1 = new JComboBox(usernames.toArray());
 		comboBox.setEditable(true);
 		comboBox_1.setEditable(true);
 		
@@ -70,7 +95,26 @@ public class SetNamePage extends JFrame {
 		btnLetsS.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
 		
 		btnLetsS.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent f) {
+			public void actionPerformed(ActionEvent e) {
+				String name1 = comboBox.getSelectedItem().toString();
+				String name2 = comboBox_1.getSelectedItem().toString();
+				if(name1.equals(name2)) {
+					return;
+				}else {
+					 try {
+						 File f = new File("names.txt");
+						 FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
+						 if(!usernames.contains(name1)) {
+							 writer.write("\n" + name1);
+						 }
+						 if(!usernames.contains(name1)) {
+							 writer.write("\n" + name2);
+						 }
+				         writer.close();
+				     } catch (IOException exp) {
+				         exp.printStackTrace();
+				     }
+				}
 			}
 		});
 		
