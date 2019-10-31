@@ -158,7 +158,8 @@ public class CucumberStepDefinitions {
 	@When("A new game is being initialized")
 	public void aNewGameIsBeingInitialized() {
 		
-		//Quoridor223Controller.initializeBoard();
+//		GameStatus.Initializing;
+//		Quoridor223Controller.initializBoard();
 		//create the new game
 		Quoridor223Controller.createGame();
 	}
@@ -167,7 +168,7 @@ public class CucumberStepDefinitions {
 	public void whitePlayerChoosesAUsername() {
 
 		// white/first player chooses their name
-		Quoridor223Controller.createUser("Vanessa");;
+		Quoridor223Controller.setUser("Vanessa");;
 
 	}
 
@@ -175,7 +176,7 @@ public class CucumberStepDefinitions {
 	public void blackPlayerChoosesAUsername() {
 
 		// black/second player chooses their name
-		Quoridor223Controller.createUser("Vanessa");;
+		Quoridor223Controller.setUser("Vanessa");;
 
 	}
 

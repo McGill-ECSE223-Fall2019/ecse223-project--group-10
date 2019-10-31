@@ -44,31 +44,12 @@ public class Quoridor223Controller {
     }
 
 	/**
-	 * Feature 2: Select an existing user
-	 * 
-	 * @author Vanessa Ifrah
-	 * @param playerName
-	 * @throws UnsupportedOperationException
-	 */
-//	public static List<User> selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
-//		
-//		// load the user
-//		if(!User.hasWithName(playerName1))createUser(playerName1);
-//		if(!User.hasWithName(playerName2))createUser(playerName2);
-//		ArrayList<User> list = new ArrayList<User>();
-//		list.add(User.getWithName(playerName1));
-//		list.add(User.getWithName(playerName2));		
-//		return list;
-//		
-//	}
-
-	/**
-	 * Feature 2: Creating a new user with new username
+	 * Feature 2: Setting a user with a new username or with an existing one
 	 * 
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-	public static void createUser(String playerName) throws UnsupportedOperationException {
+	public static void setUser(String playerName) throws UnsupportedOperationException {
 		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		User user = quoridor.addUser(playerName);
