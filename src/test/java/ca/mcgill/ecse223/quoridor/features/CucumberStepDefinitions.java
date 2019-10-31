@@ -158,6 +158,8 @@ public class CucumberStepDefinitions {
 	@When("A new game is being initialized")
 	public void aNewGameIsBeingInitialized() {
 		
+		
+		//Quoridor223Controller.initializeBoard();
 		// create the new game
 		Quoridor223Controller.createGame();
 
@@ -167,7 +169,7 @@ public class CucumberStepDefinitions {
 	public void whitePlayerChoosesAUsername() {
 
 		// white/first player chooses their name
-		Quoridor223Controller.selectUser("player");
+		Quoridor223Controller.selectUser("player1");
 
 	}
 
@@ -175,22 +177,22 @@ public class CucumberStepDefinitions {
 	public void blackPlayerChoosesAUsername() {
 
 		// black/second player chooses their name
-		Quoridor223Controller.selectUser("player");
+		Quoridor223Controller.selectUser("player2");
 
 	}
 
 	@And("Total thinking time is set")
 	public void totalThinkingTimeIsSet() {
 
-		// black/second player chooses their name
-//		Quoridor223Controller.setThinkingTime(thinkingTime, playerName);
+		Quoridor223Controller.setThinkingTime(new Time(10), "playerName");
 
 	}
 
 	@Then("The game shall become ready to start")
 	public void theGameShallBecomeReadyToStart() {
 
-//		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus(), GameStatus.ReadyToStart);
+		//check that the game has started
+		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus(), GameStatus.ReadyToStart);
 
 	}
 	
@@ -209,11 +211,11 @@ public class CucumberStepDefinitions {
 	@When("I start the clock")
 	public void iStartTheClock() {
 		
-		// 
+		//start the clock (call a controller method)
+		//Quoridor223Controller.
 
 	}
 	
-		
 	@Then("The game shall be running")
 	public void theGameShallBeRunning() {
 
