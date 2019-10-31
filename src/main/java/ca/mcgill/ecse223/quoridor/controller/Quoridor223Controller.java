@@ -301,7 +301,6 @@ public class Quoridor223Controller {
 		if(isWhitePlayer()) {
 			clone.removeWhiteWallsInStock(wallToDrop);
 			clone.addWhiteWallsOnBoard(wallToDrop);
-			System.out.println("reach");
 		}
 		else {
 			clone.removeBlackWallsInStock(wallToDrop);
