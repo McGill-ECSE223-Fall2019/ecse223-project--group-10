@@ -28,6 +28,7 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException
 	 */
 	public static void createGame() throws UnsupportedOperationException {
+		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game newGame = new Game(GameStatus.Running, MoveMode.WallMove, quoridor);
 		
@@ -37,6 +38,7 @@ public class Quoridor223Controller {
 		Player blackPlayer = new Player(new Time(10), users.get(1), 1, Direction.Horizontal);
 		newGame.setBlackPlayer(blackPlayer);
 		newGame.setWhitePlayer(whitePlayer);
+		
 	}
 	
 	/**
@@ -51,8 +53,7 @@ public class Quoridor223Controller {
 		Game game = quoridor.getCurrentGame();
 		User user = quoridor.addUser(playerName);
 		
-		//How do I set the black player or how do I differentiate them ??????????????????????????
-		
+		//How do I check if it's white or black player's name being set ???????????????????????????
 		if (playerName.equals("white")) {
 			game.getWhitePlayer().setUser(user);
 		} else {
@@ -70,10 +71,17 @@ public class Quoridor223Controller {
 		// create a new user
 		// throw an exception if user not created
 		
+		
+		//This is not different from last method.....Should selectUser look through the list of users??????????
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		User user = new User(playerName, quoridor);
+		Game game = quoridor.getCurrentGame();
+		User user = quoridor.addUser(playerName);
 		
-		
+		if (playerName.equals("white")) {
+			game.getWhitePlayer().setUser(user);
+		} else {
+			game.getBlackPlayer().setUser(user);
+		}
 		
 	}
 
