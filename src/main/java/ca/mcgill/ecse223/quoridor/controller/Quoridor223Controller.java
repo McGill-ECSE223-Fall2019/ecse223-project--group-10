@@ -122,14 +122,18 @@ public class Quoridor223Controller {
 		// get quoridor object
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		
-		// create a new board
-		Board board = new Board(quoridor);
-		// add tiles
-		for (int i = 1; i <= 9; i++) { // rows
-			for (int j = 1; j <= 9; j++) { // columns
-				board.addTile(i, j);
+		// create a new board if not yet created
+		Board board;
+		if(!quoridor.hasBoard()) {
+			board = new Board(quoridor);
+			// add tiles
+			for (int i = 1; i <= 9; i++) { // rows
+				for (int j = 1; j <= 9; j++) { // columns
+					board.addTile(i, j);
+				}
 			}
-		}
+		}	
+		
 		
 		// create walls
 		for (int i = 0; i < 10; i++) {
@@ -161,6 +165,7 @@ public class Quoridor223Controller {
 			gamePosition.addBlackWallsInStock(wall);
 		}
 
+		// set current position to a new game position
 		currentGame.setCurrentPosition(gamePosition);
 	}
 	
@@ -303,6 +308,7 @@ public class Quoridor223Controller {
 		curGame.setWallMoveCandidate(null);
 		//Switch Player here
 		SwitchPlayer();
+		System.out.println(curGame.getBlackPlayer().numberOfWalls());
 	}
 	
 	/**
