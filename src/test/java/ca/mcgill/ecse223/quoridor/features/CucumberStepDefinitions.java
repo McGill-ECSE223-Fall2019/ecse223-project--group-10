@@ -158,9 +158,8 @@ public class CucumberStepDefinitions {
 	@When("A new game is being initialized")
 	public void aNewGameIsBeingInitialized() {
 		
-		
 		//Quoridor223Controller.initializeBoard();
-		// create the new game
+		//create the new game
 		Quoridor223Controller.createGame();
 	}
 
