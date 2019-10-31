@@ -12,6 +12,7 @@ import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
+import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -149,6 +150,7 @@ public class CucumberStepDefinitions {
 	// StartNewGame and ProvideSelectUserName start here
 	// **********************************************
 
+
 	/**
 	 * Scenario: Initiate a new game
 	 * @author Vanessa Ifrah
@@ -212,13 +214,6 @@ public class CucumberStepDefinitions {
 		//		Quoridor223Controller.createGame();
 
 	}
-		
-	@Then("The game shall become ready to start")
-	public void theGameShallBeRunning() {
-
-		//assertEquals(GameStatus.Initializing, true);
-
-	}
 
 	@And("The board shall be initialized")
 	public void theBoardShallBeInitialized() {
@@ -269,7 +264,8 @@ public class CucumberStepDefinitions {
 
 	}
 	
-	@When("The player sprovides new user name: {String}")
+
+	@When("The player provides new user name: {string}")
 	public void thePlayerProvidesNewUserName(String usernName) {
 		
 		//
@@ -294,6 +290,7 @@ public class CucumberStepDefinitions {
 		//assertion
 		
 	}
+
 	
 	
 	
@@ -472,8 +469,15 @@ public class CucumberStepDefinitions {
 	 * @throws GameNotRunningException 
 	 */
 	@When("I try to grab a wall from my stock")
-	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException {
-			Quoridor223Controller.grabWall();
+	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException, InvalidOperationException{
+			try {
+				Quoridor223Controller.grabWall();
+			} catch (GameNotRunningException e) {
+				
+			} catch (InvalidOperationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 	
 	/**
@@ -552,8 +556,14 @@ public class CucumberStepDefinitions {
 	 * @throws GameNotRunningException 
 	 */
 	@When("I try to flip the wall")
-	public void iTryToFlipTheWall() throws GameNotRunningException{
-			Quoridor223Controller.rotateWall();
+	public void iTryToFlipTheWall() throws GameNotRunningException, InvalidOperationException{
+			try {
+				Quoridor223Controller.rotateWall();
+			} catch(GameNotRunningException e) {
+				
+			} catch(InvalidOperationException e) {
+				
+			}
 	}
 	
 	
@@ -1018,7 +1028,6 @@ public class CucumberStepDefinitions {
 			
 			return playersList;
 		}
-
 
 		private void createAndStartGame(ArrayList<Player> players) {
 			Quoridor quoridor = QuoridorApplication.getQuoridor();

@@ -16,12 +16,19 @@ import java.awt.event.ActionListener;
 import java.sql.Time;
 import java.awt.Color;
 import java.text.ParseException;
+import java.sql.Time;
+
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 
 public class SetThinkingTimePage extends JFrame {
 	//username and thinking time
 	private JLabel userName1;
-	private JLabel userName2;
+	private JLabel userName2;;
 			
+	//set time status
+	private boolean status = false;
+	
 	//thinking time
 	private JFormattedTextField whiteTimePicker;
 	private JFormattedTextField blackTimePicker;
@@ -40,25 +47,31 @@ public class SetThinkingTimePage extends JFrame {
 		initPage();
 	}
 
+  // @sacha method for old timer
+  // to delete
 	private Time getWhiteTime() {
 		return Time.valueOf("00:"+whiteTimePicker.getText());
 	}
 	
+  // @sacha method for old timer
+  // to delete
 	private Time getBlackTime() {
 		return Time.valueOf("00:"+blackTimePicker.getText());
 	}
 	
+  // @sacha log users when time format is incorrect
 	private void failToReadTime() {
 		setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
 	}
 	
+  // @sacha method to create main page
 	private void createMainPage() {
 		// if this is clicked then now display the setThinkingTime page
 		GamePage mainPage = new GamePage();
 		mainPage.setVisible(true);
 	}
 	
-	public void initPage(){
+	private void initPage(){
 		this.setSize(1400, 720);
 		this.setTitle("Set Time Page");
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
@@ -73,27 +86,7 @@ public class SetThinkingTimePage extends JFrame {
 		startGame = new JButton("<html><font color='white' >START GAME</font></html>");
 		startGame.setBackground(Color.BLUE);
 		startGame.setFont(new Font("Arial", Font.PLAIN, 30));
-		startGame.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// use default method implementation from the controller method ?
-				Time whiteTime = new Time(30000);
-				Time blackTime = new Time(30000);
-				
-				// maybe a bit sketchy implementation of the time parsing
-				try {
-					whiteTime = getWhiteTime();
-					blackTime = getBlackTime();
-					// add format rigorous format checking
-					Quoridor223Controller.setWhitePlayerTime(whiteTime);
-					Quoridor223Controller.setBlackPlayerTime(blackTime);
-					createMainPage();
-				}
-				catch (Exception e1){
-					failToReadTime();
-				}
-			}
-		});
-
+	
 		// initialize time picker
 		try {
             mask = new MaskFormatter("##:##");
@@ -112,8 +105,33 @@ public class SetThinkingTimePage extends JFrame {
 		title.setFont(new Font("Arial", Font.PLAIN, 50));
 		
 		// initialize error component
-		setTimeError = new JLabel("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
+		setTimeError = new JLabel("");
 		setTimeError.setFont(new Font("Arial", Font.PLAIN, 25));
+		
+
+		//--------------------- Add Event Listener ---------------------------------//
+		startGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					String whiteTime[] = whiteTimePicker.getText().split(":");
+					String blackTime[] = blackTimePicker.getText().split(":");
+					
+					long wTime = Integer.parseInt(whiteTime[0])*60*1000 + Integer.parseInt(whiteTime[1])*1000;
+					long bTime = Integer.parseInt(blackTime[0])*60*1000 + Integer.parseInt(blackTime[1])*1000;
+					
+					Quoridor223Controller.createUser("White");
+					Quoridor223Controller.createUser("Black");
+					Quoridor223Controller.createGame();
+					Quoridor223Controller.setThinkingTime(new Time(wTime), "White");
+					Quoridor223Controller.setThinkingTime(new Time(bTime), "Black");
+					status = true;
+					Quoridor223Controller.initializeBoard();
+					QuoridorApplication.setMainPage();
+				}catch (NumberFormatException e) {
+					setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
+				}
+				
+			}});
 		
 		//--------------------- Construct Page's Layout ----------------------------//
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -171,5 +189,13 @@ public class SetThinkingTimePage extends JFrame {
 				.addComponent(startGame)
 			)
 		);
-	};
+	}
+	
+	private void refreshData() {
+		
+	}
+	
+	public boolean getPageStatus() {
+		return this.status;
+	}
 }
