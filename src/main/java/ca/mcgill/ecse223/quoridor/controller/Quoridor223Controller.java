@@ -67,17 +67,9 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException
 	 */
 	public static void createUser(String playerName) throws UnsupportedOperationException{
-		// create a new user
-		// throw an exception if user not created
 		
-		
-		//This is not different from last method.....Should selectUser look through the list of users??????????
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game game = quoridor.getCurrentGame();
 		User user = quoridor.addUser(playerName);
-		
-			game.getWhitePlayer().setUser(user);
-//			game.getBlackPlayer().setUser(user);
 		
 	}
 
