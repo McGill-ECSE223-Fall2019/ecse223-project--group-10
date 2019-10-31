@@ -25,6 +25,10 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+<<<<<<< HEAD
+	</buildSpec>
+	<natures>
+=======
 		<buildCommand>
 			<name>cucumber.eclipse.steps.jdt.stepsBuilder</name>
 			<arguments>
@@ -33,6 +37,7 @@
 	</buildSpec>
 	<natures>
 		<nature>cucumber.eclipse.steps.jdt.stepsNature</nature>
+>>>>>>> master
 		<nature>cucumber.eclipse.nature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.buildship.core.gradleprojectnature</nature>

@@ -30,22 +30,26 @@ public class Quoridor223Controller {
 	 */
 	public static void createGame() throws UnsupportedOperationException {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game newGame = new Game(GameStatus.Running, MoveMode.WallMove, quoridor);
-		List<User> users = quoridor.getUsers();
-		// create players
-		Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
-		Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
-		newGame.setBlackPlayer(blackPlayer);
-		newGame.setWhitePlayer(whitePlayer);
-	}
+        Game newGame = new Game(GameStatus.Running, MoveMode.WallMove, quoridor);
+        List<User> users = quoridor.getUsers();
+        
+        // create players
+        Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
+        Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
+        newGame.setBlackPlayer(blackPlayer);
+        newGame.setWhitePlayer(whitePlayer);
+        
+    }
 
 	/**
 	 * Feature 2: Select an existing user
 	 * 
 	 * @author Vanessa Ifrah
+	 * @param playerName
 	 * @throws UnsupportedOperationException
 	 */
 	public static List<User> selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
+		
 		// load the user
 		if(!User.hasWithName(playerName1))createUser(playerName1);
 		if(!User.hasWithName(playerName2))createUser(playerName2);
@@ -53,6 +57,7 @@ public class Quoridor223Controller {
 		list.add(User.getWithName(playerName1));
 		list.add(User.getWithName(playerName2));		
 		return list;
+		
 	}
 
 	/**
@@ -61,10 +66,13 @@ public class Quoridor223Controller {
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-	public static void createUser(String name) throws UnsupportedOperationException {
+	public static void createUser(String playerName) throws UnsupportedOperationException {
+		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		User user = new User(name, quoridor);
+		User user = quoridor.addUser(playerName);
+		
 	}
+	
 
 	/**
 	 * helper method to get player by name
