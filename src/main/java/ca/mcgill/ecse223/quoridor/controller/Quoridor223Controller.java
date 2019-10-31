@@ -355,10 +355,10 @@ public class Quoridor223Controller {
 	public static boolean loadPosition(String filename) {
 		System.out.println("called load position");
 		// check if the Game is running, if it is, throw exception
-		if (isRunning()) {
+		/*if (isRunning()) {
 			GamePage.errorPrompt("Cannot Load Game since Game is currently running");
 			return false;
-		}
+		}*/
 
 		File loadFile = new File(filename);
 		if (!loadFile.isFile() || !loadFile.canRead()) {
@@ -790,7 +790,8 @@ public class Quoridor223Controller {
 		Player blackPlayer = currentGame.getBlackPlayer();
 		
 		// initialize the new GamePosition
-		GamePosition newGamePosition = new GamePosition(0, null, null, null, null);
+		GamePosition GamePosition = currentGame.getCurrentPosition();
+		//GamePosition newGamePosition = new GamePosition(0, null, null, null, null);
 
 		try {
 			// create a file reader
@@ -802,11 +803,11 @@ public class Quoridor223Controller {
 			
 			// if the first line is the white player's data, set the black player as the player to move
 			if(saveFileFirstLine.contains("W:")) {
-				newGamePosition.setPlayerToMove(whitePlayer);
+				GamePosition.setPlayerToMove(whitePlayer);
 			}
 			// else, set the white player as the player to move
 			else {
-				newGamePosition.setPlayerToMove(blackPlayer);
+				GamePosition.setPlayerToMove(blackPlayer);
 			}
 
 
@@ -814,7 +815,7 @@ public class Quoridor223Controller {
 			throw new UnsupportedOperationException(e);
 		}
 
-		return newGamePosition;
+		return GamePosition;
 	}
 	
 	/**
