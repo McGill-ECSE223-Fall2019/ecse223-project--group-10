@@ -48,10 +48,16 @@ public class Quoridor223Controller {
 	public static void selectUser(String playerName) throws UnsupportedOperationException {
 
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
 		User user = quoridor.addUser(playerName);
 		
-		Game game = quoridor.getCurrentGame();
-		game.getWhitePlayer().setUser(user);
+		//How do I set the black player or how do I differentiate them ??????????????????????????
+		
+		if (playerName.equals("white")) {
+			game.getWhitePlayer().setUser(user);
+		} else {
+			game.getBlackPlayer().setUser(user);
+		}
 		
 	}
 	
