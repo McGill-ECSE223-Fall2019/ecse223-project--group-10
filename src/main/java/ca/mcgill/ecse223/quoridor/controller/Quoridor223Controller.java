@@ -51,14 +51,13 @@ public class Quoridor223Controller {
 
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game game = quoridor.getCurrentGame();
+		
 		User user = quoridor.addUser(playerName);
 		
-		//How do I check if it's white or black player's name being set ???????????????????????????
-		if (playerName.equals("white")) {
-			game.getWhitePlayer().setUser(user);
-		} else {
-			game.getBlackPlayer().setUser(user);
-		}
+		game.getWhitePlayer().setUser(user);
+		
+		//white or black player's name being set ???????????????????????????
+		//game.getBlackPlayer().setUser(user);
 		
 	}
 	
@@ -77,11 +76,8 @@ public class Quoridor223Controller {
 		Game game = quoridor.getCurrentGame();
 		User user = quoridor.addUser(playerName);
 		
-		if (playerName.equals("white")) {
 			game.getWhitePlayer().setUser(user);
-		} else {
-			game.getBlackPlayer().setUser(user);
-		}
+//			game.getBlackPlayer().setUser(user);
 		
 	}
 
