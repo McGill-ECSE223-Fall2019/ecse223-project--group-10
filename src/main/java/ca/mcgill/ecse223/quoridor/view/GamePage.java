@@ -7,6 +7,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Properties;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.sql.Time;
 
 import javax.swing.GroupLayout;
@@ -25,6 +27,7 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.controller.TOWall;
 
@@ -105,10 +108,11 @@ public class GamePage extends JFrame{
 		boardComponent.setBackground(new Color(206,159,111));
 		
 		//initialize username
-		userName1 = new JLabel("White", SwingConstants.CENTER);
+		//initialize username
+		userName1 = new JLabel(Quoridor223Controller.getWhitePlayerName(), SwingConstants.CENTER);
 		userName1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		userName1.setBounds(876, 94, 50, 32);
-		userName2 = new JLabel("Black", SwingConstants.CENTER);
+		userName2 = new JLabel(Quoridor223Controller.getBlackPlayerName(), SwingConstants.CENTER);
 		userName2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		userName2.setBounds(620, 94, 46, 33);
 		
@@ -188,10 +192,10 @@ public class GamePage extends JFrame{
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					Quoridor223Controller.dropWall();
-				}catch(Exception e) {
-					
-				}
-				
+				}catch(Exception e) {}
+
+				if (!Quoridor223Controller.hasWallMoveCandidate()) failToValidatePosition();
+				else logSwitchPlayer();
 			}
 		});
 		
@@ -302,11 +306,55 @@ public class GamePage extends JFrame{
 		getContentPane().add(btnDown);
 		getContentPane().add(btnRight);
 		getContentPane().add(btnLeft);
+
+		refreshData();
 	}
 	
 	
+	// @sacha: would the refreshData method be the real switch player element for the UI ?
 	private void refreshData() {
 		// TODO: call transfer objects' method to query data and update the game's states
+		Timer timer = new Timer();
+		TimerTask refreshTask = new TimerTask() {
+		    @Override
+		    public void run() {
+		    	String moving_playerName = Quoridor223Controller.getPlayerMovingName();
+				Quoridor223Controller.updateTime();
+		    	refreshTimePanels();
+		    };  		
+		};
+		// update all elements every seconds
+		timer.scheduleAtFixedRate(refreshTask,0,1000);    
+	}
+
+	/**
+	 * @author Sacha Lévy
+	 * panel to refresh the data and then delete it 
+	 * */
+	private void failToValidatePosition() {
+		// interact with the playerTurn element
+		String name = Quoridor223Controller.getPlayerMovingName();
+		playerTurn.setText(String.format("%s: this move is invalid! Please try another.", name));
+	}
+	
+	private void logSwitchPlayer() {
+		// interact witht the playerTurn element
+		try {
+			Quoridor223Controller.SwitchPlayer();
+		} catch (UnsupportedOperationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (GameNotRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String name = Quoridor223Controller.getPlayerMovingName();
+		playerTurn.setText(String.format("%s: it is now your turn to move!", name));
+	}
+	
+	private void refreshTimePanels() {
+		whiteTime.setText(Quoridor223Controller.getWhiteRemainingTime().toString());
+		blackTime.setText(Quoridor223Controller.getBlackRemainingTime().toString());
 	}
 	
 	private void initFrame() {

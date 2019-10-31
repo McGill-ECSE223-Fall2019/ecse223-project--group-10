@@ -17,13 +17,16 @@ import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.view.BoardComponent;
 import ca.mcgill.ecse223.quoridor.view.GamePage;
+import ca.mcgill.ecse223.quoridor.view.WelcomePage;
 
 public class QuoridorApplication {
 	private static Quoridor quoridor;
 	public static void main(String[] args) {
 		createWall();
-		GamePage mainPage = new GamePage();
-		mainPage.setVisible(true);
+		WelcomePage welcomePage = new WelcomePage();
+		welcomePage.setVisible(true);
+		//GamePage mainPage = new GamePage();
+		//mainPage.setVisible(true);
 	}
 
 	public static Quoridor getQuoridor() {

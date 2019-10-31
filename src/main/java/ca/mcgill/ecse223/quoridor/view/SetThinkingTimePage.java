@@ -7,8 +7,13 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.GroupLayout;
 import javax.swing.text.MaskFormatter;
-import java.awt.Font;
 
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Time;
 import java.awt.Color;
 import java.text.ParseException;
 
@@ -34,6 +39,24 @@ public class SetThinkingTimePage extends JFrame {
 	public SetThinkingTimePage() {
 		initPage();
 	}
+
+	private Time getWhiteTime() {
+		return Time.valueOf("00:"+whiteTimePicker.getText());
+	}
+	
+	private Time getBlackTime() {
+		return Time.valueOf("00:"+blackTimePicker.getText());
+	}
+	
+	private void failToReadTime() {
+		setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
+	}
+	
+	private void createMainPage() {
+		// if this is clicked then now display the setThinkingTime page
+		GamePage mainPage = new GamePage();
+		mainPage.setVisible(true);
+	}
 	
 	public void initPage(){
 		this.setSize(1400, 720);
@@ -41,24 +64,44 @@ public class SetThinkingTimePage extends JFrame {
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
 	
 		// initialize username
-		userName1 = new JLabel("<html><font color='white' >WHITE PLAYER</font></html>");
+		userName1 = new JLabel(String.format("<html><font color='white' >%s</font></html>", Quoridor223Controller.getWhitePlayerName()));
 		userName1.setFont(new Font("Arial", Font.PLAIN, 25));
-		userName2 = new JLabel("<html><font color='black' >BLACK PLAYER</font></html>");
+		userName2 = new JLabel(String.format("<html><font color='black' >%s</font></html>", Quoridor223Controller.getBlackPlayerName()));
 		userName2.setFont(new Font("Arial", Font.PLAIN, 25));
 				
 		// intialize start-game button
 		startGame = new JButton("<html><font color='white' >START GAME</font></html>");
 		startGame.setBackground(Color.BLUE);
 		startGame.setFont(new Font("Arial", Font.PLAIN, 30));
-		
+		startGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// use default method implementation from the controller method ?
+				Time whiteTime = new Time(30000);
+				Time blackTime = new Time(30000);
+				
+				// maybe a bit sketchy implementation of the time parsing
+				try {
+					whiteTime = getWhiteTime();
+					blackTime = getBlackTime();
+					// add format rigorous format checking
+					Quoridor223Controller.setWhitePlayerTime(whiteTime);
+					Quoridor223Controller.setBlackPlayerTime(blackTime);
+					createMainPage();
+				}
+				catch (Exception e1){
+					failToReadTime();
+				}
+			}
+		});
+
 		// initialize time picker
 		try {
-            mask = new MaskFormatter("##min ##sec");
+            mask = new MaskFormatter("##:##");
             mask.setPlaceholderCharacter('#');
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        mask.setPlaceholderCharacter('#');
+		mask.setPlaceholderCharacter('#');
 		whiteTimePicker = new JFormattedTextField(mask);
 		whiteTimePicker.setFont(new Font("Arial", Font.PLAIN, 25));
 		blackTimePicker = new JFormattedTextField(mask);
@@ -71,7 +114,6 @@ public class SetThinkingTimePage extends JFrame {
 		// initialize error component
 		setTimeError = new JLabel("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
 		setTimeError.setFont(new Font("Arial", Font.PLAIN, 25));
-		
 		
 		//--------------------- Construct Page's Layout ----------------------------//
 		GroupLayout layout = new GroupLayout(getContentPane());

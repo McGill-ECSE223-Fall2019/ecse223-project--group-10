@@ -390,61 +390,179 @@ public class Quoridor223Controller {
 
 		return true;
 	}
+	
 	/**
 	 * Feature 11: Validate Position
 	 * @author Sacha Lévy
-	 * @param row
-	 * @param col
-	 * @throws UnsupportedOperationException, GameNotRunningException 
+	 * @throws UnsupportedOperationException, GameNotRunningException
 	 */
-	// definition overriding first definition applied for testing the validity of wall moves
-	public static boolean validatePosition(Tile tile) throws UnsupportedOperationException, GameNotRunningException{
-		if (!isRunning()) {throw new GameNotRunningException("Game not running");}
-		Quoridor curr_quoridor = QuoridorApplication.getQuoridor();
-		int curr_row = tile.getRow();
-		int curr_col = tile.getColumn();
-		// check if there is an overlap between the tiles on board and the next move
-		for(Tile tmp_tile: curr_quoridor.getBoard().getTiles()) {
-			if(tmp_tile.getRow() == (curr_row) || tmp_tile.getColumn() == (curr_col));
-			else return false;
+	public static boolean validatePosition() throws UnsupportedOperationException{
+		// if (!isRunning()) {throw new GameNotRunningException("Game not running");}
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		// Note: appears to be purely controller method as no effective elements primarily need to affect the GUI
+
+		// get last move: if hasWallMoveCandidate then currently moving a wall, check move validity
+			// get target position for the wall and compare it with rest of the walls
+		// otherwise moving a pawn, get player positions
+			// assume player to move has NOT been changed, i.e. player to move is player to check the move of
+			// check that there is no overlapp between the two player's position
+		
+			// LAST FEATURE TO IMPLEMENT AFTER THE GUI IS RUNNING: (might need further evaluation of positions)
+			// then check player to move's target position not crossing any walls on board
+		
+		// check if there is a wall to move
+		if(current_game.hasWallMoveCandidate()) {
+			if(!isWallCandidatePositionValid()) return false;
+			if(isWallMoveCandidateOverlapping()) return false;
+
 		}
+		
+		// otherwise check the players positions
+		else {
+			if(!isPlayerPositionValid()) return false;
+			if(isPlayerPositionOverlapping()) return false;
+			//TODO: further check if the last player's move didn't cross any walls
+		}
+		
 		return true;
 	}
+	
+	public static boolean hasWallMoveCandidate() {
+ 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		return game.hasWallMoveCandidate();
+	}
+
+	/**
+	 * @author Sacha Lévy
+	 * check if in present gamePosition black & white players are overlapping, i.e. share the same tile
+	 */
+	public static boolean isPlayerPositionOverlapping() {
+		// assume one of the player's current position represents the tentative move
+		GamePosition game_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		Tile blackPosition = game_position.getBlackPosition().getTile();
+		Tile whitePosition = game_position.getWhitePosition().getTile();
+		if(whitePosition.equals(blackPosition)) return true;
+		else return false;
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * check if wall move candidate overlaps with any walls on board, i.e. there already is a wall at this position
+	 */
+	public static boolean isWallMoveCandidateOverlapping() throws UnsupportedOperationException{
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		
-	//under feature 12
+		// check again has a wall move candidate
+		if (!current_game.hasWallMoveCandidate()) {throw new UnsupportedOperationException("No wall move candidate.");}
+		WallMove wall_move_candidate = current_game.getWallMoveCandidate();
+		
+
+		// create a hashmap, for the wall positions => faster lookup than searching 
+		// use row*8 + col for the key in hashmaps, values to represent directions
+		// everytime call validate positon create the hashmap
+
+		// are the centers overlapp for the tiles of the walls => cannot overlapp the centers
+		// coordinates first then directions
+		// if its horizontal check if horizontal (left & right),
+		// if its vertical check if vertical (up & down)
+
+		// check if any overlapp with black walls on board
+		for(Wall wall: current_game.getCurrentPosition().getBlackWallsOnBoard()) {
+			WallMove current_wall_move = wall.getMove();
+			if (current_wall_move.getTargetTile().equals(wall_move_candidate.getTargetTile())) return true;
+		}
+		
+		// check if any overlapp with white walls on board
+		for(Wall wall: current_game.getCurrentPosition().getWhiteWallsOnBoard()) {
+			WallMove current_wall_move = wall.getMove();
+			if (current_wall_move.getTargetTile().equals(wall_move_candidate.getTargetTile())) return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Feature 12: Switch Player
 	 * Switch player continuous operation
 	 * @throws UnsupportedOperationException, GameNotRunningException
 	 * @author Sacha Lévy
 	 */
-	public void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException{
-		// method constantly running while in-game
-		while(true) {
-			if (!isRunning()) {throw new GameNotRunningException("Game not running");}
-			// get the current player
-			Game curr_game = QuoridorApplication.getQuoridor().getCurrentGame();
-			Player current_player;
-			Player other_player;
-			if(curr_game.getBlackPlayer().equals(curr_game.getCurrentPosition().getPlayerToMove())){
-				// player moving is the black player
-				current_player = curr_game.getBlackPlayer();
-				other_player = curr_game.getWhitePlayer();
-			}
-			else {
-				// player moving is the white player 
-				current_player = curr_game.getWhitePlayer();
-				other_player = curr_game.getBlackPlayer();
-			}
-			// check if the clock of the current player is not running
-			if (isClockRunning(current_player) == false) {
-				// set the player to move as the other player
-				curr_game.getCurrentPosition().setPlayerToMove(other_player);
-				updateGUI(current_player, other_player);
-			}
-		}
+	public static void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException{
+		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		Player current_player = current_position.getPlayerToMove();
+		current_position.setPlayerToMove(current_player.getNextPlayer());
+		// last step not necessary since always linked in loops ?
+		current_player.getNextPlayer().setNextPlayer(current_player);
+	}
+
+	
+	// @sacha: can have static methods all around ?
+
+	// simplified method to check if needs to update the UI about which Player is moving
+	public static boolean isSwitchPlayer(String player_name) {
+		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		String current_name = current_position.getPlayerToMove().getUser().getName();
+		if (current_name.equals(player_name)) return true;
+		else return false;
+	}
+
+	// controller query for white remaining time
+	public static Time getWhiteRemainingTime() {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(!current_game.hasWhitePlayer()) return null;
+		Player white_player = current_game.getWhitePlayer();
+		return white_player.getRemainingTime();
+	}
+
+	// switch these so that are easier to implement if more than 2 players !!!
+	public static void setWhitePlayerName(String new_name) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		current_game.getWhitePlayer().getUser().setName(new_name);
+	}
+
+	public static void setBlackPlayerName(String new_name) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		current_game.getBlackPlayer().getUser().setName(new_name);
 	}
 	
+	public static String getBlackPlayerName() {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		return current_game.getBlackPlayer().getUser().getName();
+	}
+
+	public static String getWhitePlayerName() {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		return current_game.getWhitePlayer().getUser().getName();
+	}
+	public static void setWhitePlayerTime(Time new_time) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		current_game.getWhitePlayer().setRemainingTime(new_time);
+	}
+
+	public static void setBlackPlayerTime(Time new_time) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		current_game.getBlackPlayer().setRemainingTime(new_time);
+	}
+
+	// controller query for black remaining time
+	public static Time getBlackRemainingTime() {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		// better handle cases were game not initiated properly, which could incur in game!!!
+		if(!current_game.hasBlackPlayer()) return null;
+		Player black_player = current_game.getBlackPlayer();
+		return black_player.getRemainingTime();
+	}
+
+	public static String getPlayerMovingName() {
+		// assume move wasnot validated, player is still moving, swap didn't yet occur
+		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		return current_position.getPlayerToMove().getUser().getName();
+	}
+
+	public static String getPlayerMovedName() {
+		// assume move was validated so player's order has been changed
+		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		return current_position.getPlayerToMove().getNextPlayer().getUser().getName();
+	}
 	/**
 	 * Update the GUI when performing the Switch Player operation
 	 * @param player
@@ -452,11 +570,24 @@ public class Quoridor223Controller {
 	 * @author Sacha Lévy
 	 */
 	private void updateGUI(Player other, Player player) throws UnsupportedOperationException{
-		// load to the GUI a dialog box indicating his turn to the player
-		// unshade the current player to move buttons
-		// shade the other player's buttons
+		// make sketchy time updates for both players 
 	}
 	
+	// update the current remaining time of the player to move
+	// switch implementation with indepently handled timer by Java
+	public static void updateTime() {
+		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		Player current_player = current_position.getPlayerToMove();
+		Time remaining_time = current_player.getRemainingTime();
+		
+		//System.out.println(remaining_time.toString());
+		
+		// assume remaining time can just be manipulated as a long representing milliseconds
+		Time new_time = new Time(0);
+		new_time.setTime(remaining_time.getTime() - 900);
+		current_player.setRemainingTime(new_time); // then update remaining time
+	}
+
 	/**
 	 * Check if the clock of the given player is running
 	 * @param player
@@ -465,8 +596,33 @@ public class Quoridor223Controller {
 	 */
 	private boolean isClockRunning(Player player)throws UnsupportedOperationException{
 		Time tmp_time = player.getRemainingTime();
+		try {
+			Thread.sleep(1200); // need to pause for a bit (at least longer than the updating period)
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		if (tmp_time.equals(player.getRemainingTime())) return true;
 		else return false;
+	}
+
+	private static boolean isWallCandidatePositionValid() throws UnsupportedOperationException{
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		// check again has a wall move candidate
+		if (!current_game.hasWallMoveCandidate()) {throw new UnsupportedOperationException("Game does not have a wall move candidate.");}
+		Tile target_tile = current_game.getWallMoveCandidate().getTargetTile();
+		return isWallPositionValid(target_tile.getRow(), target_tile.getColumn());
+	}
+	
+	private static boolean isPlayerPositionValid(){
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		// get the last player to make a move
+		GamePosition current_position = current_game.getCurrentPosition();
+		PlayerPosition player_position;
+		if(isWhitePlayer()) player_position = current_position.getWhitePosition();
+		else player_position = current_position.getBlackPosition();
+		// check if the player position is technically valid
+		return isWallPositionValid(player_position.getTile().getRow(), player_position.getTile().getColumn());
 	}
 	
 /////////////////////////////////////////////////////
