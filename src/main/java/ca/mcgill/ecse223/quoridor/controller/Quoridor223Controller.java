@@ -46,13 +46,12 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException
 	 */
 	public static void selectUser(String playerName) throws UnsupportedOperationException {
-		// load the user
-		// if not throw an exception
+
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		User user = quoridor.addUser(playerName);
 		
 		Game game = quoridor.getCurrentGame();
-//		game.setWhitePlayer(player);
+		game.getWhitePlayer().setUser(user);
 		
 	}
 	
