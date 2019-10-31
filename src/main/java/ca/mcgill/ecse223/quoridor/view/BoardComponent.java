@@ -97,19 +97,12 @@ public class BoardComponent extends JPanel {
 		int wn = Quoridor223Controller.getWhiteWallInStock();
 		int bn = Quoridor223Controller.getBlackWallInStock();
 		System.out.println(wn);
-		if(wallInHand!=null) {
-			if(bn>wn) {
-				bn--;
-			}
-			else {
-				wn--;
-			}
-		}
+		System.out.println(bn);
 		for(int i = 0; i < bn; i++) g2d.drawImage(hWall, (int)blackWallInStock[i][0], (int)blackWallInStock[i][1], this);
 		for(int i = 0; i < wn; i++) g2d.drawImage(hWall, (int)whiteWallInStock[wn-1-i][0], (int)whiteWallInStock[wn-i-1][1], this);
-		if(wallInHand!=null)drawWall(wallInHand, g2d, true);
 		for(TOWall wall: whiteWallOnBoard)drawWall(wall,g2d,false);
 		for(TOWall wall: blackWallOnBoard)drawWall(wall,g2d,false);
+		if(wallInHand!=null)drawWall(wallInHand, g2d, true);
 	}
 	
 	private void setupGrid() {
