@@ -17,15 +17,23 @@ import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.view.BoardComponent;
 import ca.mcgill.ecse223.quoridor.view.GamePage;
+import ca.mcgill.ecse223.quoridor.view.SetNamePage;
+import ca.mcgill.ecse223.quoridor.view.WelcomePage;
 import ca.mcgill.ecse223.quoridor.view.SetThinkingTimePage;
 
 public class QuoridorApplication {
 	private static Quoridor quoridor;
 	private static SetThinkingTimePage timePage;
 	private static GamePage game;
+	private static WelcomePage lobby;
+	private static SetNamePage namePage;
 	public static void main(String[] args) {
-		timePage = new SetThinkingTimePage();
-		timePage.setVisible(true);
+		lobby = new WelcomePage();
+		lobby.setVisible(true);
+		//GamePage mainPage = new GamePage();
+		//mainPage.setVisible(true);
+//		timePage = new SetThinkingTimePage();
+//		timePage.setVisible(true);
 	}
 
 	public static Quoridor getQuoridor() {
@@ -41,6 +49,16 @@ public class QuoridorApplication {
 			game = new GamePage();
 			game.setVisible(true);
 		}
+	}
+	public static void setTimePage() {
+		namePage.setVisible(false);
+		timePage = new SetThinkingTimePage();
+		timePage.setVisible(true);
+	}
+	public static void setNamePage() {
+		lobby.setVisible(false);
+		namePage = new SetNamePage();
+		namePage.setVisible(true);
 	}
 	
 }
