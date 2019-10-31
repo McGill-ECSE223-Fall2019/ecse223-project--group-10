@@ -61,21 +61,15 @@ public class Quoridor223Controller {
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-<<<<<<< HEAD
 	public static void createUser(String playerName) throws UnsupportedOperationException{
 		// create a new user
 		// throw an exception if user not created
 		
-		
-		
-		
-		// setWhitePlayer(Player aNewWhitePlayer)
-		
-=======
-	public static void createUser(String name) throws UnsupportedOperationException{
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		User user = new User(name, quoridor);
->>>>>>> master
+		User user = new User(playerName, quoridor);
+		
+		
+		
 	}
 
 	
