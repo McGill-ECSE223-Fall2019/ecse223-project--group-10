@@ -61,15 +61,18 @@ public class SetNamePage extends JFrame {
 		String usernames[]={"", "Van","Bob","Laura","Jerry","Nathalie"};
 		JComboBox comboBox = new JComboBox(usernames);
 		JComboBox comboBox_1 = new JComboBox(usernames);
+		comboBox.setEditable(true);
+		comboBox_1.setEditable(true);
 		
 		// button starts a new game
-				btnLetsS = new JButton("Let's Start");
-				btnLetsS.setBackground(new Color(204, 153, 102));
-				btnLetsS.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
-				btnLetsS.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent f) {
-					}
-				});
+		btnLetsS = new JButton("Let's Start");
+		btnLetsS.setBackground(new Color(204, 153, 102));
+		btnLetsS.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		
+		btnLetsS.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent f) {
+			}
+		});
 		
 		JLabel label = new JLabel("Please choose your player names");
 		label.setFont(new Font("Heiti SC", Font.PLAIN, 26));
@@ -120,7 +123,7 @@ public class SetNamePage extends JFrame {
 					.addGap(33)
 					.addComponent(userName2)
 					.addGap(18)
-					.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
 					.addGap(104)
 					.addComponent(btnLetsS, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(107, Short.MAX_VALUE))
