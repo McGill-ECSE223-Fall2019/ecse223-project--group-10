@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.sql.Time;
 import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -58,6 +59,9 @@ import java.awt.SystemColor;
 import javax.swing.JTextArea;
 
 public class GamePage extends JFrame {
+	// timer
+	private static Timer timer;
+	
 	// board
 	private static BoardComponent boardComponent;
 
@@ -66,6 +70,7 @@ public class GamePage extends JFrame {
 	private JLabel userName2;
 	private String name1;
 	private String name2;
+	private String userToMove;
 
 	// remaining time
 	private Time whiteRemainingTime;
@@ -102,7 +107,10 @@ public class GamePage extends JFrame {
 
 	private void initComponent() {
 		initFrame();
-
+		
+		// initialize timer
+		timer = new Timer();
+		
 		// initialize the board
 		boardComponent = new BoardComponent(500);
 		boardComponent.setLocation(90, 95);
@@ -112,11 +120,14 @@ public class GamePage extends JFrame {
 		// initialize username
 		TOGame players = Quoridor223Controller.getListOfPlayers();
 		userName1 = new JLabel(players.getPlayerOne(), SwingConstants.CENTER);
+		name1 = players.getPlayerOne();
 		userName1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		userName1.setBounds(876, 94, 50, 32);
 		userName2 = new JLabel(players.getPlayerTwo(), SwingConstants.CENTER);
+		name2 = players.getPlayerTwo();
 		userName2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		userName2.setBounds(620, 94, 46, 33);
+		userToMove = players.getPlayerToMove();
 
 		// initialize time (for now default to 10, later will get from model through
 		// controller)
@@ -213,6 +224,15 @@ public class GamePage extends JFrame {
 
 
 		// ------------------------- Add Event Listener ----------------------------//
+		timer.scheduleAtFixedRate(
+			new TimerTask() {
+				@Override
+				public void run() {
+					refreshTime();
+				}
+			}
+		, 1000, 1000);
+		
 		grabWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
@@ -333,9 +353,25 @@ public class GamePage extends JFrame {
 		});
 	}
 
-	private void refreshData() {
-		// TODO: call transfer objects' method to query data and update the game's
-		// states
+	private void refreshTime() {
+		if(userToMove.equals(name1)) {
+			Quoridor223Controller.setThinkingTime(new Time(whiteRemainingTime.getTime() - 1000), name1);
+		}else {
+			Quoridor223Controller.setThinkingTime(new Time(blackRemainingTime.getTime() - 1000), name2);
+		}
+		
+		TOGame players = Quoridor223Controller.getListOfPlayers();
+		userToMove = players.getPlayerToMove();
+		
+		if(players.getPlayerToMove().equals(players.getPlayerOne())) {
+			whiteRemainingTime = new Time(players.getPlayerOneTime().getTime());
+			String wTime[] = whiteRemainingTime.toString().split(":");
+			whiteTime.setText(wTime[1] + ":" + wTime[2]);
+		}else {
+			blackRemainingTime = new Time(players.getPlayerTwoTime().getTime());
+			String bTime[] = blackRemainingTime.toString().split(":");
+			blackTime.setText(bTime[1] + ":" + bTime[2]);
+		}
 	}
 
 	private void initFrame() {

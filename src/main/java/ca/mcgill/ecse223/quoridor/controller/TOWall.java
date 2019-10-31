@@ -3,7 +3,7 @@
 
 package ca.mcgill.ecse223.quoridor.controller;
 
-// line 9 "../../../../../QuoridorTransferObject.ump"
+// line 10 "../../../../../QuoridorTransferObject.ump"
 public class TOWall
 {
 

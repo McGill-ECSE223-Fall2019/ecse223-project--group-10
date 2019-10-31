@@ -33,8 +33,8 @@ public class Quoridor223Controller {
 		
 		// create players
 		List<User> users = quoridor.getUsers();
-		Player whitePlayer = new Player(new Time(10), users.get(0), 9, Direction.Horizontal);
-		Player blackPlayer = new Player(new Time(10), users.get(1), 1, Direction.Horizontal);
+		Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
+		Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
 		newGame.setBlackPlayer(blackPlayer);
 		newGame.setWhitePlayer(whitePlayer);
 	}
@@ -86,16 +86,12 @@ public class Quoridor223Controller {
 	 * @param playerName
 	 * @throws UnsupportedOperationException
 	 */
-	public static void setThinkingTime(Time thinkingTime, String playerName) throws UnsupportedOperationException{
+	public static void setThinkingTime(Time thinkingTime, String playerName) {
 		// get current Game
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game currentGame = quoridor.getCurrentGame();
-		Player currentPlayer;
-		if(playerName.equals("white")) {
-			currentPlayer = currentGame.getWhitePlayer();
-		}else {
-			currentPlayer = currentGame.getBlackPlayer();
-		}
+
+		Player currentPlayer = getPlayerByName(playerName);
+		
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
 	}
@@ -306,6 +302,7 @@ public class Quoridor223Controller {
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
 		//Switch Player here
+		SwitchPlayer();
 	}
 	
 	/**
@@ -445,9 +442,8 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException, GameNotRunningException
 	 * @author Sacha Lévy
 	 */
-	public void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException{
+	public static void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException{
 		// method constantly running while in-game
-		while(true) {
 			if (!isRunning()) {throw new GameNotRunningException("Game not running");}
 			// get the current player
 			Game curr_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -463,13 +459,7 @@ public class Quoridor223Controller {
 				current_player = curr_game.getWhitePlayer();
 				other_player = curr_game.getBlackPlayer();
 			}
-			// check if the clock of the current player is not running
-			if (isClockRunning(current_player) == false) {
-				// set the player to move as the other player
-				curr_game.getCurrentPosition().setPlayerToMove(other_player);
-				updateGUI(current_player, other_player);
-			}
-		}
+			curr_game.getCurrentPosition().setPlayerToMove(other_player);
 	}
 	
 	/**
@@ -542,12 +532,19 @@ public class Quoridor223Controller {
 	
 	public static TOGame getListOfPlayers(){
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Player playerToMove = quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();
 		ArrayList<String> name = new ArrayList<>();
 		for(User user: quoridor.getUsers()) {
 			name.add(user.getName());
 		}
+		String playerToMoveName;
+		if(playerToMove.getUser().getName().equals(name.get(0))) {
+			playerToMoveName = name.get(0);
+		}else {
+			playerToMoveName = name.get(1);
+		}
 		TOGame listOfPlayers = new TOGame(quoridor.getCurrentGame().getWhitePlayer().getRemainingTime()
-				, quoridor.getCurrentGame().getWhitePlayer().getRemainingTime(), name.get(0), name.get(1));
+				, quoridor.getCurrentGame().getBlackPlayer().getRemainingTime(), name.get(0), name.get(1), playerToMoveName);
 		return listOfPlayers;
 	}
 	
