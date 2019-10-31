@@ -54,9 +54,9 @@ public class BoardComponent extends JPanel {
 			vWall = ImageIO.read(getFileFromResources("WallV.png"));
 			vWall = resize(vWall, (int)width*2,15);
 			hHighlightedWall = ImageIO.read(getFileFromResources("HighlightedWall.png"));
-			hHighlightedWall = resize(hHighlightedWall, 15, (int)width*2);
+			hHighlightedWall = resize(hHighlightedWall, 15, (int)width*2-7);
 			vHighlightedWall = ImageIO.read(getFileFromResources("HighlightedWallV.png"));
-			vHighlightedWall = resize(vHighlightedWall, (int)width*2,15);
+			vHighlightedWall = resize(vHighlightedWall, (int)width*2-7,15);
 		}
 		catch(IOException e) {
 			System.out.println(e.getMessage());
@@ -134,7 +134,7 @@ public class BoardComponent extends JPanel {
 	
 	private void initStock() {
 		float lx =0, rx=size-2*width;
-		float y = margin-9;
+		float y = margin-5;
 		for(int i = 0;i<10;i++) {
 			blackWallInStock[i]=new float[] {lx,y};
 			whiteWallInStock[i]=new float[] {rx,y};
@@ -175,11 +175,12 @@ public class BoardComponent extends JPanel {
 	private int[] getWallCord(TOWall wall){
 		int[] cord = new int[2];
 		boolean isHorizontal = wall.getDir()==TOWall.Direction.Horizontal;
-		int adj = isHorizontal?9:5;
+		int vadj = isHorizontal? 7:0;
+		int hadj = isHorizontal? 0:9;
 		int horizontalOffset = isHorizontal?1:0;
 		int verticalOffset = (!isHorizontal)?1:0;
-		cord[1]=(int)(margin-adj+(wall.getRow()-verticalOffset)*width);
-		cord[0]=(int)(margin-adj+(wall.getCol()-horizontalOffset)*width);
+		cord[1]=(int)(margin-vadj+(wall.getRow()-verticalOffset)*width);
+		cord[0]=(int)(margin-hadj+(wall.getCol()-horizontalOffset)*width);
 		return cord;
 	}
 }

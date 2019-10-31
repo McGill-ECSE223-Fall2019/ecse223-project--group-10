@@ -297,14 +297,10 @@ public class Quoridor223Controller {
 		GamePosition currentPosition = curGame.getCurrentPosition();
 		GamePosition clone = clonePosition(currentPosition);
 		boolean set =curGame.setCurrentPosition(clone);
-		System.out.println(set);
 		if(isWhitePlayer()) {
-			clone.removeWhiteWallsInStock(wallToDrop);
 			clone.addWhiteWallsOnBoard(wallToDrop);
-			System.out.println("reach");
 		}
 		else {
-			clone.removeBlackWallsInStock(wallToDrop);
 			clone.addBlackWallsOnBoard(wallToDrop);
 		}
 		curGame.addMove(curGame.getWallMoveCandidate());
