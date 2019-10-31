@@ -46,30 +46,6 @@ public class SetThinkingTimePage extends JFrame {
 	public SetThinkingTimePage() {
 		initPage();
 	}
-
-  // @sacha method for old timer
-  // to delete
-	private Time getWhiteTime() {
-		return Time.valueOf("00:"+whiteTimePicker.getText());
-	}
-	
-  // @sacha method for old timer
-  // to delete
-	private Time getBlackTime() {
-		return Time.valueOf("00:"+blackTimePicker.getText());
-	}
-	
-  // @sacha log users when time format is incorrect
-	private void failToReadTime() {
-		setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
-	}
-	
-  // @sacha method to create main page
-	private void createMainPage() {
-		// if this is clicked then now display the setThinkingTime page
-		GamePage mainPage = new GamePage();
-		mainPage.setVisible(true);
-	}
 	
 	private void initPage(){
 		this.setSize(1400, 720);
@@ -184,10 +160,6 @@ public class SetThinkingTimePage extends JFrame {
 				.addComponent(startGame)
 			)
 		);
-	}
-	
-	private void refreshData() {
-		
 	}
 	
 	public boolean getPageStatus() {
