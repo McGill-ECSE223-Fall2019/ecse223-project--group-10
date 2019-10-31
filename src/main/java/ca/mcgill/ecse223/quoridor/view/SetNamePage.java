@@ -9,6 +9,7 @@ import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.text.MaskFormatter;
 
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 
 import java.awt.Font;
@@ -80,15 +81,9 @@ public class SetNamePage extends JFrame {
 		btnLetsS.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent f) {
 				// also get both players name and set them throught the main controller				
-				Quoridor223Controller.setBlackPlayerName(comboBox.getSelectedItem().toString());
-				Quoridor223Controller.setWhitePlayerName(comboBox_1.getSelectedItem().toString());
-				
-				// check the current player name for debugging
-				System.out.println(String.format("black player name is %s", Quoridor223Controller.getBlackPlayerName()));
-				
+				Quoridor223Controller.createGame(comboBox.getSelectedItem().toString(), comboBox_1.getSelectedItem().toString());
 				// if this is clicked then now display the setThinkingTime page
-				SetThinkingTimePage setThinkingTimePage = new SetThinkingTimePage();
-				setThinkingTimePage.setVisible(true);
+				QuoridorApplication.setTimePage();
 			}
 		});
 		
