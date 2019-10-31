@@ -106,7 +106,8 @@ public class Quoridor223Controller {
 		// get current Game
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Player currentPlayer = getPlayerByName(playerName);
-				// set thinking time of that player
+		
+		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
 	}
 
@@ -186,6 +187,9 @@ public class Quoridor223Controller {
 
 		// set current position to a new game position
 		currentGame.setCurrentPosition(gamePosition);
+		
+		// set next player
+		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
 	}
 
 	// under feature 5

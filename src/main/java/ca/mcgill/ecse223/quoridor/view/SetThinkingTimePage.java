@@ -117,8 +117,8 @@ public class SetThinkingTimePage extends JFrame {
 					String blackTime[] = blackTimePicker.getText().split(":");
 					long wTime = Integer.parseInt(whiteTime[0])*60*1000 + Integer.parseInt(whiteTime[1])*1000;
 					long bTime = Integer.parseInt(blackTime[0])*60*1000 + Integer.parseInt(blackTime[1])*1000;
-					Quoridor223Controller.setThinkingTime(new Time(wTime), "White");
-					Quoridor223Controller.setThinkingTime(new Time(bTime), "Black");
+					Quoridor223Controller.setThinkingTime(new Time(wTime), Quoridor223Controller.getWhitePlayerName());
+					Quoridor223Controller.setThinkingTime(new Time(bTime), Quoridor223Controller.getBlackPlayerName());
 					status = true;
 					Quoridor223Controller.initializeBoard();
 					QuoridorApplication.setMainPage();
