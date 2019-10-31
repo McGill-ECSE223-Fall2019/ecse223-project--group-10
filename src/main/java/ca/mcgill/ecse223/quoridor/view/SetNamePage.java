@@ -1,12 +1,17 @@
 package ca.mcgill.ecse223.quoridor.view;
 
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JFrame;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.text.MaskFormatter;
+
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Color;
@@ -21,6 +26,10 @@ public class SetNamePage extends JFrame {
 	// username and thinking time
 	private JLabel userName1;
 	private JLabel userName2;
+
+	// name field
+	private JTextField whiteNamePicker;
+	private JTextField blackNamePicker;
 	
 	// time error
 	private JButton btnLetsS;
@@ -33,7 +42,6 @@ public class SetNamePage extends JFrame {
 		this.setSize(1400, 720);
 		this.setTitle("Set Time Page");
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
-	
 		
 		// header: back button brings user back to welcome page
 		JButton btnBack = new JButton("Back");
@@ -62,14 +70,22 @@ public class SetNamePage extends JFrame {
 		JComboBox comboBox = new JComboBox(usernames);
 		JComboBox comboBox_1 = new JComboBox(usernames);
 		
+		// previous name implementation with text fields
+		//whiteNamePicker = new JTextField(20);
+		//blackNamePicker = new JTextField(20);
+
 		// button starts a new game
-				btnLetsS = new JButton("Let's Start");
-				btnLetsS.setBackground(new Color(204, 153, 102));
-				btnLetsS.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
-				btnLetsS.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent f) {
-					}
-				});
+		btnLetsS = new JButton("Let's Start");
+		btnLetsS.setBackground(new Color(204, 153, 102));
+		btnLetsS.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		btnLetsS.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent f) {
+				// also get both players name and set them throught the main controller				
+				Quoridor223Controller.createGame(comboBox.getSelectedItem().toString(), comboBox_1.getSelectedItem().toString());
+				// if this is clicked then now display the setThinkingTime page
+				QuoridorApplication.setTimePage();
+			}
+		});
 		
 		JLabel label = new JLabel("Please choose your player names");
 		label.setFont(new Font("Heiti SC", Font.PLAIN, 26));
