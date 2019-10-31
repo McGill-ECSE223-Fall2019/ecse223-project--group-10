@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Properties;
 import java.sql.Time;
+import java.util.Timer;
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
@@ -55,6 +56,9 @@ import java.awt.SystemColor;
 import javax.swing.JTextArea;
 
 public class GamePage extends JFrame{
+	
+	// timer
+	Timer timer = new Timer();
 	
 	// board
 	private static BoardComponent boardComponent;
@@ -184,6 +188,7 @@ public class GamePage extends JFrame{
 		btnUp.setBounds(770, 246, 80, 80);
 		
 		//------------------------- Add Event Listener ----------------------------//
+		
 		grabWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
@@ -307,7 +312,6 @@ public class GamePage extends JFrame{
 		getContentPane().add(btnRight);
 		getContentPane().add(btnLeft);
 	}
-	
 	
 	private void refreshData() {
 		// TODO: call transfer objects' method to query data and update the game's states
