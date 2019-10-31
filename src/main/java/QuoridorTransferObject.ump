@@ -8,7 +8,8 @@ class TOGame{
 }
 class TOWall {
 	enum Direction {Horizontal,Vertical};
-	unique Integer id;
+	enum Side {Up,Down,Left,Right};
+	Integer id;
 	Integer row;
 	Integer col;
 	Direction dir;
