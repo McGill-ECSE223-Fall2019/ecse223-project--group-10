@@ -11,12 +11,19 @@ import java.awt.Font;
 
 import java.awt.Color;
 import java.text.ParseException;
+import java.sql.Time;
+
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 
 public class SetThinkingTimePage extends JFrame {
 	//username and thinking time
 	private JLabel userName1;
-	private JLabel userName2;
+	private JLabel userName2;;
 			
+	//set time status
+	private boolean status = false;
+	
 	//thinking time
 	private JFormattedTextField whiteTimePicker;
 	private JFormattedTextField blackTimePicker;
@@ -35,7 +42,7 @@ public class SetThinkingTimePage extends JFrame {
 		initPage();
 	}
 	
-	public void initPage(){
+	private void initPage(){
 		this.setSize(1400, 720);
 		this.setTitle("Set Time Page");
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
@@ -53,7 +60,7 @@ public class SetThinkingTimePage extends JFrame {
 		
 		// initialize time picker
 		try {
-            mask = new MaskFormatter("##min ##sec");
+            mask = new MaskFormatter("##:##");
             mask.setPlaceholderCharacter('#');
         } catch (ParseException e) {
             e.printStackTrace();
@@ -69,9 +76,32 @@ public class SetThinkingTimePage extends JFrame {
 		title.setFont(new Font("Arial", Font.PLAIN, 50));
 		
 		// initialize error component
-		setTimeError = new JLabel("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
+		setTimeError = new JLabel("");
 		setTimeError.setFont(new Font("Arial", Font.PLAIN, 25));
 		
+		//--------------------- Add Event Listener ---------------------------------//
+		startGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					String whiteTime[] = whiteTimePicker.getText().split(":");
+					String blackTime[] = blackTimePicker.getText().split(":");
+					
+					long wTime = Integer.parseInt(whiteTime[0])*60*1000 + Integer.parseInt(whiteTime[1])*1000;
+					long bTime = Integer.parseInt(blackTime[0])*60*1000 + Integer.parseInt(blackTime[1])*1000;
+					
+					Quoridor223Controller.createUser("White");
+					Quoridor223Controller.createUser("Black");
+					Quoridor223Controller.createGame();
+					Quoridor223Controller.setThinkingTime(new Time(wTime), "white");
+					Quoridor223Controller.setThinkingTime(new Time(bTime), "black");
+					status = true;
+					Quoridor223Controller.initializeBoard();
+					QuoridorApplication.setMainPage();
+				}catch (NumberFormatException e) {
+					setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
+				}
+				
+			}});
 		
 		//--------------------- Construct Page's Layout ----------------------------//
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -129,5 +159,13 @@ public class SetThinkingTimePage extends JFrame {
 				.addComponent(startGame)
 			)
 		);
-	};
+	}
+	
+	private void refreshData() {
+		
+	}
+	
+	public boolean getPageStatus() {
+		return this.status;
+	}
 }
