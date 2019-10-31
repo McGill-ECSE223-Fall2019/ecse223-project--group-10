@@ -35,6 +35,8 @@ public class Quoridor223Controller {
 		// create players
 		Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
 		Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
+		whitePlayer.setNextPlayer(blackPlayer);
+		blackPlayer.setNextPlayer(whitePlayer);
 		newGame.setBlackPlayer(blackPlayer);
 		newGame.setWhitePlayer(whitePlayer);
 	}
@@ -537,6 +539,7 @@ public class Quoridor223Controller {
 		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
 		Player current_player = current_position.getPlayerToMove();
 		current_position.setPlayerToMove(current_player.getNextPlayer());
+		System.out.println(current_player);
 		// last step not necessary since always linked in loops ?
 		current_player.getNextPlayer().setNextPlayer(current_player);
 	}
