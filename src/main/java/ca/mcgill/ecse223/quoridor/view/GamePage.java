@@ -333,8 +333,6 @@ public class GamePage extends JFrame {
 				} catch (InvalidOperationException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
 					// TODO: handle exception
-					// reset the wall to the initial position
-					Quoridor223Controller.resetWall();
 				}
 				boardComponent.repaint();
 			}

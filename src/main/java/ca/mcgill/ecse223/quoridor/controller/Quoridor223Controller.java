@@ -483,24 +483,11 @@ public class Quoridor223Controller {
 	public static boolean validatePosition() throws UnsupportedOperationException, GameNotRunningException{
 		if (!isRunning()) {throw new GameNotRunningException("Game not running");}
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		
-		// get last move: if hasWallMoveCandidate then currently moving a wall, check move validity
-			// get target position for the wall and compare it with rest of the walls
-		// otherwise moving a pawn, get player positions
-			// assume player to move has NOT been changed, i.e. player to move is player to check the move of
-			// check that there is no overlapp between the two player's position
-		
-			// LAST FEATURE TO IMPLEMENT AFTER THE GUI IS RUNNING: (might need further evaluation of positions)
-			// then check player to move's target position not crossing any walls on board
-
 		// check if there is a wall to move
 		if(current_game.hasWallMoveCandidate()) {
 			if(!isWallCandidatePositionValid()) return false;
 			if(isWallMoveCandidateOverlapping()) return false;
-		}
-
-		// otherwise check the players positions
-		else {
+		} else {
 			if(!isPlayerPositionValid()) return false;
 			if(isPlayerPositionOverlapping()) return false;
 			//TODO: further check if the last player's move didn't cross any walls
@@ -543,6 +530,16 @@ public class Quoridor223Controller {
 	 */
 	public static boolean isWallMoveCandidateOverlapping() throws UnsupportedOperationException{
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		// IMPLEMENTATION
+				// create a hashmap, for the wall positions => faster lookup than searching 
+				// use row*8 + col for the key in hashmaps, values to represent directions
+				// everytime call validate positon create the hashmap
+
+				// are the centers overlapp for the tiles of the walls => cannot overlapp the centers
+				// coordinates first then directions
+				// if its horizontal check if horizontal (left & right),
+				// if its vertical check if vertical (up & down)
+		
 		// wall position hash map:
 			// keys		: row*9 + col
 			// values	: horizontal wall is true, vertical wall is false
@@ -554,24 +551,12 @@ public class Quoridor223Controller {
 		int candidate_row = move_candidate.getTargetTile().getRow();
 		int candidate_col = move_candidate.getTargetTile().getColumn();
 		
-		int candidate_key = candidate_row * 9 + candidate_col;
-		boolean candidate_dir = move_candidate.getWallDirection().equals(Direction.Horizontal)?true:false;
-		int adj_wall0 = candidate_dir?(candidate_row)*9+candidate_col-1:(candidate_row-1)*9+candidate_col;
-		int adj_wall1 = candidate_dir?(candidate_row)*9+candidate_col+1:(candidate_row+1)*9+candidate_col;
-		for (int current_key : wallPositions.keySet() )
-			if(candidate_key==current_key||current_key==adj_wall0||current_key==adj_wall1) return true;
-		
-	
-		// IMPLEMENTATION
-		// create a hashmap, for the wall positions => faster lookup than searching 
-		// use row*8 + col for the key in hashmaps, values to represent directions
-		// everytime call validate positon create the hashmap
-
-		// are the centers overlapp for the tiles of the walls => cannot overlapp the centers
-		// coordinates first then directions
-		// if its horizontal check if horizontal (left & right),
-		// if its vertical check if vertical (up & down)
-
+		int cand_key = candidate_row * 9 + candidate_col;
+		boolean cand_dir = move_candidate.getWallDirection().equals(Direction.Horizontal)?true:false;
+		int adj_wall0 = cand_dir?(candidate_row)*9+candidate_col-1:(candidate_row-1)*9+candidate_col;
+		int adj_wall1 = cand_dir?(candidate_row)*9+candidate_col+1:(candidate_row+1)*9+candidate_col;
+		for (int cur_key : wallPositions.keySet())
+			if(cand_key==cur_key||((cur_key==adj_wall0)&&(cand_dir==wallPositions.get(cur_key))||((cur_key==adj_wall1)&&(cand_dir==wallPositions.get(cur_key))))) return true;
 		return false;
 	}
 
@@ -605,10 +590,6 @@ public class Quoridor223Controller {
 		if (!current_game.hasWallMoveCandidate()) {throw new UnsupportedOperationException("Game does not have a wall move candidate.");}
 		Tile target_tile = current_game.getWallMoveCandidate().getTargetTile();
 		return isWallPositionValid(target_tile.getRow(), target_tile.getColumn());
-	}
-	
-	public static void resetWall() {
-		
 	}
 
 	/**
