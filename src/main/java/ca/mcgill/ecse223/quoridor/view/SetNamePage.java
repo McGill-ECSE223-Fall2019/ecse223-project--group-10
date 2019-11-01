@@ -131,16 +131,10 @@ public class SetNamePage extends JFrame {
 						writer.write("\n" + name2);
 					}
 					writer.close();
-<<<<<<< HEAD
 					Quoridor223Controller.setUser(name1);
 					Quoridor223Controller.setUser(name2);
 					Quoridor223Controller.createGame();
-=======
-					Quoridor223Controller.createGame();
-					Quoridor223Controller.createUser(name1);
-					Quoridor223Controller.createUser(name2);
 					Quoridor223Controller.creatPlayers();
->>>>>>> master
 					QuoridorApplication.setTimePage();
 					}
 				
