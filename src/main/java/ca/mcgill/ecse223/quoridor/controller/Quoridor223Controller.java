@@ -29,23 +29,40 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException
 	 */
 	public static void createGame() throws UnsupportedOperationException {
-        
 		// create Quoridor game and get users
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-        Game newGame = new Game(GameStatus.Running, MoveMode.WallMove, quoridor);
-        List<User> users = quoridor.getUsers();
-        
-        // create players
-        Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
-        Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
-        newGame.setBlackPlayer(blackPlayer);
-        newGame.setWhitePlayer(whitePlayer);
+        Game newGame = new Game(GameStatus.Initializing, MoveMode.WallMove, quoridor);
         
     }
 
+	public static void creatPlayers() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		List<User> users = quoridor.getUsers();
+        
+		// create players
+        Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
+        Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
+        whitePlayer.setNextPlayer(blackPlayer);
+        blackPlayer.setNextPlayer(whitePlayer);
+        curGame.setBlackPlayer(blackPlayer);
+        curGame.setWhitePlayer(whitePlayer);
+	}
+	
+	public static void setGameToReady() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.setGameStatus(GameStatus.ReadyToStart);
+	}
+	
+	public static void setGameToRun() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.setGameStatus(GameStatus.Running);
+	}
+	
 	/**
 	 * Feature 2: Setting a user with a new username or with an existing one
-	 * 
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
@@ -89,7 +106,8 @@ public class Quoridor223Controller {
 		// get current Game
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Player currentPlayer = getPlayerByName(playerName);
-				// set thinking time of that player
+		
+		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
 	}
 
@@ -169,6 +187,9 @@ public class Quoridor223Controller {
 
 		// set current position to a new game position
 		currentGame.setCurrentPosition(gamePosition);
+		
+		// set next player
+		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
 	}
 
 	// under feature 5
