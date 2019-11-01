@@ -45,6 +45,7 @@ public class SetNamePage extends JFrame {
 	JLabel error = new JLabel("");
 	boolean hasError = false;
 	boolean confirm = false;
+	boolean startAnyways = false;
 
 	public SetNamePage() {
 		initPage();
@@ -53,7 +54,7 @@ public class SetNamePage extends JFrame {
 	public void initPage(){
 		this.setSize(1400, 720);
 		this.setTitle("Set Time Page");
-		this.getContentPane().setBackground(new Color(153, 153, 153));
+		this.getContentPane().setBackground(Color.LIGHT_GRAY);
 		
 		// header: back button brings user back to welcome page
 		JButton btnBack = new JButton("Back");
@@ -134,13 +135,13 @@ public class SetNamePage extends JFrame {
 					error.setText("");
 					
 					hasError = false;
-					if (name1.equals(name2)) {
+					if (name1.equals(name2) && !startAnyways) {
 						error.setText("Names must be unique.");
 						hasError = true;
-					} else if (name1.equals("") || name2.equals("") || name1.equals(" ") || name2.equals(" ")) {
+					} else if ((name1.equals("") || name2.equals("") || name1.equals(" ") || name2.equals(" ")) && !startAnyways) {
 						error.setText("Names cannot be empty.");
 						hasError = true;
-					} else if (usernames.contains(name1) || usernames.contains(name2)) {
+					} else if ((usernames.contains(name1) || usernames.contains(name2)) && !startAnyways) {
 						if (usernames.contains(name1)) {
 							error.setText("White player's name already exists.");
 							confirm = true;
@@ -169,7 +170,8 @@ public class SetNamePage extends JFrame {
 					
 					if (confirm && !hasError) {
 						error.setText(error.getText() + "\n" + "Do you want to continue with these names?");
-						btnNO.setVisible(false);
+						btnNO.setVisible(true);
+						startAnyways = true;
 					}
 
 				} catch (Exception g) {
