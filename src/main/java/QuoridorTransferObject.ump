@@ -5,6 +5,7 @@ class TOGame{
 	Time playerTwoTime;
 	playerOne;
 	playerTwo;
+	playerToMove;
 }
 class TOWall {
 	enum Direction {Horizontal,Vertical};

@@ -7,8 +7,13 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.GroupLayout;
 import javax.swing.text.MaskFormatter;
-import java.awt.Font;
 
+import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Time;
 import java.awt.Color;
 import java.text.ParseException;
 import java.sql.Time;
@@ -48,16 +53,16 @@ public class SetThinkingTimePage extends JFrame {
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
 	
 		// initialize username
-		userName1 = new JLabel("<html><font color='white' >WHITE PLAYER</font></html>");
+		userName1 = new JLabel(String.format("<html><font color='white' >%s</font></html>", Quoridor223Controller.getWhitePlayerName()));
 		userName1.setFont(new Font("Arial", Font.PLAIN, 25));
-		userName2 = new JLabel("<html><font color='black' >BLACK PLAYER</font></html>");
+		userName2 = new JLabel(String.format("<html><font color='black' >%s</font></html>", Quoridor223Controller.getBlackPlayerName()));
 		userName2.setFont(new Font("Arial", Font.PLAIN, 25));
 				
 		// intialize start-game button
 		startGame = new JButton("<html><font color='white' >START GAME</font></html>");
 		startGame.setBackground(Color.BLUE);
 		startGame.setFont(new Font("Arial", Font.PLAIN, 30));
-		
+	
 		// initialize time picker
 		try {
             mask = new MaskFormatter("##:##");
@@ -65,7 +70,7 @@ public class SetThinkingTimePage extends JFrame {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        mask.setPlaceholderCharacter('#');
+		mask.setPlaceholderCharacter('#');
 		whiteTimePicker = new JFormattedTextField(mask);
 		whiteTimePicker.setFont(new Font("Arial", Font.PLAIN, 25));
 		blackTimePicker = new JFormattedTextField(mask);
@@ -79,21 +84,18 @@ public class SetThinkingTimePage extends JFrame {
 		setTimeError = new JLabel("");
 		setTimeError.setFont(new Font("Arial", Font.PLAIN, 25));
 		
+
 		//--------------------- Add Event Listener ---------------------------------//
 		startGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					String whiteTime[] = whiteTimePicker.getText().split(":");
 					String blackTime[] = blackTimePicker.getText().split(":");
-					
 					long wTime = Integer.parseInt(whiteTime[0])*60*1000 + Integer.parseInt(whiteTime[1])*1000;
 					long bTime = Integer.parseInt(blackTime[0])*60*1000 + Integer.parseInt(blackTime[1])*1000;
-					
-					Quoridor223Controller.createUser("White");
-					Quoridor223Controller.createUser("Black");
-					Quoridor223Controller.createGame();
-					Quoridor223Controller.setThinkingTime(new Time(wTime), "white");
-					Quoridor223Controller.setThinkingTime(new Time(bTime), "black");
+					Quoridor223Controller.setThinkingTime(new Time(wTime), Quoridor223Controller.getWhitePlayerName());
+					Quoridor223Controller.setThinkingTime(new Time(bTime), Quoridor223Controller.getBlackPlayerName());
+					Quoridor223Controller.setGameToReady();
 					status = true;
 					Quoridor223Controller.initializeBoard();
 					QuoridorApplication.setMainPage();
@@ -159,10 +161,6 @@ public class SetThinkingTimePage extends JFrame {
 				.addComponent(startGame)
 			)
 		);
-	}
-	
-	private void refreshData() {
-		
 	}
 	
 	public boolean getPageStatus() {

@@ -17,17 +17,19 @@ public class TOGame
   private Time playerTwoTime;
   private String playerOne;
   private String playerTwo;
+  private String playerToMove;
 
   //------------------------
   // CONSTRUCTOR
   //------------------------
 
-  public TOGame(Time aPlayerOneTime, Time aPlayerTwoTime, String aPlayerOne, String aPlayerTwo)
+  public TOGame(Time aPlayerOneTime, Time aPlayerTwoTime, String aPlayerOne, String aPlayerTwo, String aPlayerToMove)
   {
     playerOneTime = aPlayerOneTime;
     playerTwoTime = aPlayerTwoTime;
     playerOne = aPlayerOne;
     playerTwo = aPlayerTwo;
+    playerToMove = aPlayerToMove;
   }
 
   //------------------------
@@ -66,6 +68,14 @@ public class TOGame
     return wasSet;
   }
 
+  public boolean setPlayerToMove(String aPlayerToMove)
+  {
+    boolean wasSet = false;
+    playerToMove = aPlayerToMove;
+    wasSet = true;
+    return wasSet;
+  }
+
   public Time getPlayerOneTime()
   {
     return playerOneTime;
@@ -86,6 +96,11 @@ public class TOGame
     return playerTwo;
   }
 
+  public String getPlayerToMove()
+  {
+    return playerToMove;
+  }
+
   public void delete()
   {}
 
@@ -94,7 +109,8 @@ public class TOGame
   {
     return super.toString() + "["+
             "playerOne" + ":" + getPlayerOne()+ "," +
-            "playerTwo" + ":" + getPlayerTwo()+ "]" + System.getProperties().getProperty("line.separator") +
+            "playerTwo" + ":" + getPlayerTwo()+ "," +
+            "playerToMove" + ":" + getPlayerToMove()+ "]" + System.getProperties().getProperty("line.separator") +
             "  " + "playerOneTime" + "=" + (getPlayerOneTime() != null ? !getPlayerOneTime().equals(this)  ? getPlayerOneTime().toString().replaceAll("  ","    ") : "this" : "null") + System.getProperties().getProperty("line.separator") +
             "  " + "playerTwoTime" + "=" + (getPlayerTwoTime() != null ? !getPlayerTwoTime().equals(this)  ? getPlayerTwoTime().toString().replaceAll("  ","    ") : "this" : "null");
   }
