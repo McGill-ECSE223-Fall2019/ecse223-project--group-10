@@ -29,6 +29,7 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
+import ca.mcgill.ecse223.quoridor.view.GamePage;
 import cucumber.api.PendingException;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
@@ -51,7 +52,7 @@ public class CucumberStepDefinitions {
 	private Move initialMove = null;
 	private GamePosition loadedGamePosition = null;
 	private String cucumberFilename	= null;
-	
+	private GamePage gamePage;
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
@@ -71,6 +72,7 @@ public class CucumberStepDefinitions {
 		Player currentPlayer = quoridor.getCurrentGame().getWhitePlayer();
 		initialPlayer = currentPlayer;
 		QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setPlayerToMove(currentPlayer);
+		
 	}
 
 	@Given("The following walls exist:")
@@ -678,7 +680,7 @@ public class CucumberStepDefinitions {
 	@And("It shall not be my turn to move")
 	public void itIsNotMyTurnToMove() {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		assertEquals(initialPlayer, curGame.getCurrentPosition().getPlayerToMove());
+		assertEquals(false,initialPlayer.equals(curGame.getCurrentPosition().getPlayerToMove()));
 	}
 	
 	/**
@@ -787,18 +789,17 @@ public class CucumberStepDefinitions {
 	 */
 	@And("I shall have a wall in my hand over the board")
 	public void iShallHaveAWallInMyHandOverTheBoard() {
-		//GUI 
-		throw new PendingException();
+		assertEquals(true,gamePage.getWallInHand()!=null);
 	}
 	@Then("I shall be notified that my move is illegal")
 	public void iShallBeNotifiedThatMyMoveIsIllegal() {
 		//GUI
-		throw new PendingException();
+		assertEquals("Illegal Move",gamePage.getGameMessage());
 	}
 	@Then ("I shall be notified that my wall move is invalid")
 	public void iShallBeNotifiedThatMyWallMoveIsInvalid() {
 		//GUI 
-		throw new PendingException();
+		assertEquals("Invalid Move",gamePage.getGameMessage());
 	}
 	
 	// **********************************************
@@ -1020,7 +1021,8 @@ public class CucumberStepDefinitions {
 			Player player2 = new Player(new Time(thinkingTime), user2, 1, Direction.Horizontal);
 
 			Player[] players = { player1, player2 };
-
+			player1.setNextPlayer(player2);
+			player2.setNextPlayer(player1);
 			// Create all walls. Walls with lower ID belong to player1,
 			// while the second half belongs to player 2
 			for (int i = 0; i < 2; i++) {
@@ -1052,7 +1054,7 @@ public class CucumberStepDefinitions {
 			PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
 
 			GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
-
+			
 			// Add the walls as in stock for the players
 			for (int j = 0; j < 10; j++) {
 				Wall wall = Wall.getWithId(j);
@@ -1064,6 +1066,7 @@ public class CucumberStepDefinitions {
 			}
 
 			game.setCurrentPosition(gamePosition);
+			gamePage = new GamePage();
 		}
 	/**
 	 * Set a MoveCandidate based on the given parameter

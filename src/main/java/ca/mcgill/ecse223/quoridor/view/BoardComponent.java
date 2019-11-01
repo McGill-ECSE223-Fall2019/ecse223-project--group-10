@@ -168,7 +168,8 @@ public class BoardComponent extends JPanel {
 			c = Color.white;
 		g2d.setColor(c);
 		Ellipse2D pawn =new Ellipse2D.Float(x, y, width*3/5, width*3/5);
-//		g2d.fill(pawn);
+		g2d.fill(pawn);
+		g2d.setColor(Color.black);
 		g2d.draw(pawn);
 	}
 
@@ -194,7 +195,7 @@ public class BoardComponent extends JPanel {
 	}
 
 	private float getTileCord(int index) {
-		return (float) (index - 5.0 / 6) * width + margin;
+		return (float) (index-1+1.0/5) * width + margin;
 	}
 
 	private File getFileFromResources(String fileName) {
@@ -214,6 +215,9 @@ public class BoardComponent extends JPanel {
 		g2d.drawImage(tmp, 0, 0, null);
 		g2d.dispose();
 		return resized;
+	}
+	public TOWall getWallInHand() {
+		return wallInHand;
 	}
 
 }

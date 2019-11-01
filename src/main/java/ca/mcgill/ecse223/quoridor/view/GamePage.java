@@ -63,7 +63,7 @@ import javax.swing.JTextArea;
 public class GamePage extends JFrame {
 	// timer
 	private static Timer timer;
-	
+
 	// board
 	private static BoardComponent boardComponent;
 
@@ -95,7 +95,7 @@ public class GamePage extends JFrame {
 	private JButton replayGame;
 
 	// player's turn
-	private JLabel playerTurn;
+	private JLabel gameMessage;
 
 	// Move buttons
 	private JButton btnUp;
@@ -109,10 +109,10 @@ public class GamePage extends JFrame {
 
 	private void initComponent() {
 		initFrame();
-		
+
 		// initialize timer
 		timer = new Timer();
-		
+
 		// initialize the board
 		boardComponent = new BoardComponent(500);
 		boardComponent.setLocation(90, 95);
@@ -181,9 +181,9 @@ public class GamePage extends JFrame {
 		// forfeit.setBackground(Color.BLUE);
 
 		// player turn
-		playerTurn = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
-		playerTurn.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		playerTurn.setBounds(90, 28, 500, 46);
+		gameMessage = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
+		gameMessage.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		gameMessage.setBounds(90, 28, 500, 46);
 
 		btnRotateWall = new JButton("Rotate Wall");
 		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -205,7 +205,7 @@ public class GamePage extends JFrame {
 
 		// ------------------------- Add to Panel ----------------------------//
 		getContentPane().setLayout(null);
-		getContentPane().add(playerTurn);
+		getContentPane().add(gameMessage);
 		getContentPane().add(newGame);
 		getContentPane().add(saveGame);
 		getContentPane().add(loadGame);
@@ -227,24 +227,22 @@ public class GamePage extends JFrame {
 		// ------------------------- Add Event Listener ----------------------------//
 		// set game to run
 		Quoridor223Controller.setGameToRun();
-		timer.scheduleAtFixedRate(
-			new TimerTask() {
-				@Override
-				public void run() {
-					refreshTime();
-				}
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				refreshTime();
 			}
-		, 1000, 1000);
-		
+		}, 1000, 1000);
+
 		grabWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					Quoridor223Controller.grabWall();
 				} catch (InvalidOperationException eGrab) {
-          
+					gameMessage.setText(eGrab.getLocalizedMessage());
 				} catch (GameNotRunningException eGrab) {
-				
-        }
+					gameMessage.setText(eGrab.getLocalizedMessage());
+				}
 				boardComponent.repaint();
 			}
 		});
@@ -252,8 +250,12 @@ public class GamePage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Quoridor223Controller.moveWall(TOWall.Side.Up);
-				} catch (Exception ex) {
+				} catch (GameNotRunningException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
 					// set the notification panel to message
+				} catch (InvalidOperationException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
+					// TODO: handle exception
 				}
 				boardComponent.repaint();
 			}
@@ -264,8 +266,12 @@ public class GamePage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Quoridor223Controller.moveWall(TOWall.Side.Down);
-				} catch (Exception ex) {
+				}catch (GameNotRunningException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
 					// set the notification panel to message
+				} catch (InvalidOperationException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
+					// TODO: handle exception
 				}
 				boardComponent.repaint();
 			}
@@ -275,8 +281,12 @@ public class GamePage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Quoridor223Controller.moveWall(TOWall.Side.Left);
-				} catch (Exception ex) {
+				} catch (GameNotRunningException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
 					// set the notification panel to message
+				} catch (InvalidOperationException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
+					// TODO: handle exception
 				}
 				boardComponent.repaint();
 			}
@@ -286,8 +296,12 @@ public class GamePage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Quoridor223Controller.moveWall(TOWall.Side.Right);
-				} catch (Exception ex) {
+				} catch (GameNotRunningException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
 					// set the notification panel to message
+				} catch (InvalidOperationException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
+					// TODO: handle exception
 				}
 				boardComponent.repaint();
 			}
@@ -297,10 +311,12 @@ public class GamePage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Quoridor223Controller.rotateWall();
-				} catch (InvalidOperationException eRotate) {
-
-				} catch (GameNotRunningException eRotate) {
-
+				} catch (GameNotRunningException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
+					// set the notification panel to message
+				} catch (InvalidOperationException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
+					// TODO: handle exception
 				}
 				boardComponent.repaint();
 			}
@@ -310,10 +326,13 @@ public class GamePage extends JFrame {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					Quoridor223Controller.dropWall();
-          // if (!Quoridor223Controller.hasWallMoveCandidate()) failToValidatePosition();
-				  // else logSwitchPlayer();
-				} catch (Exception e) {
-					System.out.println(e.getMessage());
+					gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayer()+"'s Turn !!");
+				} catch (GameNotRunningException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
+					// set the notification panel to message
+				} catch (InvalidOperationException ex) {
+					gameMessage.setText(ex.getLocalizedMessage());
+					// TODO: handle exception
 				}
 				boardComponent.repaint();
 			}
@@ -354,24 +373,24 @@ public class GamePage extends JFrame {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 
 			}
-		});		
+		});
 	}
 
 	private void refreshTime() {
-		if(userToMove.equals(name1)) {
+		if (userToMove.equals(name1)) {
 			Quoridor223Controller.setThinkingTime(new Time(whiteRemainingTime.getTime() - 1000), name1);
-		}else {
+		} else {
 			Quoridor223Controller.setThinkingTime(new Time(blackRemainingTime.getTime() - 1000), name2);
 		}
-		
+
 		TOGame players = Quoridor223Controller.getListOfPlayers();
 		userToMove = players.getPlayerToMove();
-		
-		if(players.getPlayerToMove().equals(players.getPlayerOne())) {
+
+		if (players.getPlayerToMove().equals(players.getPlayerOne())) {
 			whiteRemainingTime = new Time(players.getPlayerOneTime().getTime());
 			String wTime[] = whiteRemainingTime.toString().split(":");
 			whiteTime.setText(wTime[1] + ":" + wTime[2]);
-		}else {
+		} else {
 			blackRemainingTime = new Time(players.getPlayerTwoTime().getTime());
 			String bTime[] = blackRemainingTime.toString().split(":");
 			blackTime.setText(bTime[1] + ":" + bTime[2]);
@@ -463,5 +482,11 @@ public class GamePage extends JFrame {
 		JOptionPane.showConfirmDialog((Component) boardComponent,
 				(Object) "The Following Error Has Occurred:\n\"" + error + "\"", "Operation Error",
 				JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, (Icon) null);
+	}
+	public TOWall getWallInHand() {
+		return boardComponent.getWallInHand();
+	}
+	public String getGameMessage() {
+		return gameMessage.getText();
 	}
 }
