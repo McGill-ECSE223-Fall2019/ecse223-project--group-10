@@ -345,7 +345,13 @@ public class GamePage extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON1) {
-					userClicksToLoadGame();
+					try {
+						userClicksToLoadGame();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					boardComponent.repaint();
 				}
 			}
 		});
@@ -431,7 +437,7 @@ public class GamePage extends JFrame {
 		return overWriteAllowed;
 	}
 
-	private void userClicksToLoadGame() {
+	private void userClicksToLoadGame() throws IOException {
 		String filename = null;
 		Boolean saveSuccessful = false;
 

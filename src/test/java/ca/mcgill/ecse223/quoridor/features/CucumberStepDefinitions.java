@@ -895,23 +895,28 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	
 	/**
-	 * @author Micthell
+	 * @author Mitchell Keeley
 	 * @param filename
+	 * @throws IOException 
 	 */
 	@When("I initiate to load a saved game {string}")
-	public void iInitiateToLoadASavedGame(String filename) {
+	public void iInitiateToLoadASavedGame(String filename) throws IOException {
 		cucumberFilename = filename;
 		Quoridor223Controller.loadPosition(filename);
 	}
 	
 	/**
-	 * @author Mitchell
+	 * @author Mitchell Keeley
 	 */
 	@And("The position to load is valid")
 	public void thePositionToLoadIsValid() {
 		startLoadedGame(cucumberFilename);
 	}
 	
+	/**
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 */
 	@Then("It shall be {string}'s turn")
 	//@And("It shall be {player}'s turn")
 	public void itShallBePlayersTurn(String playerColor) {
@@ -919,18 +924,36 @@ public class CucumberStepDefinitions {
 		//assertTrue("It is not that player's turn", Quoridor223Controller.getPlayerColorToMove().equals(playerColor));
 	}
 	
+	/**
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @param row
+	 * @param col
+	 */
 	@And("{string} shall be at {int}:{int}") // this is for both the player and opponent
 	public void playerShallbeAtRowCol(String playerColor, int row, int col) {
 		assertTrue("Could not set player's position", Quoridor223Controller.setPlayerPositionByColor(playerColor, row, col));
 		//assertTrue("Could not set player's position", Quoridor223Controller.getPlayerPositionByColor(player).equals(row+col));
 	}
 	
+	/**
+	 * 
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @param direction
+	 * @param row
+	 * @param col
+	 */
 	@And("{string} shall have a {} wall at {int}:{int}") // this is for both the player and the opponent
 	public void playerShallHaveADirectionWallAtRowCol(String playerColor, String direction, int row, int col) {
 		assertTrue("Could not set a wall's direction and position", Quoridor223Controller.addPlayerWallPositionByColor(playerColor, direction, row, col));
 		//assertTrue("Could not set that wall's direction and position", Quoridor223Controller.getPlayerWallPositionByColor(player).equals(row+col));
 	}
 	
+	/**
+	 * @author Mitchell Keeley
+	 * @param remainingWalls
+	 */
 	@And("Both players shall have {int} in their stacks")
 	public void bothPlayersShallHaveRemainingWallsInTheirStacks(int remainingWalls) {
 		assertTrue("White player does not have the correct number of walls in their stack", 
@@ -939,13 +962,20 @@ public class CucumberStepDefinitions {
 				Quoridor223Controller.getPlayerByColor("black").numberOfWalls() == remainingWalls);
 	}
 	
+	/**
+	 * @author Mitchell Keeley
+	 */
 	@And("The position to load is invalid")
 	public void thePositionToLoadIsInvalid() {
 		Quoridor223Controller.whenInvalidLoadGamePosition();
 	}
 	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws IOException
+	 */
 	@Then("The load shall return an error")
-	public void theLoadShallReturnAnError() {
+	public void theLoadShallReturnAnError() throws IOException {
 		assertFalse("Invalid load does not return an error", Quoridor223Controller.loadPosition(cucumberFilename));
 	}
 	
