@@ -29,72 +29,81 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException
 	 */
 	public static void createGame() {
+		
 		// create Quoridor game and get users
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-        Game newGame = new Game(GameStatus.Initializing, MoveMode.WallMove, quoridor);
-        
-    }
-	
+		Game newGame = new Game(GameStatus.Initializing, MoveMode.WallMove, quoridor);
+		
+
+	}
+
 	public static void setGameToReady() {
+		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.ReadyToStart);
+		
 	}
-	
+
 	public static void setGameToRun() {
+		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.Running);
+		
 	}
-	
+
 	/**
 	 * Feature 2: Setting a user with a new username or with an existing one
+	 * 
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
 	public static void setUser(String playerName, String color) {
-		
+
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		User user = quoridor.addUser(playerName);
-		
+
 		// create player
-        Player player = new Player(new Time(10), user , 1, Direction.Horizontal);
-        
-        if (color == "white") {
-        	curGame.setWhitePlayer(player);
-        } else {
-        	curGame.setBlackPlayer(player);
-        	player.setNextPlayer(curGame.getWhitePlayer());
-        	curGame.getWhitePlayer().setNextPlayer(player);
-        }
-        
+		Player player = new Player(new Time(10), user, 1, Direction.Horizontal);
+
+		// set white player first
+		// then set black and link it to white player
+		if (color == "white") {
+			curGame.setWhitePlayer(player);
+		} else {
+			curGame.setBlackPlayer(player);
+			player.setNextPlayer(curGame.getWhitePlayer());
+			curGame.getWhitePlayer().setNextPlayer(player);
+		}
+
 	}
-	
+
 	public static boolean checkNameList(String name) {
-		
+
 		boolean result = true;
 		ArrayList<String> usernames = new ArrayList<String>();
 		try {
 			File f = new File("names.txt");
-            FileReader reader = new FileReader(f.getAbsolutePath());
-            BufferedReader bufferedReader = new BufferedReader(reader);
- 
-            String line;
- 
-            while ((line = bufferedReader.readLine()) != null) {
-                usernames.add(line);
-            }
-            reader.close();
- 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-		
-		if(!usernames.contains(name)) {
+			FileReader reader = new FileReader(f.getAbsolutePath());
+			BufferedReader bufferedReader = new BufferedReader(reader);
+
+			String line;
+
+			while ((line = bufferedReader.readLine()) != null) {
+				usernames.add(line);
+			}
+			reader.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (!usernames.contains(name)) {
 			result = false;
 		}
-		
+
 		return result;
 	}
 

@@ -65,6 +65,11 @@ public class CucumberStepDefinitions {
 		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
 	}
+	
+	@Given("^The game is initializing$")
+	public void theGameIsInitializing() {
+		Quoridor223Controller.createGame();
+	}
 
 	@And("^It is my turn to move$")
 	public void itIsMyTurnToMove() throws Throwable {
