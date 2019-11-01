@@ -71,12 +71,10 @@ public class Quoridor223Controller {
 
 		// set white player first
 		// then set black and link it to white player
-		if (color == "white") {
+		if (color.equals("white")) {
 			curGame.setWhitePlayer(player);
 		} else {
 			curGame.setBlackPlayer(player);
-			player.setNextPlayer(curGame.getWhitePlayer());
-			curGame.getWhitePlayer().setNextPlayer(player);
 		}
 
 	}

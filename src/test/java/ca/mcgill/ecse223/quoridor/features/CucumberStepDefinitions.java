@@ -66,7 +66,7 @@ public class CucumberStepDefinitions {
 		createAndStartGame(createUsersAndPlayers);
 	}
 	
-	@Given("^The game is initializing$")
+	@Given("^A new game is initializing$")
 	public void theGameIsInitializing() {
 		Quoridor223Controller.createGame();
 	}
@@ -218,7 +218,7 @@ public class CucumberStepDefinitions {
 	@When("I start the clock")
 	public void iStartTheClock() {
 		
-		// ???????????????????????????????????????????????????????????????????????????????????????????????????
+		
 		
 	}
 	
@@ -323,15 +323,15 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Andrew Ta
 	 */
-	@Given("A new game is initializing")
-	public void aNewGameIsInitializing() {
-		
-		// initialize quoridor and board
-		initQuoridorAndBoard();
-		
-		// create new users and players
-		ArrayList<Player> players = createUsersAndPlayers("user1", "user2");
-	}
+//	@Given("A new game is initializing")
+//	public void aNewGameIsInitializing() {
+//		
+//		// initialize quoridor and board
+//		initQuoridorAndBoard();
+//		
+//		// create new users and players
+//		ArrayList<Player> players = createUsersAndPlayers("user1", "user2");
+//	}
 	
 	/**
 	 * @author Andfrew Ta
@@ -837,8 +837,8 @@ public class CucumberStepDefinitions {
 	 */
 	@When("The user initiates to save the game with name {string}")
 	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) throws Throwable {
-		cucumberFilename = filename;
-		Quoridor223Controller.savePosition(filename);
+//		cucumberFilename = filename;
+//		Quoridor223Controller.savePosition(filename);
 	}
 	
 	/**
