@@ -327,8 +327,7 @@ public class Quoridor223Controller {
 				+ (side == TOWall.Side.Up ? -1 : side == TOWall.Side.Down ? 1 : 0);
 		int newCol = candidate.getTargetTile().getColumn()
 				+ (side == TOWall.Side.Left ? -1 : side == TOWall.Side.Right ? 1 : 0);
-		if (!isWallPositionValid(newRow, newCol))
-			throw new InvalidOperationException("Move invalid");
+		if (!isWallPositionValid(newRow, newCol))throw new InvalidOperationException("Illegal Move");
 		// update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow, newCol));
 	}
@@ -348,7 +347,7 @@ public class Quoridor223Controller {
 		if (curGame.getWallMoveCandidate() == null)
 			throw new InvalidOperationException("No wall Selected");
 		// validate the position
-
+		
 		// finalize drop by putting the move into the movelist.
 		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
 		GamePosition currentPosition = curGame.getCurrentPosition();
@@ -572,7 +571,6 @@ public class Quoridor223Controller {
 		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
 		Player current_player = current_position.getPlayerToMove();
 		current_position.setPlayerToMove(current_player.getNextPlayer());
-		System.out.println(current_player);
 		// last step not necessary since always linked in loops ?
 		current_player.getNextPlayer().setNextPlayer(current_player);
 	}
@@ -756,6 +754,9 @@ public class Quoridor223Controller {
 		return curGame.getCurrentPosition().getPlayerToMove().equals(curGame.getWhitePlayer());
 	}
 
+	public static String getCurrentPlayer() {
+		return isWhitePlayer()?"White":"Black";
+	}
 	/**
 	 * @return
 	 */
