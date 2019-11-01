@@ -170,7 +170,7 @@ public class CucumberStepDefinitions {
 	public void whitePlayerChoosesAUsername() {
 
 		// white/first player chooses their name
-		Quoridor223Controller.setUser("Vanessa");;
+		Quoridor223Controller.setUser("Vanessa", "white");;
 
 	}
 
@@ -178,7 +178,7 @@ public class CucumberStepDefinitions {
 	public void blackPlayerChoosesAUsername() {
 
 		// black/second player chooses their name
-		Quoridor223Controller.setUser("Vanessa");;
+		Quoridor223Controller.setUser("Vanessa", "black");;
 
 	}
 
@@ -205,30 +205,32 @@ public class CucumberStepDefinitions {
 	@Given("The game is ready to start")
 	public void theGameIsReadyToStart() {
 		
-//		assertEquals(GameStatus.Initializing, true);
+		//set game to ready
+		Quoridor223Controller.setGameToReady();
 
 	}
 
 	@When("I start the clock")
 	public void iStartTheClock() {
 		
-		//start the clock (call a controller method)
-		//Quoridor223Controller.
-
+		// ???????????????????????????????????????????????????????????????????????????????????????????????????
+		
 	}
 	
 	@Then("The game shall be running")
 	public void theGameShallBeRunning() {
 
-		//assertEquals(GameStatus.Initializing, true);
+		//make sure the game is running
+		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus(), GameStatus.Running);
 
 	}
 
 	@And("The board shall be initialized")
 	public void theBoardShallBeInitialized() {
 
-		//assertEquals(GameStatus.Initializing, true);
-
+		// ???????????????????????????????????????????????????????????????????????????????????????????????????
+//		assertEquals(QuoridorApplication.getQuoridor().getBoard() );
+		
 	}
 	
 	/**
@@ -238,27 +240,33 @@ public class CucumberStepDefinitions {
 	@Given("Next player to set user name is {string}")
 	public void nextPlayerToSetUserNameIs(String playerColor) {
 		
-
+		Quoridor223Controller.setUser("player", playerColor);
+		
 	}
 
 	@And("There is existing user {string}")
 	public void thereIsExistingUser(String userName) {
 		
-
+		assertEquals(Quoridor223Controller.checkNameList(userName), true);
+		
 	}
 	
 	@When("The player selects existing {string}")
-	public void thePlayerSelectsExisting(String usernName) {
+	public void thePlayerSelectsExisting(String userName) {
 
-		//
+		Quoridor223Controller.setUser(userName, "white");
 
 	}
 	
 	@Then("The name of player {string} in the new game shall be {string}")
 	public void theNameOfPlayerInTheNewGameShallBe(String playerColor, String userName) {
 		
-		//assertEquals(GameStatus.Initializing, true);
-
+		if (playerColor == "white") {
+			assertEquals(Quoridor223Controller.getWhitePlayerName(), userName);
+		} else {
+			assertEquals(Quoridor223Controller.getBlackPlayerName(), userName);
+		}
+		
 	}
 	
 	
@@ -269,15 +277,15 @@ public class CucumberStepDefinitions {
 	@And("There is no existing user {string}")
 	public void thereIsNoExistingUser(String userName) {
 		
-		//
+		assertEquals(Quoridor223Controller.checkNameList(userName), false);
 
 	}
 	
 
 	@When("The player provides new user name: {string}")
-	public void thePlayerProvidesNewUserName(String usernName) {
+	public void thePlayerProvidesNewUserName(String userName) {
 		
-		//
+		Quoridor223Controller.setUser(userName, "white");
 
 	}
 	
@@ -287,16 +295,16 @@ public class CucumberStepDefinitions {
 	 * @author Vanessa Ifrah
 	 */
 	@Then("The player shall be warned that {string} already exists")
-	public void thePlayerShallBeWarnedThatUserNameAlreadyExists(String usernName) {
+	public void thePlayerShallBeWarnedThatUserNameAlreadyExists(String userName) {
 
-		//assertion
+		
 		
 	}
 
 	@And("Next player to set user name shall be {string}")
 	public void nextPlayerToSetUserNameShallBe(String userName) {
 
-		//assertion
+//		Quoridor223Controller.setUser(userName);
 		
 	}
 

@@ -28,26 +28,12 @@ public class Quoridor223Controller {
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-	public static void createGame() throws UnsupportedOperationException {
+	public static void createGame() {
 		// create Quoridor game and get users
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
         Game newGame = new Game(GameStatus.Initializing, MoveMode.WallMove, quoridor);
         
     }
-
-	public static void creatPlayers() {
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game curGame = quoridor.getCurrentGame();
-		List<User> users = quoridor.getUsers();
-        
-		// create players
-        Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
-        Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
-        whitePlayer.setNextPlayer(blackPlayer);
-        blackPlayer.setNextPlayer(whitePlayer);
-        curGame.setBlackPlayer(blackPlayer);
-        curGame.setWhitePlayer(whitePlayer);
-	}
 	
 	public static void setGameToReady() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -66,13 +52,51 @@ public class Quoridor223Controller {
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-	public static void setUser(String playerName) throws UnsupportedOperationException {
+	public static void setUser(String playerName, String color) {
 		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
 		User user = quoridor.addUser(playerName);
 		
+		// create player
+        Player player = new Player(new Time(10), user , 1, Direction.Horizontal);
+        
+        if (color == "white") {
+        	curGame.setWhitePlayer(player);
+        } else {
+        	curGame.setBlackPlayer(player);
+        	player.setNextPlayer(curGame.getWhitePlayer());
+        	curGame.getWhitePlayer().setNextPlayer(player);
+        }
+        
 	}
 	
+	public static boolean checkNameList(String name) {
+		
+		boolean result = true;
+		ArrayList<String> usernames = new ArrayList<String>();
+		try {
+			File f = new File("names.txt");
+            FileReader reader = new FileReader(f.getAbsolutePath());
+            BufferedReader bufferedReader = new BufferedReader(reader);
+ 
+            String line;
+ 
+            while ((line = bufferedReader.readLine()) != null) {
+                usernames.add(line);
+            }
+            reader.close();
+ 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		
+		if(!usernames.contains(name)) {
+			result = false;
+		}
+		
+		return result;
+	}
 
 	/**
 	 * helper method to get player by name

@@ -51,7 +51,7 @@ public class SetNamePage extends JFrame {
 	public void initPage(){
 		this.setSize(1400, 720);
 		this.setTitle("Set Time Page");
-		this.getContentPane().setBackground(Color.LIGHT_GRAY);
+		this.getContentPane().setBackground(new Color(153, 153, 153));
 		
 		// header: back button brings user back to welcome page
 		JButton btnBack = new JButton("Back");
@@ -59,6 +59,7 @@ public class SetNamePage extends JFrame {
 		btnBack.setFont(new Font("Avenir Next", Font.PLAIN, 13));
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				QuoridorApplication.setWelcomePage();
 			}
 		});
 		
@@ -114,34 +115,57 @@ public class SetNamePage extends JFrame {
 				
 				String name1 = comboBox.getSelectedItem().toString();
 				String name2 = comboBox_1.getSelectedItem().toString();
+				boolean nameWasSelected = false;
+				
+				for (int i = 1; i <= 100; i++) {
+					if (comboBox.getSelectedIndex() == i || comboBox_1.getSelectedIndex() == i) {
+						// a name has been selected from the existing list
+						nameWasSelected = true;
+						break;
+					} else {
+						// name was written by user - not selected
+						nameWasSelected = false;
+					}
+				}
 				
 				try {
+					error.setText("");
 					if (name1.equals(name2)) {
 						throw new Exception("Names must be unique.");
 					} else if (name1.equals("") || name2.equals("") || name1.equals(" ") || name2.equals(" ")) {
 						throw new Exception("Names cannot be empty.");
+					} else if ((usernames.contains(name1) || usernames.contains(name2)) && (nameWasSelected == false)) {
+						if (usernames.contains(name1)) {
+							error.setText("White player's name already exists.");
+						} else {
+							File f = new File("names.txt");
+							FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
+							writer.write("\n" + name1);
+							writer.close();
+						}
+						if (usernames.contains(name2)) {
+							error.setText(error.getText() + "\n" + "Black player's name already exists.");
+						} else {
+							File f = new File("names.txt");
+							FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
+							writer.write("\n" + name1);
+							writer.close();
+						}
+
 					} else {
-					
-					File f = new File("names.txt");
-					FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
-					if(!usernames.contains(name1)) {
-						writer.write("\n" + name1);
+						Quoridor223Controller.createGame();
+						Quoridor223Controller.setUser(name1, "white");
+						Quoridor223Controller.setUser(name2, "black");
+						QuoridorApplication.setTimePage();
 					}
-					if(!usernames.contains(name1)) {
-						writer.write("\n" + name2);
-					}
-					writer.close();
-					Quoridor223Controller.setUser(name1);
-					Quoridor223Controller.setUser(name2);
-					Quoridor223Controller.createGame();
-					Quoridor223Controller.creatPlayers();
-					QuoridorApplication.setTimePage();
-					}
-				
+
 				} catch (Exception g) {
 					error.setText(g.getMessage());
+
 				}
+
 				
+
 			}
 		});
 		
