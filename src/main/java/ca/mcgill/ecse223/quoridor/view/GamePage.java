@@ -326,13 +326,15 @@ public class GamePage extends JFrame {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					Quoridor223Controller.dropWall();
-					gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayer()+"'s Turn !!");
+					gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 				} catch (GameNotRunningException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
 					// set the notification panel to message
 				} catch (InvalidOperationException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
 					// TODO: handle exception
+					// reset the wall to the initial position
+					Quoridor223Controller.resetWall();
 				}
 				boardComponent.repaint();
 			}

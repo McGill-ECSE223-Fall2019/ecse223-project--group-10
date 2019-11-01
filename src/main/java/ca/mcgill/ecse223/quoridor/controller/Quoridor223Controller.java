@@ -347,7 +347,9 @@ public class Quoridor223Controller {
 		// check if there is wall in my hand if not throw exception
 		if (curGame.getWallMoveCandidate() == null)
 			throw new InvalidOperationException("No wall Selected");
+		
 		// validate the position
+		if(!validatePosition()) {throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));}
 		
 		// finalize drop by putting the move into the movelist.
 		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
@@ -357,7 +359,7 @@ public class Quoridor223Controller {
 		if (isWhitePlayer()) {
 			clone.addWhiteWallsOnBoard(wallToDrop);
 		} else {
-			clone.addBlackWallsOnBoard(wallToDrop);
+		clone.addBlackWallsOnBoard(wallToDrop);
 		}
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
@@ -475,13 +477,13 @@ public class Quoridor223Controller {
 	 * Feature 11: Validate Position
 	 * 
 	 * @author Sacha Lévy
-	 * @throws UnsupportedOperationException, GameNotRunningException
+	 * @throws UnsupportedOperationException
+	 * @throws GameNotRunningException 
 	 */
-	public static boolean validatePosition() throws UnsupportedOperationException{
-		// if (!isRunning()) {throw new GameNotRunningException("Game not running");}
+	public static boolean validatePosition() throws UnsupportedOperationException, GameNotRunningException{
+		if (!isRunning()) {throw new GameNotRunningException("Game not running");}
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		// Note: appears to be purely controller method as no effective elements primarily need to affect the GUI
-
+		
 		// get last move: if hasWallMoveCandidate then currently moving a wall, check move validity
 			// get target position for the wall and compare it with rest of the walls
 		// otherwise moving a pawn, get player positions
@@ -543,14 +545,23 @@ public class Quoridor223Controller {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		// wall position hash map:
 			// keys		: row*9 + col
-			// values	: directions of the current wall
+			// values	: horizontal wall is true, vertical wall is false
 		// board is 9 by 9
+		
 		Map<Integer, Boolean> wallPositions = loadWallPositionsMap();
 		if (!current_game.hasWallMoveCandidate()) {throw new UnsupportedOperationException("No wall move candidate.");}
 		WallMove move_candidate = current_game.getWallMoveCandidate();
-		int candidate_key = move_candidate.getTargetTile().getRow() * 9 + move_candidate.getTargetTile().getColumn();
-		boolean candidate_dir = move_candidate.getWallDirection().equals(Direction.Horizontal)?true:false; 
+		int candidate_row = move_candidate.getTargetTile().getRow();
+		int candidate_col = move_candidate.getTargetTile().getColumn();
 		
+		int candidate_key = candidate_row * 9 + candidate_col;
+		boolean candidate_dir = move_candidate.getWallDirection().equals(Direction.Horizontal)?true:false;
+		int adj_wall0 = candidate_dir?(candidate_row)*9+candidate_col-1:(candidate_row-1)*9+candidate_col;
+		int adj_wall1 = candidate_dir?(candidate_row)*9+candidate_col+1:(candidate_row+1)*9+candidate_col;
+		for (int current_key : wallPositions.keySet() )
+			if(candidate_key==current_key||current_key==adj_wall0||current_key==adj_wall1) return true;
+		
+	
 		// IMPLEMENTATION
 		// create a hashmap, for the wall positions => faster lookup than searching 
 		// use row*8 + col for the key in hashmaps, values to represent directions
@@ -561,9 +572,6 @@ public class Quoridor223Controller {
 		// if its horizontal check if horizontal (left & right),
 		// if its vertical check if vertical (up & down)
 
-		// check again has a wall move candidate
-		
-		
 		return false;
 	}
 
@@ -597,6 +605,10 @@ public class Quoridor223Controller {
 		if (!current_game.hasWallMoveCandidate()) {throw new UnsupportedOperationException("Game does not have a wall move candidate.");}
 		Tile target_tile = current_game.getWallMoveCandidate().getTargetTile();
 		return isWallPositionValid(target_tile.getRow(), target_tile.getColumn());
+	}
+	
+	public static void resetWall() {
+		
 	}
 
 	/**
@@ -762,6 +774,12 @@ public class Quoridor223Controller {
 	public static String getCurrentPlayer() {
 		return isWhitePlayer()?"White":"Black";
 	}
+	
+	public static String getCurrentPlayerName() {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		return isWhitePlayer()?curGame.getWhitePlayer().getUser().getName():curGame.getBlackPlayer().getUser().getName();
+	}
+	
 	/**
 	 * @return
 	 */
