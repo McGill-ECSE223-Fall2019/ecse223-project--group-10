@@ -20,7 +20,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import java.util.ArrayList;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.File;
 
 public class SetNamePage extends JFrame {
 	// username and thinking time
@@ -30,14 +36,18 @@ public class SetNamePage extends JFrame {
 	// name field
 	private JTextField whiteNamePicker;
 	private JTextField blackNamePicker;
-	
+
+	private static ArrayList<String> usernames;
+
 	// time error
 	private JButton btnLetsS;
 	
+	JLabel error = new JLabel("");
+
 	public SetNamePage() {
 		initPage();
 	}
-	
+
 	public void initPage(){
 		this.setSize(1400, 720);
 		this.setTitle("Set Time Page");
@@ -66,9 +76,27 @@ public class SetNamePage extends JFrame {
 		userName2.setFont(new Font("Avenir Next", Font.PLAIN, 14));
 		
 		// dropdown menus with usernames
-		String usernames[]={"", "Van","Bob","Laura","Jerry","Nathalie"};
-		JComboBox comboBox = new JComboBox(usernames);
-		JComboBox comboBox_1 = new JComboBox(usernames);
+		usernames = new ArrayList<String>();
+		try {
+			File f = new File("names.txt");
+            FileReader reader = new FileReader(f.getAbsolutePath());
+            BufferedReader bufferedReader = new BufferedReader(reader);
+ 
+            String line;
+ 
+            while ((line = bufferedReader.readLine()) != null) {
+                usernames.add(line);
+            }
+            reader.close();
+ 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		
+		JComboBox comboBox = new JComboBox(usernames.toArray());
+		JComboBox comboBox_1 = new JComboBox(usernames.toArray());
+		comboBox.setEditable(true);
+		comboBox_1.setEditable(true);
 		
 		// previous name implementation with text fields
 		//whiteNamePicker = new JTextField(20);
@@ -78,12 +106,42 @@ public class SetNamePage extends JFrame {
 		btnLetsS = new JButton("Let's Start");
 		btnLetsS.setBackground(new Color(204, 153, 102));
 		btnLetsS.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		
+		
+		
 		btnLetsS.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent f) {
-				// also get both players name and set them throught the main controller				
-				Quoridor223Controller.createGame(comboBox.getSelectedItem().toString(), comboBox_1.getSelectedItem().toString());
-				// if this is clicked then now display the setThinkingTime page
-				QuoridorApplication.setTimePage();
+			public void actionPerformed(ActionEvent e) {
+				
+				String name1 = comboBox.getSelectedItem().toString();
+				String name2 = comboBox_1.getSelectedItem().toString();
+				
+				try {
+					if (name1.equals(name2)) {
+						throw new Exception("Names must be unique.");
+					} else if (name1.equals("") || name2.equals("") || name1.equals(" ") || name2.equals(" ")) {
+						throw new Exception("Names cannot be empty.");
+					} else {
+					
+					File f = new File("names.txt");
+					FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
+					if(!usernames.contains(name1)) {
+						writer.write("\n" + name1);
+					}
+					if(!usernames.contains(name1)) {
+						writer.write("\n" + name2);
+					}
+					writer.close();
+					Quoridor223Controller.createGame();
+					Quoridor223Controller.createUser(name1);
+					Quoridor223Controller.createUser(name2);
+					Quoridor223Controller.creatPlayers();
+					QuoridorApplication.setTimePage();
+					}
+				
+				} catch (Exception g) {
+					error.setText(g.getMessage());
+				}
+				
 			}
 		});
 		
@@ -91,11 +149,12 @@ public class SetNamePage extends JFrame {
 		label.setFont(new Font("Heiti SC", Font.PLAIN, 26));
 		
 		
+		
 		//--------------------- Construct Page's Layout ----------------------------//
 		GroupLayout layout = new GroupLayout(getContentPane());
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
-				.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+				.addGroup(layout.createSequentialGroup()
 					.addGap(49)
 					.addComponent(btnBack)
 					.addPreferredGap(ComponentPlacement.RELATED, 893, Short.MAX_VALUE)
@@ -108,12 +167,6 @@ public class SetNamePage extends JFrame {
 						.addComponent(userName1, 200, 200, 200))
 					.addContainerGap(731, Short.MAX_VALUE))
 				.addGroup(layout.createSequentialGroup()
-					.addGap(455)
-					.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(comboBox, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(comboBox_1, Alignment.LEADING, 0, 302, Short.MAX_VALUE))
-					.addContainerGap())
-				.addGroup(layout.createSequentialGroup()
 					.addGap(392)
 					.addComponent(label, GroupLayout.PREFERRED_SIZE, 448, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(560, Short.MAX_VALUE))
@@ -121,6 +174,16 @@ public class SetNamePage extends JFrame {
 					.addGap(495)
 					.addComponent(btnLetsS, GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
 					.addGap(709))
+				.addGroup(layout.createSequentialGroup()
+					.addGap(560)
+					.addComponent(error)
+					.addContainerGap(840, Short.MAX_VALUE))
+				.addGroup(layout.createSequentialGroup()
+					.addGap(455)
+					.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
+						.addComponent(comboBox, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addComponent(comboBox_1, Alignment.LEADING, 0, 302, Short.MAX_VALUE))
+					.addContainerGap(643, Short.MAX_VALUE))
 		);
 		layout.setVerticalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
@@ -136,13 +199,15 @@ public class SetNamePage extends JFrame {
 					.addGap(33)
 					.addComponent(userName2)
 					.addGap(18)
-					.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(104)
+					.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
+					.addGap(46)
+					.addComponent(error)
+					.addGap(42)
 					.addComponent(btnLetsS, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(107, Short.MAX_VALUE))
+					.addContainerGap(103, Short.MAX_VALUE))
 				.addGroup(layout.createSequentialGroup()
 					.addGap(49)
-					.addComponent(btnBack, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+					.addComponent(btnBack, GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
 					.addGap(605))
 		);
 				

@@ -46,30 +46,6 @@ public class SetThinkingTimePage extends JFrame {
 	public SetThinkingTimePage() {
 		initPage();
 	}
-
-  // @sacha method for old timer
-  // to delete
-	private Time getWhiteTime() {
-		return Time.valueOf("00:"+whiteTimePicker.getText());
-	}
-	
-  // @sacha method for old timer
-  // to delete
-	private Time getBlackTime() {
-		return Time.valueOf("00:"+blackTimePicker.getText());
-	}
-	
-  // @sacha log users when time format is incorrect
-	private void failToReadTime() {
-		setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
-	}
-	
-  // @sacha method to create main page
-	private void createMainPage() {
-		// if this is clicked then now display the setThinkingTime page
-		GamePage mainPage = new GamePage();
-		mainPage.setVisible(true);
-	}
 	
 	private void initPage(){
 		this.setSize(1400, 720);
@@ -120,8 +96,9 @@ public class SetThinkingTimePage extends JFrame {
 					String blackTime[] = blackTimePicker.getText().split(":");
 					long wTime = Integer.parseInt(whiteTime[0])*60*1000 + Integer.parseInt(whiteTime[1])*1000;
 					long bTime = Integer.parseInt(blackTime[0])*60*1000 + Integer.parseInt(blackTime[1])*1000;
-					Quoridor223Controller.setThinkingTime(new Time(wTime), "White");
-					Quoridor223Controller.setThinkingTime(new Time(bTime), "Black");
+					Quoridor223Controller.setThinkingTime(new Time(wTime), Quoridor223Controller.getWhitePlayerName());
+					Quoridor223Controller.setThinkingTime(new Time(bTime), Quoridor223Controller.getBlackPlayerName());
+					Quoridor223Controller.setGameToReady();
 					status = true;
 					Quoridor223Controller.initializeBoard();
 					QuoridorApplication.setMainPage();
@@ -187,10 +164,6 @@ public class SetThinkingTimePage extends JFrame {
 				.addComponent(startGame)
 			)
 		);
-	}
-	
-	private void refreshData() {
-		
 	}
 	
 	public boolean getPageStatus() {
