@@ -42,6 +42,10 @@ public class SetNamePage extends JFrame {
 	// time error
 	private JButton btnLetsS;
 	
+	// hasError and confirm
+	boolean hasError = false;
+	boolean confirm = false;
+	
 	JLabel error = new JLabel("");
 
 	public SetNamePage() {
@@ -114,35 +118,48 @@ public class SetNamePage extends JFrame {
 				
 				String name1 = comboBox.getSelectedItem().toString();
 				String name2 = comboBox_1.getSelectedItem().toString();
+				error.setText("");
 				
-				try {
-					if (name1.equals(name2)) {
-						throw new Exception("Names must be unique.");
-					} else if (name1.equals("") || name2.equals("") || name1.equals(" ") || name2.equals(" ")) {
-						throw new Exception("Names cannot be empty.");
-					} else {
-					
-					File f = new File("names.txt");
-					FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
-					if(!usernames.contains(name1)) {
+				if(name1.equals("") || name2.equals("") || name1.equals(" ") || name2.equals(" ")) {
+					error.setText("Names must not be empty");
+					hasError = true;
+				}else if (name1.equals(name2)) {
+					error.setText("Names must be unique.");
+					hasError = true;
+				}
+				
+				if (usernames.contains(name1)) {
+					error.setText("White player's name already exists.");
+					hasError = true;
+					confirm = true;
+				}else {
+					try {
+						File f = new File("names.txt");
+						FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
 						writer.write("\n" + name1);
-					}
-					if(!usernames.contains(name1)) {
+						writer.close();
+					}catch (IOException exp) {}
+				}
+				
+				if (usernames.contains(name2)) {
+					error.setText("Black player's name already exists.");
+					hasError = true;
+					confirm = true;
+				}else {
+					try {
+						File f = new File("names.txt");
+						FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
 						writer.write("\n" + name2);
-					}
-					writer.close();
+						writer.close();
+					}catch (IOException exp) {}
+				}
+				
 					Quoridor223Controller.createGame();
 					Quoridor223Controller.createUser(name1);
 					Quoridor223Controller.createUser(name2);
 					Quoridor223Controller.creatPlayers();
 					QuoridorApplication.setTimePage();
-					}
-				
-				} catch (Exception g) {
-					error.setText(g.getMessage());
-				}
-				
-			}
+			}	
 		});
 		
 		JLabel label = new JLabel("Please choose your player names");
