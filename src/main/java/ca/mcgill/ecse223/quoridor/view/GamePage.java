@@ -75,8 +75,6 @@ public class GamePage extends JFrame {
 	private String userToMove;
 
 	// remaining time
-	private Time whiteRemainingTime;
-	private Time blackRemainingTime;
 	private JLabel whiteTime;
 	private JLabel blackTime;
 
@@ -119,28 +117,27 @@ public class GamePage extends JFrame {
 		boardComponent.setSize(new Dimension(500, 500));
 		boardComponent.setBackground(new Color(206, 159, 111));
 
-		// initialize username
+		// initialize username 1
 		TOGame players = Quoridor223Controller.getListOfPlayers();
-		userName1 = new JLabel(players.getPlayerOne(), SwingConstants.CENTER);
 		name1 = players.getPlayerOne();
+		userName1 = new JLabel(name1, SwingConstants.CENTER);
 		userName1.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		userName1.setBounds(876, 94, 50, 32);
-		userName2 = new JLabel(players.getPlayerTwo(), SwingConstants.CENTER);
+		
+		// initialize username 2
 		name2 = players.getPlayerTwo();
+		userName2 = new JLabel(name2, SwingConstants.CENTER);
 		userName2.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		userName2.setBounds(620, 94, 46, 33);
+		
 		userToMove = players.getPlayerToMove();
 
-		// initialize time (for now default to 10, later will get from model through
-		// controller)
-		whiteRemainingTime = players.getPlayerOneTime();
-		String wTime[] = whiteRemainingTime.toString().split(":");
-		blackRemainingTime = players.getPlayerTwoTime();
-		String bTime[] = blackRemainingTime.toString().split(":");
-		whiteTime = new JLabel(wTime[1] + ":" + wTime[2], SwingConstants.CENTER);
+		// initialize time 
+		whiteTime = new JLabel(players.getPlayerOneTime().toString());
 		whiteTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		whiteTime.setBounds(936, 94, 64, 33);
-		blackTime = new JLabel(bTime[1] + ":" + bTime[2], SwingConstants.CENTER);
+		
+		blackTime = new JLabel(players.getPlayerTwoTime().toString());
 		blackTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		blackTime.setBounds(676, 94, 64, 33);
 
@@ -155,6 +152,7 @@ public class GamePage extends JFrame {
 		btnRotateWall = new JButton("Rotate Wall");
 		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnRotateWall.setBounds(880, 145, 120, 40);
+		
 		// initialize forfeit, confirm
 		forfeit = new JButton("Forfeit Game");
 		forfeit.setFont(new Font("Tahoma", Font.PLAIN, 13));
@@ -377,23 +375,23 @@ public class GamePage extends JFrame {
 	}
 
 	private void refreshTime() {
-		if (userToMove.equals(name1)) {
-			Quoridor223Controller.setThinkingTime(new Time(whiteRemainingTime.getTime() - 1000), name1);
-		} else {
-			Quoridor223Controller.setThinkingTime(new Time(blackRemainingTime.getTime() - 1000), name2);
-		}
+		if(whiteTime.getText().equals("00:00:00") || blackTime.getText().equals("00:00:00")) {
+			timer.cancel();
+		}else {
+			if (userToMove.equals(name1)) {
+				Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(whiteTime.getText()).getTime() - 1000), name1);
+			} else {
+				Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(blackTime.getText()).getTime() - 1000), name2);
+			}
 
-		TOGame players = Quoridor223Controller.getListOfPlayers();
-		userToMove = players.getPlayerToMove();
+			TOGame players = Quoridor223Controller.getListOfPlayers();
+			userToMove = players.getPlayerToMove();
 
-		if (players.getPlayerToMove().equals(players.getPlayerOne())) {
-			whiteRemainingTime = new Time(players.getPlayerOneTime().getTime());
-			String wTime[] = whiteRemainingTime.toString().split(":");
-			whiteTime.setText(wTime[1] + ":" + wTime[2]);
-		} else {
-			blackRemainingTime = new Time(players.getPlayerTwoTime().getTime());
-			String bTime[] = blackRemainingTime.toString().split(":");
-			blackTime.setText(bTime[1] + ":" + bTime[2]);
+			if (players.getPlayerToMove().equals(players.getPlayerOne())) {
+				whiteTime.setText(players.getPlayerOneTime().toString());
+			} else {
+				blackTime.setText(players.getPlayerTwoTime().toString());
+			}
 		}
 	}
 
