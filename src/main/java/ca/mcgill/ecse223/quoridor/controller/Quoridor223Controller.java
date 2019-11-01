@@ -28,26 +28,48 @@ public class Quoridor223Controller {
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-	public static void createGame(String user1, String user2) throws UnsupportedOperationException {
+	public static void createGame() throws UnsupportedOperationException {
+		// create Quoridor game and get users
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game newGame = new Game(GameStatus.Running, MoveMode.WallMove, quoridor);
-		List<User> users = selectUser(user1, user2);
-		// create players
-		Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
-		Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
-		whitePlayer.setNextPlayer(blackPlayer);
-		blackPlayer.setNextPlayer(whitePlayer);
-		newGame.setBlackPlayer(blackPlayer);
-		newGame.setWhitePlayer(whitePlayer);
-	}
+        Game newGame = new Game(GameStatus.Initializing, MoveMode.WallMove, quoridor);
+        
+    }
 
+	public static void creatPlayers() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		List<User> users = quoridor.getUsers();
+        
+		// create players
+        Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
+        Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
+        whitePlayer.setNextPlayer(blackPlayer);
+        blackPlayer.setNextPlayer(whitePlayer);
+        curGame.setBlackPlayer(blackPlayer);
+        curGame.setWhitePlayer(whitePlayer);
+	}
+	
+	public static void setGameToReady() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.setGameStatus(GameStatus.ReadyToStart);
+	}
+	
+	public static void setGameToRun() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.setGameStatus(GameStatus.Running);
+	}
+	
 	/**
 	 * Feature 2: Select an existing user
 	 * 
 	 * @author Vanessa Ifrah
+	 * @param playerName
 	 * @throws UnsupportedOperationException
 	 */
 	public static List<User> selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
+		
 		// load the user
 		if(!User.hasWithName(playerName1))createUser(playerName1);
 		if(!User.hasWithName(playerName2))createUser(playerName2);
@@ -63,10 +85,13 @@ public class Quoridor223Controller {
 	 * @author Vanessa Ifrah
 	 * @throws UnsupportedOperationException
 	 */
-	public static void createUser(String name) throws UnsupportedOperationException {
+	public static void createUser(String playerName) throws UnsupportedOperationException {
+		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		User user = new User(name, quoridor);
+		User user = quoridor.addUser(playerName);
+		
 	}
+	
 
 	/**
 	 * helper method to get player by name
@@ -100,7 +125,8 @@ public class Quoridor223Controller {
 		// get current Game
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Player currentPlayer = getPlayerByName(playerName);
-				// set thinking time of that player
+		
+		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
 	}
 
@@ -134,15 +160,19 @@ public class Quoridor223Controller {
 		// get quoridor object
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 
-		// create a new board
-		Board board = new Board(quoridor);
-		// add tiles
-		for (int i = 1; i <= 9; i++) { // rows
-			for (int j = 1; j <= 9; j++) { // columns
-				board.addTile(i, j);
+		
+		// create a new board if not yet created
+		Board board;
+		if(!quoridor.hasBoard()) {
+			board = new Board(quoridor);
+			// add tiles
+			for (int i = 1; i <= 9; i++) { // rows
+				for (int j = 1; j <= 9; j++) { // columns
+					board.addTile(i, j);
+				}
 			}
-		}
-
+		}	
+		
 		// create walls
 		for (int i = 0; i < 10; i++) {
 			new Wall(0 * 10 + i + 1, quoridor.getCurrentGame().getWhitePlayer());
@@ -174,7 +204,11 @@ public class Quoridor223Controller {
 			gamePosition.addBlackWallsInStock(wall);
 		}
 
+		// set current position to a new game position
 		currentGame.setCurrentPosition(gamePosition);
+		
+		// set next player
+		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
 	}
 
 	// under feature 5
@@ -329,7 +363,6 @@ public class Quoridor223Controller {
 		curGame.setWallMoveCandidate(null);
 		//Switch Player here
 		SwitchPlayer();
-
 	}
 
 	/**

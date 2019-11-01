@@ -158,38 +158,39 @@ public class CucumberStepDefinitions {
 	@When("A new game is being initialized")
 	public void aNewGameIsBeingInitialized() {
 		
-		// create the new game
-		Quoridor223Controller.createGame("Test1","Test2");
+		//Quoridor223Controller.initializeBoard();
+		//create the new game
+		Quoridor223Controller.createGame();
 	}
 
 	@And("White player chooses a username")
-	public void whitePlayerChoosesAUsername(String playerName1) {
+	public void whitePlayerChoosesAUsername() {
 
 		// white/first player chooses their name
-		Quoridor223Controller.createUser(playerName1);
+//		Quoridor223Controller.selectUser("player1");
 
 	}
 
 	@And("Black player chooses a username")
-	public void blackPlayerChoosesAUsername(String playerName2) {
+	public void blackPlayerChoosesAUsername() {
 
 		// black/second player chooses their name
-		Quoridor223Controller.createUser(playerName2);
+//		Quoridor223Controller.selectUser("player2");
 
 	}
 
 	@And("Total thinking time is set")
-	public void totalThinkingTimeIsSet(Time thinkingTime, String playerName) {
+	public void totalThinkingTimeIsSet() {
 
-		// black/second player chooses their name
-		Quoridor223Controller.setThinkingTime(thinkingTime, playerName);
+		Quoridor223Controller.setThinkingTime(new Time(10), "playerName");
 
 	}
 
 	@Then("The game shall become ready to start")
 	public void theGameShallBecomeReadyToStart() {
 
-		//assertEquals(GameStatus.Initializing, true);
+		//check that the game has started
+		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus(), GameStatus.ReadyToStart);
 
 	}
 	
@@ -201,16 +202,22 @@ public class CucumberStepDefinitions {
 	@Given("The game is ready to start")
 	public void theGameIsReadyToStart() {
 		
-		// 
-		//		Quoridor223Controller.createGame();
+//		assertEquals(GameStatus.Initializing, true);
 
 	}
 
 	@When("I start the clock")
 	public void iStartTheClock() {
 		
-		// 
-		//		Quoridor223Controller.createGame();
+		//start the clock (call a controller method)
+		//Quoridor223Controller.
+
+	}
+	
+	@Then("The game shall be running")
+	public void theGameShallBeRunning() {
+
+		//assertEquals(GameStatus.Initializing, true);
 
 	}
 
@@ -311,7 +318,7 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
-	 * @author Andrew Ta
+	 * @author Andfrew Ta
 	 * @param newTime
 	 */
 	@When("{int}:{int} is set as the thinking time")
