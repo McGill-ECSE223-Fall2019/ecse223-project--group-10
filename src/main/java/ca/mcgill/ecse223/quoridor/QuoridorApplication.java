@@ -41,11 +41,9 @@ public class QuoridorApplication {
 	}
 	
 	public static void setMainPage() {
-		if(timePage.getPageStatus()) {
-			timePage.setVisible(false);
-			game = new GamePage();
-			game.setVisible(true);
-		}
+		timePage.setVisible(false);
+		game = new GamePage();
+		game.setVisible(true);
 	}
 	public static void setTimePage() {
 		namePage.setVisible(false);
