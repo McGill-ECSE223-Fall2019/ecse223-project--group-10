@@ -28,12 +28,9 @@ public class QuoridorApplication {
 	private static WelcomePage lobby;
 	private static SetNamePage namePage;
 	public static void main(String[] args) {
-		lobby = new WelcomePage();
-		lobby.setVisible(true);
-		//GamePage mainPage = new GamePage();
-		//mainPage.setVisible(true);
-//		timePage = new SetThinkingTimePage();
-//		timePage.setVisible(true);
+
+	lobby = new WelcomePage();
+	lobby.setVisible(true);
 	}
 
 	public static Quoridor getQuoridor() {

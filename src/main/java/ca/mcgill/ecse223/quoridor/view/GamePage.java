@@ -324,7 +324,7 @@ public class GamePage extends JFrame {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					Quoridor223Controller.dropWall();
-					gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayer()+"'s Turn !!");
+					gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 				} catch (GameNotRunningException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
 					// set the notification panel to message
