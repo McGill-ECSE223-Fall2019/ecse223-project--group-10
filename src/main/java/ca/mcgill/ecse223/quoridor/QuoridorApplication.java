@@ -31,10 +31,10 @@ public class QuoridorApplication {
 
 	lobby = new WelcomePage();
 	lobby.setVisible(true);
-		//GamePage mainPage = new GamePage();
-		//mainPage.setVisible(true);
-//		timePage = new SetThinkingTimePage();
-//		timePage.setVisible(true);
+	//	GamePage mainPage = new GamePage();
+	//	mainPage.setVisible(true);
+	//	timePage = new SetThinkingTimePage();
+	//	timePage.setVisible(true);
 	}
 
 	public static Quoridor getQuoridor() {
