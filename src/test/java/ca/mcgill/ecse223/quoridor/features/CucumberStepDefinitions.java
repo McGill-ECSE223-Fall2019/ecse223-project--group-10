@@ -789,14 +789,6 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I try to move the wall {string}")
 	public void iTryToMoveTheWallSide(String side) {
-		try {
-			TOWall.Side direction = side.equalsIgnoreCase("UP") ? TOWall.Side.Up
-					: side.equalsIgnoreCase("DOWN") ? TOWall.Side.Down
-							: side.equalsIgnoreCase("LEFT") ? TOWall.Side.Left : TOWall.Side.Right;
-			Quoridor223Controller.moveWall(direction);
-		} catch (Exception e) {
-
-		}
 		gamePage.clickMoveWall(side);
 	}
 
