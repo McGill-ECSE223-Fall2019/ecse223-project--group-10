@@ -1121,6 +1121,8 @@ public class CucumberStepDefinitions {
 			Wall wall = Wall.getWithId(j + 10 + 1);
 			gamePosition.addBlackWallsInStock(wall);
 		}
+		game.setCurrentPosition(gamePosition);
+		gamePage = new GamePage();
 	}
 		
 	private void createAndPrepareGame(ArrayList<Player> players) {
