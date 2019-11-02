@@ -5,5 +5,3 @@ Enan
 Mitchell
 Max
 Bob
-101
-123

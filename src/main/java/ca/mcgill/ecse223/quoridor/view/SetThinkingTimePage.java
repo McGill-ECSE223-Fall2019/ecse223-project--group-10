@@ -25,9 +25,6 @@ public class SetThinkingTimePage extends JFrame {
 	//username and thinking time
 	private JLabel userName1;
 	private JLabel userName2;;
-			
-	//set time status
-	private boolean status = false;
 	
 	//thinking time
 	private JFormattedTextField whiteTimePicker;
@@ -53,9 +50,12 @@ public class SetThinkingTimePage extends JFrame {
 		this.getContentPane().setBackground(Color.LIGHT_GRAY);
 	
 		// initialize username
-		userName1 = new JLabel(String.format("<html><font color='white' >%s</font></html>", Quoridor223Controller.getWhitePlayerName()));
+		// @sacha: commented JLABELS to get player names from controller
+		//userName1 = new JLabel(String.format("<html><font color='white' >%s</font></html>", Quoridor223Controller.getWhitePlayerName()));
+		userName1 = new JLabel("<html><font color='black' >WHITE</font></html>");
 		userName1.setFont(new Font("Arial", Font.PLAIN, 25));
-		userName2 = new JLabel(String.format("<html><font color='black' >%s</font></html>", Quoridor223Controller.getBlackPlayerName()));
+		//userName2 = new JLabel(String.format("<html><font color='black' >%s</font></html>", Quoridor223Controller.getBlackPlayerName()))
+		userName2 = new JLabel("<html><font color='black' >BLACK</font></html>");
 		userName2.setFont(new Font("Arial", Font.PLAIN, 25));
 				
 		// intialize start-game button
@@ -89,16 +89,20 @@ public class SetThinkingTimePage extends JFrame {
 		startGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
-					String whiteTime[] = whiteTimePicker.getText().split(":");
-					String blackTime[] = blackTimePicker.getText().split(":");
-					long wTime = Integer.parseInt(whiteTime[0])*60*1000 + Integer.parseInt(whiteTime[1])*1000;
-					long bTime = Integer.parseInt(blackTime[0])*60*1000 + Integer.parseInt(blackTime[1])*1000;
-					Quoridor223Controller.setThinkingTime(new Time(wTime), Quoridor223Controller.getWhitePlayerName());
-					Quoridor223Controller.setThinkingTime(new Time(bTime), Quoridor223Controller.getBlackPlayerName());
+					String whiteTime = "00:" + whiteTimePicker.getText();
+					String blackTime = "00:" + blackTimePicker.getText();
+					
+					// set thinking time for two players
+					Quoridor223Controller.setThinkingTime(Time.valueOf(whiteTime), Quoridor223Controller.getWhitePlayerName());
+					Quoridor223Controller.setThinkingTime(Time.valueOf(blackTime), Quoridor223Controller.getBlackPlayerName());
+					
+					// set game ready to play
 					Quoridor223Controller.setGameToReady();
-					status = true;
+					
+					// initialize a board and open a game page
 					Quoridor223Controller.initializeBoard();
 					QuoridorApplication.setMainPage();
+					
 				}catch (NumberFormatException e) {
 					setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
 				}
@@ -161,9 +165,5 @@ public class SetThinkingTimePage extends JFrame {
 				.addComponent(startGame)
 			)
 		);
-	}
-	
-	public boolean getPageStatus() {
-		return this.status;
 	}
 }
