@@ -421,11 +421,7 @@ public class Quoridor223Controller {
 	// TODO: Feature 10: Load Game
 	public static boolean loadPosition(String filename) throws IOException {
 		System.out.println("called load position");
-		// check if the Game is running, if it is, throw exception
-		/*if (isRunning()) {
-			GamePage.errorPrompt("Cannot Load Game since Game is currently running");
-			return false;
-		}*/
+		
 		boolean loadedPosition = false;
 		String relPath = "./ca.mcgill.ecse223.quoridor/" + filename;
 
@@ -1168,7 +1164,7 @@ public class Quoridor223Controller {
 	 * @param loadFile
 	 * @return
 	 */
-	public static boolean loadMoveDataFromFile(String loadFile) {
+	public static boolean loadMoveDataFromFile(String loadFile) {		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Board board = quoridor.getBoard();
 		Game currentGame = quoridor.getCurrentGame();
@@ -1209,13 +1205,15 @@ public class Quoridor223Controller {
 					Character.getNumericValue(saveFileSecondLine.charAt(4)), board);			
 			whiteMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
 			blackMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
+			currentGamePosition.setPlayerToMove(whitePlayer);
 		} else {
 			blackTile = new Tile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
 					Character.getNumericValue(saveFileFirstLine.charAt(4)), board);
 			whiteTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
 					Character.getNumericValue(saveFileSecondLine.charAt(4)), board);
-			blackMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
-			whiteMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
+			blackMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s?)|(B: \\w\\w,\\s?)|(,\\s?)");
+			whiteMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s?)|(B: \\w\\w,\\s?)|(,\\s?)");
+			currentGamePosition.setPlayerToMove(blackPlayer);
 		}
 		
 		// set the new player positions
@@ -1275,12 +1273,11 @@ public class Quoridor223Controller {
 				} catch (UnsupportedOperationException e) {
 					return false;
 				} catch (GameNotRunningException e) {
-					return false;
+					//return false;
 				}
 				currentGame.setWallMoveCandidate(null);
 				currentGame.addMove(newMove);
 				currentGamePosition.addWhiteWallsOnBoard(currentWall);
-				currentGamePosition.setPlayerToMove(blackPlayer);
 				indexOfWhiteWallsPlaced++;
 			}
 		}
@@ -1301,7 +1298,6 @@ public class Quoridor223Controller {
 				currentGame.addMove(newMove);
 				currentGamePosition.addBlackWallsOnBoard(currentWall);
 				currentGame.setWallMoveCandidate(null);
-				currentGamePosition.setPlayerToMove(whitePlayer);
 				indexOfBlackWallsPlaced++;
 			}
 		}

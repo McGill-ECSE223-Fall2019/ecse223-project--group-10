@@ -62,7 +62,8 @@ public class CucumberStepDefinitions {
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
-		createUsersAndPlayers("user1", "user2");
+		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		createAndPrepareGame(createUsersAndPlayers);
 	}
 
 	@Given("^The game is running$")
@@ -908,7 +909,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The position to load is valid")
 	public void thePositionToLoadIsValid() {
-		loadSuccessful = Quoridor223Controller.loadMoveDataFromFile(cucumberFilename);
+		loadSuccessful = Quoridor223Controller.loadMoveDataFromFile("./ca.mcgill.ecse223.quoridor/" + cucumberFilename);
 	}
 	
 	/**
@@ -919,7 +920,6 @@ public class CucumberStepDefinitions {
 	//@And("It shall be {player}'s turn")
 	public void itShallBePlayersTurn(String playerColor) {
 		assertTrue("Could not set nextPlayer to that player", checkCurrentPlayerToMoveByColor(playerColor));
-		//assertTrue("It is not that player's turn", Quoridor223Controller.getPlayerColorToMove().equals(playerColor));
 	}
 	
 	/**
@@ -931,7 +931,6 @@ public class CucumberStepDefinitions {
 	@And("{string} shall be at {int}:{int}") // this is for both the player and opponent
 	public void playerShallbeAtRowCol(String playerColor, int row, int col) {
 		assertTrue("Could not set player's position", checkPlayerPositionByColor(playerColor, row, col));
-		//assertTrue("Could not set player's position", Quoridor223Controller.getPlayerPositionByColor(player).equals(row+col));
 	}
 	
 	/**
@@ -945,7 +944,6 @@ public class CucumberStepDefinitions {
 	@And("{string} shall have a {} wall at {int}:{int}") // this is for both the player and the opponent
 	public void playerShallHaveADirectionWallAtRowCol(String playerColor, String direction, int row, int col) {
 		assertTrue("Could not set a wall's direction and position", checkPlayerWallPositionByColor(playerColor, direction, row, col));
-		//assertTrue("Could not set that wall's direction and position", Quoridor223Controller.getPlayerWallPositionByColor(player).equals(row+col));
 	}
 	
 	/**
@@ -954,10 +952,10 @@ public class CucumberStepDefinitions {
 	 */
 	@And("Both players shall have {int} in their stacks")
 	public void bothPlayersShallHaveRemainingWallsInTheirStacks(int remainingWalls) {
-		assertTrue("White player does not have the correct number of walls in their stack", 
-				getPlayerByColor("white").numberOfWalls() == remainingWalls);
+		assertTrue("White player does not have the correct number of walls in their stack",
+				checkPlayerWallsInStockByColor("white", remainingWalls));
 		assertTrue("Black player does not have the correct number of walls in their stack", 
-				getPlayerByColor("black").numberOfWalls() == remainingWalls);
+				checkPlayerWallsInStockByColor("black", remainingWalls));
 	}
 	
 	/**
@@ -1092,6 +1090,38 @@ public class CucumberStepDefinitions {
 			game.setCurrentPosition(gamePosition);
 			gamePage = new GamePage();
 		}
+		
+		private void createAndPrepareGame(ArrayList<Player> players) {
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			// There are total 36 tiles in the first four rows and
+			// indexing starts from 0 -> tiles with indices 36 and 36+8=44 are the starting
+			// positions
+			Tile player1StartPos = quoridor.getBoard().getTile(36);
+			Tile player2StartPos = quoridor.getBoard().getTile(44);
+			
+			Game game = new Game(GameStatus.ReadyToStart, MoveMode.PlayerMove, quoridor);
+			game.setWhitePlayer(players.get(0));
+			game.setBlackPlayer(players.get(1));
+
+			PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), player1StartPos);
+			PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), player2StartPos);
+
+			GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
+			
+			// Add the walls as in stock for the players
+			for (int j = 0; j < 10; j++) {
+				Wall wall = Wall.getWithId(j);
+				gamePosition.addWhiteWallsInStock(wall);
+			}
+			for (int j = 0; j < 10; j++) {
+				Wall wall = Wall.getWithId(j + 10);
+				gamePosition.addBlackWallsInStock(wall);
+			}
+
+			game.setCurrentPosition(gamePosition);
+			gamePage = new GamePage();
+		}
+		
 	/**
 	 * Set a MoveCandidate based on the given parameter
 	 * @author Le-Li Mao
@@ -1252,15 +1282,20 @@ public class CucumberStepDefinitions {
 	 */
 	public static boolean checkPlayerPositionByColor(String playerColor, int row, int col) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Board board = quoridor.getBoard();
 		Game game = quoridor.getCurrentGame();
-
+		PlayerPosition playerPosition;
+		
 		if (playerColor.equals("white")) {
-			return game.getCurrentPosition().getWhitePosition().
-					equals(new PlayerPosition(getPlayerByColor(playerColor), new Tile(row, col, board)));
+			playerPosition = game.getCurrentPosition().getWhitePosition();
 		} else {
-			return game.getCurrentPosition().getBlackPosition().
-					equals(new PlayerPosition(getPlayerByColor(playerColor), new Tile(row, col, board)));
+			playerPosition = game.getCurrentPosition().getBlackPosition();
+		}
+		
+		Tile tile = playerPosition.getTile();
+		if (tile.getRow() == row && tile.getColumn() == col) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 
@@ -1287,6 +1322,28 @@ public class CucumberStepDefinitions {
 			}
 		}
 		return false;
+	}
+	
+	/**
+	 * checks if the specified player has remainingWalls in their stock
+	 * @param playerColor
+	 * @param remainingWalls
+	 * @return
+	 */
+	public static boolean checkPlayerWallsInStockByColor(String playerColor, int remainingWalls) {
+		int playerWalls;
+		
+		if (playerColor.equals("white")) {
+			playerWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock().size();
+		} else {
+			playerWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock().size();
+		}
+		
+		if (playerWalls == remainingWalls) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 	
 	/**
