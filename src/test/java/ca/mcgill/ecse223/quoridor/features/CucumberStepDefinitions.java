@@ -50,7 +50,6 @@ public class CucumberStepDefinitions {
 	private int curRound = 0;
 	private Player initialPlayer = null;
 	private Move initialMove = null;
-	private GamePosition loadedGamePosition = null;
 	private String cucumberFilename	= null;
 	private GamePage gamePage;
 	@Given("^The game is not running$")
@@ -111,30 +110,28 @@ public class CucumberStepDefinitions {
 				quoridor.getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);
 				quoridor.getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(wall);
 			}
-			wallIdxForPlayer = wallIdxForPlayer++;
+			wallIdxForPlayer = wallIdxForPlayer+playerIdx;
 			playerIdx++;
 			playerIdx = playerIdx % 2;
 		}
-		System.out.println(quoridor.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard().size()+quoridor.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard().size());
-
 	}
 
 	@And("I shall not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand() {
 		// GUI-related feature -- TODO for later
-//		assertEquals(false, gamePage.hasWallInHand());
+		assertEquals(false, gamePage.hasWallInHand());
 	}
 	
 	@And("^I have a wall in my hand over the board$")
 	public void iHaveAWallInMyHandOverTheBoard() throws Throwable {
 		// GUI-related feature -- TODO for later
-//		assertEquals(true, gamePage.hasWallInHand());
+		assertEquals(true, gamePage.hasWallInHand());
 	}
 	
 	@And("I do not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand2() {
 		// GUI-related feature -- TODO for later
-//		assertEquals(false, gamePage.hasWallInHand());
+		assertEquals(false, gamePage.hasWallInHand());
 	}
 	
 	// ***********************************************
@@ -789,7 +786,7 @@ public class CucumberStepDefinitions {
 	@And("I shall have a wall in my hand over the board")
 	public void iShallHaveAWallInMyHandOverTheBoard() {
 //		System.out.println(gamePage.hasWallInHand());
-//		assertEquals(true,gamePage.hasWallInHand());
+		assertEquals(true,gamePage.hasWallInHand());
 	}
 	@Then("I shall be notified that my move is illegal")
 	public void iShallBeNotifiedThatMyMoveIsIllegal() {
@@ -1080,6 +1077,7 @@ public class CucumberStepDefinitions {
 	 */
 	private void getWallMoveCandidate(Player player, String dir, int row, int col) {
 		//create a new WallMove Candidate and place the corresponding tile
+		
 		Board board = QuoridorApplication.getQuoridor().getBoard();
 		Game game =  QuoridorApplication.getQuoridor().getCurrentGame();
 		Wall toBeUsed;
@@ -1087,12 +1085,13 @@ public class CucumberStepDefinitions {
 		if(player.equals(game.getWhitePlayer())) {
 			toBeUsed = game.getCurrentPosition().getWhiteWallsInStock(0);
 			game.getCurrentPosition().removeWhiteWallsInStock(toBeUsed);
+			game.getCurrentPosition().addWhiteWallsOnBoard(toBeUsed);
 		}
 		else {
 			toBeUsed = game.getCurrentPosition().getBlackWallsInStock(0);
 			game.getCurrentPosition().removeBlackWallsInStock(toBeUsed);
+			game.getCurrentPosition().addBlackWallsOnBoard(toBeUsed);
 		}
-		
 		game.setWallMoveCandidate(new WallMove(currentWallID++, curRound++, player, board.getTile((row-1)*9+(col-1)), game, wallDirection, toBeUsed));
 		
 	}
@@ -1106,13 +1105,13 @@ public class CucumberStepDefinitions {
 	private void setWall(String dir, int row, int col) {
 		Game game =  QuoridorApplication.getQuoridor().getCurrentGame();
 		Board board = QuoridorApplication.getQuoridor().getBoard();
-		if(game.getWallMoveCandidate()!=null) {
-			game.getWallMoveCandidate().setTargetTile(board.getTile((row-1)*9+(col-1)));
-			game.getWallMoveCandidate().setWallDirection(dir.equalsIgnoreCase("horizontal")?Direction.Horizontal:Direction.Vertical);
-		}
-		else {
-			getWallMoveCandidate(game.getCurrentPosition().getPlayerToMove(),dir, row, col);
-		}
+//		if(game.getWallMoveCandidate()!=null) {
+//			game.getWallMoveCandidate().setTargetTile(board.getTile((row-1)*9+(col-1)));
+//			game.getWallMoveCandidate().setWallDirection(dir.equalsIgnoreCase("horizontal")?Direction.Horizontal:Direction.Vertical);
+//		}
+//		else {
+		getWallMoveCandidate(game.getCurrentPosition().getPlayerToMove(),dir, row, col);
+//		}
 		initialMove = game.getWallMoveCandidate();
 	}
 	

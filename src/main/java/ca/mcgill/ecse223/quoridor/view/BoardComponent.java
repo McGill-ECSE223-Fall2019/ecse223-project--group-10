@@ -98,8 +98,7 @@ public class BoardComponent extends JPanel {
 			g2d.drawImage(hWall, (int) whiteWallInStock[wn - 1 - i][0], (int) whiteWallInStock[wn - i - 1][1], this);
 		for (TOWall wall : wallOnBoard)
 			drawWall(wall, g2d, false);
-		if (wallInHand != null)
-			drawWall(wallInHand, g2d, true);
+		if (wallInHand != null)drawWall(wallInHand, g2d, true);
 		drawPlayers(g2d, players.get(0), false);
 		drawPlayers(g2d, players.get(1), false);
 	}

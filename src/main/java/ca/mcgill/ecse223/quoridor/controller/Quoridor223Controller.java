@@ -569,14 +569,11 @@ public class Quoridor223Controller {
 		int candidate_col = move_candidate.getTargetTile().getColumn();
 		int cand_key = candidate_row * 9 + candidate_col;
 		boolean cand_dir = move_candidate.getWallDirection().equals(Direction.Horizontal) ? true : false;
-		System.out.println(move_candidate.getWallDirection());
-		System.out.println(wallPositions);
 		int adj_wall0 = cand_dir ? (candidate_row) * 9 + candidate_col - 1 : (candidate_row - 1) * 9 + candidate_col;
 		int adj_wall1 = cand_dir ? (candidate_row) * 9 + candidate_col + 1 : (candidate_row + 1) * 9 + candidate_col;
 		if(wallPositions.containsKey(cand_key))return true;
 		if(wallPositions.containsKey(adj_wall0)&&wallPositions.get(adj_wall0)==cand_dir)return true;
 		if(wallPositions.containsKey(adj_wall1)&&wallPositions.get(adj_wall1)==cand_dir)return true;
-		System.out.println("0000000000000000000000");
 		return false;
 	}
 
@@ -584,8 +581,6 @@ public class Quoridor223Controller {
 		Map<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		// implement with a player list
-		System.out.println(current_game.getCurrentPosition().getBlackWallsOnBoard());
-		System.out.println(current_game.getCurrentPosition().getWhiteWallsOnBoard());
 		for (Wall wall : current_game.getCurrentPosition().getBlackWallsOnBoard()) {
 			if(wall.equals(current_game.getWallMoveCandidate().getWallPlaced()))continue;
 			WallMove wall_move = wall.getMove();
