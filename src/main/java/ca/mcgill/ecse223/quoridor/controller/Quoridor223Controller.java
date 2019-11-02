@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.security.InvalidAlgorithmParameterException;
 
 public class Quoridor223Controller {
@@ -356,6 +357,7 @@ public class Quoridor223Controller {
 		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
 		GamePosition currentPosition = curGame.getCurrentPosition();
 		GamePosition clone = clonePosition(currentPosition);
+		
 		curGame.setCurrentPosition(clone);
 		if (isWhitePlayer()) {
 			clone.addWhiteWallsOnBoard(wallToDrop);
@@ -539,7 +541,9 @@ public class Quoridor223Controller {
 		PlayerPosition player_position;
 		if(isWhitePlayer()) player_position = current_position.getWhitePosition();
 		else player_position = current_position.getBlackPosition();
-		return isWallPositionValid(player_position.getTile().getRow(), player_position.getTile().getColumn());
+		int row = player_position.getTile().getRow();
+		int col = player_position.getTile().getColumn();
+		return row>=1&&row<=9&&col>=1&&col<=9;
 	}
 
 	/**
@@ -547,18 +551,15 @@ public class Quoridor223Controller {
 	 * check for adjacent walls with same directions, therefore creating an overlap
 	 * 
 	 * @author Sacha Lévy
+	 * @throws InvalidOperationException 
 	 */
-	public static boolean isWallMoveCandidateOverlapping() throws UnsupportedOperationException{
+	public static boolean isWallMoveCandidateOverlapping(){
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();	
 		// wall position hash map:
 		// keys : row*9 + col
 		// values : horizontal wall is true, vertical wall is false
 		// board is 9 by 9
-
-		Map<Integer, Boolean> wallPositions = loadWallPositionsMap();
-		if (!current_game.hasWallMoveCandidate()) {
-			throw new UnsupportedOperationException("No wall move candidate.");
-		}
+		HashMap<Integer, Boolean> wallPositions = loadWallPositionsMap();
 		WallMove move_candidate = current_game.getWallMoveCandidate();
 		int candidate_row = move_candidate.getTargetTile().getRow();
 		int candidate_col = move_candidate.getTargetTile().getColumn();
@@ -571,14 +572,14 @@ public class Quoridor223Controller {
 		if(wallPositions.containsKey(adj_wall1)&&wallPositions.get(adj_wall1)==cand_dir)return true;
 		return false;
 	}
-
+	
 	/**
 	 * create a hashmap for the walls on board to check
 	 * 
 	 * @author Sacha Lévy
 	 * */
-	private static Map<Integer, Boolean> loadWallPositionsMap() {
-		Map<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
+	private static HashMap<Integer, Boolean> loadWallPositionsMap() {
+		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		// implement with a player list
 		for (Wall wall : current_game.getCurrentPosition().getBlackWallsOnBoard()) {
