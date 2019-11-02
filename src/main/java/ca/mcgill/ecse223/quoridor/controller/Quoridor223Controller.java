@@ -69,8 +69,7 @@ public class Quoridor223Controller {
 		// create player
 		Player player = new Player(new Time(10), user, 1, Direction.Horizontal);
 
-		// set white player first
-		// then set black and link it to white player
+		// set player name according to their color
 		if (color.equals("white")) {
 			curGame.setWhitePlayer(player);
 		} else {
