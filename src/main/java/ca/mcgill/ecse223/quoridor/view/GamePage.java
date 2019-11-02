@@ -141,28 +141,35 @@ public class GamePage extends JFrame {
 
 		// initialize grab, drop, rotate wall
 		grabWall = new JButton("Grab Wall");
+		grabWall.setBackground(new Color(204, 153, 102));
 		grabWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		grabWall.setBounds(620, 145, 120, 40);
 		dropWall = new JButton("Drop Wall");
+		dropWall.setBackground(new Color(204, 153, 102));
 		dropWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		dropWall.setBounds(750, 145, 120, 40);
 		btnRotateWall = new JButton("Rotate Wall");
+		btnRotateWall.setBackground(new Color(204, 153, 102));
 		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnRotateWall.setBounds(880, 145, 120, 40);
 		
 		// initialize forfeit, confirm
 		forfeit = new JButton("Forfeit Game");
+		forfeit.setBackground(new Color(204, 153, 102));
 		forfeit.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		forfeit.setBounds(750, 507, 120, 40);
 
 		// initialize save, replay, new game
 		saveGame = new JButton("Save Game");
+		saveGame.setBackground(new Color(204, 153, 102));
 		saveGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		saveGame.setBounds(285, 606, 110, 40);
 		replayGame = new JButton("Replay Game");
+		replayGame.setBackground(new Color(204, 153, 102));
 		replayGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		replayGame.setBounds(480, 606, 110, 40);
 		newGame = new JButton("New Game");
+		newGame.setBackground(new Color(204, 153, 102));
 		newGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		newGame.setBounds(90, 606, 110, 40);
 
@@ -177,21 +184,21 @@ public class GamePage extends JFrame {
 		gameMessage.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		gameMessage.setBounds(90, 28, 500, 46);
 
-		btnRotateWall = new JButton("Rotate Wall");
-		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnRotateWall.setBounds(880, 145, 120, 40);
-
 		// move buttons
 		btnLeft = new JButton("LEFT");
+		btnLeft.setBackground(new Color(204, 153, 102));
 		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnLeft.setBounds(678, 356, 80, 80);
 		btnRight = new JButton("RIGHT");
+		btnRight.setBackground(new Color(204, 153, 102));
 		btnRight.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnRight.setBounds(860, 356, 80, 80);
 		btnDown = new JButton("DOWN");
+		btnDown.setBackground(new Color(204, 153, 102));
 		btnDown.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnDown.setBounds(770, 356, 80, 80);
 		btnUp = new JButton("UP");
+		btnUp.setBackground(new Color(204, 153, 102));
 		btnUp.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnUp.setBounds(770, 266, 80, 80);
 

@@ -44,6 +44,7 @@ public class QuoridorApplication {
 		timePage.setVisible(false);
 		game = new GamePage();
 		game.setVisible(true);
+		game.setResizable(false);
 	}
 	public static void setTimePage() {
 		namePage.setVisible(false);
