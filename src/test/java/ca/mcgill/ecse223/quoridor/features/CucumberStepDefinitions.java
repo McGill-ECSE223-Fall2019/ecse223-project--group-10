@@ -581,7 +581,8 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The wall shall be rotated over the board to {string}")
 	public void theWallShallBeRotatedOverTheBoardToNewdir(String direction) {
-		throw new PendingException(); //GUI Step
+		TOWall.Direction wallDir = direction.equalsIgnoreCase("horizontal")?TOWall.Direction.Horizontal:TOWall.Direction.Vertical;
+		assertEquals(gamePage.getWallInHand().getDir(), wallDir);
 	}
 	// ***********************************************
 	// Move Wall and Drop Wall start here
