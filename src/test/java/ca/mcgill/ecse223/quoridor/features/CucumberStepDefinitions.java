@@ -77,7 +77,6 @@ public class CucumberStepDefinitions {
 		Player currentPlayer = quoridor.getCurrentGame().getWhitePlayer();
 		initialPlayer = currentPlayer;
 		QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setPlayerToMove(currentPlayer);
-
 	}
 
 	@Given("The following walls exist:")
@@ -93,8 +92,9 @@ public class CucumberStepDefinitions {
 			Integer wcol = Integer.decode(map.get("wcol"));
 			// Wall to place
 			// Walls are placed on an alternating basis wrt. the owners
-			// Wall wall = Wall.getWithId(playerIdx * 10 + wallIdxForPlayer);
+			//Wall wall = Wall.getWithId(playerIdx * 10 + wallIdxForPlayer);
 			Wall wall = players[playerIdx].getWall(wallIdxForPlayer); // above implementation sets wall to null
+
 			String dir = map.get("wdir");
 
 			Direction direction;
@@ -108,8 +108,7 @@ public class CucumberStepDefinitions {
 			default:
 				throw new IllegalArgumentException("Unsupported wall direction was provided");
 			}
-			new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1),
-					quoridor.getCurrentGame(), direction, wall);
+			new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
 			if (playerIdx == 0) {
 				quoridor.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
 				quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
@@ -121,23 +120,22 @@ public class CucumberStepDefinitions {
 			playerIdx++;
 			playerIdx = playerIdx % 2;
 		}
+		//make sure all wall are in the finalized state
+		quoridor.getCurrentGame().setWallMoveCandidate(null);
 	}
-
 	@And("I shall not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand() {
-		// GUI-related feature -- TODO for later
 		assertEquals(false, gamePage.hasWallInHand());
 	}
 
 	@And("^I have a wall in my hand over the board$")
 	public void iHaveAWallInMyHandOverTheBoard() throws Throwable {
-		// GUI-related feature -- TODO for later
-		//assertEquals(true, gamePage.hasWallInHand());
+		setWall("horizontal", 5, 1);
+		assertEquals(true, gamePage.hasWallInHand());
 	}
 
 	@And("I do not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand2() {
-		// GUI-related feature -- TODO for later
 		assertEquals(false, gamePage.hasWallInHand());
 	}
 
@@ -183,15 +181,11 @@ public class CucumberStepDefinitions {
 
 		// black/second player chooses their name
 		Quoridor223Controller.setUser("Jessica", "black");
-		;
-
 	}
 
 	@And("Total thinking time is set")
 	public void totalThinkingTimeIsSet() {
-
 		Quoridor223Controller.setThinkingTime(new Time(10), "playerName");
-
 	}
 
 	@Then("The game shall become ready to start")
@@ -1103,7 +1097,7 @@ public class CucumberStepDefinitions {
 			Wall wall = Wall.getWithId(j + 10 + 1);
 			gamePosition.addBlackWallsInStock(wall);
 		}
-
+		
 		game.setCurrentPosition(gamePosition);
 		gamePage = new GamePage();
 	}
@@ -1148,13 +1142,14 @@ public class CucumberStepDefinitions {
 	private void setWall(String dir, int row, int col) {
 		Game game =  QuoridorApplication.getQuoridor().getCurrentGame();
 		Board board = QuoridorApplication.getQuoridor().getBoard();
-//		if(game.getWallMoveCandidate()!=null) {
-//			game.getWallMoveCandidate().setTargetTile(board.getTile((row-1)*9+(col-1)));
-//			game.getWallMoveCandidate().setWallDirect Case("horizontal")?Direction.Horizontal:Direction.Vertical);
-//		}
-//		else {
+		if(game.getWallMoveCandidate()!=null) {
+			game.getWallMoveCandidate().setTargetTile(board.getTile((row-1)*9+(col-1)));
+			game.getWallMoveCandidate().setWallDirection(dir.equalsIgnoreCase("horizontal")?Direction.Horizontal:Direction.Vertical);
+		}
+		else {
+		System.out.println("-------------------------"+ game.getMoves());
 		getWallMoveCandidate(game.getCurrentPosition().getPlayerToMove(),dir, row, col);
-//		}
+		}
 		initialMove = game.getWallMoveCandidate();
 	}
 
