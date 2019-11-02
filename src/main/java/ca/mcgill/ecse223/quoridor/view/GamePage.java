@@ -332,27 +332,21 @@ public class GamePage extends JFrame {
 			}
 		});
 
-		saveGame.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					userClicksToSaveGame();
-				}
+		saveGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				userClicksToSaveGame();
 			}
 		});
-
-		loadGame.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					try {
-						userClicksToLoadGame();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					boardComponent.repaint();
+		
+		loadGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				try {
+					userClicksToLoadGame();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
+				boardComponent.repaint();
 			}
 		});
 
@@ -394,21 +388,26 @@ public class GamePage extends JFrame {
 		String filename = null;
 		Boolean saveSuccessful = false;
 
-		filename = (String) saveGameInputDialog("Enter the file path below:", "Save Game As", null);
-		try {
-			saveSuccessful = Quoridor223Controller.savePosition(filename);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			// e1.printStackTrace();
-		}
+		filename = saveGameInputDialog("Enter the file path below:", "Save Game As", null);
+		
+		if (filename != null) {
+			try {
+				saveSuccessful = Quoridor223Controller.savePosition(filename);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 
-		// keep trying to save until the user cancels save attempt, or the save is
-		// successful
-		while (filename == null || saveSuccessful == false) {
-
-			filename = (String) saveGameInputDialog("Enter a valid file path here:", "Save Game As", "");
-
-			if (!filename.equals(null)) {
+			// keep trying to save until the user cancels save attempt, or the save is successful
+			while (saveSuccessful == false) {
+	
+				filename = saveGameInputDialog("Enter a valid file path here:", "Save Game As", null);
+				
+				// if the user cancels the save, return
+				if (filename == null) {
+					return;
+				}
+				
+				// otherwise, keep trying to save
 				try {
 					saveSuccessful = Quoridor223Controller.savePosition(filename);
 				} catch (IOException e1) {
@@ -417,10 +416,11 @@ public class GamePage extends JFrame {
 				}
 			}
 		}
+		return;
 	}
 
-	private Object saveGameInputDialog(String message, String title, String initialValue) {
-		Object userInput;
+	private String saveGameInputDialog(String message, String title, String initialValue) {
+		String userInput;
 
 		userInput = (String) JOptionPane.showInputDialog((Component) boardComponent, (Object) message, title,
 				JOptionPane.INFORMATION_MESSAGE, (Icon) null, (Object[]) null, (Object) initialValue);
@@ -441,23 +441,39 @@ public class GamePage extends JFrame {
 		String filename = null;
 		Boolean saveSuccessful = false;
 
-		filename = (String) loadGameInputDialog("Enter the file path below:", "Load Game From File", null);
-		saveSuccessful = Quoridor223Controller.loadPosition(filename);
-
-		// keep trying to save until the user cancels save attempt, or the save is
-		// successful
-		while (filename == null || saveSuccessful == false) {
-
-			filename = (String) loadGameInputDialog("Enter a valid file path here:", "Load Game From File", "");
-
-			if (!filename.equals(null)) {
+		filename = loadGameInputDialog("Enter the file path below:", "Load Game From File", null);
+		
+		if (filename != null) {
+			try {
 				saveSuccessful = Quoridor223Controller.loadPosition(filename);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+			// keep trying to load until the user cancels load attempt, or the load is successful
+			while (saveSuccessful == false) {
+	
+				filename = loadGameInputDialog("Enter a valid file path here:", "Load Game From File", null);
+				
+				// if the user cancels the save, return
+				if (filename == null) {
+					return;
+				}
+				
+				// otherwise, keep trying to save
+				try {
+					saveSuccessful = Quoridor223Controller.loadPosition(filename);
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
+		return;
 	}
 
-	private Object loadGameInputDialog(String message, String title, String initialValue) {
-		Object userInput;
+	private String loadGameInputDialog(String message, String title, String initialValue) {
+		String userInput;
 
 		userInput = (String) JOptionPane.showInputDialog((Component) boardComponent, (Object) message, title,
 				JOptionPane.INFORMATION_MESSAGE, (Icon) null, (Object[]) null, (Object) initialValue);

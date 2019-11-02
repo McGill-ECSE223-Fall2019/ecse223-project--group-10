@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.quoridor.features;
 
+import java.awt.Component;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,8 +53,9 @@ public class CucumberStepDefinitions {
 	private int curRound = 0;
 	private Player initialPlayer = null;
 	private Move initialMove = null;
-	private GamePosition loadedGamePosition = null;
 	private String cucumberFilename	= null;
+	boolean saveSuccessful = false;
+	boolean loadSuccessful = false;
 	
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
@@ -312,7 +314,7 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		
 		// create new users and players
-		ArrayList<Player> players = createUsersAndPlayers("user1", "user2");
+		createUsersAndPlayers("user1", "user2");
 	}
 	
 	/**
@@ -821,7 +823,7 @@ public class CucumberStepDefinitions {
 	@When("The user initiates to save the game with name {string}")
 	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) throws Throwable {
 		cucumberFilename = filename;
-		Quoridor223Controller.savePosition(filename);
+		Quoridor223Controller.checkIfFileExists(filename);
 	}
 	
 	/**
@@ -832,10 +834,8 @@ public class CucumberStepDefinitions {
 	@Then("A file with {string} shall be created in the filesystem")
 	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws IOException {
 		cucumberFilename = filename;
-		File file = new File(filename);
-		assertTrue("File does not exist in the filesystem", file.exists());
-		assertTrue("File is not a File", file.isFile());
-		assertTrue("File is not a valid save file", Quoridor223Controller.writeToNewFile(filename));
+		Boolean result = Quoridor223Controller.saveCurrentGamePositionAsFile("./ca.mcgill.ecse223.quoridor/"+ filename);
+		assertTrue("File is not a valid save file", result);
 	}
 	
 	/**
@@ -853,10 +853,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The user confirms to overwrite existing file")
 	public void theUserConfirmsToOverwriteExistingFile() {
-		//GUI
-		//The user clicks yes when prompted by the GUI to overwrite an existing file
-		assertTrue("The user did not agree to overwrite the file", cucumberUserOverwritePrompt(true));
-		//throw new PendingException();
+		//GUI: The user clicks yes when prompted by the GUI to overwrite an existing file
+		assertTrue("The user did not agree to overwrite the file", cucumberUserOverwritePrompt(JOptionPane.YES_OPTION));
 	}
 	
 	/**
@@ -866,7 +864,7 @@ public class CucumberStepDefinitions {
 	@Then("File with {string} shall be updated in the filesystem")
 	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
 		cucumberFilename = filename;
-		assertTrue("The file was not successfully modified", Quoridor223Controller.writeToExistingFile(filename));
+		assertTrue("The file was not modified", simulateUserAttemptingToOverwriteFile(filename, JOptionPane.YES_OPTION));
 	}
 	
 	/**
@@ -874,10 +872,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The user cancels to overwrite existing file")
 	public void theUserCancelsToOverwriteExistingFile() {
-		//GUI
-		//The user clicks no when prompted by the GUI to overwrite an existing file
-		assertFalse("The user agreed to overwrite the file", cucumberUserOverwritePrompt(false));
-		//throw new PendingException();
+		//GUI: The user clicks no when prompted by the GUI to overwrite an existing file
+		assertFalse("The user agreed to overwrite the file", cucumberUserOverwritePrompt(JOptionPane.NO_OPTION));
 	}
 	
 	/**
@@ -887,7 +883,7 @@ public class CucumberStepDefinitions {
 	@Then("File {string} shall not be changed in the filesystem")
 	public void fileFilenameShallNotBeChangedInTheFilesystem(String filename) throws Throwable {
 		cucumberFilename = filename;
-		assertFalse("The file was modified", Quoridor223Controller.savePosition(filename));
+		assertFalse("The file was modified", simulateUserAttemptingToOverwriteFile(filename, JOptionPane.NO_OPTION));
 	}
 	
 	// **********************************************
@@ -902,7 +898,7 @@ public class CucumberStepDefinitions {
 	@When("I initiate to load a saved game {string}")
 	public void iInitiateToLoadASavedGame(String filename) throws IOException {
 		cucumberFilename = filename;
-		Quoridor223Controller.loadPosition(filename);
+		Quoridor223Controller.checkLoadFileIsValid(filename);
 	}
 	
 	/**
@@ -910,7 +906,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The position to load is valid")
 	public void thePositionToLoadIsValid() {
-		startLoadedGame(cucumberFilename);
+		loadSuccessful = Quoridor223Controller.loadMoveDataFromFile(cucumberFilename);
 	}
 	
 	/**
@@ -920,7 +916,7 @@ public class CucumberStepDefinitions {
 	@Then("It shall be {string}'s turn")
 	//@And("It shall be {player}'s turn")
 	public void itShallBePlayersTurn(String playerColor) {
-		assertTrue("Could not set nextPlayer to that player", Quoridor223Controller.setCurrentPlayerToMoveByColor(playerColor));
+		assertTrue("Could not set nextPlayer to that player", checkCurrentPlayerToMoveByColor(playerColor));
 		//assertTrue("It is not that player's turn", Quoridor223Controller.getPlayerColorToMove().equals(playerColor));
 	}
 	
@@ -932,7 +928,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("{string} shall be at {int}:{int}") // this is for both the player and opponent
 	public void playerShallbeAtRowCol(String playerColor, int row, int col) {
-		assertTrue("Could not set player's position", Quoridor223Controller.setPlayerPositionByColor(playerColor, row, col));
+		assertTrue("Could not set player's position", checkPlayerPositionByColor(playerColor, row, col));
 		//assertTrue("Could not set player's position", Quoridor223Controller.getPlayerPositionByColor(player).equals(row+col));
 	}
 	
@@ -946,7 +942,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("{string} shall have a {} wall at {int}:{int}") // this is for both the player and the opponent
 	public void playerShallHaveADirectionWallAtRowCol(String playerColor, String direction, int row, int col) {
-		assertTrue("Could not set a wall's direction and position", Quoridor223Controller.addPlayerWallPositionByColor(playerColor, direction, row, col));
+		assertTrue("Could not set a wall's direction and position", checkPlayerWallPositionByColor(playerColor, direction, row, col));
 		//assertTrue("Could not set that wall's direction and position", Quoridor223Controller.getPlayerWallPositionByColor(player).equals(row+col));
 	}
 	
@@ -957,9 +953,9 @@ public class CucumberStepDefinitions {
 	@And("Both players shall have {int} in their stacks")
 	public void bothPlayersShallHaveRemainingWallsInTheirStacks(int remainingWalls) {
 		assertTrue("White player does not have the correct number of walls in their stack", 
-				Quoridor223Controller.getPlayerByColor("white").numberOfWalls() == remainingWalls);
+				getPlayerByColor("white").numberOfWalls() == remainingWalls);
 		assertTrue("Black player does not have the correct number of walls in their stack", 
-				Quoridor223Controller.getPlayerByColor("black").numberOfWalls() == remainingWalls);
+				getPlayerByColor("black").numberOfWalls() == remainingWalls);
 	}
 	
 	/**
@@ -967,7 +963,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The position to load is invalid")
 	public void thePositionToLoadIsInvalid() {
-		Quoridor223Controller.whenInvalidLoadGamePosition();
+		loadSuccessful = Quoridor223Controller.loadMoveDataFromFile(cucumberFilename);
 	}
 	
 	/**
@@ -976,7 +972,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The load shall return an error")
 	public void theLoadShallReturnAnError() throws IOException {
-		assertFalse("Invalid load does not return an error", Quoridor223Controller.loadPosition(cucumberFilename));
+		assertFalse("Invalid load does not return an error", loadSuccessful);
 	}
 	
 	
@@ -1165,7 +1161,7 @@ public class CucumberStepDefinitions {
 	 * @param filename
 	 */
 	private void deleteFileIfItExists(String filename) {
-		File file = new File(filename);
+		File file = new File("./ca.mcgill.ecse223.quoridor/" + filename);
 		if(file.exists() && file.isFile()) {
 			file.delete();
 		}
@@ -1179,34 +1175,150 @@ public class CucumberStepDefinitions {
 	 * @throws IOException 
 	 */
 	private void ensureFileExists(String filename) throws IOException {
-		File file = new File(filename);
+		File file = new File("./ca.mcgill.ecse223.quoridor/" + filename);
 		if (!file.exists()) {
 			file.createNewFile();
 		}
 	}
 	
-	//TODO: add Javadoc
-	private boolean cucumberUserOverwritePrompt(boolean acceptOverwrite) {
+	/**
+	 * simulates the user attempting to overwrite the file with the specified userInput
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @param userInput
+	 * @return
+	 */
+	private boolean simulateUserAttemptingToOverwriteFile(String filename, Object userInput) {
+		boolean fileUpdated = false;
 		
-		Quoridor223Controller.userOverwritePrompt(cucumberFilename);
-		if (acceptOverwrite) {
-			JOptionPane test = new JOptionPane((Object)"Permisssion to Overwrite file:\n\"" + cucumberFilename + "\"",
-					JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION, (Icon)null);
-			test.setEnabled(false);
+		if(cucumberUserOverwritePrompt(userInput)) {
+			try {
+				fileUpdated = Quoridor223Controller.saveCurrentGamePositionAsFile("./ca.mcgill.ecse223.quoridor/" + filename);
+			} catch (IOException e) {
+				return fileUpdated;
+			}
 		}
-		return acceptOverwrite;
+		
+		return fileUpdated;		
 	}
 	
 	/**
-	 * A function that starts a new game with the GamePosition loaded from a file
+	 * Prompts user to overwrite the file, and then automatically accepts or declines
 	 * @author Mitchell Keeley
-	 * @param players, loadedGamePosition
+	 * @param userInput
+	 * @return
 	 */
-	private void startLoadedGame(String loadFileName) {
+	private boolean cucumberUserOverwritePrompt(Object userInput) {
+		boolean permissionToOveride = false;
+		
+		//Quoridor223Controller.userOverwritePrompt(cucumberFilename);
+		JOptionPane test = new JOptionPane((Object)"Permisssion to Overwrite file:\n\"" + cucumberFilename + "\"",
+				JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION, (Icon)null);
+		test.setVisible(true);
+		test.setValue(userInput);
+		
+		if (test.getValue().equals(JOptionPane.YES_OPTION)) {
+			permissionToOveride = true;
+		}
+		
+		return permissionToOveride;
+	}
+
+	/**
+	 * A function to set the current player to move by color
+	 * 
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @return
+	 */
+	public static boolean checkCurrentPlayerToMoveByColor(String playerColor) {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		
+		return game.getCurrentPosition().getPlayerToMove().equals(getPlayerByColor(playerColor));
+	}
+
+	/**
+	 * A function to set the player position by color
+	 * 
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	public static boolean checkPlayerPositionByColor(String playerColor, int row, int col) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Board board = quoridor.getBoard();
+		Game game = quoridor.getCurrentGame();
+
+		if (playerColor.equals("white")) {
+			return game.getCurrentPosition().getWhitePosition().
+					equals(new PlayerPosition(getPlayerByColor(playerColor), new Tile(row, col, board)));
+		} else {
+			return game.getCurrentPosition().getBlackPosition().
+					equals(new PlayerPosition(getPlayerByColor(playerColor), new Tile(row, col, board)));
+		}
+	}
+
+	/**
+	 * A function to add a wall position to the player specified by the given color
+	 * 
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @param direction
+	 * @param row
+	 * @param col
+	 * @return
+	 */
+	public static boolean checkPlayerWallPositionByColor(String playerColor, String direction, int row, int col) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game game = quoridor.getCurrentGame();
-		game.setCurrentPosition(Quoridor223Controller.validateFile(loadFileName));
+		List<Move> moveList = game.getMoves();
+		
+		for (Move move : moveList) {
+			if(move.getPlayer().equals(getPlayerByColor(playerColor)) && 
+					move.getTargetTile().getRow() == row && move.getTargetTile().getColumn() == col &&
+					((WallMove)move).getWallDirection().equals(stringToDirection(direction))) {
+				return true;
+			}
+		}
+		return false;
 	}
+	
+	/**
+	 * A function to convert the given string into the corresponding Direction
+	 * @author Mitchell Keeley
+	 * @param direction
+	 * @return
+	 */
+	public static Direction stringToDirection(String direction) {
+		if (direction.equals("horizontal")) {
+			return Direction.Horizontal;
+		}
+		if (direction.equals("vertical")) {
+			return Direction.Vertical;
+		}
+		return null;
+	}
+
+	/**
+	 * A function to get the player specified by the color
+	 * 
+	 * @author Mitchell Keeley
+	 * @param playerColor
+	 * @return
+	 */
+	public static Player getPlayerByColor(String playerColor) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+
+		if (playerColor.equals("white")) {
+			return game.getWhitePlayer();
+		} else {
+			return game.getBlackPlayer();
+		}
+	}
+	
 // note: no need to implement the given lines, they are given and supposed available
 	
 // Validate Position feature
