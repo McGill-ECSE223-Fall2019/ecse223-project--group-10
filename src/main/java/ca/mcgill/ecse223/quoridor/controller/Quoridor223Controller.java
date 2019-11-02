@@ -1234,10 +1234,10 @@ public class Quoridor223Controller {
 			blackTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
 					Character.getNumericValue(saveFileSecondLine.charAt(4)), board);*/
 			
-			whiteTile = board.getTile((Character.getNumericValue(saveFileFirstLine.charAt(4))-1)*9
-					+ Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset-1);
-			blackTile = board.getTile((Character.getNumericValue(saveFileSecondLine.charAt(4))-1)*9
-					+ Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset-1);
+			whiteTile = getTile(Character.getNumericValue(saveFileFirstLine.charAt(4)),
+					Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset);
+			blackTile = getTile(Character.getNumericValue(saveFileSecondLine.charAt(4)),
+					Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset);
 			
 			whiteMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
 			blackMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
@@ -1260,10 +1260,10 @@ public class Quoridor223Controller {
 			whiteTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
 					Character.getNumericValue(saveFileSecondLine.charAt(4)), board);*/
 			
-			blackTile = board.getTile((Character.getNumericValue(saveFileFirstLine.charAt(4))-1)*9
-					+ Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset-1);
-			whiteTile = board.getTile((Character.getNumericValue(saveFileSecondLine.charAt(4))-1)*9
-					+ Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset-1);
+			blackTile = getTile((Character.getNumericValue(saveFileFirstLine.charAt(4))),
+					Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset);
+			whiteTile = getTile((Character.getNumericValue(saveFileSecondLine.charAt(4))),
+					Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset);
 			
 			blackMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s?)|(B: \\w\\w,\\s?)|(,\\s?)");
 			whiteMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s?)|(B: \\w\\w,\\s?)|(,\\s?)");
@@ -1295,8 +1295,8 @@ public class Quoridor223Controller {
 				// get the new Tile
 				Tile newTile;
 				try {
-					newTile = board.getTile((Character.getNumericValue(position.charAt(1))-1)*9
-							+ Character.getNumericValue(position.charAt(0))-letterOffset-1);
+					newTile = getTile((Character.getNumericValue(position.charAt(1))),
+							Character.getNumericValue(position.charAt(0))-letterOffset);
 				} catch (IndexOutOfBoundsException e) {
 					return false;
 				}
@@ -1330,8 +1330,8 @@ public class Quoridor223Controller {
 				// get the new Tile
 				Tile newTile;
 				try {
-					newTile = board.getTile((Character.getNumericValue(position.charAt(1))-1)*9
-						+ Character.getNumericValue(position.charAt(0))-letterOffset-1);
+					newTile = getTile((Character.getNumericValue(position.charAt(1))),
+							Character.getNumericValue(position.charAt(0))-letterOffset);
 				} catch (IndexOutOfBoundsException e) {
 					return false;
 				}
