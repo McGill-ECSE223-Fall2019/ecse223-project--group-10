@@ -216,8 +216,9 @@ public class BoardComponent extends JPanel {
 		g2d.dispose();
 		return resized;
 	}
-	public TOWall getWallInHand() {
-		return wallInHand;
+	public boolean hasWallInHand() {
+		loadWall();
+		return wallInHand!=null;
 	}
 
 }
