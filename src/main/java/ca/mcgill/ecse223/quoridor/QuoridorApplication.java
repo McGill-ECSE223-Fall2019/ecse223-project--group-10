@@ -50,6 +50,13 @@ public class QuoridorApplication {
 		timePage = new SetThinkingTimePage();
 		timePage.setVisible(true);
 	}
+	
+	public static void setWelcomePage() {
+		namePage.setVisible(false);
+		lobby = new WelcomePage();
+		lobby.setVisible(true);
+	}
+	
 	public static void setNamePage() {
 		lobby.setVisible(false);
 		namePage = new SetNamePage();

@@ -326,10 +326,10 @@ public class GamePage extends JFrame {
 					Quoridor223Controller.dropWall();
 					gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 				} catch (GameNotRunningException ex) {
-					gameMessage.setText(ex.getLocalizedMessage());
+					gameMessage.setText(ex.getMessage());
 					// set the notification panel to message
 				} catch (InvalidOperationException ex) {
-					gameMessage.setText(ex.getLocalizedMessage());
+					gameMessage.setText(ex.getMessage());
 					// TODO: handle exception
 				}
 				boardComponent.repaint();
@@ -481,10 +481,32 @@ public class GamePage extends JFrame {
 				(Object) "The Following Error Has Occurred:\n\"" + error + "\"", "Operation Error",
 				JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, (Icon) null);
 	}
-	public TOWall getWallInHand() {
-		return boardComponent.getWallInHand();
+	public boolean hasWallInHand() {
+		return boardComponent.hasWallInHand();
 	}
 	public String getGameMessage() {
 		return gameMessage.getText();
+	}
+	public void clickMoveWall(String dir) {
+		if(dir.equalsIgnoreCase("UP"))btnUp.doClick();
+		if(dir.equalsIgnoreCase("DOWN"))btnDown.doClick();
+		if(dir.equalsIgnoreCase("LEFT"))btnLeft.doClick();
+		if(dir.equalsIgnoreCase("RIGHT"))btnRight.doClick();
+
+	}
+	public void clickDropWall() {
+		dropWall.doClick();
+	}
+	public void refresh() {
+		boardComponent.repaint();
+	}
+	public void delete() {
+		boardComponent=null;
+	}
+	public void clickRotateWall() {
+		btnRotateWall.doClick();
+	}
+	public void clickGrabWall() {
+		grabWall.doClick();
 	}
 }
