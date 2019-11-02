@@ -27,9 +27,9 @@ public class Quoridor223Controller {
 	 * Feature 1: Create a new game for the players
 	 * 
 	 * @author Vanessa Ifrah
-	 * @throws UnsupportedOperationException
 	 */
-	public static void createGame() throws UnsupportedOperationException {
+	public static void createGame() {
+		
 		// create Quoridor game and get users
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game newGame = new Game(GameStatus.Initializing, MoveMode.WallMove, quoridor);
@@ -51,24 +51,45 @@ public class Quoridor223Controller {
 	}
 
 	public static void setGameToReady() {
+		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.ReadyToStart);
+		
 	}
 
 	public static void setGameToRun() {
+		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.Running);
+		
 	}
 
 	/**
-	 * Feature 2: Select an existing user
+	 * Feature 2: Setting a user with a new username or with an existing one
 	 * 
 	 * @author Vanessa Ifrah
-	 * @param playerName
-	 * @throws UnsupportedOperationException
+	 * @param name
+	 * @param color
 	 */
+	public static void setUser(String name, String color) {
+
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		User user = quoridor.addUser(name);
+
+		// create player
+		Player player = new Player(new Time(10), user, 1, Direction.Horizontal);
+
+		// set player name according to their color
+		if (color.equals("white")) {
+			curGame.setWhitePlayer(player);
+		} else {
+			curGame.setBlackPlayer(player);
+		}
+	}
+
 	public static List<User> selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
 
 		// load the user
@@ -81,13 +102,59 @@ public class Quoridor223Controller {
 		list.add(User.getWithName(playerName2));
 		return list;
 	}
-
+	
 	/**
-	 * Feature 2: Creating a new user with new username
+	 * helper method to check is name exists
 	 * 
 	 * @author Vanessa Ifrah
-	 * @throws UnsupportedOperationException
+	 * @param name
 	 */
+	public static boolean checkNameList(String name) {
+
+		boolean result = true;
+		ArrayList<String> usernames = new ArrayList<String>();
+		try {
+			File f = new File("names.txt");
+			FileReader reader = new FileReader(f.getAbsolutePath());
+			BufferedReader bufferedReader = new BufferedReader(reader);
+
+			String line;
+
+			while ((line = bufferedReader.readLine()) != null) {
+				usernames.add(line);
+			}
+			reader.close();
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		if (!usernames.contains(name)) {
+			result = false;
+		}
+
+		return result;
+	}
+	
+	/**
+	 * helper method to warn user if name is duplicate
+	 * 
+	 * @author Vanessa Ifrah
+	 * @param name
+	 */
+	public static boolean warnUser(String name) {
+		
+		boolean error = false;
+		
+		// check if name already exists (duplicate name)
+		if (Quoridor223Controller.checkNameList(name)) {
+			error = true;
+		}
+		
+		return error;
+
+	}
+	
 	public static void createUser(String playerName) throws UnsupportedOperationException {
 
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
