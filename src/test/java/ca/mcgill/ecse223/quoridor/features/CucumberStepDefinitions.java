@@ -963,7 +963,11 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The position to load is invalid")
 	public void thePositionToLoadIsInvalid() {
-		loadSuccessful = Quoridor223Controller.loadMoveDataFromFile("./ca.mcgill.ecse223.quoridor/" + cucumberFilename);
+		try{
+			loadSuccessful = Quoridor223Controller.loadMoveDataFromFile("./ca.mcgill.ecse223.quoridor/" + cucumberFilename);
+		} catch (Exception e){
+			loadSuccessful = false;
+		}
 	}
 	
 	/**

@@ -52,8 +52,8 @@ public class Quoridor223Controller {
 		List<User> users = quoridor.getUsers();
         
 		// create players
-        Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Horizontal);
-        Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Horizontal);
+        Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Vertical);
+        Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Vertical);
         whitePlayer.setNextPlayer(blackPlayer);
         blackPlayer.setNextPlayer(whitePlayer);
         curGame.setBlackPlayer(blackPlayer);
@@ -480,7 +480,14 @@ public class Quoridor223Controller {
 		if(isWhitePlayer()) player_position = current_position.getWhitePosition();
 		else player_position = current_position.getBlackPosition();
 		// check if the player position is technically valid
-		return isWallPositionValid(player_position.getTile().getRow(), player_position.getTile().getColumn());
+		//return isWallPositionValid(player_position.getTile().getRow(), player_position.getTile().getColumn());
+		int row = player_position.getTile().getRow();
+		int col = player_position.getTile().getColumn();
+		if (row > 0 && row < 10 && col > 0 && col < 10 ) {
+			return true;
+		}
+		return false;
+		
 	}
 
 	
@@ -935,8 +942,8 @@ public class Quoridor223Controller {
 		int asciiNumberOffset = 48;
 		int asciiLetterOffset = 96;
 
-		String tileString = "" + (char) (asciiLetterOffset + tile.getRow())
-				+ (char) (asciiNumberOffset + tile.getColumn());
+		String tileString = "" + (char) (asciiLetterOffset + tile.getColumn())
+				+ (char) (asciiNumberOffset + tile.getRow());
 
 		return tileString;
 	}
@@ -1227,10 +1234,10 @@ public class Quoridor223Controller {
 			blackTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
 					Character.getNumericValue(saveFileSecondLine.charAt(4)), board);*/
 			
-			whiteTile = board.getTile((Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset-1)*9
-					+ Character.getNumericValue(saveFileFirstLine.charAt(4))-1);
-			blackTile = board.getTile((Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset-1)*9
-					+ Character.getNumericValue(saveFileSecondLine.charAt(4))-1);
+			whiteTile = board.getTile((Character.getNumericValue(saveFileFirstLine.charAt(4))-1)*9
+					+ Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset-1);
+			blackTile = board.getTile((Character.getNumericValue(saveFileSecondLine.charAt(4))-1)*9
+					+ Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset-1);
 			
 			whiteMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
 			blackMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
@@ -1253,10 +1260,10 @@ public class Quoridor223Controller {
 			whiteTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
 					Character.getNumericValue(saveFileSecondLine.charAt(4)), board);*/
 			
-			blackTile = board.getTile((Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset-1)*9
-					+ Character.getNumericValue(saveFileFirstLine.charAt(4))-1);
-			whiteTile = board.getTile((Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset-1)*9
-					+ Character.getNumericValue(saveFileSecondLine.charAt(4))-1);
+			blackTile = board.getTile((Character.getNumericValue(saveFileFirstLine.charAt(4))-1)*9
+					+ Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset-1);
+			whiteTile = board.getTile((Character.getNumericValue(saveFileSecondLine.charAt(4))-1)*9
+					+ Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset-1);
 			
 			blackMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s?)|(B: \\w\\w,\\s?)|(,\\s?)");
 			whiteMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s?)|(B: \\w\\w,\\s?)|(,\\s?)");
@@ -1286,8 +1293,13 @@ public class Quoridor223Controller {
 				System.out.println(position);
 				
 				// get the new Tile
-				Tile newTile = board.getTile((Character.getNumericValue(position.charAt(0))-letterOffset-1)*9
-						+ Character.getNumericValue(position.charAt(1))-1);
+				Tile newTile;
+				try {
+					newTile = board.getTile((Character.getNumericValue(position.charAt(1))-1)*9
+							+ Character.getNumericValue(position.charAt(0))-letterOffset-1);
+				} catch (IndexOutOfBoundsException e) {
+					return false;
+				}
 				
 				// initialize the current wall to be placed in the game
 				Wall currentWall = currentGamePosition.getWhiteWallsInStock(9-indexOfWhiteWallsPlaced);
@@ -1316,8 +1328,13 @@ public class Quoridor223Controller {
 				System.out.println(position);
 				
 				// get the new Tile
-				Tile newTile = board.getTile((Character.getNumericValue(position.charAt(0))-letterOffset-1)*9
-						+ Character.getNumericValue(position.charAt(1))-1);
+				Tile newTile;
+				try {
+					newTile = board.getTile((Character.getNumericValue(position.charAt(1))-1)*9
+						+ Character.getNumericValue(position.charAt(0))-letterOffset-1);
+				} catch (IndexOutOfBoundsException e) {
+					return false;
+				}
 				
 				// initialize the current wall to be placed in the game
 				Wall currentWall = currentGamePosition.getBlackWallsInStock(9-indexOfBlackWallsPlaced);
