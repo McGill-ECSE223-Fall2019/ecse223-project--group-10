@@ -412,8 +412,9 @@ public class Quoridor223Controller {
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin
 	 * Feature 8: DropWall.feature
-	 * 
 	 * @author Le-Li Mao
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
 	public static void dropWall() throws GameNotRunningException, InvalidOperationException {
 		// check if the Game is running if not throw exception
