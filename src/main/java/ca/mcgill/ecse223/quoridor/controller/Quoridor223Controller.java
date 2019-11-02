@@ -205,6 +205,7 @@ public class Quoridor223Controller {
 		Player currentPlayer = getPlayerByName(playerName);
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
+		setGameToReady();
 	}
 
 	/**

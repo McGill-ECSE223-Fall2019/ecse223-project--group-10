@@ -62,8 +62,9 @@ public class CucumberStepDefinitions {
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
-		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
-		createAndPrepareGame(createUsersAndPlayers);
+//		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+//		createAndPrepareGame(createUsersAndPlayers);
+		createUsersAndPlayers("user1", "user2");
 	}
 
 	@Given("^The game is running$")
@@ -172,6 +173,7 @@ public class CucumberStepDefinitions {
 
 		// create the new game
 		Quoridor223Controller.createGame();
+		
 	}
 
 	@And("White player chooses a username")
@@ -179,7 +181,6 @@ public class CucumberStepDefinitions {
 
 		// white/first player chooses their name
 		Quoridor223Controller.setUser("Vanessa", "white");
-		;
 
 	}
 
@@ -192,7 +193,10 @@ public class CucumberStepDefinitions {
 
 	@And("Total thinking time is set")
 	public void totalThinkingTimeIsSet() {
-		Quoridor223Controller.setThinkingTime(new Time(10), "playerName");
+		
+		Quoridor223Controller.setThinkingTime(new Time(10), "Vanessa");
+		Quoridor223Controller.setThinkingTime(new Time(10), "Jessica");
+
 	}
 
 	@Then("The game shall become ready to start")
@@ -212,6 +216,7 @@ public class CucumberStepDefinitions {
 	public void theGameIsReadyToStart() {
 
 		// set game to ready
+		Quoridor223Controller.createGame();
 		Quoridor223Controller.setGameToReady();
 
 	}
