@@ -24,6 +24,7 @@ import ca.mcgill.ecse223.quoridor.model.Move;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
@@ -192,8 +193,8 @@ public class Quoridor223Controller {
 		}
 
 		// get tiles
-		Tile whitePlayerTile = quoridor.getBoard().getTile(36);
-		Tile blackPlayerTile = quoridor.getBoard().getTile(44);
+		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
 
 		Game currentGame = quoridor.getCurrentGame();
 
@@ -1197,33 +1198,6 @@ public class Quoridor223Controller {
 			return false;
 		}
 		
-		// if the first line of the file contains "W:"
-		if(saveFileFirstLine.contains("W:")){
-			whiteTile = new Tile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
-					Character.getNumericValue(saveFileFirstLine.charAt(4)), board);
-			blackTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
-					Character.getNumericValue(saveFileSecondLine.charAt(4)), board);			
-			whiteMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
-			blackMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
-			currentGamePosition.setPlayerToMove(whitePlayer);
-		} else {
-			blackTile = new Tile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
-					Character.getNumericValue(saveFileFirstLine.charAt(4)), board);
-			whiteTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
-					Character.getNumericValue(saveFileSecondLine.charAt(4)), board);
-			blackMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s?)|(B: \\w\\w,\\s?)|(,\\s?)");
-			whiteMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s?)|(B: \\w\\w,\\s?)|(,\\s?)");
-			currentGamePosition.setPlayerToMove(blackPlayer);
-		}
-		
-		// set the new player positions
-		currentGamePosition.setWhitePosition(new PlayerPosition(currentGame.getWhitePlayer(), whiteTile));
-		currentGamePosition.setBlackPosition(new PlayerPosition(currentGame.getBlackPlayer(), blackTile));
-		
-		// to remove null element at the beginning
-		whiteMoveData = Arrays.copyOfRange(whiteMoveData, 1, whiteMoveData.length);
-		blackMoveData = Arrays.copyOfRange(blackMoveData, 1, blackMoveData.length);
-		
 		// clear the game moves, and place all the walls back in the player stocks to allow a new game to be loaded
 		int numOfMoves = currentGame.getMoves().size()-1;
 		while(numOfMoves >= 0) {
@@ -1246,6 +1220,64 @@ public class Quoridor223Controller {
 			numOfMoves--;
 		}
 		
+		// if the first line of the file contains "W:"
+		if(saveFileFirstLine.contains("W:")){
+			/*whiteTile = new Tile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
+					Character.getNumericValue(saveFileFirstLine.charAt(4)), board);
+			blackTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
+					Character.getNumericValue(saveFileSecondLine.charAt(4)), board);*/
+			
+			whiteTile = board.getTile((Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset-1)*9
+					+ Character.getNumericValue(saveFileFirstLine.charAt(4))-1);
+			blackTile = board.getTile((Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset-1)*9
+					+ Character.getNumericValue(saveFileSecondLine.charAt(4))-1);
+			
+			whiteMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
+			blackMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s)|(B: \\w\\w,\\s)|(, )");
+			
+			// check the black pawn position
+			currentGamePosition.getBlackPosition().setTile(blackTile);
+			currentGamePosition.setPlayerToMove(blackPlayer);
+			if(!isPlayerPositionValid()) return false;
+			if(isPlayerPositionOverlapping()) return false;
+			
+			// check the white pawn position
+			currentGamePosition.getWhitePosition().setTile(whiteTile);
+			currentGamePosition.setPlayerToMove(whitePlayer);
+			if(!isPlayerPositionValid()) return false;
+			if(isPlayerPositionOverlapping()) return false;
+			
+		} else {
+			/*blackTile = new Tile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
+					Character.getNumericValue(saveFileFirstLine.charAt(4)), board);
+			whiteTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
+					Character.getNumericValue(saveFileSecondLine.charAt(4)), board);*/
+			
+			blackTile = board.getTile((Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset-1)*9
+					+ Character.getNumericValue(saveFileFirstLine.charAt(4))-1);
+			whiteTile = board.getTile((Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset-1)*9
+					+ Character.getNumericValue(saveFileSecondLine.charAt(4))-1);
+			
+			blackMoveData = saveFileFirstLine.split("(W: \\w\\w,\\s?)|(B: \\w\\w,\\s?)|(,\\s?)");
+			whiteMoveData = saveFileSecondLine.split("(W: \\w\\w,\\s?)|(B: \\w\\w,\\s?)|(,\\s?)");
+			
+			// check the white pawn position
+			currentGamePosition.getWhitePosition().setTile(whiteTile);
+			currentGamePosition.setPlayerToMove(whitePlayer);
+			if(!isPlayerPositionValid()) return false;
+			if(isPlayerPositionOverlapping()) return false;
+			
+			// check the black pawn position
+			currentGamePosition.getBlackPosition().setTile(blackTile);
+			currentGamePosition.setPlayerToMove(blackPlayer);
+			if(!isPlayerPositionValid()) return false;
+			if(isPlayerPositionOverlapping()) return false;
+		}
+		
+		// to remove null element at the beginning
+		whiteMoveData = Arrays.copyOfRange(whiteMoveData, 1, whiteMoveData.length);
+		blackMoveData = Arrays.copyOfRange(blackMoveData, 1, blackMoveData.length);
+		
 		// add all the moves for the white player
 		indexOfWhiteWallsPlaced = 0;
 		for (String position : whiteMoveData){
@@ -1253,9 +1285,9 @@ public class Quoridor223Controller {
 			if (position.length() == 3){
 				System.out.println(position);
 				
-				// create the new Tile
-				Tile newTile = new Tile (Character.getNumericValue(position.charAt(0))-letterOffset, 
-						Character.getNumericValue(position.charAt(1)), board);
+				// get the new Tile
+				Tile newTile = board.getTile((Character.getNumericValue(position.charAt(0))-letterOffset-1)*9
+						+ Character.getNumericValue(position.charAt(1))-1);
 				
 				// initialize the current wall to be placed in the game
 				Wall currentWall = currentGamePosition.getWhiteWallsInStock(9-indexOfWhiteWallsPlaced);
@@ -1268,13 +1300,8 @@ public class Quoridor223Controller {
 				
 				// validate the new Wall move and add it to the game
 				currentGame.setWallMoveCandidate(newMove);
-				try {
-					if(!validatePosition()) {return false;}
-				} catch (UnsupportedOperationException e) {
-					return false;
-				} catch (GameNotRunningException e) {
-					//return false;
-				}
+				if(!isWallCandidatePositionValid()) return false;
+				if(isWallMoveCandidateOverlapping()) return false;
 				currentGame.setWallMoveCandidate(null);
 				currentGame.addMove(newMove);
 				currentGamePosition.addWhiteWallsOnBoard(currentWall);
@@ -1287,17 +1314,27 @@ public class Quoridor223Controller {
 		for (String position : blackMoveData){
 			if (position.length() == 3){
 				System.out.println(position);
-				Tile newTile = new Tile (Character.getNumericValue(position.charAt(0))-letterOffset, 
-						Character.getNumericValue(position.charAt(1)), board);
+				
+				// get the new Tile
+				Tile newTile = board.getTile((Character.getNumericValue(position.charAt(0))-letterOffset-1)*9
+						+ Character.getNumericValue(position.charAt(1))-1);
+				
+				// initialize the current wall to be placed in the game
 				Wall currentWall = currentGamePosition.getBlackWallsInStock(9-indexOfBlackWallsPlaced);
 				currentWall.setMove(null);
 				currentGamePosition.removeBlackWallsInStock(currentWall);
-				// for black, the move# = #wallsPlaced*2+1 	and round# = #wallsPlaced
-				Move newMove = new WallMove(indexOfBlackWallsPlaced*2+1,indexOfBlackWallsPlaced,blackPlayer,newTile,
+				
+				// create the new Wall move, (for black, the move# = #wallsPlaced*2+1 and round# = #wallsPlaced)
+				WallMove newMove = new WallMove(indexOfBlackWallsPlaced*2+1,indexOfBlackWallsPlaced,blackPlayer,newTile,
 						currentGame, charToDirection(position.charAt(2)), currentWall);
+				
+				// validate the new Wall move and add it to the game
+				currentGame.setWallMoveCandidate(newMove);
+				if(!isWallCandidatePositionValid()) return false;
+				if(isWallMoveCandidateOverlapping()) return false;
+				currentGame.setWallMoveCandidate(null);
 				currentGame.addMove(newMove);
 				currentGamePosition.addBlackWallsOnBoard(currentWall);
-				currentGame.setWallMoveCandidate(null);
 				indexOfBlackWallsPlaced++;
 			}
 		}
