@@ -1174,24 +1174,40 @@ public class CucumberStepDefinitions {
 // note: no need to implement the given lines, they are given and supposed available
 	
 // Validate Position feature
-	// Scenario: Validate pawn position	
+	// Scenario: Validate Pawn position	
+	@Given("A game position is supplied with pawn coordinate <row>:<col>")
+	public void aGamePositionIsSuppliedWithPawnCoordinate() {
+		// if pawn coordinate are to be checked then the wall candidate should be null
+		// the goal thus is to check the pawn position instead of validating WallCandidate
+		// NEED IMPLEMENTATION FOR MOVE PLAYER FOR MEANING ???
+		assertEquals(true, !Quoridor223Controller.hasWallMoveCandidate());
+	}
+	
 	/**
 	 * @author Sacha Lévy
-	 * @param tile
-	 * @return
 	 */
 	@When("Validation of the position is initiated")
-	public void validationOfThenPositionIsInitiated(Tile tile) throws UnsupportedOperationException, GameNotRunningException {
-		assertEquals(true, Quoridor223Controller.validatePosition());
+	public void validationOfThenPositionIsInitiated() throws UnsupportedOperationException, GameNotRunningException {
+		// check wall has been dropped or pawn has been moved, for the moment only dropWall possible
+		// if no wall candidate then no checking of the Position
+		// need way to record if the dropWall was initiated ?
+		Quoridor223Controller.validatePosition();
+		// since anyways the valudatePosition sends errors
+		boolean init_validatePosition = true;
+		assertEquals(true, init_validatePosition);
 	}
 
 	/**
-	 * @author Sacha Lévy
+	 * @author	Sacha Lévy
+	 * @param	expected_result
 	 * @return
+	 * @throws GameNotRunningException 
+	 * @throws UnsupportedOperationException 
 	 */
 	@Then("The position shall be <result>")
-	public void thePositionShallBeResult() {
-		throw new PendingException();
+	public void thePositionShallBeResult(String expected_result) throws UnsupportedOperationException, GameNotRunningException {
+		String result = Quoridor223Controller.validatePosition()?"ok":"error";
+		assertEquals(expected_result, result);
 	}
 		
 	//Scenario: Validate overlapping walls (all valid)
