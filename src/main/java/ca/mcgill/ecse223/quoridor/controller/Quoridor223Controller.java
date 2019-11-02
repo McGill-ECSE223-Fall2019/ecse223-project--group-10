@@ -27,7 +27,6 @@ public class Quoridor223Controller {
 	 * Feature 1: Create a new game for the players
 	 * 
 	 * @author Vanessa Ifrah
-	 * @throws UnsupportedOperationException
 	 */
 	public static void createGame() {
 		
@@ -58,13 +57,14 @@ public class Quoridor223Controller {
 	 * Feature 2: Setting a user with a new username or with an existing one
 	 * 
 	 * @author Vanessa Ifrah
-	 * @throws UnsupportedOperationException
+	 * @param name
+	 * @param color
 	 */
-	public static void setUser(String playerName, String color) {
+	public static void setUser(String name, String color) {
 
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
-		User user = quoridor.addUser(playerName);
+		User user = quoridor.addUser(name);
 
 		// create player
 		Player player = new Player(new Time(10), user, 1, Direction.Horizontal);
@@ -78,7 +78,13 @@ public class Quoridor223Controller {
 		}
 
 	}
-
+	
+	/**
+	 * helper method to check is name exists
+	 * 
+	 * @author Vanessa Ifrah
+	 * @param name
+	 */
 	public static boolean checkNameList(String name) {
 
 		boolean result = true;
@@ -104,6 +110,25 @@ public class Quoridor223Controller {
 		}
 
 		return result;
+	}
+	
+	/**
+	 * helper method to warn user if name is duplicate
+	 * 
+	 * @author Vanessa Ifrah
+	 * @param name
+	 */
+	public static boolean warnUser(String name) {
+		
+		boolean error = false;
+		
+		// check if name already exists (duplicate name)
+		if (Quoridor223Controller.checkNameList(name)) {
+			error = true;
+		}
+		
+		return error;
+		
 	}
 
 	/**

@@ -183,7 +183,7 @@ public class CucumberStepDefinitions {
 	public void blackPlayerChoosesAUsername() {
 
 		// black/second player chooses their name
-		Quoridor223Controller.setUser("Vanessa", "black");
+		Quoridor223Controller.setUser("Jessica", "black");
 		;
 
 	}
@@ -219,8 +219,8 @@ public class CucumberStepDefinitions {
 	@When("I start the clock")
 	public void iStartTheClock() {
 
-		// start the clock -- clock starts when thinking time is set (game starts
-		// running)
+		// start the clock -- clock starts when game starts running
+		Quoridor223Controller.setGameToRun();
 
 	}
 
@@ -255,7 +255,7 @@ public class CucumberStepDefinitions {
 	@And("There is existing user {string}")
 	public void thereIsExistingUser(String userName) {
 
-		// add the name to the file with existing usernames
+		// add the name to the file
 		try {
 			File f = new File("names.txt");
 			FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
@@ -265,7 +265,7 @@ public class CucumberStepDefinitions {
 
 		}
 
-		// check that the username already exists
+		// check that the username exists
 		assertEquals(Quoridor223Controller.checkNameList(userName), true);
 
 	}
@@ -273,6 +273,7 @@ public class CucumberStepDefinitions {
 	@When("The player selects existing {string}")
 	public void thePlayerSelectsExisting(String userName) {
 
+		// player set to white or black
 		if (userName == "Daniel") {
 			Quoridor223Controller.setUser(userName, "white");
 		} else {
@@ -284,6 +285,7 @@ public class CucumberStepDefinitions {
 	@Then("The name of player {string} in the new game shall be {string}")
 	public void theNameOfPlayerInTheNewGameShallBe(String playerColor, String userName) {
 
+		// set the names according to their color
 		if (playerColor == "white") {
 			assertEquals(Quoridor223Controller.getWhitePlayerName(), userName);
 		} else {
@@ -319,7 +321,8 @@ public class CucumberStepDefinitions {
 	@Then("The player shall be warned that {string} already exists")
 	public void thePlayerShallBeWarnedThatUserNameAlreadyExists(String userName) {
 
-		// feature in GUI SetName page
+		//if name exists, warn user
+		Quoridor223Controller.warnUser(userName);
 
 	}
 
