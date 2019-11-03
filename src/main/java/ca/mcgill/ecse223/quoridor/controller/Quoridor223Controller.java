@@ -23,7 +23,6 @@ import ca.mcgill.ecse223.quoridor.model.Move;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
-import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
@@ -41,7 +40,6 @@ public class Quoridor223Controller {
 		
 		// create Quoridor game and get users
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		System.out.println("---------------------"+ quoridor.getCurrentGame());
 		Game newGame = new Game(GameStatus.Initializing, MoveMode.WallMove, quoridor);
 
 	}
@@ -156,7 +154,7 @@ public class Quoridor223Controller {
 	public static void createUser(String playerName) throws UnsupportedOperationException {
 
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		User user = quoridor.addUser(playerName);
+		quoridor.addUser(playerName);
 
 	}
 
@@ -194,7 +192,6 @@ public class Quoridor223Controller {
 		Player currentPlayer = getPlayerByName(playerName);
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
-		
 		if(quoridor.getCurrentGame().getGameStatus() != GameStatus.Running) {
 			setGameToReady();
 		}
@@ -353,6 +350,7 @@ public class Quoridor223Controller {
 		// check if the it is player's turn if not throw exception
 		// check if there is no wall in my hand if not throw exception
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
+		
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
 			if (curGame.getCurrentPosition().getWhiteWallsInStock().isEmpty()) {
 				// else if player have no wall
@@ -491,7 +489,7 @@ public class Quoridor223Controller {
 	 */
 	// TODO: Feature 10: Load Game
 	public static boolean loadPosition(String filename) throws IOException {
-		System.out.println("called load position");
+		//System.out.println("called load position");
 		
 		boolean loadedPosition = false;
 		String relPath = "./ca.mcgill.ecse223.quoridor/" + filename;
@@ -778,8 +776,7 @@ public class Quoridor223Controller {
 	 */
 	private static boolean isRunning() {
 		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
-		
-		if (current == null || current.getGameStatus() != Game.GameStatus.Running)
+		if (current == null || current.getGameStatus()!=Game.GameStatus.Running)
 			return false;
 		
 		return true;
@@ -998,7 +995,7 @@ public class Quoridor223Controller {
 	 * @throws IOException
 	 */
 	public static boolean saveCurrentGamePositionAsFile(String filename) throws IOException {
-		System.out.println("called save position");
+		//System.out.println("called save position");
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game currentGame;
 		GamePosition currentGamePosition;
@@ -1297,7 +1294,6 @@ public class Quoridor223Controller {
 	 */
 	public static boolean loadMoveDataFromFile(String loadFile) {		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Board board = quoridor.getBoard();
 		Game currentGame = quoridor.getCurrentGame();
 		GamePosition currentGamePosition = currentGame.getCurrentPosition();
 		Player whitePlayer = currentGame.getWhitePlayer();
@@ -1413,7 +1409,7 @@ public class Quoridor223Controller {
 		for (String position : whiteMoveData){
 			// if position correspond to a wall position
 			if (position.length() == 3){
-				System.out.println(position);
+				//System.out.println(position);
 				
 				// get the new Tile
 				Tile newTile;
@@ -1448,7 +1444,7 @@ public class Quoridor223Controller {
 		indexOfBlackWallsPlaced = 0;
 		for (String position : blackMoveData){
 			if (position.length() == 3){
-				System.out.println(position);
+				//System.out.println(position);
 				
 				// get the new Tile
 				Tile newTile;

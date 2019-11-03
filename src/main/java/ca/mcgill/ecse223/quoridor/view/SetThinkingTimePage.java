@@ -48,6 +48,8 @@ public class SetThinkingTimePage extends JFrame {
 	
 	public SetThinkingTimePage() {
 		initPage();
+		// initialize the board here
+		Quoridor223Controller.initializeBoard();
 	}
 	
 	private void initPage(){
@@ -107,8 +109,7 @@ public class SetThinkingTimePage extends JFrame {
 					Quoridor223Controller.setThinkingTime(Time.valueOf(whiteTime), Quoridor223Controller.getWhitePlayerName());
 					Quoridor223Controller.setThinkingTime(Time.valueOf(blackTime), Quoridor223Controller.getBlackPlayerName());
 					
-					// initialize a board and open a game page
-					Quoridor223Controller.initializeBoard();
+					// open a game page
 					QuoridorApplication.setMainPage();
 					
 				}catch (NumberFormatException e) {
@@ -119,28 +120,7 @@ public class SetThinkingTimePage extends JFrame {
 		
 		loadGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					String whiteTime = "00:" + whiteTimePicker.getText();
-					String blackTime = "00:" + blackTimePicker.getText();
-					
-					// set thinking time for two players
-					Quoridor223Controller.setThinkingTime(Time.valueOf(whiteTime), Quoridor223Controller.getWhitePlayerName());
-					Quoridor223Controller.setThinkingTime(Time.valueOf(blackTime), Quoridor223Controller.getBlackPlayerName());
-					
-					// initialize a board
-					Quoridor223Controller.initializeBoard();
-					
-				}catch (NumberFormatException e) {
-					setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
-				}
-				
-				try {
-					userClicksToLoadGame();
-					QuoridorApplication.setMainPage();
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				userClicksToLoadGame();
 			}
 		});
 		
@@ -203,13 +183,27 @@ public class SetThinkingTimePage extends JFrame {
 		layout.setAutoCreateContainerGaps(true);
 	}
 	
-	private void userClicksToLoadGame() throws IOException {
+	private void userClicksToLoadGame() {
 		String filename = null;
 		Boolean saveSuccessful = false;
-
+		
+		try {
+			String whiteTime = "00:" + whiteTimePicker.getText();
+			String blackTime = "00:" + blackTimePicker.getText();
+			
+			// set thinking time for two players
+			Quoridor223Controller.setThinkingTime(Time.valueOf(whiteTime), Quoridor223Controller.getWhitePlayerName());
+			Quoridor223Controller.setThinkingTime(Time.valueOf(blackTime), Quoridor223Controller.getBlackPlayerName());
+						
+		}catch (NumberFormatException e) {
+			setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
+			return;
+		}
+		
 		filename = loadGameInputDialog("Enter the file path below:", "Load Game From File", null);
 		
 		if (filename != null) {
+			
 			try {
 				saveSuccessful = Quoridor223Controller.loadPosition(filename);
 			} catch (IOException e1) {
@@ -230,10 +224,11 @@ public class SetThinkingTimePage extends JFrame {
 				try {
 					saveSuccessful = Quoridor223Controller.loadPosition(filename);
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
+			QuoridorApplication.setMainPage();
+			return;
 		}
 		return;
 	}
