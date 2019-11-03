@@ -180,11 +180,11 @@ public class Quoridor223Controller {
 
 	/**
 	 * Feature 3: Set Total Thinking Time
+	 * set the remaining time of a player
 	 * 
 	 * @author Andrew Ta
-	 * @param thinkingTime
-	 * @param playerName
-	 * @throws UnsupportedOperationException
+	 * @param thinkingTime remaining time provided
+	 * @param playerName   name of the player
 	 */
 	public static void setThinkingTime(Time thinkingTime, String playerName) {
 		// get current Game
@@ -200,9 +200,10 @@ public class Quoridor223Controller {
 
 	/**
 	 * Get Remaining Time of Black and White Player
+	 * querry method to get remaining time of a player
 	 * 
 	 * @author Andrew Ta
-	 * @param playerName
+	 * @param playerName name of the player
 	 */
 	public static Time getRemainingTime(String playerColor) {
 		Player currentPlayer;
@@ -218,9 +219,12 @@ public class Quoridor223Controller {
 
 	/**
 	 * Feature 4: Initialize Board
+	 * create a new board with 81 tiles
+	 * create 10 walls and put them on the stock for each player 
+	 * put each player in its initial position
+	 * set white player as the first one to move
 	 * 
 	 * @author Andrew Ta
-	 * @throws UnsupportedOperationException
 	 */
 	public static void initializeBoard() {
 		// get quoridor object
@@ -278,7 +282,9 @@ public class Quoridor223Controller {
 	}
 	
 	/**
+	 * helper method
 	 * setup main page for testing
+	 * 
 	 * @author Andrew Ta
 	 */
 	public static void setMainPage() {
