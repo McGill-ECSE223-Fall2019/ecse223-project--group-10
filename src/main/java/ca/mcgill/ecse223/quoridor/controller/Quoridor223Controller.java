@@ -480,7 +480,7 @@ public class Quoridor223Controller {
 
 	// under feature 10
 	/**
-	 * Feature 10: Load game
+	 * Feature 10: Load a new game position from a file in the filesystem
 	 * 
 	 * @author Mitchell Keeley
 	 * @param filename
@@ -957,7 +957,7 @@ public class Quoridor223Controller {
 	/////////////////////////////////////////////////	
 	
 	/**
-	 * checks if file exists
+	 * Checks if file exists in the file system
 	 * @param filename
 	 * @return
 	 */
@@ -967,7 +967,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * A method to prompt the user for permission to overwrite the existing file
+	 * Prompt the user for permission to overwrite the existing file
 	 * 
 	 * @author Mitchell Keeley
 	 * @return overwriteApproved
@@ -987,7 +987,7 @@ public class Quoridor223Controller {
 	}
 
 	/**
-	 * A method to save the current GamePosition as a file
+	 * Save the current game position as a file
 	 * 
 	 * @author Mitchell Keeley
 	 * @param filename
@@ -1050,7 +1050,7 @@ public class Quoridor223Controller {
 	}
 
 	/**
-	 * A function to translate a tile into the correct string to write to the save
+	 * Translate a tile into a save compatible string
 	 * file
 	 * 
 	 * @author Mitchell Keeley
@@ -1068,8 +1068,7 @@ public class Quoridor223Controller {
 	}
 
 	/**
-	 * A function to translate a Direction into the correct string to write to the
-	 * save file
+	 * Translate a Direction into a save compatible string
 	 * 
 	 * @author Mitchell Keeley
 	 * @param direction
@@ -1084,7 +1083,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * A function to translate a letter into the corresponding Direction
+	 * Translate a character into the corresponding Direction
 	 * @param letter
 	 * @return
 	 */
@@ -1097,7 +1096,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * A function to write to an existing save file
+	 * Write to an existing save file
 	 * @param filename
 	 * @return success or failure of operation
 	 * @throws IOException
@@ -1116,7 +1115,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * A function to create and write to a new save file
+	 * Create and write to a new save file
 	 * @param filename
 	 * @return success or failure of operation
 	 * @throws IOException
@@ -1133,7 +1132,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * checks if load File is a valid File
+	 * Check if the load file is a valid file
 	 * @param filename
 	 * @return
 	 */
@@ -1149,7 +1148,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * A function to load the GamePosition data from the file
+	 * Load the GamePosition data from the file
 	 * 
 	 * @author Mitchell Keeley
 	 * @param filename
@@ -1287,7 +1286,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * loads the move data from the specified file into the game
+	 * Load the game data from the specified file into the game
 	 * @param loadFile
 	 * @return
 	 */
