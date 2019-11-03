@@ -587,18 +587,19 @@ public class CucumberStepDefinitions {
 		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
 
 		if (curPlayer.equals(game.getWhitePlayer())) {
+			ArrayList<Wall> toBeRemoved = new ArrayList<Wall>();
 			for (Wall wall : game.getCurrentPosition().getWhiteWallsInStock()) {
-				if (wall != null)
 					game.getCurrentPosition().addWhiteWallsOnBoard(wall);
-					game.getCurrentPosition().removeWhiteWallsInStock(wall);
+					toBeRemoved.add(wall);
 			}
-
+			for (Wall wall:toBeRemoved)game.getCurrentPosition().removeWhiteWallsInStock(wall);
 		} else if (curPlayer.equals(game.getBlackPlayer())) {
+			ArrayList<Wall> toBeRemoved = new ArrayList<Wall>();
 			for (Wall wall : game.getCurrentPosition().getBlackWallsInStock()) {
-				if (wall != null)
 					game.getCurrentPosition().addBlackWallsOnBoard(wall);
-					game.getCurrentPosition().removeBlackWallsInStock(wall);
+					toBeRemoved.add(wall);
 			}
+			for (Wall wall:toBeRemoved)game.getCurrentPosition().removeBlackWallsInStock(wall);
 		}
 	}
 
@@ -642,16 +643,15 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The wall shall be rotated over the board to {string}")
 	public void theWallShallBeRotatedOverTheBoardToNewdir(String direction) {
-		System.out.println(direction);
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		String dir = new String();
+		String boardDir = new String();
 		Direction wallDir = curGame.getWallMoveCandidate().getWallDirection();
 		if (wallDir == Direction.Horizontal) {
-			dir = "horizontal";
+			boardDir = "horizontal";
 		} else {
-			dir = "vertical";
+			boardDir = "vertical";
 		}
-		assertEquals(direction, dir);
+		assertEquals(direction, boardDir);
 	}
 	// ***********************************************
 	// Move Wall and Drop Wall start here
