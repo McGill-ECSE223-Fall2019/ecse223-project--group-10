@@ -59,7 +59,7 @@ public class SetThinkingTimePage extends JFrame {
 	
 		// initialize username
 		// @sacha: commented JLABELS to get player names from controller
-		userName1 = new JLabel(String.format("<html><font color='white' >%s</font></html>", Quoridor223Controller.getWhitePlayerName()));
+		userName1 = new JLabel(String.format("<html><font color='black' >%s</font></html>", Quoridor223Controller.getWhitePlayerName()));
 		//userName1 = new JLabel(String.format("<html><font color='black' >%s</font></html>", ));
 		userName1.setFont(new Font("Arial", Font.PLAIN, 25));
 		userName2 = new JLabel(String.format("<html><font color='black' >%s</font></html>", Quoridor223Controller.getBlackPlayerName()));
@@ -67,12 +67,12 @@ public class SetThinkingTimePage extends JFrame {
 		userName2.setFont(new Font("Arial", Font.PLAIN, 25));
 				
 		// initialize start-game button
-		startGame = new JButton("<html><font color='white' >START GAME</font></html>");
+		startGame = new JButton("<html><font color='black' >START GAME</font></html>");
 		startGame.setBackground(new Color(206, 159, 111));
 		startGame.setFont(new Font("Arial", Font.PLAIN, 30));
 		
 		// initialize the load game button
-		loadGame = new JButton("<html><font color='white' >LOAD GAME</font></html>");
+		loadGame = new JButton("<html><font color='black' >LOAD GAME</font></html>");
 		loadGame.setBackground(new Color(206, 159, 111));
 		loadGame.setFont(new Font("Arial", Font.PLAIN, 30));
 	

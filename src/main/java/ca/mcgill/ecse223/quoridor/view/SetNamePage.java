@@ -59,7 +59,7 @@ public class SetNamePage extends JFrame {
 		// header: back button brings user back to welcome page
 		JButton btnBack = new JButton("Back");
 		btnBack.setBackground(new Color(204, 153, 102));
-		btnBack.setFont(new Font("Avenir Next", Font.PLAIN, 13));
+		btnBack.setFont(new Font("Arial", Font.PLAIN, 13));
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				QuoridorApplication.setWelcomePage();
@@ -75,9 +75,9 @@ public class SetNamePage extends JFrame {
 		
 		// white and black player labels
 		userName1 = new JLabel("<html><font color='white' >WHITE PLAYER</font></html>");
-		userName1.setFont(new Font("Avenir Next", Font.PLAIN, 14));
+		userName1.setFont(new Font("Arial", Font.PLAIN, 14));
 		userName2 = new JLabel("<html><font color='black' >BLACK PLAYER</font></html>");
-		userName2.setFont(new Font("Avenir Next", Font.PLAIN, 14));
+		userName2.setFont(new Font("Arial", Font.PLAIN, 14));
 		
 		// dropdown menus with usernames
 		usernames = new ArrayList<String>();
@@ -109,13 +109,13 @@ public class SetNamePage extends JFrame {
 		// button starts a new game
 		btnLetsS = new JButton("Let's Start");
 		btnLetsS.setBackground(new Color(204, 153, 102));
-		btnLetsS.setFont(new Font("Lucida Grande", Font.PLAIN, 17));
+		btnLetsS.setFont(new Font("Arial", Font.PLAIN, 17));
 		
 		//render NO button when usernames chosen exist
 		JButton btnNO = new JButton("NO");
 		btnNO.setVisible(false);
 		btnNO.setBackground(new Color(204, 153, 102));
-		btnNO.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		btnNO.setFont(new Font("Arial", Font.PLAIN, 16));
 		btnNO.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnNO.setVisible(false);
@@ -194,7 +194,7 @@ public class SetNamePage extends JFrame {
 	
 
 		JLabel label = new JLabel("Please choose your player names");
-		label.setFont(new Font("Heiti SC", Font.PLAIN, 26));
+		label.setFont(new Font("Arial", Font.PLAIN, 26));
 		
 		
 		
