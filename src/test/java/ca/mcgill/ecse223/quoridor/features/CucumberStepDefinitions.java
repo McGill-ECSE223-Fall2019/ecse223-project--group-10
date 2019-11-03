@@ -1547,7 +1547,11 @@ public class CucumberStepDefinitions {
 		else
 			return false;
 	}
-
+	
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * */
 	@Given("The player to move is {string}")
 	public void the_player_to_move_is(String string) {
 		// Write code here that turns the phrase above into concrete actions
