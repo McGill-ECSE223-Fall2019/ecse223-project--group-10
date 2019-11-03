@@ -1,5 +1,6 @@
 Feature: Move Wall
-  As a player who grabbed a wall,
+  As a player who grabbed a wall, I wish to move the wall between possible rows and columns of the board 
+  so that I could move it to its designated target position. 
   I wish to get feedback from the game if a designated wall position is illegal.
 
   Background: 
@@ -27,6 +28,7 @@ Feature: Move Wall
     When I try to move the wall "<side>"
     Then I shall be notified that my move is illegal 
     And A wall move candidate shall exist with "<dir>" at position (<nrow>, <ncol>)
+
     Examples: 
       | dir        | row | col | side  | nrow | ncol |
       | vertical   |   2 |   1 | left  |    2 |    1 |

@@ -42,11 +42,10 @@ public class SetNamePage extends JFrame {
 	// time error
 	private JButton btnLetsS;
 	
-	// hasError and confirm
+	JLabel error = new JLabel("");
 	boolean hasError = false;
 	boolean confirm = false;
-	
-	JLabel error = new JLabel("");
+	boolean startAnyways = false;
 
 	public SetNamePage() {
 		initPage();
@@ -59,10 +58,11 @@ public class SetNamePage extends JFrame {
 		
 		// header: back button brings user back to welcome page
 		JButton btnBack = new JButton("Back");
-		btnBack.setBackground(new Color(112, 128, 144));
+		btnBack.setBackground(new Color(204, 153, 102));
 		btnBack.setFont(new Font("Avenir Next", Font.PLAIN, 13));
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				QuoridorApplication.setWelcomePage();
 			}
 		});
 		
@@ -109,7 +109,19 @@ public class SetNamePage extends JFrame {
 		// button starts a new game
 		btnLetsS = new JButton("Let's Start");
 		btnLetsS.setBackground(new Color(204, 153, 102));
-		btnLetsS.setFont(new Font("Lucida Grande", Font.PLAIN, 18));
+		btnLetsS.setFont(new Font("Lucida Grande", Font.PLAIN, 17));
+		
+		//render NO button when usernames chosen exist
+		JButton btnNO = new JButton("NO");
+		btnNO.setVisible(false);
+		btnNO.setBackground(new Color(204, 153, 102));
+		btnNO.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		btnNO.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				btnNO.setVisible(false);
+				error.setText("");
+			}
+		});
 		
 		
 		
@@ -128,40 +140,59 @@ public class SetNamePage extends JFrame {
 					hasError = true;
 				}
 				
-				if (usernames.contains(name1)) {
-					error.setText("White player's name already exists.");
-					hasError = true;
-					confirm = true;
-				}else {
-					try {
-						File f = new File("names.txt");
-						FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
-						writer.write("\n" + name1);
-						writer.close();
-					}catch (IOException exp) {}
+				try {
+					error.setText("");
+					
+					hasError = false;
+					if (name1.equals(name2) && !startAnyways) {
+						error.setText("Names must be unique.");
+						hasError = true;
+					} else if ((name1.equals("") || name2.equals("") || name1.equals(" ") || name2.equals(" ")) && !startAnyways) {
+						error.setText("Names cannot be empty.");
+						hasError = true;
+					} else if ((usernames.contains(name1) || usernames.contains(name2)) && !startAnyways) {
+						if (usernames.contains(name1)) {
+							error.setText("White player's name already exists.");
+							confirm = true;
+						} else {
+							File f = new File("names.txt");
+							FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
+							writer.write("\n" + name1);
+							writer.close();
+						}
+						if (usernames.contains(name2)) {
+							error.setText(error.getText() + "\n" + "Black player's name already exists.");
+							confirm = true;
+						} else {
+							File f = new File("names.txt");
+							FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
+							writer.write("\n" + name1);
+							writer.close();
+						}
+
+					} else {
+						Quoridor223Controller.createGame();
+						Quoridor223Controller.setUser(name1, "white");
+						Quoridor223Controller.setUser(name2, "black");
+						QuoridorApplication.setTimePage();
+					}
+					
+					if (confirm && !hasError) {
+						error.setText(error.getText() + "\n" + "Do you want to continue with these names?");
+						btnNO.setVisible(true);
+						startAnyways = true;
+					}
+
+				} catch (Exception g) {
+					
 				}
+
 				
-				if (usernames.contains(name2)) {
-					error.setText("Black player's name already exists.");
-					hasError = true;
-					confirm = true;
-				}else {
-					try {
-						File f = new File("names.txt");
-						FileWriter writer = new FileWriter(f.getAbsolutePath(), true);
-						writer.write("\n" + name2);
-						writer.close();
-					}catch (IOException exp) {}
-				}
-				
-					Quoridor223Controller.createGame();
-					Quoridor223Controller.createUser(name1);
-					Quoridor223Controller.createUser(name2);
-					Quoridor223Controller.creatPlayers();
-					QuoridorApplication.setTimePage();
-			}	
+
+			}
 		});
-		
+	
+
 		JLabel label = new JLabel("Please choose your player names");
 		label.setFont(new Font("Heiti SC", Font.PLAIN, 26));
 		
@@ -174,58 +205,67 @@ public class SetNamePage extends JFrame {
 				.addGroup(layout.createSequentialGroup()
 					.addGap(49)
 					.addComponent(btnBack)
-					.addPreferredGap(ComponentPlacement.RELATED, 893, Short.MAX_VALUE)
-					.addComponent(lblQuoridor, GroupLayout.PREFERRED_SIZE, 211, GroupLayout.PREFERRED_SIZE)
-					.addGap(172))
-				.addGroup(layout.createSequentialGroup()
-					.addGap(469)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(userName2, 200, 200, 200)
-						.addComponent(userName1, 200, 200, 200))
-					.addContainerGap(731, Short.MAX_VALUE))
+						.addGroup(layout.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.RELATED, 598, Short.MAX_VALUE)
+							.addComponent(lblQuoridor, GroupLayout.PREFERRED_SIZE, 211, GroupLayout.PREFERRED_SIZE)
+							.addGap(172))
+						.addGroup(layout.createSequentialGroup()
+							.addGap(295)
+							.addComponent(userName1, 200, 200, 200)
+							.addContainerGap())))
+				.addGroup(layout.createSequentialGroup()
+					.addGap(502)
+					.addComponent(btnNO)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(btnLetsS, GroupLayout.PREFERRED_SIZE, 188, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(629, Short.MAX_VALUE))
+				.addGroup(layout.createSequentialGroup()
+					.addGap(421)
+					.addComponent(userName2, 200, 200, 200)
+					.addContainerGap(779, Short.MAX_VALUE))
+				.addGroup(layout.createSequentialGroup()
+					.addGap(411)
+					.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(comboBox_1, Alignment.LEADING, 0, 377, Short.MAX_VALUE)
+						.addComponent(comboBox, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 377, GroupLayout.PREFERRED_SIZE))
+					.addGap(612))
 				.addGroup(layout.createSequentialGroup()
 					.addGap(392)
 					.addComponent(label, GroupLayout.PREFERRED_SIZE, 448, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap(560, Short.MAX_VALUE))
 				.addGroup(layout.createSequentialGroup()
-					.addGap(495)
-					.addComponent(btnLetsS, GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
-					.addGap(709))
-				.addGroup(layout.createSequentialGroup()
-					.addGap(560)
+					.addGap(443)
 					.addComponent(error)
-					.addContainerGap(840, Short.MAX_VALUE))
-				.addGroup(layout.createSequentialGroup()
-					.addGap(455)
-					.addGroup(layout.createParallelGroup(Alignment.TRAILING, false)
-						.addComponent(comboBox, Alignment.LEADING, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-						.addComponent(comboBox_1, Alignment.LEADING, 0, 302, Short.MAX_VALUE))
-					.addContainerGap(643, Short.MAX_VALUE))
+					.addContainerGap(797, Short.MAX_VALUE))
 		);
 		layout.setVerticalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
 					.addGap(35)
 					.addComponent(lblQuoridor, GroupLayout.PREFERRED_SIZE, 69, GroupLayout.PREFERRED_SIZE)
-					.addGap(78)
+					.addGap(47)
 					.addComponent(label)
-					.addGap(58)
+					.addGap(76)
 					.addComponent(userName1)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
-					.addGap(33)
-					.addComponent(userName2)
-					.addGap(18)
-					.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, 47, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 43, GroupLayout.PREFERRED_SIZE)
 					.addGap(46)
+					.addComponent(userName2)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(comboBox_1, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
+					.addGap(45)
 					.addComponent(error)
-					.addGap(42)
-					.addComponent(btnLetsS, GroupLayout.PREFERRED_SIZE, 48, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(103, Short.MAX_VALUE))
+					.addGap(60)
+					.addGroup(layout.createParallelGroup(Alignment.LEADING)
+						.addComponent(btnNO, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
+						.addComponent(btnLetsS, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE))
+					.addGap(78))
 				.addGroup(layout.createSequentialGroup()
 					.addGap(49)
-					.addComponent(btnBack, GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE)
-					.addGap(605))
+					.addComponent(btnBack, GroupLayout.PREFERRED_SIZE, 46, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(603, Short.MAX_VALUE))
 		);
 				
 		getContentPane().setLayout(layout);

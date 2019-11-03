@@ -44,12 +44,20 @@ public class QuoridorApplication {
 		timePage.setVisible(false);
 		game = new GamePage();
 		game.setVisible(true);
+		game.setResizable(false);
 	}
 	public static void setTimePage() {
 		namePage.setVisible(false);
 		timePage = new SetThinkingTimePage();
 		timePage.setVisible(true);
 	}
+	
+	public static void setWelcomePage() {
+		namePage.setVisible(false);
+		lobby = new WelcomePage();
+		lobby.setVisible(true);
+	}
+	
 	public static void setNamePage() {
 		lobby.setVisible(false);
 		namePage = new SetNamePage();
