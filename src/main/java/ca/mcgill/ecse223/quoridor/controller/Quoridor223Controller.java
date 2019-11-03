@@ -41,7 +41,6 @@ public class Quoridor223Controller {
 		
 		// create Quoridor game and get users
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		System.out.println("---------------------"+ quoridor.getCurrentGame());
 		Game newGame = new Game(GameStatus.Initializing, MoveMode.WallMove, quoridor);
 
 	}
