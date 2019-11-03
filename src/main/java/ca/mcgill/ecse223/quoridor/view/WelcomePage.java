@@ -32,7 +32,7 @@ public class WelcomePage extends JFrame {
 		
 		// Welcome message
 		JLabel lblWelcomeTo = new JLabel("W e l c o m e   t o");
-		lblWelcomeTo.setFont(new Font("Heiti SC", Font.PLAIN, 18));
+		lblWelcomeTo.setFont(new Font("Arial", Font.PLAIN, 18));
 		
 		// Image title
 		ImageIcon imgQuoridor = new ImageIcon(getClass().getResource("logoicon.png"));
@@ -44,7 +44,7 @@ public class WelcomePage extends JFrame {
 		// Button to start new game
 		JButton btnStartANew = new JButton("START A NEW GAME");
 		btnStartANew.setBackground(new Color(204, 153, 102));
-		btnStartANew.setFont(new Font("Heiti SC", Font.BOLD, 16));
+		btnStartANew.setFont(new Font("Arial", Font.BOLD, 16));
 		btnStartANew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// link to the set name page
