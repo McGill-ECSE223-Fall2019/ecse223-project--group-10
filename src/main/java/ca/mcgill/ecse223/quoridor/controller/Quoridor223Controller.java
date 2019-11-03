@@ -585,6 +585,10 @@ public class Quoridor223Controller {
 	public static boolean setCurrentPlayerToMoveByColor(String color) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player player_to_move = getPlayerByColor(color);
+		Player next_player;
+		if(player_to_move.equals(current_game.getBlackPlayer())) next_player = current_game.getWhitePlayer();
+		else next_player = current_game.getBlackPlayer();
+		player_to_move.setNextPlayer(next_player);
 		return current_game.getCurrentPosition().setPlayerToMove(player_to_move);
 	}
 
@@ -854,7 +858,7 @@ public class Quoridor223Controller {
 	 * */
 	public static String getPlayerToMoveName() {
 		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
-		return current_position.getPlayerToMove().getNextPlayer().getUser().getName();
+		return current_position.getPlayerToMove().getUser().getName();
 	}
 
 /////////////////////////////////////////////////////
@@ -1622,8 +1626,10 @@ public class Quoridor223Controller {
 	}
 	// @sacha: helpers for cucumber step definitions
 	public static String currentStatePlayers() {
-		
-		return null;
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game currentGame = quoridor.getCurrentGame();
+		String return_statement = "current player  moving : "+getPlayerToMoveName() +"\n"+ "Next player moving:" + currentGame.getCurrentPosition().getPlayerToMove().getNextPlayer().getUser().getName();
+		return return_statement;
 	}
 
 }

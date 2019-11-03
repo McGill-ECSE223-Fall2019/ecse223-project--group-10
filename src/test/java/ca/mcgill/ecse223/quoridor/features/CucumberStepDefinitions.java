@@ -1509,70 +1509,7 @@ public class CucumberStepDefinitions {
 
 // Switch Current Player feature
 	
-	@Given("The player to move is <player>")
-	public void playerToMoveIsPlayer(String player) {
-		System.out.println(Quoridor223Controller.currentStatePlayers());
-		assertEquals(true, Quoridor223Controller.setCurrentPlayerToMoveByColor(player));
-		}
 	
-	// Scenario: Switch current player
-	/**
-	 * @author Sacha Lévy
-	 * @param player
-	 * @return
-	 */
-	@When("Player <player> completes his move")
-	public void playerCompletesHisMove(String player) throws GameNotRunningException, InvalidOperationException {
-		// a move is moveWall operation, need further implementation ???
-		Quoridor223Controller.grabWall();
-		Quoridor223Controller.dropWall();
-		assertEquals(false,Quoridor223Controller.hasWallMoveCandidate());
-	}
-
-	/**
-	 * @author Sacha Lévy
-	 * @param other
-	 * @return
-	 */
-	@Then("The user interface shall be showing it is <other> turn")
-	public void theUserIntefaceShallBeShowingItIsOtherTurn(String other) {
-		assertEquals("It is "+Quoridor223Controller.getPlayerNameByColor(other)+"'s Turn !!", gamePage.getDialogBoxText());
-	}
-
-	/**
-	 * @author Sacha Lévy
-	 * @param player
-	 * @return
-	 * @throws InterruptedException 
-	 */
-	@And("The clock of <player> shall be stopped")
-	public void theClockOfPlayerShallBeStopped(String player) throws InterruptedException {
-		// player is the current player moving 
-		assertEquals(false, isClockRunning(player));
-	}
-
-	/**
-	 * @author Sacha Lévy
-	 * @param player
-	 * @return
-	 * @throws InterruptedException 
-	 */
-	@And("The clock of <other> shall be running")
-	public void theClockOfOtherShallBeRunning(String other) throws InterruptedException {
-		// check other players clock is running
-		assertEquals(true, isClockRunning(other));
-	}
-
-	/**
-	 * @author Sacha Lévy
-	 * @param player
-	 * @return
-	 */
-	@And("The next player to move shall be <other>")
-	public void theNextPlayeToMoveShallBe(Player other) {
-		// check the next player to move is other
-		assertEquals(true, isNextPlayerToMove(other));
-	}
 
 	/**
 	 * @author Sacha Lévy
@@ -1584,7 +1521,7 @@ public class CucumberStepDefinitions {
 		Player player = Quoridor223Controller.getPlayerByColor(color);
 		Time tmp_time = player.getRemainingTime();
 		Thread.sleep(1500);
-		System.out.println(tmp_time.toString());
+		//System.out.println(tmp_time.toString());
 		if (tmp_time.toString().equals(player.getRemainingTime().toString()))
 			return false;
 		else
@@ -1602,6 +1539,7 @@ public class CucumberStepDefinitions {
 	public void the_player_to_move_is(String string) {
 		// Write code here that turns the phrase above into concrete actions
 		assertEquals(true, Quoridor223Controller.setCurrentPlayerToMoveByColor(string));
+		//System.out.println(Quoridor223Controller.currentStatePlayers());
 	}
 
 	@Given("The clock of {string} is running")
@@ -1627,32 +1565,22 @@ public class CucumberStepDefinitions {
 
 	@When("Player {string} completes his move")
 	public void player_completes_his_move(String string) {
-		try {
-			Quoridor223Controller.grabWall();
-		} catch (GameNotRunningException | InvalidOperationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		try {
-			Quoridor223Controller.dropWall();
-		} catch (GameNotRunningException | InvalidOperationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		gamePage.clickGrabWall();
+		gamePage.clickDropWall();
 		assertEquals(false,Quoridor223Controller.hasWallMoveCandidate());
 	}
 
 	@Then("The user interface shall be showing it is {string} turn")
 	public void the_user_interface_shall_be_showing_it_is_turn(String string) {
 		// Write code here that turns the phrase above into concrete actions
-		System.out.println(string + "  " + Quoridor223Controller.getPlayerNameByColor(string));
+		//System.out.println("current player moving"+string + "  " + Quoridor223Controller.getPlayerNameByColor(string));
 		try {
 			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(gamePage.getDialogBoxText());
+		//System.out.println(gamePage.getDialogBoxText());
 		assertEquals("It is "+Quoridor223Controller.getPlayerNameByColor(string)+"'s Turn !!", gamePage.getDialogBoxText());
 	}
 
