@@ -46,20 +46,6 @@ public class Quoridor223Controller {
 
 	}
 
-	public static void creatPlayers() {
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game curGame = quoridor.getCurrentGame();
-		List<User> users = quoridor.getUsers();
-
-		// create players
-        Player whitePlayer = new Player(new Time(10), users.get(0), 1, Direction.Vertical);
-        Player blackPlayer = new Player(new Time(10), users.get(1), 9, Direction.Vertical);
-        whitePlayer.setNextPlayer(blackPlayer);
-        blackPlayer.setNextPlayer(whitePlayer);
-        curGame.setBlackPlayer(blackPlayer);
-        curGame.setWhitePlayer(whitePlayer);
-	}
-
 	public static void setGameToReady() {
 		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -90,12 +76,14 @@ public class Quoridor223Controller {
 		User user = quoridor.addUser(name);
 
 		// create player
-		Player player = new Player(new Time(10), user, 1, Direction.Horizontal);
+		Player player;
 
 		// set player name according to their color
 		if (color.equals("white")) {
+			player = new Player(new Time(10), user, 9, Direction.Horizontal);
 			curGame.setWhitePlayer(player);
 		} else {
+			player = new Player(new Time(10), user, 1, Direction.Horizontal);
 			curGame.setBlackPlayer(player);
 		}
 	}
@@ -235,7 +223,7 @@ public class Quoridor223Controller {
 	 * @author Andrew Ta
 	 * @throws UnsupportedOperationException
 	 */
-	public static void initializeBoard() throws UnsupportedOperationException {
+	public static void initializeBoard() {
 		// get quoridor object
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 
