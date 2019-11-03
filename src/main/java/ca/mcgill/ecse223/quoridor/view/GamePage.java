@@ -456,7 +456,6 @@ public class GamePage extends JFrame {
 	public boolean hasWallInHand() {
 		return boardComponent.hasWallInHand();
 	}
-	
 	public String getGameMessage() {
 		return gameMessage.getText();
 	}
@@ -480,5 +479,11 @@ public class GamePage extends JFrame {
 	}
 	public void delete() {
 		boardComponent=null;
+	}
+	public void clickRotateWall() {
+		btnRotateWall.doClick();
+	}
+	public void clickGrabWall() {
+		grabWall.doClick();
 	}
 }

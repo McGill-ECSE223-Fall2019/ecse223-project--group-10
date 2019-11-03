@@ -192,10 +192,10 @@ public class Quoridor223Controller {
 		Player currentPlayer = getPlayerByName(playerName);
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
-		
 		if(quoridor.getCurrentGame().getGameStatus() != GameStatus.Running) {
 			setGameToReady();
 		}
+
 	}
 
 	/**
@@ -350,6 +350,7 @@ public class Quoridor223Controller {
 		// check if the it is player's turn if not throw exception
 		// check if there is no wall in my hand if not throw exception
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
+		
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
 			if (curGame.getCurrentPosition().getWhiteWallsInStock().isEmpty()) {
 				// else if player have no wall

@@ -13,7 +13,7 @@ Feature: Grab Wall
 		Then A wall move candidate shall be created at initial position
 		And I shall have a wall in my hand over the board
 		And The wall in my hand shall disappear from my stock
-		
+	
 	Scenario: No more walls in stock
     Given  I have no more walls on stock
 		When I try to grab a wall from my stock
