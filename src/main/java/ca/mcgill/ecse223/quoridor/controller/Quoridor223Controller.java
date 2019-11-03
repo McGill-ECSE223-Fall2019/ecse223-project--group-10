@@ -49,7 +49,6 @@ public class Quoridor223Controller {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.ReadyToStart);
-		
 	}
 
 	public static void setGameToRun() {
@@ -57,7 +56,6 @@ public class Quoridor223Controller {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.Running);
-		
 	}
 
 	/**
@@ -180,11 +178,11 @@ public class Quoridor223Controller {
 
 	/**
 	 * Feature 3: Set Total Thinking Time
+	 * set the remaining time of a player
 	 * 
 	 * @author Andrew Ta
-	 * @param thinkingTime
-	 * @param playerName
-	 * @throws UnsupportedOperationException
+	 * @param thinkingTime remaining time provided
+	 * @param playerName   name of the player
 	 */
 	public static void setThinkingTime(Time thinkingTime, String playerName) {
 		// get current Game
@@ -200,9 +198,10 @@ public class Quoridor223Controller {
 
 	/**
 	 * Get Remaining Time of Black and White Player
+	 * querry method to get remaining time of a player
 	 * 
 	 * @author Andrew Ta
-	 * @param playerName
+	 * @param playerName name of the player
 	 */
 	public static Time getRemainingTime(String playerColor) {
 		Player currentPlayer;
@@ -218,9 +217,12 @@ public class Quoridor223Controller {
 
 	/**
 	 * Feature 4: Initialize Board
+	 * create a new board with 81 tiles
+	 * create 10 walls and put them on the stock for each player 
+	 * put each player in its initial position
+	 * set white player as the first one to move
 	 * 
 	 * @author Andrew Ta
-	 * @throws UnsupportedOperationException
 	 */
 	public static void initializeBoard() {
 		// get quoridor object
@@ -275,15 +277,6 @@ public class Quoridor223Controller {
 		// set next player
 		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
 		
-	}
-	
-	/**
-	 * setup main page for testing
-	 * @author Andrew Ta
-	 */
-	public static void setMainPage() {
-		GamePage page = new GamePage();
-		page.setVisible(true);
 	}
 
 	// under feature 5
@@ -778,6 +771,7 @@ public class Quoridor223Controller {
 		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (current == null || current.getGameStatus()!=Game.GameStatus.Running)
 			return false;
+		
 		return true;
 	}
 

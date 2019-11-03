@@ -378,6 +378,8 @@ public class CucumberStepDefinitions {
 		Quoridor223Controller.setUser("Andrew", "white");
 		Quoridor223Controller.setUser("Shuby", "black");
 		Quoridor223Controller.initializeBoard();
+		// create a game page for ui testing
+		gamePage = new GamePage();
 	}
 
 	/**
@@ -438,15 +440,12 @@ public class CucumberStepDefinitions {
 	 */
 	@And("White's clock shall be counting down")
 	public void whiteClockShallBeCountingDown() {
-		QuoridorApplication.setMainPage();
-		GamePage game = QuoridorApplication.getMainPage();
 		try {
-			TimeUnit.SECONDS.sleep(5);
-			game.setVisible(false);
+			TimeUnit.SECONDS.sleep(2);
 		}catch(Exception e){
 			
 		}
-		assertEquals(game.getWhiteClockStatus(), true);
+		assertEquals(gamePage.getWhiteClockStatus(), true);
 	}
 
 	/**
@@ -454,8 +453,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("It shall be shown that this is White's turn")
 	public void showThatThisIsWhiteTurn() {// setup mainPage
-		GamePage game = QuoridorApplication.getMainPage();
-		assertEquals(game.getGameMessage(), "It is Andrew's Turn !!");
+		assertEquals(gamePage.getGameMessage(), "It is Andrew's Turn !!");
 	}
 
 	// **********************************************
