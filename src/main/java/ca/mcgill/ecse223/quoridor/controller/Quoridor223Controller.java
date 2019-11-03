@@ -80,10 +80,10 @@ public class Quoridor223Controller {
 
 		// set player name according to their color
 		if (color.equals("white")) {
-			player = new Player(new Time(10), user, 9, Direction.Horizontal);
+			player = new Player(Time.valueOf("00:10:00"), user, 9, Direction.Horizontal);
 			curGame.setWhitePlayer(player);
 		} else {
-			player = new Player(new Time(10), user, 1, Direction.Horizontal);
+			player = new Player(Time.valueOf("00:10:00"), user, 1, Direction.Horizontal);
 			curGame.setBlackPlayer(player);
 		}
 	}
@@ -194,25 +194,26 @@ public class Quoridor223Controller {
 		Player currentPlayer = getPlayerByName(playerName);
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
-		setGameToReady();
+		
+		if(quoridor.getCurrentGame().getGameStatus() != GameStatus.Running) {
+			setGameToReady();
+		}
 	}
 
 	/**
-	 * Get Remaining Time of A Player
+	 * Get Remaining Time of Black and White Player
 	 * 
 	 * @author Andrew Ta
 	 * @param playerName
-	 * @return
-	 * @throws UnsupportedOperationException
-	 * @throws GameNotRunningException
 	 */
-	public static Time getRemainingTime(String playerName)
-			throws UnsupportedOperationException, GameNotRunningException {
-		if (!isRunning())
-			throw new GameNotRunningException("Game is not running."); // if the game is not running, return
-
-		// get current player
-		Player currentPlayer = getPlayerByName(playerName);
+	public static Time getRemainingTime(String playerColor) {
+		Player currentPlayer;
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(playerColor.equals("white")) {
+			currentPlayer = currentGame.getWhitePlayer();
+		}else {
+			currentPlayer = currentGame.getBlackPlayer();
+		}
 
 		return currentPlayer.getRemainingTime();
 	}
@@ -248,8 +249,8 @@ public class Quoridor223Controller {
 		}
 
 		// get tiles
-		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
-		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
+		Tile whitePlayerTile = quoridor.getBoard().getTile(36);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(44);
 
 		Game currentGame = quoridor.getCurrentGame();
 
@@ -275,6 +276,16 @@ public class Quoridor223Controller {
 
 		// set next player
 		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
+		
+	}
+	
+	/**
+	 * setup main page for testing
+	 * @author Andrew Ta
+	 */
+	public static void setMainPage() {
+		GamePage page = new GamePage();
+		page.setVisible(true);
 	}
 
 	// under feature 5
