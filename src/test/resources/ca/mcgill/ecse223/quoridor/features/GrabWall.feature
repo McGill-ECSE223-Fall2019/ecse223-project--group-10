@@ -7,7 +7,6 @@ Feature: Grab Wall
 		And It is my turn to move
 		And I do not have a wall in my hand
   
- 	@GrabWall
 	Scenario: Start wall placement
     Given  I have more walls on stock
 		When I try to grab a wall from my stock
@@ -15,7 +14,6 @@ Feature: Grab Wall
 		And I shall have a wall in my hand over the board
 		And The wall in my hand shall disappear from my stock
 	
-	@GrabWall
 	Scenario: No more walls in stock
     Given  I have no more walls on stock
 		When I try to grab a wall from my stock

@@ -7,7 +7,6 @@ Feature: Rotate Wall
     And It is my turn to move
     And I have a wall in my hand over the board
 
-	@RotateWall
   Scenario Outline: Flip wall from horizontal to vertical or vice versa
     Given A wall move candidate exists with "<dir>" at position (<row>, <col>)
     When I try to flip the wall

@@ -514,13 +514,6 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I try to grab a wall from my stock")
 	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException, InvalidOperationException {
-		try {
-			Quoridor223Controller.grabWall();
-		} catch (GameNotRunningException e) {
-
-		} catch (InvalidOperationException e) {
-
-		}
 		gamePage.clickGrabWall();
 	}
 
@@ -541,9 +534,7 @@ public class CucumberStepDefinitions {
 	 * @author Enan Ashaduzzaman
 	 */
 	@And("The wall in my hand shall disappear from my stock")
-	public void theWallInMyHandShouldDisappearFromMyStock() {
-//		throw new PendingException();
-		
+	public void theWallInMyHandShouldDisappearFromMyStock() {		
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
 		int wallQuantityAfter = 0;
@@ -553,29 +544,6 @@ public class CucumberStepDefinitions {
 			wallQuantityAfter = Quoridor223Controller.getBlackWallInStock();
 		}
 		assertEquals(wallQuantityBefore - 1, wallQuantityAfter);
-		
-//		String Colour = new String();
-//		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-//		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
-//		int wallQuantityBefore = 0;
-//		int wallQuantityAfter = 0;
-//		if (curPlayer.equals(game.getWhitePlayer())) {
-//			Colour = "white";
-//			wallQuantityAfter = gamePage.getWallInStock(Colour);
-//		} else if (curPlayer.equals(game.getBlackPlayer())){
-//			Colour = "black";
-//			wallQuantityAfter = gamePage.getWallInStock(Colour);
-//		}
-//		assertEquals(wallQuantityBefore, (wallQuantityBefore - 1));
-
-		//create color empty string
-		//do if else statement and check what color's turn it is and accoridngly chenge the string o=to that color
-		//// -> in board component call the string of the color and check its wall quantiity accoridngly.
-		//create two variables which gets the amount of walls in sotck at the moment
-		//assertequals statement and make sure that the comparision is false.
-		/////////////////////////////////////
-		//////////////TO-DO//////////////////
-		/////////////////////////////////////
 	}
 
 	// Scenario: No more walls in stock
@@ -592,6 +560,8 @@ public class CucumberStepDefinitions {
 			for (Wall wall : game.getCurrentPosition().getWhiteWallsInStock()) {
 					game.getCurrentPosition().addWhiteWallsOnBoard(wall);
 					toBeRemoved.add(wall);
+					WallMove curWallMove = new WallMove(0, 1, curPlayer, QuoridorApplication.getQuoridor().getBoard().getTile(1), game, Direction.Vertical, wall);
+					game.setWallMoveCandidate(curWallMove);
 			}
 			for (Wall wall:toBeRemoved)game.getCurrentPosition().removeWhiteWallsInStock(wall);
 		} else if (curPlayer.equals(game.getBlackPlayer())) {
@@ -599,9 +569,12 @@ public class CucumberStepDefinitions {
 			for (Wall wall : game.getCurrentPosition().getBlackWallsInStock()) {
 					game.getCurrentPosition().addBlackWallsOnBoard(wall);
 					toBeRemoved.add(wall);
+					WallMove curWallMove = new WallMove(0, 1, curPlayer, QuoridorApplication.getQuoridor().getBoard().getTile(1), game, Direction.Vertical, wall);
+					game.setWallMoveCandidate(curWallMove);
 			}
 			for (Wall wall:toBeRemoved)game.getCurrentPosition().removeBlackWallsInStock(wall);
 		}
+		game.setWallMoveCandidate(null);
 	}
 
 	/**
@@ -617,6 +590,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("I shall have no walls in my hand")
 	public void iShallHaveNoWallsInMyHand() {
+		System.out.println("----------------" + gamePage );
+		System.out.println("----------------" + gamePage.hasWallInHand());
 		assertEquals(false, gamePage.hasWallInHand());
 	}
 
@@ -628,13 +603,6 @@ public class CucumberStepDefinitions {
 	 */
 	@When("I try to flip the wall")
 	public void iTryToFlipTheWall() throws GameNotRunningException, InvalidOperationException {
-		try {
-			Quoridor223Controller.rotateWall();
-		} catch (GameNotRunningException e) {
-
-		} catch (InvalidOperationException e) {
-
-		}
 		gamePage.clickRotateWall();
 	}
 
