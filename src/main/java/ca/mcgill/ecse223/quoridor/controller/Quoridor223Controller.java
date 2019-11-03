@@ -778,7 +778,7 @@ public class Quoridor223Controller {
 	 */
 	private static boolean isRunning() {
 		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
-		if (current == null || current.getGameStatus() != Game.GameStatus.Running)
+		if (current == null&&current.getGameStatus()!=Game.GameStatus.Running)
 			return false;
 		return true;
 	}

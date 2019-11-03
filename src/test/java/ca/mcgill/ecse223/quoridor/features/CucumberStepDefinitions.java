@@ -73,6 +73,7 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
+		gamePage = new GamePage();
 	}
 
 	@Given("^A new game is initializing$")
@@ -1164,7 +1165,6 @@ public class CucumberStepDefinitions {
 			gamePosition.addBlackWallsInStock(wall);
 		}
 		game.setCurrentPosition(gamePosition);
-		gamePage = new GamePage();
 	}
 		
 	private void createAndPrepareGame(ArrayList<Player> players) {
