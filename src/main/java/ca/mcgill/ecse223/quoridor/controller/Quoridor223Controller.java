@@ -403,14 +403,14 @@ public class Quoridor223Controller {
 		// update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow, newCol));
 	}
-
+	
 	/**
 	 * MovePlayer feature dev 
 	 * @author Sacha L2vy RPZ
 	 * @param side
 	 * parameters implemented using the TOWall will soon have a TOPawn for clarity
 	*/
-	public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
+	/*public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Board current_board = QuoridorApplication.getQuoridor().getBoard();
@@ -432,7 +432,7 @@ public class Quoridor223Controller {
 		Tile next_tile = new Tile(newRow, newCol, current_board);
 		current_position.setTile(next_tile);
 		SwitchPlayer();
-	}
+	}*/
 
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin
@@ -603,6 +603,16 @@ public class Quoridor223Controller {
 			// TODO: further check if the last player's move didn't cross any walls
 		}
 		return true;
+	}
+	
+	public static String getPlayerNameByColor(String color) {
+		Player player = getPlayerByColor(color);
+		return player.getUser().getName();
+	}
+	
+	public static Player getPlayerMoving() {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		return current_game.getCurrentPosition().getPlayerToMove();
 	}
 	
 
@@ -811,6 +821,16 @@ public class Quoridor223Controller {
 
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		return current_game.getWhitePlayer().getUser().getName();
+	}
+	
+	// set the new player to move
+	public static void setCurrentPlayerToMove(Player player) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		current_game.getCurrentPosition().setPlayerToMove(player);
+	}
+	
+	public static String getPlayerName(Player player) {
+		return player.getUser().getName();
 	}
 	
 	/**

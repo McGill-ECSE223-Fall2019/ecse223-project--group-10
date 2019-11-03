@@ -658,7 +658,7 @@ public class CucumberStepDefinitions {
 
 		}
 		gamePage.clickDropWall();
-
+		// @sacha: use commands from the UI to get the texts from the JLABELS
 	}
 
 	/**
@@ -1303,6 +1303,12 @@ public class CucumberStepDefinitions {
 	// Scenario: Validate overlapping walls (invalid-3)
 
 // Switch Current Player feature
+	
+	@Given("The player to move is <player>")
+	public void playerToMoveIs(String player) {
+		assertEquals(true, Quoridor223Controller.setCurrentPlayerToMoveByColor(player));
+		}
+	
 	// Scenario: Switch current player
 	@When("Player <player> completes his move")
 	/**
@@ -1310,9 +1316,11 @@ public class CucumberStepDefinitions {
 	 * @param player
 	 * @return
 	 */
-	public void playerCompletesHisMove(Player player) {
-		// check player completes his move
-		throw new PendingException();
+	public void playerCompletesHisMove(String player) throws GameNotRunningException, InvalidOperationException {
+		// a move is moveWall operation, need further implementation ???
+		Quoridor223Controller.grabWall();
+		Quoridor223Controller.dropWall();
+		assertEquals(false,Quoridor223Controller.hasWallMoveCandidate());
 	}
 
 	/**
@@ -1321,19 +1329,19 @@ public class CucumberStepDefinitions {
 	 * @return
 	 */
 	@Then("The user interface shall be showing it is <other> turn")
-	public void theUserIntefaceShallBeShowingItIs(Player other) {
-		// check state of the user interface - not yet implemented
-		throw new PendingException(); // GUI STEP (Mentor Confirmed)
+	public void theUserIntefaceShallBeShowingItIs(String other) {
+		assertEquals("It is "+Quoridor223Controller.getPlayerNameByColor(other)+"'s Turn !!", gamePage.getDialogBoxText());
 	}
 
 	/**
 	 * @author Sacha Lévy
 	 * @param player
 	 * @return
+	 * @throws InterruptedException 
 	 */
 	@And("The clock of <player> shall be stopped")
-	public void theClockOfPlayerShallBeStopped(Player player) {
-		// check player clock is stopped
+	public void theClockOfPlayerShallBeStopped(String player) throws InterruptedException {
+		// player is the current player moving 
 		assertEquals(false, isClockRunning(player));
 	}
 
@@ -1341,9 +1349,10 @@ public class CucumberStepDefinitions {
 	 * @author Sacha Lévy
 	 * @param player
 	 * @return
+	 * @throws InterruptedException 
 	 */
 	@And("The clock of <other> shall be running")
-	public void theClockOfOtherShallBeRunning(Player other) {
+	public void theClockOfOtherShallBeRunning(String other) throws InterruptedException {
 		// check other players clock is running
 		assertEquals(true, isClockRunning(other));
 	}
@@ -1362,10 +1371,13 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Sacha Lévy
 	 * @param player
-	 * @return
+	 * @return boolean
+	 * @throws InterruptedException 
 	 */
-	private boolean isClockRunning(Player player) {
+	private boolean isClockRunning(String color) throws InterruptedException {
+		Player player = Quoridor223Controller.getPlayerByColor(color);
 		Time tmp_time = player.getRemainingTime();
+		Thread.sleep(100);
 		if (tmp_time.equals(player.getRemainingTime()))
 			return true;
 		else
