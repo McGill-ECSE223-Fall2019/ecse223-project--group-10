@@ -1,11 +1,12 @@
 package ca.mcgill.ecse223.quoridor.features;
 
-import java.awt.Component;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,6 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
-import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -42,9 +42,6 @@ import io.cucumber.java.en.But;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class CucumberStepDefinitions {
 
@@ -57,21 +54,19 @@ public class CucumberStepDefinitions {
 	private Move initialMove = null;
 	private String cucumberFilename	= null;
 	private GamePage gamePage;
-	private boolean saveSuccessful = false;
 	private boolean loadSuccessful = false;
+	private ArrayList<Player> createUsersAndPlayers;
 
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
-//		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
-//		createAndPrepareGame(createUsersAndPlayers);
-		createUsersAndPlayers("user1", "user2");
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 	}
 
 	@Given("^The game is running$")
 	public void theGameIsRunning() {
 		initQuoridorAndBoard();
-		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
 		gamePage = new GamePage();
 	}
@@ -175,7 +170,6 @@ public class CucumberStepDefinitions {
 
 		// create the new game
 		Quoridor223Controller.createGame();
-		
 	}
 
 	@And("White player chooses a username")
@@ -942,6 +936,7 @@ public class CucumberStepDefinitions {
 	@When("I initiate to load a saved game {string}")
 	public void iInitiateToLoadASavedGame(String filename) throws IOException {
 		cucumberFilename = filename;
+		createAndPrepareGame(createUsersAndPlayers);
 		Quoridor223Controller.checkLoadFileIsValid(filename);
 	}
 
