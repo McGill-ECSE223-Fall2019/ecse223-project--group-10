@@ -49,7 +49,6 @@ public class Quoridor223Controller {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.ReadyToStart);
-		System.out.println("Ready was called.");
 	}
 
 	public static void setGameToRun() {
@@ -57,7 +56,6 @@ public class Quoridor223Controller {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.Running);
-		System.out.println("Running was called.");
 	}
 
 	/**
@@ -279,17 +277,6 @@ public class Quoridor223Controller {
 		// set next player
 		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
 		
-	}
-	
-	/**
-	 * helper method
-	 * setup main page for testing
-	 * 
-	 * @author Andrew Ta
-	 */
-	public static void setMainPage() {
-		GamePage page = new GamePage();
-		page.setVisible(true);
 	}
 
 	// under feature 5
