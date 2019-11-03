@@ -360,8 +360,8 @@ public class Quoridor223Controller {
 			} else {
 				Wall curWall = curGame.getCurrentPosition().getWhiteWallsInStock(0);
 				curGame.getCurrentPosition().removeWhiteWallsInStock(curWall);
-				WallMove curWallMove = new WallMove(moveNum + 1, roundNum + 1, curPlayer, curBoard.getTile(36), curGame,
-						Direction.Vertical, curWall);
+				WallMove curWallMove = new WallMove(moveNum + 1, roundNum + 1, curPlayer, curBoard.getTile(67), curGame,
+						Direction.Horizontal, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
 				// move the wall into player's hand
 				// Remove one wall from stock
@@ -373,8 +373,8 @@ public class Quoridor223Controller {
 			} else {
 				Wall curWall = curGame.getCurrentPosition().getBlackWallsInStock(0);
 				curGame.getCurrentPosition().removeBlackWallsInStock(curWall);
-				WallMove curWallMove = new WallMove(moveNum, roundNum + 1, curPlayer, curBoard.getTile(43), curGame,
-						Direction.Vertical, curWall);
+				WallMove curWallMove = new WallMove(moveNum, roundNum + 1, curPlayer, curBoard.getTile(4), curGame,
+						Direction.Horizontal, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
 			}
 		}
