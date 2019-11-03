@@ -58,7 +58,7 @@ public class SetNamePage extends JFrame {
 		
 		// header: back button brings user back to welcome page
 		JButton btnBack = new JButton("Back");
-		btnBack.setBackground(new Color(112, 128, 144));
+		btnBack.setBackground(new Color(204, 153, 102));
 		btnBack.setFont(new Font("Avenir Next", Font.PLAIN, 13));
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
