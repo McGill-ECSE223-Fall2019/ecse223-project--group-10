@@ -967,7 +967,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * GUI function to prompt the user for permission to overwrite the existing file
+	 * A method to prompt the user for permission to overwrite the existing file
 	 * 
 	 * @author Mitchell Keeley
 	 * @return overwriteApproved
@@ -987,7 +987,7 @@ public class Quoridor223Controller {
 	}
 
 	/**
-	 * A function to save the current GamePosition as a file
+	 * A method to save the current GamePosition as a file
 	 * 
 	 * @author Mitchell Keeley
 	 * @param filename
