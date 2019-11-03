@@ -117,7 +117,7 @@ public class BoardComponent extends JPanel {
 			y += width;
 		}
 	}
-
+	
 	private void loadWall() {
 		wallInHand = null;
 		whiteWallOnBoard = new ArrayList<>();
@@ -219,5 +219,4 @@ public class BoardComponent extends JPanel {
 		loadWall();
 		return wallInHand!=null;
 	}
-
 }

@@ -77,6 +77,7 @@ public class GamePage extends JFrame {
 	// remaining time
 	private JLabel whiteTime;
 	private JLabel blackTime;
+	private boolean whiteClockIsRunning;
 
 	// grab, drop, rotate wall button
 	private JButton grabWall;
@@ -85,9 +86,6 @@ public class GamePage extends JFrame {
 
 	// forfeit game
 	private JButton forfeit;
-
-	// load, save, new, replay
-	private JButton loadGame;
 	private JButton saveGame;
 	private JButton newGame;
 	private JButton replayGame;
@@ -122,53 +120,57 @@ public class GamePage extends JFrame {
 		name1 = players.getPlayerOne();
 		userName1 = new JLabel(name1, SwingConstants.CENTER);
 		userName1.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		userName1.setBounds(876, 94, 50, 32);
+		userName1.setBounds(620, 94, 46, 33);
+		
 		
 		// initialize username 2
 		name2 = players.getPlayerTwo();
 		userName2 = new JLabel(name2, SwingConstants.CENTER);
 		userName2.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		userName2.setBounds(620, 94, 46, 33);
+		userName2.setBounds(876, 94, 50, 32);
 		
 		userToMove = players.getPlayerToMove();
 
 		// initialize time 
 		whiteTime = new JLabel(players.getPlayerOneTime().toString());
 		whiteTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		whiteTime.setBounds(936, 94, 64, 33);
+		whiteTime.setBounds(676, 94, 64, 33);
 		
 		blackTime = new JLabel(players.getPlayerTwoTime().toString());
 		blackTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		blackTime.setBounds(676, 94, 64, 33);
+		blackTime.setBounds(936, 94, 64, 33);
 
 		// initialize grab, drop, rotate wall
 		grabWall = new JButton("Grab Wall");
-		grabWall.setBackground(new Color(184, 134, 11));
+		grabWall.setBackground(new Color(204, 153, 102));
 		grabWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		grabWall.setBounds(620, 145, 120, 40);
 		dropWall = new JButton("Drop Wall");
+		dropWall.setBackground(new Color(204, 153, 102));
 		dropWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		dropWall.setBounds(750, 145, 120, 40);
 		btnRotateWall = new JButton("Rotate Wall");
+		btnRotateWall.setBackground(new Color(204, 153, 102));
 		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		btnRotateWall.setBounds(880, 145, 120, 40);
 		
 		// initialize forfeit, confirm
 		forfeit = new JButton("Forfeit Game");
+		forfeit.setBackground(new Color(204, 153, 102));
 		forfeit.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		forfeit.setBounds(750, 498, 120, 40);
+		forfeit.setBounds(750, 507, 120, 40);
 
-		// initialize save, load, replay, new game
+		// initialize save, replay, new game
 		saveGame = new JButton("Save Game");
+		saveGame.setBackground(new Color(204, 153, 102));
 		saveGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		saveGame.setBounds(220, 606, 110, 40);
-		loadGame = new JButton("Load Game");
-		loadGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		loadGame.setBounds(350, 606, 110, 40);
+		saveGame.setBounds(285, 606, 110, 40);
 		replayGame = new JButton("Replay Game");
+		replayGame.setBackground(new Color(204, 153, 102));
 		replayGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		replayGame.setBounds(480, 606, 110, 40);
 		newGame = new JButton("New Game");
+		newGame.setBackground(new Color(204, 153, 102));
 		newGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
 		newGame.setBounds(90, 606, 110, 40);
 
@@ -179,34 +181,33 @@ public class GamePage extends JFrame {
 		// forfeit.setBackground(Color.BLUE);
 
 		// player turn
-		gameMessage = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
+		gameMessage = new JLabel("It is " + userToMove + "'s Turn !!" , SwingConstants.CENTER);
 		gameMessage.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		gameMessage.setBounds(90, 28, 500, 46);
 
-		btnRotateWall = new JButton("Rotate Wall");
-		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnRotateWall.setBounds(880, 145, 120, 40);
-
 		// move buttons
 		btnLeft = new JButton("LEFT");
+		btnLeft.setBackground(new Color(204, 153, 102));
 		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnLeft.setBounds(680, 336, 80, 80);
+		btnLeft.setBounds(678, 356, 80, 80);
 		btnRight = new JButton("RIGHT");
+		btnRight.setBackground(new Color(204, 153, 102));
 		btnRight.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnRight.setBounds(860, 336, 80, 80);
+		btnRight.setBounds(860, 356, 80, 80);
 		btnDown = new JButton("DOWN");
+		btnDown.setBackground(new Color(204, 153, 102));
 		btnDown.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnDown.setBounds(770, 336, 80, 80);
+		btnDown.setBounds(770, 356, 80, 80);
 		btnUp = new JButton("UP");
+		btnUp.setBackground(new Color(204, 153, 102));
 		btnUp.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		btnUp.setBounds(770, 246, 80, 80);
+		btnUp.setBounds(770, 266, 80, 80);
 
 		// ------------------------- Add to Panel ----------------------------//
 		getContentPane().setLayout(null);
 		getContentPane().add(gameMessage);
 		getContentPane().add(newGame);
 		getContentPane().add(saveGame);
-		getContentPane().add(loadGame);
 		getContentPane().add(replayGame);
 		getContentPane().add(boardComponent);
 		getContentPane().add(userName1);
@@ -224,7 +225,9 @@ public class GamePage extends JFrame {
 
 		// ------------------------- Add Event Listener ----------------------------//
 		// set game to run
+		boardComponent.repaint();
 		Quoridor223Controller.setGameToRun();
+		
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
@@ -359,21 +362,9 @@ public class GamePage extends JFrame {
 			}
 		});
 
-		saveGame.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					userClicksToSaveGame();
-				}
-			}
-		});
-
-		loadGame.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (e.getButton() == MouseEvent.BUTTON1) {
-					userClicksToLoadGame();
-				}
+		saveGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				userClicksToSaveGame();
 			}
 		});
 
@@ -390,8 +381,10 @@ public class GamePage extends JFrame {
 		}else {
 			if (userToMove.equals(name1)) {
 				Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(whiteTime.getText()).getTime() - 1000), name1);
+				whiteClockIsRunning = true;
 			} else {
 				Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(blackTime.getText()).getTime() - 1000), name2);
+				whiteClockIsRunning = false;
 			}
 
 			TOGame players = Quoridor223Controller.getListOfPlayers();
@@ -415,21 +408,26 @@ public class GamePage extends JFrame {
 		String filename = null;
 		Boolean saveSuccessful = false;
 
-		filename = (String) saveGameInputDialog("Enter the file path below:", "Save Game As", null);
-		try {
-			saveSuccessful = Quoridor223Controller.savePosition(filename);
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			// e1.printStackTrace();
-		}
+		filename = saveGameInputDialog("Enter the file path below:", "Save Game As", null);
+		
+		if (filename != null) {
+			try {
+				saveSuccessful = Quoridor223Controller.savePosition(filename);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 
-		// keep trying to save until the user cancels save attempt, or the save is
-		// successful
-		while (filename == null || saveSuccessful == false) {
-
-			filename = (String) saveGameInputDialog("Enter a valid file path here:", "Save Game As", "");
-
-			if (!filename.equals(null)) {
+			// keep trying to save until the user cancels save attempt, or the save is successful
+			while (saveSuccessful == false) {
+	
+				filename = saveGameInputDialog("Enter a valid file path here:", "Save Game As", null);
+				
+				// if the user cancels the save, return
+				if (filename == null) {
+					return;
+				}
+				
+				// otherwise, keep trying to save
 				try {
 					saveSuccessful = Quoridor223Controller.savePosition(filename);
 				} catch (IOException e1) {
@@ -438,10 +436,11 @@ public class GamePage extends JFrame {
 				}
 			}
 		}
+		return;
 	}
 
-	private Object saveGameInputDialog(String message, String title, String initialValue) {
-		Object userInput;
+	private String saveGameInputDialog(String message, String title, String initialValue) {
+		String userInput;
 
 		userInput = (String) JOptionPane.showInputDialog((Component) boardComponent, (Object) message, title,
 				JOptionPane.INFORMATION_MESSAGE, (Icon) null, (Object[]) null, (Object) initialValue);
@@ -458,45 +457,23 @@ public class GamePage extends JFrame {
 		return overWriteAllowed;
 	}
 
-	private void userClicksToLoadGame() {
-		String filename = null;
-		Boolean saveSuccessful = false;
-
-		filename = (String) loadGameInputDialog("Enter the file path below:", "Load Game From File", null);
-		saveSuccessful = Quoridor223Controller.loadPosition(filename);
-
-		// keep trying to save until the user cancels save attempt, or the save is
-		// successful
-		while (filename == null || saveSuccessful == false) {
-
-			filename = (String) loadGameInputDialog("Enter a valid file path here:", "Load Game From File", "");
-
-			if (!filename.equals(null)) {
-				saveSuccessful = Quoridor223Controller.loadPosition(filename);
-			}
-		}
-	}
-
-	private Object loadGameInputDialog(String message, String title, String initialValue) {
-		Object userInput;
-
-		userInput = (String) JOptionPane.showInputDialog((Component) boardComponent, (Object) message, title,
-				JOptionPane.INFORMATION_MESSAGE, (Icon) null, (Object[]) null, (Object) initialValue);
-
-		return userInput;
-	}
-
 	public static void errorPrompt(String error) {
 		JOptionPane.showConfirmDialog((Component) boardComponent,
 				(Object) "The Following Error Has Occurred:\n\"" + error + "\"", "Operation Error",
 				JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, (Icon) null);
 	}
+
 	public boolean hasWallInHand() {
 		return boardComponent.hasWallInHand();
 	}
 	public String getGameMessage() {
 		return gameMessage.getText();
 	}
+	
+	public boolean getWhiteClockStatus() {
+		return whiteClockIsRunning;
+	}
+	
 	public void clickMoveWall(String dir) {
 		if(dir.equalsIgnoreCase("UP"))btnUp.doClick();
 		if(dir.equalsIgnoreCase("DOWN"))btnDown.doClick();
@@ -516,5 +493,11 @@ public class GamePage extends JFrame {
 	}
 	public void delete() {
 		boardComponent=null;
+	}
+	public void clickRotateWall() {
+		btnRotateWall.doClick();
+	}
+	public void clickGrabWall() {
+		grabWall.doClick();
 	}
 }
