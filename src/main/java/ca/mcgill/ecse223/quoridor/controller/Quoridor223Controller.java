@@ -1620,5 +1620,10 @@ public class Quoridor223Controller {
 				playerToMoveName);
 		return listOfPlayers;
 	}
+	// @sacha: helpers for cucumber step definitions
+	public static String currentStatePlayers() {
+		
+		return null;
+	}
 
 }

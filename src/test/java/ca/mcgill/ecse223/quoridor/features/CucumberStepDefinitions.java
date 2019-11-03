@@ -1510,17 +1510,18 @@ public class CucumberStepDefinitions {
 // Switch Current Player feature
 	
 	@Given("The player to move is <player>")
-	public void playerToMoveIs(String player) {
+	public void playerToMoveIsPlayer(String player) {
+		System.out.println(Quoridor223Controller.currentStatePlayers());
 		assertEquals(true, Quoridor223Controller.setCurrentPlayerToMoveByColor(player));
 		}
 	
 	// Scenario: Switch current player
-	@When("Player <player> completes his move")
 	/**
 	 * @author Sacha Lévy
 	 * @param player
 	 * @return
 	 */
+	@When("Player <player> completes his move")
 	public void playerCompletesHisMove(String player) throws GameNotRunningException, InvalidOperationException {
 		// a move is moveWall operation, need further implementation ???
 		Quoridor223Controller.grabWall();
@@ -1534,7 +1535,7 @@ public class CucumberStepDefinitions {
 	 * @return
 	 */
 	@Then("The user interface shall be showing it is <other> turn")
-	public void theUserIntefaceShallBeShowingItIs(String other) {
+	public void theUserIntefaceShallBeShowingItIsOtherTurn(String other) {
 		assertEquals("It is "+Quoridor223Controller.getPlayerNameByColor(other)+"'s Turn !!", gamePage.getDialogBoxText());
 	}
 
@@ -1582,11 +1583,12 @@ public class CucumberStepDefinitions {
 	private boolean isClockRunning(String color) throws InterruptedException {
 		Player player = Quoridor223Controller.getPlayerByColor(color);
 		Time tmp_time = player.getRemainingTime();
-		Thread.sleep(100);
-		if (tmp_time.equals(player.getRemainingTime()))
-			return true;
-		else
+		Thread.sleep(1500);
+		System.out.println(tmp_time.toString());
+		if (tmp_time.toString().equals(player.getRemainingTime().toString()))
 			return false;
+		else
+			return true;
 	}
 
 	private boolean isNextPlayerToMove(Player other) {
@@ -1594,6 +1596,93 @@ public class CucumberStepDefinitions {
 			return true;
 		else
 			return false;
+	}
+
+	@Given("The player to move is {string}")
+	public void the_player_to_move_is(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		assertEquals(true, Quoridor223Controller.setCurrentPlayerToMoveByColor(string));
+	}
+
+	@Given("The clock of {string} is running")
+	public void the_clock_of_is_running(String string) {
+		try {
+			assertEquals(true, isClockRunning(string));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Given("The clock of {string} is stopped")
+	public void the_clock_of_is_stopped(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		try {
+			assertEquals(false, isClockRunning(string));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@When("Player {string} completes his move")
+	public void player_completes_his_move(String string) {
+		try {
+			Quoridor223Controller.grabWall();
+		} catch (GameNotRunningException | InvalidOperationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			Quoridor223Controller.dropWall();
+		} catch (GameNotRunningException | InvalidOperationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		assertEquals(false,Quoridor223Controller.hasWallMoveCandidate());
+	}
+
+	@Then("The user interface shall be showing it is {string} turn")
+	public void the_user_interface_shall_be_showing_it_is_turn(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		System.out.println(string + "  " + Quoridor223Controller.getPlayerNameByColor(string));
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(gamePage.getDialogBoxText());
+		assertEquals("It is "+Quoridor223Controller.getPlayerNameByColor(string)+"'s Turn !!", gamePage.getDialogBoxText());
+	}
+
+	@Then("The clock of {string} shall be stopped")
+	public void the_clock_of_shall_be_stopped(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		try {
+			assertEquals(false, isClockRunning(string));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Then("The clock of {string} shall be running")
+	public void the_clock_of_shall_be_running(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		try {
+			assertEquals(true, isClockRunning(string));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Then("The next player to move shall be {string}")
+	public void the_next_player_to_move_shall_be(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		Player player = Quoridor223Controller.getPlayerByColor(string);
+		assertEquals(true, isNextPlayerToMove(player));
 	}
 
 }
