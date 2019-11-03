@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.management.openmbean.InvalidOpenTypeException;
+import java.util.Map.Entry;
+import java.security.InvalidAlgorithmParameterException;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -401,6 +406,36 @@ public class Quoridor223Controller {
 		// update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow, newCol));
 	}
+	
+	/**
+	 * MovePlayer feature dev 
+	 * @author Sacha L2vy RPZ
+	 * @param side
+	 * parameters implemented using the TOWall will soon have a TOPawn for clarity
+	*/
+	/*public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
+		if (!isRunning()) throw new GameNotRunningException("Game not running");
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Board current_board = QuoridorApplication.getQuoridor().getBoard();
+		
+		// get player moving
+		PlayerPosition current_position;
+		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
+		else current_position = current_game.getCurrentPosition().getBlackPosition();
+
+		int newRow = current_position.getTile().getRow()
+				+ (side == TOWall.Side.Up ? -1 : side == TOWall.Side.Down ? 1 : 0);
+		int newCol = current_position.getTile().getColumn()
+				+ (side == TOWall.Side.Left ? -1 : side == TOWall.Side.Right ? 1 : 0);
+
+		if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
+		if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+		
+		// might need to get the next tile using indexes & get from tiles list in board
+		Tile next_tile = new Tile(newRow, newCol, current_board);
+		current_position.setTile(next_tile);
+		SwitchPlayer();
+	}*/
 
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin
@@ -520,6 +555,60 @@ public class Quoridor223Controller {
 			if (isPlayerPositionOverlapping())
 				return false;
 			// TODO: further check if the last player's move didn't cross any walls
+		}
+		return true;
+	}
+	
+	public static String getPlayerNameByColor(String color) {
+		Player player = getPlayerByColor(color);
+		return player.getUser().getName();
+	}
+	
+	public static Player getPlayerByColor(String color) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(color.equals("black")) return current_game.getBlackPlayer();
+		else return current_game.getWhitePlayer();
+	}
+	
+	public static Player getPlayerMoving() {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		return current_game.getCurrentPosition().getPlayerToMove();
+	}
+	
+	public static boolean setCurrentPlayerToMoveByColor(String color) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player player_to_move = getPlayerByColor(color);
+		Player next_player;
+		if(player_to_move.equals(current_game.getBlackPlayer())) next_player = current_game.getWhitePlayer();
+		else next_player = current_game.getBlackPlayer();
+		player_to_move.setNextPlayer(next_player);
+		return current_game.getCurrentPosition().setPlayerToMove(player_to_move);
+	}
+
+	// check if the pawn move is legal
+	public static boolean isPawnMoveLegal(int newRow, int newCol) throws InvalidOperationException{
+		Tile other_position;
+		Tile current_position;
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		if(isWhitePlayer()) {
+			other_position = current_game.getCurrentPosition().getBlackPosition().getTile();
+			current_position = current_game.getCurrentPosition().getWhitePosition().getTile();
+		}
+		else {
+			other_position = current_game.getCurrentPosition().getWhitePosition().getTile();
+			current_position = current_game.getCurrentPosition().getBlackPosition().getTile();
+		} 
+		// if the two pawns are over each other
+		if (other_position.getRow()==newRow && other_position.getColumn()==newCol) return false;
+		int curRow = current_position.getRow();
+		int curCol = current_position.getColumn();
+		
+		// get the current position of the player & determine which wall has been crossed
+		Map<Integer, Boolean> wallPositions = loadWallPositionsMap();
+		for (int cur_key : wallPositions.keySet()) {
+			// if same row/col means move was vertical/horizontal
+			if(curRow==newRow && wallPositions.get(cur_key).equals(Direction.Vertical) && cur_key==curRow*9+curCol) return false;
+			if(curCol==newCol && wallPositions.get(cur_key).equals(Direction.Horizontal) && cur_key==curRow*9+curCol) return false;
 		}
 		return true;
 	}
@@ -677,7 +766,6 @@ public class Quoridor223Controller {
 	/**
 	 * Query methods for the UI
 	 * 
-	 * @author Sacha Lévy
 	 * */
 	public static void setBlackPlayerName(String new_name) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -702,6 +790,16 @@ public class Quoridor223Controller {
 
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		return current_game.getWhitePlayer().getUser().getName();
+	}
+	
+	// set the new player to move
+	public static void setCurrentPlayerToMove(Player player) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		current_game.getCurrentPosition().setPlayerToMove(player);
+	}
+	
+	public static String getPlayerName(Player player) {
+		return player.getUser().getName();
 	}
 	
 	/**
@@ -753,7 +851,7 @@ public class Quoridor223Controller {
 	 * */
 	public static String getPlayerToMoveName() {
 		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
-		return current_position.getPlayerToMove().getNextPlayer().getUser().getName();
+		return current_position.getPlayerToMove().getUser().getName();
 	}
 
 /////////////////////////////////////////////////////
@@ -1519,6 +1617,13 @@ public class Quoridor223Controller {
 				quoridor.getCurrentGame().getBlackPlayer().getRemainingTime(), name.get(0), name.get(1),
 				playerToMoveName);
 		return listOfPlayers;
+	}
+	// @sacha: helpers for cucumber step definitions
+	public static String currentStatePlayers() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game currentGame = quoridor.getCurrentGame();
+		String return_statement = "current player  moving : "+getPlayerToMoveName() +"\n"+ "Next player moving:" + currentGame.getCurrentPosition().getPlayerToMove().getNextPlayer().getUser().getName();
+		return return_statement;
 	}
 
 }
