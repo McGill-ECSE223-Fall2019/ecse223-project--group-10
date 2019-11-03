@@ -456,9 +456,6 @@ public class GamePage extends JFrame {
 	public boolean hasWallInHand() {
 		return boardComponent.hasWallInHand();
 	}
-	public int getWallInStock(String Colour) {
-		return boardComponent.getWallInStock(Colour);
-	}
 	public String getGameMessage() {
 		return gameMessage.getText();
 	}

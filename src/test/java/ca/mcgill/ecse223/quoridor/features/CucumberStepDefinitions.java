@@ -590,8 +590,6 @@ public class CucumberStepDefinitions {
 	 */
 	@And("I shall have no walls in my hand")
 	public void iShallHaveNoWallsInMyHand() {
-		System.out.println("----------------" + gamePage );
-		System.out.println("----------------" + gamePage.hasWallInHand());
 		assertEquals(false, gamePage.hasWallInHand());
 	}
 
