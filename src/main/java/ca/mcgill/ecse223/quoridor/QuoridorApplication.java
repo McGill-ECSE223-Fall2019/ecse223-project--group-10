@@ -2,6 +2,7 @@ package ca.mcgill.ecse223.quoridor;
 
 import java.sql.Time;
 
+
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -41,11 +42,18 @@ public class QuoridorApplication {
 	}
 	
 	public static void setMainPage() {
-		timePage.setVisible(false);
+		if(timePage != null) {
+			timePage.setVisible(false);
+		}
 		game = new GamePage();
 		game.setVisible(true);
 		game.setResizable(false);
 	}
+	
+	public static GamePage getMainPage() {
+		return game;
+	}
+	
 	public static void setTimePage() {
 		namePage.setVisible(false);
 		timePage = new SetThinkingTimePage();
