@@ -128,17 +128,27 @@ public class CucumberStepDefinitions {
 		//make sure all wall are in the finalized state
 		quoridor.getCurrentGame().setWallMoveCandidate(null);
 	}
+	/**
+	 * @author Le-Li Mao
+	 */
 	@And("I shall not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand() {
 		assertEquals(false, gamePage.hasWallInHand());
 	}
 
+	/**
+	 * @author Le-Li Mao
+	 * @throws Throwable
+	 */
 	@And("^I have a wall in my hand over the board$")
 	public void iHaveAWallInMyHandOverTheBoard() throws Throwable {
 		setWall("horizontal", 5, 1);
 		assertEquals(true, gamePage.hasWallInHand());
 	}
 
+	/**
+	 * @author Le-Li Mao
+	 */
 	@And("I do not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand2() {
 		assertEquals(false, gamePage.hasWallInHand());
@@ -378,6 +388,8 @@ public class CucumberStepDefinitions {
 		Quoridor223Controller.setUser("Andrew", "white");
 		Quoridor223Controller.setUser("Shuby", "black");
 		Quoridor223Controller.initializeBoard();
+		// create a game page for ui testing
+		gamePage = new GamePage();
 	}
 
 	/**
@@ -438,15 +450,12 @@ public class CucumberStepDefinitions {
 	 */
 	@And("White's clock shall be counting down")
 	public void whiteClockShallBeCountingDown() {
-		QuoridorApplication.setMainPage();
-		GamePage game = QuoridorApplication.getMainPage();
 		try {
-			TimeUnit.SECONDS.sleep(5);
-			game.setVisible(false);
+			TimeUnit.SECONDS.sleep(2);
 		}catch(Exception e){
 			
 		}
-		assertEquals(game.getWhiteClockStatus(), true);
+		assertEquals(gamePage.getWhiteClockStatus(), true);
 	}
 
 	/**
@@ -454,8 +463,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("It shall be shown that this is White's turn")
 	public void showThatThisIsWhiteTurn() {// setup mainPage
-		GamePage game = QuoridorApplication.getMainPage();
-		assertEquals(game.getGameMessage(), "It is Andrew's Turn !!");
+		assertEquals(gamePage.getGameMessage(), "It is Andrew's Turn !!");
 	}
 
 	// **********************************************
@@ -826,12 +834,18 @@ public class CucumberStepDefinitions {
 		assertEquals(true, gamePage.hasWallInHand());
 	}
 
+	/**
+	 * @author Le-Li Mao
+	 */
 	@Then("I shall be notified that my move is illegal")
 	public void iShallBeNotifiedThatMyMoveIsIllegal() {
 		// GUI
 		assertEquals("Illegal Move", gamePage.getGameMessage());
 	}
 
+	/**
+	 * @author Le-Li Mao
+	 */
 	@Then("I shall be notified that my wall move is invalid")
 	public void iShallBeNotifiedThatMyWallMoveIsInvalid() {
 		// GUI
@@ -1203,7 +1217,6 @@ public class CucumberStepDefinitions {
 			game.getWallMoveCandidate().setWallDirection(dir.equalsIgnoreCase("horizontal")?Direction.Horizontal:Direction.Vertical);
 		}
 		else {
-		System.out.println("-------------------------"+ game.getMoves());
 		getWallMoveCandidate(game.getCurrentPosition().getPlayerToMove(),dir, row, col);
 		}
 		initialMove = game.getWallMoveCandidate();
