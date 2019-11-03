@@ -77,6 +77,7 @@ public class GamePage extends JFrame {
 	// remaining time
 	private JLabel whiteTime;
 	private JLabel blackTime;
+	private boolean whiteClockIsRunning;
 
 	// grab, drop, rotate wall button
 	private JButton grabWall;
@@ -180,7 +181,7 @@ public class GamePage extends JFrame {
 		// forfeit.setBackground(Color.BLUE);
 
 		// player turn
-		gameMessage = new JLabel("Quoridor Game Notification Center", SwingConstants.CENTER);
+		gameMessage = new JLabel("It is " + userToMove + "'s Turn !!" , SwingConstants.CENTER);
 		gameMessage.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		gameMessage.setBounds(90, 28, 500, 46);
 
@@ -370,8 +371,10 @@ public class GamePage extends JFrame {
 		}else {
 			if (userToMove.equals(name1)) {
 				Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(whiteTime.getText()).getTime() - 1000), name1);
+				whiteClockIsRunning = true;
 			} else {
 				Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(blackTime.getText()).getTime() - 1000), name2);
+				whiteClockIsRunning = false;
 			}
 
 			TOGame players = Quoridor223Controller.getListOfPlayers();
@@ -457,6 +460,11 @@ public class GamePage extends JFrame {
 	public String getGameMessage() {
 		return gameMessage.getText();
 	}
+	
+	public boolean getWhiteClockStatus() {
+		return whiteClockIsRunning;
+	}
+	
 	public void clickMoveWall(String dir) {
 		if(dir.equalsIgnoreCase("UP"))btnUp.doClick();
 		if(dir.equalsIgnoreCase("DOWN"))btnDown.doClick();

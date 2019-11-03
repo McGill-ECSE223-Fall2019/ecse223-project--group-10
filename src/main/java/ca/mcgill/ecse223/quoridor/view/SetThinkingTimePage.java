@@ -107,9 +107,6 @@ public class SetThinkingTimePage extends JFrame {
 					Quoridor223Controller.setThinkingTime(Time.valueOf(whiteTime), Quoridor223Controller.getWhitePlayerName());
 					Quoridor223Controller.setThinkingTime(Time.valueOf(blackTime), Quoridor223Controller.getBlackPlayerName());
 					
-					// set game ready to play
-					Quoridor223Controller.setGameToReady();
-					
 					// initialize a board and open a game page
 					Quoridor223Controller.initializeBoard();
 					QuoridorApplication.setMainPage();
@@ -129,9 +126,6 @@ public class SetThinkingTimePage extends JFrame {
 					// set thinking time for two players
 					Quoridor223Controller.setThinkingTime(Time.valueOf(whiteTime), Quoridor223Controller.getWhitePlayerName());
 					Quoridor223Controller.setThinkingTime(Time.valueOf(blackTime), Quoridor223Controller.getBlackPlayerName());
-					
-					// set game ready to play
-					Quoridor223Controller.setGameToReady();
 					
 					// initialize a board
 					Quoridor223Controller.initializeBoard();
