@@ -65,7 +65,7 @@ public class Quoridor223Controller {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.ReadyToStart);
-		
+		System.out.println("Ready was called.");
 	}
 
 	public static void setGameToRun() {
@@ -73,7 +73,7 @@ public class Quoridor223Controller {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.Running);
-		
+		System.out.println("Running was called.");
 	}
 
 	/**
@@ -206,7 +206,6 @@ public class Quoridor223Controller {
 		Player currentPlayer = getPlayerByName(playerName);
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
-		setGameToReady();
 	}
 
 	/**
@@ -778,8 +777,10 @@ public class Quoridor223Controller {
 	 */
 	private static boolean isRunning() {
 		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
+		
 		if (current == null || current.getGameStatus() != Game.GameStatus.Running)
 			return false;
+		
 		return true;
 	}
 
