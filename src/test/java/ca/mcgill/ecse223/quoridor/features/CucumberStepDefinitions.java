@@ -58,18 +58,18 @@ public class CucumberStepDefinitions {
 	private GamePage gamePage;
 	private boolean saveSuccessful = false;
 	private boolean loadSuccessful = false;
+	private ArrayList<Player> createUsersAndPlayers;
 
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
-		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
-		createAndPrepareGame(createUsersAndPlayers);
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 	}
 
 	@Given("^The game is running$")
 	public void theGameIsRunning() {
 		initQuoridorAndBoard();
-		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
 	}
 
@@ -933,6 +933,7 @@ public class CucumberStepDefinitions {
 	@When("I initiate to load a saved game {string}")
 	public void iInitiateToLoadASavedGame(String filename) throws IOException {
 		cucumberFilename = filename;
+		createAndPrepareGame(createUsersAndPlayers);
 		Quoridor223Controller.checkLoadFileIsValid(filename);
 	}
 
