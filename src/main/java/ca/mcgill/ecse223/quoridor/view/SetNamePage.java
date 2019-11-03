@@ -58,7 +58,7 @@ public class SetNamePage extends JFrame {
 		
 		// header: back button brings user back to welcome page
 		JButton btnBack = new JButton("Back");
-		btnBack.setBackground(new Color(112, 128, 144));
+		btnBack.setBackground(new Color(204, 153, 102));
 		btnBack.setFont(new Font("Avenir Next", Font.PLAIN, 13));
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -130,6 +130,15 @@ public class SetNamePage extends JFrame {
 				
 				String name1 = comboBox.getSelectedItem().toString();
 				String name2 = comboBox_1.getSelectedItem().toString();
+				error.setText("");
+				
+				if(name1.equals("") || name2.equals("") || name1.equals(" ") || name2.equals(" ")) {
+					error.setText("Names must not be empty");
+					hasError = true;
+				}else if (name1.equals(name2)) {
+					error.setText("Names must be unique.");
+					hasError = true;
+				}
 				
 				try {
 					error.setText("");

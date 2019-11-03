@@ -43,7 +43,7 @@ public class WelcomePage extends JFrame {
 		
 		// Button to start new game
 		JButton btnStartANew = new JButton("START A NEW GAME");
-		btnStartANew.setBackground(new Color(153, 153, 153));
+		btnStartANew.setBackground(new Color(204, 153, 102));
 		btnStartANew.setFont(new Font("Heiti SC", Font.BOLD, 16));
 		btnStartANew.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
