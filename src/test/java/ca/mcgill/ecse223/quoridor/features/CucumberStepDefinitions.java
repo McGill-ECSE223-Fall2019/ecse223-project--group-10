@@ -1522,10 +1522,18 @@ public class CucumberStepDefinitions {
 		Time tmp_time = player.getRemainingTime();
 		Thread.sleep(1500);
 		//System.out.println(tmp_time.toString());
-		if (tmp_time.toString().equals(player.getRemainingTime().toString()))
+		if (tmp_time.toString().equals(player.getRemainingTime().toString())) {
 			return false;
-		else
-			return true;
+		}
+		else {return true;}
+		//if(color.equals("white")) {
+		//	return gamePage.isWhiteClockRunning();
+		//}
+		//else {
+		//	return !gamePage.isWhiteClockRunning();
+		//}
+		
+	
 	}
 
 	private boolean isNextPlayerToMove(Player other) {
@@ -1572,6 +1580,12 @@ public class CucumberStepDefinitions {
 		gamePage.clickGrabWall();
 		gamePage.clickDropWall();
 		assertEquals(false,Quoridor223Controller.hasWallMoveCandidate());
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Then("The user interface shall be showing it is {string} turn")
@@ -1592,6 +1606,7 @@ public class CucumberStepDefinitions {
 	public void the_clock_of_shall_be_stopped(String string) {
 		// Write code here that turns the phrase above into concrete actions
 		try {
+			//Thread.sleep(1000);
 			assertEquals(false, isClockRunning(string));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -1603,6 +1618,7 @@ public class CucumberStepDefinitions {
 	public void the_clock_of_shall_be_running(String string) {
 		// Write code here that turns the phrase above into concrete actions
 		try {
+			//Thread.sleep(1000);
 			assertEquals(true, isClockRunning(string));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
