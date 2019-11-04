@@ -1522,7 +1522,7 @@ public class CucumberStepDefinitions {
 	private boolean isClockRunning(String color) throws InterruptedException {
 		//Player player = Quoridor223Controller.getPlayerByColor(color);
 		//Time tmp_time = player.getRemainingTime();
-		Thread.sleep(1500);
+		Thread.sleep(1200);
 		//System.out.println(tmp_time.toString());
 		//if (tmp_time.toString().equals(player.getRemainingTime().toString())) {
 		//	return false;
@@ -1552,6 +1552,16 @@ public class CucumberStepDefinitions {
 	@Given("The player to move is {string}")
 	public void the_player_to_move_is(String string) {
 		// Write code here that turns the phrase above into concrete actions
+		if(string.equalsIgnoreCase("black")) {
+			gamePage.clickGrabWall();
+			gamePage.clickDropWall();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		assertEquals(true, Quoridor223Controller.setCurrentPlayerToMoveByColor(string));
 		//System.out.println(Quoridor223Controller.currentStatePlayers());
 	}
@@ -1594,12 +1604,12 @@ public class CucumberStepDefinitions {
 	public void the_user_interface_shall_be_showing_it_is_turn(String string) {
 		// Write code here that turns the phrase above into concrete actions
 		//System.out.println("current player moving"+string + "  " + Quoridor223Controller.getPlayerNameByColor(string));
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			Thread.sleep(3000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		//System.out.println(gamePage.getDialogBoxText());
 		assertEquals("It is "+Quoridor223Controller.getPlayerNameByColor(string)+"'s Turn !!", gamePage.getDialogBoxText());
 	}
