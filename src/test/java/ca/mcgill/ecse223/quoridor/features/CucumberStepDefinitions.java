@@ -1,11 +1,12 @@
 package ca.mcgill.ecse223.quoridor.features;
 
-import java.awt.Component;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,6 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
-import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -42,9 +42,6 @@ import io.cucumber.java.en.But;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class CucumberStepDefinitions {
 
@@ -57,21 +54,19 @@ public class CucumberStepDefinitions {
 	private Move initialMove = null;
 	private String cucumberFilename	= null;
 	private GamePage gamePage;
-	private boolean saveSuccessful = false;
 	private boolean loadSuccessful = false;
+	private ArrayList<Player> createUsersAndPlayers;
 
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
-//		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
-//		createAndPrepareGame(createUsersAndPlayers);
-		createUsersAndPlayers("user1", "user2");
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 	}
 
 	@Given("^The game is running$")
 	public void theGameIsRunning() {
 		initQuoridorAndBoard();
-		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
 		gamePage = new GamePage();
 	}
@@ -133,17 +128,27 @@ public class CucumberStepDefinitions {
 		//make sure all wall are in the finalized state
 		quoridor.getCurrentGame().setWallMoveCandidate(null);
 	}
+	/**
+	 * @author Le-Li Mao
+	 */
 	@And("I shall not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand() {
 		assertEquals(false, gamePage.hasWallInHand());
 	}
 
+	/**
+	 * @author Le-Li Mao
+	 * @throws Throwable
+	 */
 	@And("^I have a wall in my hand over the board$")
 	public void iHaveAWallInMyHandOverTheBoard() throws Throwable {
 		setWall("horizontal", 5, 1);
 		assertEquals(true, gamePage.hasWallInHand());
 	}
 
+	/**
+	 * @author Le-Li Mao
+	 */
 	@And("I do not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand2() {
 		assertEquals(false, gamePage.hasWallInHand());
@@ -175,7 +180,6 @@ public class CucumberStepDefinitions {
 
 		// create the new game
 		Quoridor223Controller.createGame();
-		
 	}
 
 	@And("White player chooses a username")
@@ -384,6 +388,8 @@ public class CucumberStepDefinitions {
 		Quoridor223Controller.setUser("Andrew", "white");
 		Quoridor223Controller.setUser("Shuby", "black");
 		Quoridor223Controller.initializeBoard();
+		// create a game page for ui testing
+		gamePage = new GamePage();
 	}
 
 	/**
@@ -444,15 +450,12 @@ public class CucumberStepDefinitions {
 	 */
 	@And("White's clock shall be counting down")
 	public void whiteClockShallBeCountingDown() {
-		QuoridorApplication.setMainPage();
-		GamePage game = QuoridorApplication.getMainPage();
 		try {
-			TimeUnit.SECONDS.sleep(5);
-			game.setVisible(false);
+			TimeUnit.SECONDS.sleep(2);
 		}catch(Exception e){
 			
 		}
-		assertEquals(game.getWhiteClockStatus(), true);
+		assertEquals(gamePage.getWhiteClockStatus(), true);
 	}
 
 	/**
@@ -460,8 +463,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("It shall be shown that this is White's turn")
 	public void showThatThisIsWhiteTurn() {// setup mainPage
-		GamePage game = QuoridorApplication.getMainPage();
-		assertEquals(game.getGameMessage(), "It is Andrew's Turn !!");
+		assertEquals(gamePage.getGameMessage(), "It is Andrew's Turn !!");
 	}
 
 	// **********************************************
@@ -511,6 +513,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Enan Ashaduzzaman
 	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
 	@When("I try to grab a wall from my stock")
 	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException, InvalidOperationException {
@@ -598,6 +601,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Enan Ashaduzzaman
 	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
 	@When("I try to flip the wall")
 	public void iTryToFlipTheWall() throws GameNotRunningException, InvalidOperationException {
@@ -668,7 +672,7 @@ public class CucumberStepDefinitions {
 
 		}
 		gamePage.clickDropWall();
-
+		// @sacha: use commands from the UI to get the texts from the JLABELS
 	}
 
 	/**
@@ -832,12 +836,18 @@ public class CucumberStepDefinitions {
 		assertEquals(true, gamePage.hasWallInHand());
 	}
 
+	/**
+	 * @author Le-Li Mao
+	 */
 	@Then("I shall be notified that my move is illegal")
 	public void iShallBeNotifiedThatMyMoveIsIllegal() {
 		// GUI
 		assertEquals("Illegal Move", gamePage.getGameMessage());
 	}
 
+	/**
+	 * @author Le-Li Mao
+	 */
 	@Then("I shall be notified that my wall move is invalid")
 	public void iShallBeNotifiedThatMyWallMoveIsInvalid() {
 		// GUI
@@ -942,6 +952,7 @@ public class CucumberStepDefinitions {
 	@When("I initiate to load a saved game {string}")
 	public void iInitiateToLoadASavedGame(String filename) throws IOException {
 		cucumberFilename = filename;
+		createAndPrepareGame(createUsersAndPlayers);
 		Quoridor223Controller.checkLoadFileIsValid(filename);
 	}
 
@@ -1208,7 +1219,6 @@ public class CucumberStepDefinitions {
 			game.getWallMoveCandidate().setWallDirection(dir.equalsIgnoreCase("horizontal")?Direction.Horizontal:Direction.Vertical);
 		}
 		else {
-		System.out.println("-------------------------"+ game.getMoves());
 		getWallMoveCandidate(game.getCurrentPosition().getPlayerToMove(),dir, row, col);
 		}
 		initialMove = game.getWallMoveCandidate();
@@ -1445,123 +1455,79 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
-// note: no need to implement the given lines, they are given and supposed available
-
-// Validate Position feature
-	// Scenario: Validate pawn position
 	/**
+	 * ValidatePosition.feature
 	 * @author Sacha Lévy
-	 * @param tile
-	 * @return
+	 * @param int1, int2
+	 */
+	@Given("A game position is supplied with pawn coordinate {int}:{int}")
+	public void a_game_position_is_supplied_with_pawn_coordinate(Integer int1, Integer int2) {
+	    // define the new game position
+	    assertEquals(true, Quoridor223Controller.setGamePawnPosition(int1, int2));
+	}
+	
+	/**
+	 * ValidatePosition.feature
+	 * @author Sacha Lévy
+	 * @param int1, int2
 	 */
 	@When("Validation of the position is initiated")
-	public void validationOfThenPositionIsInitiated(Tile tile)
-			throws UnsupportedOperationException, GameNotRunningException {
-		assertEquals(true, Quoridor223Controller.validatePosition());
+	public void validation_of_the_position_is_initiated() {
+	    try {
+			Quoridor223Controller.validatePosition();
+		} catch (UnsupportedOperationException | GameNotRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	/**
-	 * @author Sacha Lévy
-	 * @return
-	 */
-	@Then("The position shall be <result>")
-	public void thePositionShallBeResult() {
-		throw new PendingException();
+	@Then("The position shall be {string}")
+	public void the_position_shall_be(String string) {
+		String result = "error";
+		try {
+			if(Quoridor223Controller.validatePosition()) result = "ok";
+			else result = "error";
+		} catch (UnsupportedOperationException | GameNotRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    assertEquals(string, result);
+		
 	}
 
-	// Scenario: Validate overlapping walls (all valid)
-	/**
-	 * @author Sacha Lévy
-	 * @return
-	 */
+	@Given("A game position is supplied with wall coordinate {int}:{int}-{string}")
+	public void a_game_position_is_supplied_with_wall_coordinate(Integer int1, Integer int2, String string) {
+		Direction dir = string.equals("horizontal") ? Direction.Horizontal: Direction.Vertical;
+	    assertEquals(true, Quoridor223Controller.createNewWallMoveCandidate(int1, int2, dir));
+	    System.out.println(Quoridor223Controller.hasWallMoveCandidate());
+	}
+
 	@Then("The position shall be valid")
-	public void thePositionShallBeValid() {
-		// check position given is valid
-		throw new PendingException();
+	public void the_position_shall_be_valid() {
+	    assertEquals("valid", Quoridor223Controller.isPositionValid());
 	}
 
-	// Scenario: Validate overlapping walls (invalid-1)
-	/**
-	 * @author Sacha Lévy
-	 * @return
-	 */
 	@Then("The position shall be invalid")
-	public void thePositionShallBeInvalid() {
-		// check position given is invalid
-		throw new PendingException();
+	public void the_position_shall_be_invalid() {
+	    assertEquals("invalid", Quoridor223Controller.isPositionValid());
 	}
-
-	// Scenario: Validate overlapping walls (invalid-2)
-	// Scenario: Validate overlapping walls (invalid-3)
 
 // Switch Current Player feature
-	// Scenario: Switch current player
-	@When("Player <player> completes his move")
 	/**
 	 * @author Sacha Lévy
 	 * @param player
-	 * @return
+	 * @return boolean
+	 * @throws InterruptedException 
 	 */
-	public void playerCompletesHisMove(Player player) {
-		// check player completes his move
-		throw new PendingException();
-	}
-
-	/**
-	 * @author Sacha Lévy
-	 * @param other
-	 * @return
-	 */
-	@Then("The user interface shall be showing it is <other> turn")
-	public void theUserIntefaceShallBeShowingItIs(Player other) {
-		// check state of the user interface - not yet implemented
-		throw new PendingException(); // GUI STEP (Mentor Confirmed)
-	}
-
-	/**
-	 * @author Sacha Lévy
-	 * @param player
-	 * @return
-	 */
-	@And("The clock of <player> shall be stopped")
-	public void theClockOfPlayerShallBeStopped(Player player) {
-		// check player clock is stopped
-		assertEquals(false, isClockRunning(player));
-	}
-
-	/**
-	 * @author Sacha Lévy
-	 * @param player
-	 * @return
-	 */
-	@And("The clock of <other> shall be running")
-	public void theClockOfOtherShallBeRunning(Player other) {
-		// check other players clock is running
-		assertEquals(true, isClockRunning(other));
-	}
-
-	/**
-	 * @author Sacha Lévy
-	 * @param player
-	 * @return
-	 */
-	@And("The next player to move shall be <other>")
-	public void theNextPlayeToMoveShallBe(Player other) {
-		// check the next player to move is other
-		assertEquals(true, isNextPlayerToMove(other));
-	}
-
-	/**
-	 * @author Sacha Lévy
-	 * @param player
-	 * @return
-	 */
-	private boolean isClockRunning(Player player) {
+	private boolean isClockRunning(String color) throws InterruptedException {
+		Player player = Quoridor223Controller.getPlayerByColor(color);
 		Time tmp_time = player.getRemainingTime();
-		if (tmp_time.equals(player.getRemainingTime()))
-			return true;
-		else
+		Thread.sleep(1500);
+		//System.out.println(tmp_time.toString());
+		if (tmp_time.toString().equals(player.getRemainingTime().toString()))
 			return false;
+		else
+			return true;
 	}
 
 	private boolean isNextPlayerToMove(Player other) {
@@ -1569,6 +1535,88 @@ public class CucumberStepDefinitions {
 			return true;
 		else
 			return false;
+	}
+	
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * */
+	@Given("The player to move is {string}")
+	public void the_player_to_move_is(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		assertEquals(true, Quoridor223Controller.setCurrentPlayerToMoveByColor(string));
+		//System.out.println(Quoridor223Controller.currentStatePlayers());
+	}
+
+	@Given("The clock of {string} is running")
+	public void the_clock_of_is_running(String string) {
+		try {
+			assertEquals(true, isClockRunning(string));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Given("The clock of {string} is stopped")
+	public void the_clock_of_is_stopped(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		try {
+			assertEquals(false, isClockRunning(string));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@When("Player {string} completes his move")
+	public void player_completes_his_move(String string) {
+		gamePage.clickGrabWall();
+		gamePage.clickDropWall();
+		assertEquals(false,Quoridor223Controller.hasWallMoveCandidate());
+	}
+
+	@Then("The user interface shall be showing it is {string} turn")
+	public void the_user_interface_shall_be_showing_it_is_turn(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		//System.out.println("current player moving"+string + "  " + Quoridor223Controller.getPlayerNameByColor(string));
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.out.println(gamePage.getDialogBoxText());
+		assertEquals("It is "+Quoridor223Controller.getPlayerNameByColor(string)+"'s Turn !!", gamePage.getDialogBoxText());
+	}
+
+	@Then("The clock of {string} shall be stopped")
+	public void the_clock_of_shall_be_stopped(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		try {
+			assertEquals(false, isClockRunning(string));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Then("The clock of {string} shall be running")
+	public void the_clock_of_shall_be_running(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		try {
+			assertEquals(true, isClockRunning(string));
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Then("The next player to move shall be {string}")
+	public void the_next_player_to_move_shall_be(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		Player player = Quoridor223Controller.getPlayerByColor(string);
+		assertEquals(true, isNextPlayerToMove(player));
 	}
 
 }

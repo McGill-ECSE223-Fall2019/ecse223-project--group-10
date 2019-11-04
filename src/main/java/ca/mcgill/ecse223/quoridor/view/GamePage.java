@@ -3,31 +3,13 @@ package ca.mcgill.ecse223.quoridor.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.sql.Time;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.swing.GroupLayout;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
@@ -35,32 +17,20 @@ import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.controller.TOGame;
 import ca.mcgill.ecse223.quoridor.controller.TOWall;
 
-import javax.swing.JSplitPane;
-import java.awt.BorderLayout;
-import java.awt.Panel;
-import java.awt.GridLayout;
-import java.awt.Button;
-import javax.swing.BoxLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.Font;
-import javax.swing.JPanel;
-import java.awt.CardLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.IOException;
-import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
-import javax.swing.JTextPane;
-import java.awt.SystemColor;
-import javax.swing.JTextArea;
 
 public class GamePage extends JFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	// timer
 	private static Timer timer;
 
@@ -119,60 +89,60 @@ public class GamePage extends JFrame {
 		TOGame players = Quoridor223Controller.getListOfPlayers();
 		name1 = players.getPlayerOne();
 		userName1 = new JLabel(name1, SwingConstants.CENTER);
-		userName1.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		userName1.setFont(new Font("Arial", Font.PLAIN, 14));
 		userName1.setBounds(620, 94, 46, 33);
 		
 		
 		// initialize username 2
 		name2 = players.getPlayerTwo();
 		userName2 = new JLabel(name2, SwingConstants.CENTER);
-		userName2.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		userName2.setFont(new Font("Arial", Font.PLAIN, 14));
 		userName2.setBounds(876, 94, 50, 32);
 		
 		userToMove = players.getPlayerToMove();
 
 		// initialize time 
 		whiteTime = new JLabel(players.getPlayerOneTime().toString());
-		whiteTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		whiteTime.setFont(new Font("Arial", Font.PLAIN, 14));
 		whiteTime.setBounds(676, 94, 64, 33);
 		
 		blackTime = new JLabel(players.getPlayerTwoTime().toString());
-		blackTime.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		blackTime.setFont(new Font("Arial", Font.PLAIN, 14));
 		blackTime.setBounds(936, 94, 64, 33);
 
 		// initialize grab, drop, rotate wall
 		grabWall = new JButton("Grab Wall");
 		grabWall.setBackground(new Color(204, 153, 102));
-		grabWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		grabWall.setFont(new Font("Arial", Font.PLAIN, 13));
 		grabWall.setBounds(620, 145, 120, 40);
 		dropWall = new JButton("Drop Wall");
 		dropWall.setBackground(new Color(204, 153, 102));
-		dropWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		dropWall.setFont(new Font("Arial", Font.PLAIN, 13));
 		dropWall.setBounds(750, 145, 120, 40);
 		btnRotateWall = new JButton("Rotate Wall");
 		btnRotateWall.setBackground(new Color(204, 153, 102));
-		btnRotateWall.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnRotateWall.setFont(new Font("Arial", Font.PLAIN, 13));
 		btnRotateWall.setBounds(880, 145, 120, 40);
 		
 		// initialize forfeit, confirm
 		forfeit = new JButton("Forfeit Game");
 		forfeit.setBackground(new Color(204, 153, 102));
-		forfeit.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		forfeit.setFont(new Font("Arial", Font.PLAIN, 13));
 		forfeit.setBounds(750, 507, 120, 40);
 
 		// initialize save, replay, new game
 		saveGame = new JButton("Save Game");
 		saveGame.setBackground(new Color(204, 153, 102));
-		saveGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		saveGame.setBounds(285, 606, 110, 40);
+		saveGame.setFont(new Font("Arial", Font.PLAIN, 13));
+		saveGame.setBounds(280, 606, 120, 40);
 		replayGame = new JButton("Replay Game");
 		replayGame.setBackground(new Color(204, 153, 102));
-		replayGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		replayGame.setBounds(480, 606, 110, 40);
+		replayGame.setFont(new Font("Arial", Font.PLAIN, 13));
+		replayGame.setBounds(470, 606, 120, 40);
 		newGame = new JButton("New Game");
 		newGame.setBackground(new Color(204, 153, 102));
-		newGame.setFont(new Font("Tahoma", Font.PLAIN, 13));
-		newGame.setBounds(90, 606, 110, 40);
+		newGame.setFont(new Font("Arial", Font.PLAIN, 13));
+		newGame.setBounds(90, 606, 120, 40);
 
 		// button size
 		forfeit.setPreferredSize(new Dimension(40, 40));
@@ -182,25 +152,25 @@ public class GamePage extends JFrame {
 
 		// player turn
 		gameMessage = new JLabel("It is " + userToMove + "'s Turn !!" , SwingConstants.CENTER);
-		gameMessage.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		gameMessage.setFont(new Font("Arial", Font.PLAIN, 16));
 		gameMessage.setBounds(90, 28, 500, 46);
 
 		// move buttons
 		btnLeft = new JButton("LEFT");
 		btnLeft.setBackground(new Color(204, 153, 102));
-		btnLeft.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnLeft.setFont(new Font("Arial", Font.PLAIN, 13));
 		btnLeft.setBounds(678, 356, 80, 80);
 		btnRight = new JButton("RIGHT");
 		btnRight.setBackground(new Color(204, 153, 102));
-		btnRight.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnRight.setFont(new Font("Arial", Font.PLAIN, 13));
 		btnRight.setBounds(860, 356, 80, 80);
 		btnDown = new JButton("DOWN");
 		btnDown.setBackground(new Color(204, 153, 102));
-		btnDown.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnDown.setFont(new Font("Arial", Font.PLAIN, 13));
 		btnDown.setBounds(770, 356, 80, 80);
 		btnUp = new JButton("UP");
 		btnUp.setBackground(new Color(204, 153, 102));
-		btnUp.setFont(new Font("Tahoma", Font.PLAIN, 13));
+		btnUp.setFont(new Font("Arial", Font.PLAIN, 13));
 		btnUp.setBounds(770, 266, 80, 80);
 
 		// ------------------------- Add to Panel ----------------------------//
@@ -250,6 +220,10 @@ public class GamePage extends JFrame {
 		btnUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					// add parameter if no wall selected then simply move pawn
+					// @sacha: need to implement a way to move the player from one tile to another
+					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Up);
+					//else Quoridor223Controller.movePlayer(TOWall.Side.Up);
 					Quoridor223Controller.moveWall(TOWall.Side.Up);
 				} catch (GameNotRunningException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
@@ -266,6 +240,8 @@ public class GamePage extends JFrame {
 		btnDown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Down);
+					//else Quoridor223Controller.movePlayer(TOWall.Side.Down);
 					Quoridor223Controller.moveWall(TOWall.Side.Down);
 				}catch (GameNotRunningException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
@@ -281,6 +257,8 @@ public class GamePage extends JFrame {
 		btnLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
+					//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
 					Quoridor223Controller.moveWall(TOWall.Side.Left);
 				} catch (GameNotRunningException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
@@ -296,6 +274,8 @@ public class GamePage extends JFrame {
 		btnRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Right);
+					//else Quoridor223Controller.movePlayer(TOWall.Side.Right);
 					Quoridor223Controller.moveWall(TOWall.Side.Right);
 				} catch (GameNotRunningException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
@@ -473,6 +453,10 @@ public class GamePage extends JFrame {
 	}
 	public void clickDropWall() {
 		dropWall.doClick();
+	}
+	// check what is displayed in text panel
+	public String getDialogBoxText() {
+		return gameMessage.getText();
 	}
 	public void refresh() {
 		boardComponent.repaint();
