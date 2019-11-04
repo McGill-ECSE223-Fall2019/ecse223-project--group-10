@@ -1143,7 +1143,12 @@ public class CucumberStepDefinitions {
 		}
 		game.setCurrentPosition(gamePosition);
 	}
-		
+	
+	/**
+	 * Creates a game and prepares it so a new game position can be loaded from a save file
+	 * @author Mitchell Keeley
+	 * @param players
+	 */
 	private void createAndPrepareGame(ArrayList<Player> players) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		// There are total 36 tiles in the first four rows and
@@ -1401,6 +1406,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * checks if the specified player has remainingWalls in their stock
+	 * @author Mitchell Keeley
 	 * @param playerColor
 	 * @param remainingWalls
 	 * @return
