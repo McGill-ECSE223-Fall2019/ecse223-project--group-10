@@ -513,6 +513,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Enan Ashaduzzaman
 	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
 	@When("I try to grab a wall from my stock")
 	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException, InvalidOperationException {
@@ -600,6 +601,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Enan Ashaduzzaman
 	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
 	@When("I try to flip the wall")
 	public void iTryToFlipTheWall() throws GameNotRunningException, InvalidOperationException {
@@ -1453,77 +1455,64 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
-// note: no need to implement the given lines, they are given and supposed available
-
-// Validate Position feature
-	// Scenario: Validate Pawn position	
-	@Given("A game position is supplied with pawn coordinate <row>:<col>")
-	public void aGamePositionIsSuppliedWithPawnCoordinate() {
-		// if pawn coordinate are to be checked then the wall candidate should be null
-		// the goal thus is to check the pawn position instead of validating WallCandidate
-		// NEED IMPLEMENTATION FOR MOVE PLAYER FOR MEANING ???
-		assertEquals(true, !Quoridor223Controller.hasWallMoveCandidate());
+	/**
+	 * ValidatePosition.feature
+	 * @author Sacha Lévy
+	 * @param int1, int2
+	 */
+	@Given("A game position is supplied with pawn coordinate {int}:{int}")
+	public void a_game_position_is_supplied_with_pawn_coordinate(Integer int1, Integer int2) {
+	    // define the new game position
+	    assertEquals(true, Quoridor223Controller.setGamePawnPosition(int1, int2));
 	}
 	
-	// Scenario: Validate pawn position
-
 	/**
+	 * ValidatePosition.feature
 	 * @author Sacha Lévy
+	 * @param int1, int2
 	 */
 	@When("Validation of the position is initiated")
-	public void validationOfThenPositionIsInitiated() throws UnsupportedOperationException, GameNotRunningException {
-		// check wall has been dropped or pawn has been moved, for the moment only dropWall possible
-		// if no wall candidate then no checking of the Position
-		// need way to record if the dropWall was initiated ?
-		Quoridor223Controller.validatePosition();
-		// since anyways the valudatePosition sends errors
-		boolean init_validatePosition = true;
-		assertEquals(true, init_validatePosition);
-
+	public void validation_of_the_position_is_initiated() {
+	    try {
+			Quoridor223Controller.validatePosition();
+		} catch (UnsupportedOperationException | GameNotRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
-	/**
-	 * @author	Sacha Lévy
-	 * @param	expected_result
-	 * @return
-	 * @throws GameNotRunningException 
-	 * @throws UnsupportedOperationException 
-	 */
-	@Then("The position shall be <result>")
-	public void thePositionShallBeResult(String expected_result) throws UnsupportedOperationException, GameNotRunningException {
-		String result = Quoridor223Controller.validatePosition()?"ok":"error";
-		assertEquals(expected_result, result);
+	@Then("The position shall be {string}")
+	public void the_position_shall_be(String string) {
+		String result = "error";
+		try {
+			if(Quoridor223Controller.validatePosition()) result = "ok";
+			else result = "error";
+		} catch (UnsupportedOperationException | GameNotRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	    assertEquals(string, result);
+		
 	}
 
-	// Scenario: Validate overlapping walls (all valid)
-	/**
-	 * @author Sacha Lévy
-	 * @return
-	 */
+	@Given("A game position is supplied with wall coordinate {int}:{int}-{string}")
+	public void a_game_position_is_supplied_with_wall_coordinate(Integer int1, Integer int2, String string) {
+		Direction dir = string.equals("horizontal") ? Direction.Horizontal: Direction.Vertical;
+	    assertEquals(true, Quoridor223Controller.createNewWallMoveCandidate(int1, int2, dir));
+	    System.out.println(Quoridor223Controller.hasWallMoveCandidate());
+	}
+
 	@Then("The position shall be valid")
-	public void thePositionShallBeValid() {
-		// check position given is valid
-		throw new PendingException();
+	public void the_position_shall_be_valid() {
+	    assertEquals("valid", Quoridor223Controller.isPositionValid());
 	}
 
-	// Scenario: Validate overlapping walls (invalid-1)
-	/**
-	 * @author Sacha Lévy
-	 * @return
-	 */
 	@Then("The position shall be invalid")
-	public void thePositionShallBeInvalid() {
-		// check position given is invalid
-		throw new PendingException();
+	public void the_position_shall_be_invalid() {
+	    assertEquals("invalid", Quoridor223Controller.isPositionValid());
 	}
-
-	// Scenario: Validate overlapping walls (invalid-2)
-	// Scenario: Validate overlapping walls (invalid-3)
 
 // Switch Current Player feature
-	
-	
-
 	/**
 	 * @author Sacha Lévy
 	 * @param player
