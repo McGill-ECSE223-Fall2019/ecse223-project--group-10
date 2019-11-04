@@ -1624,6 +1624,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * SwitchCurrentPlayer.feature
 	 * @author Sacha Lévy
+	 * @param string 
 	 * */
 	@Given("The player to move is {string}")
 	public void the_player_to_move_is(String string) {
@@ -1645,6 +1646,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * SwitchCurrentPlayer.feature
 	 * @author Sacha Lévy
+	 * @param string
 	 * */
 	@Given("The clock of {string} is running")
 	public void the_clock_of_is_running(String string) {
@@ -1659,6 +1661,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * SwitchCurrentPlayer.feature
 	 * @author Sacha Lévy
+	 * @param string
 	 * */
 	@Given("The clock of {string} is stopped")
 	public void the_clock_of_is_stopped(String string) {
@@ -1674,6 +1677,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * SwitchCurrentPlayer.feature
 	 * @author Sacha Lévy
+	 * @param string
 	 * */
 	@When("Player {string} completes his move")
 	public void player_completes_his_move(String string) {
