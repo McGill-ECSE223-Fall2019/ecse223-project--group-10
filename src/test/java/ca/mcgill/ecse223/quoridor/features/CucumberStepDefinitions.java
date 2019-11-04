@@ -513,6 +513,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Enan Ashaduzzaman
 	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
 	@When("I try to grab a wall from my stock")
 	public void iTryToGrabAWallFromMyStock() throws GameNotRunningException, InvalidOperationException {
@@ -600,6 +601,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Enan Ashaduzzaman
 	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
 	@When("I try to flip the wall")
 	public void iTryToFlipTheWall() throws GameNotRunningException, InvalidOperationException {
