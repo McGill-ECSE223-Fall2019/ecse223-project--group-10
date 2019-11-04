@@ -171,8 +171,8 @@ public class CucumberStepDefinitions {
 	// **********************************************
 
 	/**
+	 * Feature 1: Start New Game
 	 * Scenario: Initiate a new game
-	 * 
 	 * @author Vanessa Ifrah
 	 */
 	@When("A new game is being initialized")
@@ -182,6 +182,9 @@ public class CucumberStepDefinitions {
 		Quoridor223Controller.createGame();
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@And("White player chooses a username")
 	public void whitePlayerChoosesAUsername() {
 
@@ -190,18 +193,27 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@And("Black player chooses a username")
 	public void blackPlayerChoosesAUsername() {
 		// black/second player chooses their name
 		Quoridor223Controller.setUser("Jessica", "black");
 	}
 
+	/**
+	 *  @author Vanessa Ifrah
+	 */
 	@And("Total thinking time is set")
 	public void totalThinkingTimeIsSet() {
 		Quoridor223Controller.setThinkingTime(Time.valueOf("00:10:00"), "Vanessa");
 		Quoridor223Controller.setThinkingTime(Time.valueOf("00:10:00"), "Jessica");
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@Then("The game shall become ready to start")
 	public void theGameShallBecomeReadyToStart() {
 
@@ -211,8 +223,8 @@ public class CucumberStepDefinitions {
 	}
 
 	/**
-	 * Scenario: Start Clock
-	 * 
+	 * Feature 1: Start New Game
+	 * Scenario: Start clock
 	 * @author Vanessa Ifrah
 	 */
 	@Given("The game is ready to start")
@@ -224,6 +236,9 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@When("I start the clock")
 	public void iStartTheClock() {
 
@@ -232,6 +247,9 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@Then("The game shall be running")
 	public void theGameShallBeRunning() {
 
@@ -240,6 +258,9 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@And("The board shall be initialized")
 	public void theBoardShallBeInitialized() {
 		assertEquals(QuoridorApplication.getQuoridor().hasBoard(), true);
@@ -247,9 +268,10 @@ public class CucumberStepDefinitions {
 	}
 
 	/**
+	 * Feature 2: Provide Select User Naame
 	 * Scenario: Select existing user name
-	 * 
 	 * @author Vanessa Ifrah
+	 * @param playerColor
 	 */
 	@Given("Next player to set user name is {string}")
 	public void nextPlayerToSetUserNameIs(String playerColor) {
@@ -258,6 +280,10 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * @param userName
+	 */
 	@And("There is existing user {string}")
 	public void thereIsExistingUser(String userName) {
 
@@ -276,6 +302,10 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * @param userName
+	 */
 	@When("The player selects existing {string}")
 	public void thePlayerSelectsExisting(String userName) {
 
@@ -288,6 +318,11 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * @param playerColor
+	 * @param userName
+	 */
 	@Then("The name of player {string} in the new game shall be {string}")
 	public void theNameOfPlayerInTheNewGameShallBe(String playerColor, String userName) {
 
@@ -301,9 +336,10 @@ public class CucumberStepDefinitions {
 	}
 
 	/**
+	 * Feature 2: Provide Select User Name
 	 * Scenario: Create new user name
-	 * 
 	 * @author Vanessa Ifrah
+	 * @param userName
 	 */
 	@And("There is no existing user {string}")
 	public void thereIsNoExistingUser(String userName) {
@@ -312,6 +348,10 @@ public class CucumberStepDefinitions {
 
 	}
 	
+	/**
+	 * @author Vanessa Ifrah
+	 * @param userName
+	 */
 	@When("The player provides new user name: {string}")
 	public void thePlayerProvidesNewUserName(String userName) {
 
@@ -320,9 +360,10 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
+	 * Feature 2: Provide Select User Name
 	 * Scenario: User name already exists
-	 * 
 	 * @author Vanessa Ifrah
+	 * @param userName
 	 */
 	@Then("The player shall be warned that {string} already exists")
 	public void thePlayerShallBeWarnedThatUserNameAlreadyExists(String userName) {
@@ -332,6 +373,10 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * @param playerColor
+	 */
 	@And("Next player to set user name shall be {string}")
 	public void nextPlayerToSetUserNameShallBe(String playerColor) {
 

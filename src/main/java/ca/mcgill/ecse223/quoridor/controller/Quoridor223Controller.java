@@ -49,6 +49,9 @@ public class Quoridor223Controller {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	public static void setGameToReady() {
 		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -56,6 +59,9 @@ public class Quoridor223Controller {
 		curGame.setGameStatus(GameStatus.ReadyToStart);
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	public static void setGameToRun() {
 		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -89,6 +95,14 @@ public class Quoridor223Controller {
 		}
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * 
+	 * @param playerName1
+	 * @param playerName2
+	 * @return
+	 * @throws UnsupportedOperationException
+	 */
 	public static List<User> selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
 
 		// load the user
@@ -103,10 +117,9 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * helper method to check is name exists
-	 * 
 	 * @author Vanessa Ifrah
 	 * @param name
+	 * @return
 	 */
 	public static boolean checkNameList(String name) {
 
@@ -136,10 +149,9 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * helper method to warn user if name is duplicate
-	 * 
 	 * @author Vanessa Ifrah
 	 * @param name
+	 * @return
 	 */
 	public static boolean warnUser(String name) {
 		
