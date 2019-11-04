@@ -528,15 +528,26 @@ public class Quoridor223Controller {
 		}
 		return loadedPosition;
 	}
-	public static String isPositionValid() {
-		String result = "invalid";
-		if (!doWallsOverlap()) result = "valid";
-		else result = "invalid";
 	
-		return result;
+	/**
+	 * helper method to get validity of board position for cucumber stepDef
+	 * 
+	 * @author Sacha Lévy
+	 * @return isValid
+	 * */
+	public static String isPositionValid() {
+		String isValid = "invalid";
+		try {
+			if (validatePosition()) isValid = "valid";
+			else isValid = "invalid";
+		} catch (UnsupportedOperationException | GameNotRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return isValid;
 	} 
 
-	
 	/**
 	 * Feature 11: ValidatePosition, validate a wall position by checking overlapping walls and player position
 	 * 
@@ -549,6 +560,7 @@ public class Quoridor223Controller {
 			throw new GameNotRunningException("Game not running");
 		}
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (doWallsOverlap()) return false;
 		//System.out.println(current_game.hasWallMoveCandidate());
 		// check if there is a wall to move
 		if (current_game.hasWallMoveCandidate()) {
@@ -568,12 +580,27 @@ public class Quoridor223Controller {
 		return true;
 	}
 	
+	/**
+	 * query method to get name of a player based on its color
+	 * i.e. username for black/white players
+	 * 
+	 * @param color
+	 * @author Sacha Lévy
+	 * @return String
+	 * */
 	public static String getPlayerNameByColor(String color) {
 		Player player = getPlayerByColor(color);
 		return player.getUser().getName();
 	}
 	
-	
+	/**
+	 * method to set the position of a Pawn on board
+	 * helper method for cucumber step definition ValidatePosition
+	 * 
+	 * @param int1, int2
+	 * @author Sacha Lévy
+	 * @return boolean
+	 * */
 	public static boolean setGamePawnPosition(Integer int1, Integer int2) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		GamePosition current_position = current_game.getCurrentPosition();
@@ -584,6 +611,14 @@ public class Quoridor223Controller {
 		return current_player_pos.setTile(current_black_tile);
 	}
 	
+	/**
+	 * method to simulate displacement of a wall on board to be checked by validatePosition
+	 * helper method for cucumber step definition ValidatePosition
+	 * 
+	 * @param int1, int2, dir
+	 * @author Sacha Lévy
+	 * @return boolean
+	 * */
 	public static boolean createNewWallMoveCandidate(Integer int1, Integer int2, Direction dir) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		GamePosition current_position = current_game.getCurrentPosition();
@@ -622,18 +657,37 @@ public class Quoridor223Controller {
 		WallMove curWallMove = new WallMove(moveNum, roundNum + 1, current_game.getBlackPlayer(), target_tile, current_game, dir, curWall);
 		return current_game.setWallMoveCandidate(curWallMove);		
 	}
-	
+	/**
+	 * query method to get a player based on its color
+	 * 
+	 * @param color
+	 * @author Sacha Lévy
+	 * @return playerByColor
+	 * */
 	public static Player getPlayerByColor(String color) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		if(color.equals("black")) return current_game.getBlackPlayer();
 		else return current_game.getWhitePlayer();
 	}
 	
+	/**
+	 * query method to get the current player moving
+	 * 
+	 * @author Sacha Lévy
+	 * @return currentPlayer
+	 * */
 	public static Player getPlayerMoving() {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		return current_game.getCurrentPosition().getPlayerToMove();
 	}
 	
+	/**
+	 * helper method to set player to move based on its color
+	 * 
+	 * @param color
+	 * @author Sacha Lévy
+	 * @return wasThePlayerSet
+	 * */
 	public static boolean setCurrentPlayerToMoveByColor(String color) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player player_to_move = getPlayerByColor(color);
@@ -644,7 +698,11 @@ public class Quoridor223Controller {
 		return current_game.getCurrentPosition().setPlayerToMove(player_to_move);
 	}
 
-	// check if the pawn move is legal
+	/**
+	 * @param newRow, newCol
+	 * @author Sacha Lévy
+	 * @return isPawnMoveLegal
+	 * */
 	public static boolean isPawnMoveLegal(int newRow, int newCol) throws InvalidOperationException{
 		Tile other_position;
 		Tile current_position;
@@ -883,18 +941,27 @@ public class Quoridor223Controller {
 		return current_game.getWhitePlayer().getUser().getName();
 	}
 	
-	// set the new player to move
+	/**
+	 * setter method fro cucumber step definition
+	 * 
+	 * @author Sacha Lévy
+	 * */
 	public static void setCurrentPlayerToMove(Player player) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		current_game.getCurrentPosition().setPlayerToMove(player);
 	}
 	
+	/**
+	 * Query methods for the UI
+	 * 
+	 * @author Sacha Lévy
+	 * */
 	public static String getPlayerName(Player player) {
 		return player.getUser().getName();
 	}
 	
 	/**
-	 * Query methods for the UI
+	 * helper method to get name of player
 	 * 
 	 * @author Sacha Lévy
 	 * */
