@@ -611,7 +611,7 @@ public class Quoridor223Controller {
 	 * 
 	 * @param int1, int2, dir
 	 * @author Sacha Lévy
-	 * @return boolean
+	 * @return wasWallSetAsNewWallCandidate
 	 * */
 	public static boolean createNewWallMoveCandidate(Integer int1, Integer int2, Direction dir) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -797,6 +797,12 @@ public class Quoridor223Controller {
 		return false;
 	}
 	
+	/**
+	 * check if the walls on board overlapp
+	 * 
+	 * @author Sacha Lévy
+	 * @return doWallsOnBoardOverlap
+	 * */
 	public static boolean doWallsOverlap() {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();	
 		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
@@ -854,6 +860,7 @@ public class Quoridor223Controller {
 	 * create a hashmap for the walls on board to check
 	 * 
 	 * @author Sacha Lévy
+	 * @return wallPositions
 	 * */
 	private static HashMap<Integer, Boolean> loadWallPositionsMap() throws InvalidOperationException{
 		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
@@ -889,6 +896,7 @@ public class Quoridor223Controller {
 	 * check if the wall position exists on the board
 	 * 
 	 * @author Sacha Lévy
+	 * @return isWallCandidatePositionValid
 	 * */
 	private static boolean isWallCandidatePositionValid() throws UnsupportedOperationException{
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -917,6 +925,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @return  whiteplayer remaining time
 	 * */
 	public static Time getWhiteRemainingTime() {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -930,6 +939,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @param whitePlayerNewName
 	 * */
 	public static void setWhitePlayerName(String new_name) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -977,7 +987,8 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Query methods for the UI
-	 * 
+	 * @param player
+	 * @return player's name
 	 * @author Sacha Lévy
 	 * */
 	public static String getPlayerName(Player player) {
@@ -988,6 +999,7 @@ public class Quoridor223Controller {
 	 * helper method to get name of player
 	 * 
 	 * @author Sacha Lévy
+	 * @param  whitePlayerNewTIme
 	 * */
 	public static void setWhitePlayerTime(Time new_time) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -998,6 +1010,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @param  blackPlayerNewTIme
 	 * */
 	public static void setBlackPlayerTime(Time new_time) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1008,6 +1021,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @return BlackPlayerRemainingTime
 	 * */
 	public static Time getBlackRemainingTime() {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1020,6 +1034,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @return playerMovingName
 	 * */
 	public static String getPlayerMovingName() {
 		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
@@ -1030,10 +1045,24 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @return playerTOMoveName
 	 * */
 	public static String getPlayerToMoveName() {
 		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
 		return current_position.getPlayerToMove().getUser().getName();
+	}
+	
+	/**
+	 * returns a string containing information on current players
+	 * 
+	 * @author Sacha Lévy
+	 * @return information on current state of the game
+	 * */
+	public static String currentStatePlayers() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game currentGame = quoridor.getCurrentGame();
+		String return_statement = "current player  moving : "+getPlayerToMoveName() +"\n"+ "Next player moving:" + currentGame.getCurrentPosition().getPlayerToMove().getNextPlayer().getUser().getName();
+		return return_statement;
 	}
 
 /////////////////////////////////////////////////////
@@ -1798,13 +1827,6 @@ public class Quoridor223Controller {
 				quoridor.getCurrentGame().getBlackPlayer().getRemainingTime(), name.get(0), name.get(1),
 				playerToMoveName);
 		return listOfPlayers;
-	}
-	// @sacha: helpers for cucumber step definitions
-	public static String currentStatePlayers() {
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game currentGame = quoridor.getCurrentGame();
-		String return_statement = "current player  moving : "+getPlayerToMoveName() +"\n"+ "Next player moving:" + currentGame.getCurrentPosition().getPlayerToMove().getNextPlayer().getUser().getName();
-		return return_statement;
 	}
 
 }

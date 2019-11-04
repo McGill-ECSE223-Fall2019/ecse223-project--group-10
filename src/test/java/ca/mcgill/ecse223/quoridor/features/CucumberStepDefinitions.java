@@ -1532,6 +1532,11 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * ValidatePosition.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 */
 	@Then("The position shall be {string}")
 	public void the_position_shall_be(String string) {
 		String result = "error";
@@ -1546,6 +1551,11 @@ public class CucumberStepDefinitions {
 		
 	}
 
+	/**
+	 * ValidatePosition.feature
+	 * @author Sacha Lévy
+	 * @param int1, int2, string
+	 */
 	@Given("A game position is supplied with wall coordinate {int}:{int}-{string}")
 	public void a_game_position_is_supplied_with_wall_coordinate(Integer int1, Integer int2, String string) {
 		Direction dir = string.equals("horizontal") ? Direction.Horizontal: Direction.Vertical;
@@ -1553,11 +1563,19 @@ public class CucumberStepDefinitions {
 	    System.out.println(Quoridor223Controller.hasWallMoveCandidate());
 	}
 
+	/**
+	 * ValidatePosition.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("The position shall be valid")
 	public void the_position_shall_be_valid() {
 	    assertEquals("valid", Quoridor223Controller.isPositionValid());
 	}
 
+	/**
+	 * ValidatePosition.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("The position shall be invalid")
 	public void the_position_shall_be_invalid() {
 	    assertEquals("invalid", Quoridor223Controller.isPositionValid());
@@ -1589,6 +1607,13 @@ public class CucumberStepDefinitions {
 	
 	}
 
+	/**
+	 * helper method to check if given player is next to move
+	 * 
+	 * @param other
+	 * @author Sacha Lévy
+	 * @return isPlayerNextToMove
+	 * */
 	private boolean isNextPlayerToMove(Player other) {
 		if (other.equals(QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove()))
 			return true;
@@ -1599,6 +1624,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * SwitchCurrentPlayer.feature
 	 * @author Sacha Lévy
+	 * @param string 
 	 * */
 	@Given("The player to move is {string}")
 	public void the_player_to_move_is(String string) {
@@ -1617,6 +1643,11 @@ public class CucumberStepDefinitions {
 		//System.out.println(Quoridor223Controller.currentStatePlayers());
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@Given("The clock of {string} is running")
 	public void the_clock_of_is_running(String string) {
 		try {
@@ -1627,6 +1658,11 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@Given("The clock of {string} is stopped")
 	public void the_clock_of_is_stopped(String string) {
 		// Write code here that turns the phrase above into concrete actions
@@ -1638,19 +1674,29 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@When("Player {string} completes his move")
 	public void player_completes_his_move(String string) {
 		gamePage.clickGrabWall();
 		gamePage.clickDropWall();
 		assertEquals(false,Quoridor223Controller.hasWallMoveCandidate());
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(4000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@Then("The user interface shall be showing it is {string} turn")
 	public void the_user_interface_shall_be_showing_it_is_turn(String string) {
 		// Write code here that turns the phrase above into concrete actions
@@ -1665,11 +1711,15 @@ public class CucumberStepDefinitions {
 		assertEquals("It is "+Quoridor223Controller.getPlayerNameByColor(string)+"'s Turn !!", gamePage.getDialogBoxText());
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@Then("The clock of {string} shall be stopped")
 	public void the_clock_of_shall_be_stopped(String string) {
 		// Write code here that turns the phrase above into concrete actions
 		try {
-			//Thread.sleep(1000);
 			assertEquals(false, isClockRunning(string));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -1677,11 +1727,15 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string 
+	 * */
 	@Then("The clock of {string} shall be running")
 	public void the_clock_of_shall_be_running(String string) {
 		// Write code here that turns the phrase above into concrete actions
 		try {
-			//Thread.sleep(1000);
 			assertEquals(true, isClockRunning(string));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
@@ -1689,6 +1743,11 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@Then("The next player to move shall be {string}")
 	public void the_next_player_to_move_shall_be(String string) {
 		// Write code here that turns the phrase above into concrete actions
