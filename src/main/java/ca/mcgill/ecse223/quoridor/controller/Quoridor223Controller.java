@@ -842,6 +842,7 @@ public class Quoridor223Controller {
 	 * create a hashmap for the walls on board to check
 	 * 
 	 * @author Sacha Lévy
+	 * @return wallPositions
 	 * */
 	private static HashMap<Integer, Boolean> loadWallPositionsMap() throws InvalidOperationException{
 		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
