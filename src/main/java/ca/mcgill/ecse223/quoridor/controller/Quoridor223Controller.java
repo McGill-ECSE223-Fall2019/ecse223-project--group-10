@@ -284,21 +284,17 @@ public class Quoridor223Controller {
 		
 	}
 
-	// under feature 5
 	/**
 	 * Feature 5: Rotate Wall Perform a rotate wall operation on the wall of the
 	 * respective player
-	 * 
 	 * @author Enan Ashaduzzaman
-	 * @throws UnsupportedOperationException
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
-
 	public static void rotateWall() throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning())
 			throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		// check if the Game is running. If not, thrown an exception.
-		// Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (curGame.getWallMoveCandidate() == null) {
 			throw new InvalidOperationException("No wall Selected");
 		}
@@ -308,21 +304,15 @@ public class Quoridor223Controller {
 		} else {
 			curGame.getWallMoveCandidate().setWallDirection(Direction.Horizontal);
 		}
-		// check if it is the player's turn. If not, thrown an exception.
-		// check if there is no wall in my hand. If no wall, thrown an exception.
-		// if there is a wall in my hand
-		// get coordinates for the wall position
-		// else if
-		// Notify player there is no wall in hand.
 	}
 
-	// under feature 6
 	/**
 	 * Feature 6: Grab Wall Perform a grab wall operation on the stock of the
 	 * respective player
 	 * 
 	 * @author Enan Ashaduzzaman
-	 * @throws UnsupportedOperationException
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
 	public static void grabWall() throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning())
@@ -341,18 +331,13 @@ public class Quoridor223Controller {
 			moveNum = 0;
 			roundNum = 0;
 		}
-		// check if the Game is running if not throw exception
 		if (curGame.getWallMoveCandidate() != null) {
 			throw new InvalidOperationException("Already a wall Selected");
 		}
-		// check if the it is player's turn if not throw exception
-		// check if there is no wall in my hand if not throw exception
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
 		
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
 			if (curGame.getCurrentPosition().getWhiteWallsInStock().isEmpty()) {
-				// else if player have no wall
-				// Notify the user that they don't have any wall.
 				throw new InvalidOperationException("No walls in stock");
 			} else {
 				Wall curWall = curGame.getCurrentPosition().getWhiteWallsInStock(0);
@@ -360,9 +345,6 @@ public class Quoridor223Controller {
 				WallMove curWallMove = new WallMove(moveNum + 1, roundNum + 1, curPlayer, curBoard.getTile(36), curGame,
 						Direction.Vertical, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
-				// move the wall into player's hand
-				// Remove one wall from stock
-				// create a wallmoveCandidate in the game model.
 			}
 		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
 			if (curGame.getCurrentPosition().getBlackWallsInStock().isEmpty()) {
