@@ -407,7 +407,7 @@ public class Quoridor223Controller {
 	 * @param side
 	 * parameters implemented using the TOWall will soon have a TOPawn for clarity
 	*/
-	/*public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
+	public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Board current_board = QuoridorApplication.getQuoridor().getBoard();
@@ -429,7 +429,7 @@ public class Quoridor223Controller {
 		Tile next_tile = new Tile(newRow, newCol, current_board);
 		current_position.setTile(next_tile);
 		SwitchPlayer();
-	}*/
+	}
 
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin

@@ -222,9 +222,9 @@ public class GamePage extends JFrame {
 				try {
 					// add parameter if no wall selected then simply move pawn
 					// @sacha: need to implement a way to move the player from one tile to another
-					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Up);
-					//else Quoridor223Controller.movePlayer(TOWall.Side.Up);
-					Quoridor223Controller.moveWall(TOWall.Side.Up);
+					if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Up);
+					else Quoridor223Controller.movePlayer(TOWall.Side.Up);
+					//Quoridor223Controller.moveWall(TOWall.Side.Up);
 				} catch (GameNotRunningException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
 					// set the notification panel to message
@@ -240,9 +240,9 @@ public class GamePage extends JFrame {
 		btnDown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Down);
-					//else Quoridor223Controller.movePlayer(TOWall.Side.Down);
-					Quoridor223Controller.moveWall(TOWall.Side.Down);
+					if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Down);
+					else Quoridor223Controller.movePlayer(TOWall.Side.Down);
+					//Quoridor223Controller.moveWall(TOWall.Side.Down);
 				}catch (GameNotRunningException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
 					// set the notification panel to message
@@ -257,8 +257,8 @@ public class GamePage extends JFrame {
 		btnLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
-					//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
+					if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
+					else Quoridor223Controller.movePlayer(TOWall.Side.Left);
 					Quoridor223Controller.moveWall(TOWall.Side.Left);
 				} catch (GameNotRunningException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
@@ -274,9 +274,9 @@ public class GamePage extends JFrame {
 		btnRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Right);
-					//else Quoridor223Controller.movePlayer(TOWall.Side.Right);
-					Quoridor223Controller.moveWall(TOWall.Side.Right);
+					if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Right);
+					else Quoridor223Controller.movePlayer(TOWall.Side.Right);
+					//Quoridor223Controller.moveWall(TOWall.Side.Right);
 				} catch (GameNotRunningException ex) {
 					gameMessage.setText(ex.getLocalizedMessage());
 					// set the notification panel to message
