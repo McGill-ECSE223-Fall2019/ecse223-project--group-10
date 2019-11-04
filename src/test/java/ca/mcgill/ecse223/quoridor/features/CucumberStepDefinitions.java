@@ -1520,20 +1520,20 @@ public class CucumberStepDefinitions {
 	 * @throws InterruptedException 
 	 */
 	private boolean isClockRunning(String color) throws InterruptedException {
-		Player player = Quoridor223Controller.getPlayerByColor(color);
-		Time tmp_time = player.getRemainingTime();
+		//Player player = Quoridor223Controller.getPlayerByColor(color);
+		//Time tmp_time = player.getRemainingTime();
 		Thread.sleep(1500);
 		//System.out.println(tmp_time.toString());
-		if (tmp_time.toString().equals(player.getRemainingTime().toString())) {
-			return false;
+		//if (tmp_time.toString().equals(player.getRemainingTime().toString())) {
+		//	return false;
+		//}
+		//else {return true;}
+		if(color.equals("white")) {
+			return gamePage.isWhiteClockRunning();
 		}
-		else {return true;}
-		//if(color.equals("white")) {
-		//	return gamePage.isWhiteClockRunning();
-		//}
-		//else {
-		//	return !gamePage.isWhiteClockRunning();
-		//}
+		else {
+			return !gamePage.isWhiteClockRunning();
+		}
 		
 	
 	}
