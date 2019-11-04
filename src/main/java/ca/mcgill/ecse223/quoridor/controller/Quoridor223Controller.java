@@ -542,6 +542,7 @@ public class Quoridor223Controller {
 		return isValid;
 	} 
 
+	//TODO: think about how to implement in more than 2 players way
 	/**
 	 * Feature 11: ValidatePosition, validate a wall position by checking overlapping walls and player position
 	 * 
@@ -550,22 +551,15 @@ public class Quoridor223Controller {
 	 * @throws UnsupportedOperationException
 	 */
 	public static boolean validatePosition() throws UnsupportedOperationException, GameNotRunningException {
-		if (!isRunning()) {
-			throw new GameNotRunningException("Game not running");
-		}
+		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		//TODO: better combine isWallCandidateOverlapping and doWallsOverlap, ie minimize search time
+		//TODO: implement path checking when dropping walls
+		//TODO: implement more specific error messages
 		if (doWallsOverlap()) return false;
-		//System.out.println(current_game.hasWallMoveCandidate());
-		// check if there is a wall to move
 		if (current_game.hasWallMoveCandidate()) {
-			if (!isWallCandidatePositionValid()) {
-				System.out.println("the wall candidate position is not valid -- superposition");
-				return false;
-			}
-			if (isWallMoveCandidateOverlapping()) {
-				System.out.println("the wall candidate position is not valid -- overlap");
-				return false;
-			}
+			if (!isWallCandidatePositionValid()) return false;
+			if (isWallMoveCandidateOverlapping()) return false;
 		} else {
 			if (!isPlayerPositionValid()) return false;
 			if (isPlayerPositionOverlapping()) return false;
@@ -868,7 +862,9 @@ public class Quoridor223Controller {
 		
 		//TODO: switch to player list (more convenient if 2+)
 		for (Wall wall : current_game.getCurrentPosition().getBlackWallsOnBoard()) {
-			if(wall.equals(current_game.getWallMoveCandidate().getWallPlaced()))continue;
+			if(current_game.hasWallMoveCandidate()) {
+				if(wall.equals(current_game.getWallMoveCandidate().getWallPlaced()))continue;
+			}
 			WallMove wall_move = wall.getMove();
 			int row = wall_move.getTargetTile().getRow();
 			int col = wall_move.getTargetTile().getColumn();
@@ -879,7 +875,9 @@ public class Quoridor223Controller {
 			wallPositions.put(row * 9 + col, dir_attr);
 		}
 		for (Wall wall : current_game.getCurrentPosition().getWhiteWallsOnBoard()) {
-			if(wall.equals(current_game.getWallMoveCandidate().getWallPlaced()))continue;
+			if(current_game.hasWallMoveCandidate()) {
+				if(wall.equals(current_game.getWallMoveCandidate().getWallPlaced()))continue;
+			}
 			WallMove wall_move = wall.getMove();
 			int row = wall_move.getTargetTile().getRow();
 			int col = wall_move.getTargetTile().getColumn();

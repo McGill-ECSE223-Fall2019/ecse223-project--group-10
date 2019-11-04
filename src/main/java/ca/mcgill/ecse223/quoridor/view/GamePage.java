@@ -197,6 +197,7 @@ public class GamePage extends JFrame {
 		// set game to run
 		boardComponent.repaint();
 		Quoridor223Controller.setGameToRun();
+		//TODO: implement moving witht eh keyboard directions commands
 		
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override

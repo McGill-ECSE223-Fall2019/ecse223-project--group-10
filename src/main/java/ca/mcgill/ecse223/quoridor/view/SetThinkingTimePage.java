@@ -65,7 +65,9 @@ public class SetThinkingTimePage extends JFrame {
 		userName2 = new JLabel(String.format("<html><font color='black' >%s</font></html>", Quoridor223Controller.getBlackPlayerName()));
 		//userName2 = new JLabel("<html><font color='black' >BLACK</font></html>");
 		userName2.setFont(new Font("Arial", Font.PLAIN, 25));
-				
+		
+		//TODO: switch buttons start game and loadgame, loadgame to the left and start game to the right
+
 		// initialize start-game button
 		startGame = new JButton("<html><font color='black' >START GAME</font></html>");
 		startGame.setBackground(new Color(206, 159, 111));
