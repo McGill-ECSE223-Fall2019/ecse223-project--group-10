@@ -451,6 +451,10 @@ public class GamePage extends JFrame {
 		if(dir.equalsIgnoreCase("RIGHT"))btnRight.doClick();
 
 	}
+	public boolean isWhiteClockRunning() {
+		return whiteClockIsRunning;
+	}
+	
 	public void clickDropWall() {
 		dropWall.doClick();
 	}

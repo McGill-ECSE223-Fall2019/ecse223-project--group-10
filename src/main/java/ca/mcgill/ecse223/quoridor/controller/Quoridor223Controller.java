@@ -49,6 +49,9 @@ public class Quoridor223Controller {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	public static void setGameToReady() {
 		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -56,6 +59,9 @@ public class Quoridor223Controller {
 		curGame.setGameStatus(GameStatus.ReadyToStart);
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	public static void setGameToRun() {
 		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -89,6 +95,14 @@ public class Quoridor223Controller {
 		}
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * 
+	 * @param playerName1
+	 * @param playerName2
+	 * @return
+	 * @throws UnsupportedOperationException
+	 */
 	public static List<User> selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
 
 		// load the user
@@ -103,10 +117,9 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * helper method to check is name exists
-	 * 
 	 * @author Vanessa Ifrah
 	 * @param name
+	 * @return
 	 */
 	public static boolean checkNameList(String name) {
 
@@ -136,10 +149,9 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * helper method to warn user if name is duplicate
-	 * 
 	 * @author Vanessa Ifrah
 	 * @param name
+	 * @return
 	 */
 	public static boolean warnUser(String name) {
 		
@@ -284,21 +296,17 @@ public class Quoridor223Controller {
 		
 	}
 
-	// under feature 5
 	/**
 	 * Feature 5: Rotate Wall Perform a rotate wall operation on the wall of the
 	 * respective player
-	 * 
 	 * @author Enan Ashaduzzaman
-	 * @throws UnsupportedOperationException
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
-
 	public static void rotateWall() throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning())
 			throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		// check if the Game is running. If not, thrown an exception.
-		// Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (curGame.getWallMoveCandidate() == null) {
 			throw new InvalidOperationException("No wall Selected");
 		}
@@ -308,21 +316,15 @@ public class Quoridor223Controller {
 		} else {
 			curGame.getWallMoveCandidate().setWallDirection(Direction.Horizontal);
 		}
-		// check if it is the player's turn. If not, thrown an exception.
-		// check if there is no wall in my hand. If no wall, thrown an exception.
-		// if there is a wall in my hand
-		// get coordinates for the wall position
-		// else if
-		// Notify player there is no wall in hand.
 	}
 
-	// under feature 6
 	/**
 	 * Feature 6: Grab Wall Perform a grab wall operation on the stock of the
 	 * respective player
 	 * 
 	 * @author Enan Ashaduzzaman
-	 * @throws UnsupportedOperationException
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
 	 */
 	public static void grabWall() throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning())
@@ -341,18 +343,13 @@ public class Quoridor223Controller {
 			moveNum = 0;
 			roundNum = 0;
 		}
-		// check if the Game is running if not throw exception
 		if (curGame.getWallMoveCandidate() != null) {
 			throw new InvalidOperationException("Already a wall Selected");
 		}
-		// check if the it is player's turn if not throw exception
-		// check if there is no wall in my hand if not throw exception
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
 		
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
 			if (curGame.getCurrentPosition().getWhiteWallsInStock().isEmpty()) {
-				// else if player have no wall
-				// Notify the user that they don't have any wall.
 				throw new InvalidOperationException("No walls in stock");
 			} else {
 				Wall curWall = curGame.getCurrentPosition().getWhiteWallsInStock(0);
@@ -360,9 +357,6 @@ public class Quoridor223Controller {
 				WallMove curWallMove = new WallMove(moveNum + 1, roundNum + 1, curPlayer, curBoard.getTile(36), curGame,
 						Direction.Vertical, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
-				// move the wall into player's hand
-				// Remove one wall from stock
-				// create a wallmoveCandidate in the game model.
 			}
 		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
 			if (curGame.getCurrentPosition().getBlackWallsInStock().isEmpty()) {
@@ -528,6 +522,25 @@ public class Quoridor223Controller {
 		}
 		return loadedPosition;
 	}
+	
+	/**
+	 * helper method to get validity of board position for cucumber stepDef
+	 * 
+	 * @author Sacha Lévy
+	 * @return isValid
+	 * */
+	public static String isPositionValid() {
+		String isValid = "invalid";
+		try {
+			if (validatePosition()) isValid = "valid";
+			else isValid = "invalid";
+		} catch (UnsupportedOperationException | GameNotRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return isValid;
+	} 
 
 	/**
 	 * Feature 11: ValidatePosition, validate a wall position by checking overlapping walls and player position
@@ -541,40 +554,134 @@ public class Quoridor223Controller {
 			throw new GameNotRunningException("Game not running");
 		}
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (doWallsOverlap()) return false;
+		//System.out.println(current_game.hasWallMoveCandidate());
 		// check if there is a wall to move
 		if (current_game.hasWallMoveCandidate()) {
 			if (!isWallCandidatePositionValid()) {
+				System.out.println("the wall candidate position is not valid -- superposition");
 				return false;
 			}
 			if (isWallMoveCandidateOverlapping()) {
+				System.out.println("the wall candidate position is not valid -- overlap");
 				return false;
 			}
 		} else {
-			if (!isPlayerPositionValid())
-				return false;
-			if (isPlayerPositionOverlapping())
-				return false;
+			if (!isPlayerPositionValid()) return false;
+			if (isPlayerPositionOverlapping()) return false;
 			// TODO: further check if the last player's move didn't cross any walls
 		}
 		return true;
 	}
 	
+	/**
+	 * query method to get name of a player based on its color
+	 * i.e. username for black/white players
+	 * 
+	 * @param color
+	 * @author Sacha Lévy
+	 * @return String
+	 * */
 	public static String getPlayerNameByColor(String color) {
 		Player player = getPlayerByColor(color);
 		return player.getUser().getName();
 	}
 	
+	/**
+	 * method to set the position of a Pawn on board
+	 * helper method for cucumber step definition ValidatePosition
+	 * 
+	 * @param int1, int2
+	 * @author Sacha Lévy
+	 * @return boolean
+	 * */
+	public static boolean setGamePawnPosition(Integer int1, Integer int2) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition current_position = current_game.getCurrentPosition();
+		Board current_board = QuoridorApplication.getQuoridor().getBoard();
+		// arbitrarily get the black position
+		PlayerPosition current_player_pos = current_position.getBlackPosition();
+		Tile current_black_tile = new Tile(int1, int2, current_board);
+		return current_player_pos.setTile(current_black_tile);
+	}
+	
+	/**
+	 * method to simulate displacement of a wall on board to be checked by validatePosition
+	 * helper method for cucumber step definition ValidatePosition
+	 * 
+	 * @param int1, int2, dir
+	 * @author Sacha Lévy
+	 * @return wasWallSetAsNewWallCandidate
+	 * */
+	public static boolean createNewWallMoveCandidate(Integer int1, Integer int2, Direction dir) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition current_position = current_game.getCurrentPosition();
+		Board current_board = QuoridorApplication.getQuoridor().getBoard();
+		
+		if(current_game.hasWallMoveCandidate()) {
+			// then drop the preceeding wall
+			Wall wallToDrop = current_game.getWallMoveCandidate().getWallPlaced();
+			GamePosition clone = clonePosition(current_position);
+			
+			current_game.setCurrentPosition(clone);
+			if (isWhitePlayer()) {
+				clone.addWhiteWallsOnBoard(wallToDrop);
+			} else {
+				clone.addBlackWallsOnBoard(wallToDrop);
+			}
+			current_game.addMove(current_game.getWallMoveCandidate());
+			current_game.setWallMoveCandidate(null);
+		}
+		
+		int moveLength = current_game.getMoves().size();
+		int moveNum;
+		int roundNum;
+
+		if (moveLength > 0) {
+			moveNum = current_game.getMoves().get(moveLength - 1).getMoveNumber();
+			roundNum = current_game.getMoves().get(moveLength - 1).getRoundNumber();
+		} else {
+			moveNum = 0;
+			roundNum = 0;
+		}
+		// work with black walls
+		Wall curWall = current_game.getCurrentPosition().getBlackWallsInStock(0);
+		current_game.getCurrentPosition().removeBlackWallsInStock(curWall);
+		Tile target_tile = new Tile(int1, int2, current_board);
+		WallMove curWallMove = new WallMove(moveNum, roundNum + 1, current_game.getBlackPlayer(), target_tile, current_game, dir, curWall);
+		return current_game.setWallMoveCandidate(curWallMove);		
+	}
+	/**
+	 * query method to get a player based on its color
+	 * 
+	 * @param color
+	 * @author Sacha Lévy
+	 * @return playerByColor
+	 * */
 	public static Player getPlayerByColor(String color) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		if(color.equals("black")) return current_game.getBlackPlayer();
 		else return current_game.getWhitePlayer();
 	}
 	
+	/**
+	 * query method to get the current player moving
+	 * 
+	 * @author Sacha Lévy
+	 * @return currentPlayer
+	 * */
 	public static Player getPlayerMoving() {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		return current_game.getCurrentPosition().getPlayerToMove();
 	}
 	
+	/**
+	 * helper method to set player to move based on its color
+	 * 
+	 * @param color
+	 * @author Sacha Lévy
+	 * @return wasThePlayerSet
+	 * */
 	public static boolean setCurrentPlayerToMoveByColor(String color) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player player_to_move = getPlayerByColor(color);
@@ -585,7 +692,11 @@ public class Quoridor223Controller {
 		return current_game.getCurrentPosition().setPlayerToMove(player_to_move);
 	}
 
-	// check if the pawn move is legal
+	/**
+	 * @param newRow, newCol
+	 * @author Sacha Lévy
+	 * @return isPawnMoveLegal
+	 * */
 	public static boolean isPawnMoveLegal(int newRow, int newCol) throws InvalidOperationException{
 		Tile other_position;
 		Tile current_position;
@@ -666,7 +777,13 @@ public class Quoridor223Controller {
 		// keys : row*9 + col
 		// values : horizontal wall is true, vertical wall is false
 		// board is 9 by 9
-		HashMap<Integer, Boolean> wallPositions = loadWallPositionsMap();
+		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
+		try {
+			wallPositions = loadWallPositionsMap();
+		} catch (InvalidOperationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		WallMove move_candidate = current_game.getWallMoveCandidate();
 		int candidate_row = move_candidate.getTargetTile().getRow();
 		int candidate_col = move_candidate.getTargetTile().getColumn();
@@ -681,14 +798,75 @@ public class Quoridor223Controller {
 	}
 	
 	/**
+	 * check if the walls on board overlapp
+	 * 
+	 * @author Sacha Lévy
+	 * @return doWallsOnBoardOverlap
+	 * */
+	public static boolean doWallsOverlap() {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();	
+		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
+		for(Wall wall: current_game.getCurrentPosition().getBlackWallsOnBoard()) {
+			if(wall.getMove().equals(current_game.getWallMoveCandidate()))continue;
+			int row = wall.getMove().getTargetTile().getRow();
+			int col = wall.getMove().getTargetTile().getColumn();
+			if(wallPositions.containsKey(row*9+col))return true;
+			int row1 = row;
+			int row2 = row;
+			int col1 = col;
+			int col2 = col;
+			boolean dir = true;
+			if(wall.getMove().getWallDirection()==Direction.Horizontal) {
+				col1+=1;
+				col2-=1;
+			}
+			else {
+				row1+=1;
+				row2-=1;
+				dir =false;
+			}
+			if(wallPositions.containsKey(row1*9+col1)&&wallPositions.get(row1*9+col1)==dir)return true;
+			if(wallPositions.containsKey(row2*9+col2)&&wallPositions.get(row2*9+col2)==dir)return true;
+			wallPositions.put(row*9+col,dir);
+		}
+		for(Wall wall: current_game.getCurrentPosition().getWhiteWallsOnBoard()) {
+			if(wall.getMove().equals(current_game.getWallMoveCandidate()))continue;
+			int row = wall.getMove().getTargetTile().getRow();
+			int col = wall.getMove().getTargetTile().getColumn();
+			if(wallPositions.containsKey(row*9+col))return true;
+			int row1 = row;
+			int row2 = row;
+			int col1 = col;
+			int col2 = col;
+			boolean dir = true;
+			if(wall.getMove().getWallDirection()==Direction.Horizontal) {
+				col1+=1;
+				col2-=1;
+			}
+			else {
+				row1+=1;
+				row2-=1;
+				dir =false;
+			}
+			if(wallPositions.containsKey(row1*9+col1)&&wallPositions.get(row1*9+col1)==dir)return true;
+			if(wallPositions.containsKey(row2*9+col2)&&wallPositions.get(row2*9+col2)==dir)return true;
+			wallPositions.put(row*9+col,dir);
+		}
+		return false;
+	}
+	
+	
+	/**
 	 * create a hashmap for the walls on board to check
 	 * 
 	 * @author Sacha Lévy
+	 * @return wallPositions
 	 * */
-	private static HashMap<Integer, Boolean> loadWallPositionsMap() {
+	private static HashMap<Integer, Boolean> loadWallPositionsMap() throws InvalidOperationException{
 		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		// implement with a player list
+		
+		//TODO: switch to player list (more convenient if 2+)
 		for (Wall wall : current_game.getCurrentPosition().getBlackWallsOnBoard()) {
 			if(wall.equals(current_game.getWallMoveCandidate().getWallPlaced()))continue;
 			WallMove wall_move = wall.getMove();
@@ -697,6 +875,7 @@ public class Quoridor223Controller {
 			boolean dir_attr = false;
 			if (wall_move.getWallDirection().equals(Direction.Horizontal))
 				dir_attr = true;
+			if (wallPositions.containsKey(row*9+col)) throw new InvalidOperationException("Cannot add to 2walls on the same position");
 			wallPositions.put(row * 9 + col, dir_attr);
 		}
 		for (Wall wall : current_game.getCurrentPosition().getWhiteWallsOnBoard()) {
@@ -707,6 +886,7 @@ public class Quoridor223Controller {
 			boolean dir_attr = false;
 			if (wall_move.getWallDirection().equals(Direction.Horizontal))
 				dir_attr = true;
+			if (wallPositions.containsKey(row*9+col)) throw new InvalidOperationException("Cannot add to 2walls on the same position");
 			wallPositions.put(row * 9 + col, dir_attr);
 		}
 		return wallPositions;
@@ -716,6 +896,7 @@ public class Quoridor223Controller {
 	 * check if the wall position exists on the board
 	 * 
 	 * @author Sacha Lévy
+	 * @return isWallCandidatePositionValid
 	 * */
 	private static boolean isWallCandidatePositionValid() throws UnsupportedOperationException{
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -744,6 +925,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @return  whiteplayer remaining time
 	 * */
 	public static Time getWhiteRemainingTime() {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -757,6 +939,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @param whitePlayerNewName
 	 * */
 	public static void setWhitePlayerName(String new_name) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -792,20 +975,31 @@ public class Quoridor223Controller {
 		return current_game.getWhitePlayer().getUser().getName();
 	}
 	
-	// set the new player to move
+	/**
+	 * setter method fro cucumber step definition
+	 * 
+	 * @author Sacha Lévy
+	 * */
 	public static void setCurrentPlayerToMove(Player player) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		current_game.getCurrentPosition().setPlayerToMove(player);
 	}
 	
+	/**
+	 * Query methods for the UI
+	 * @param player
+	 * @return player's name
+	 * @author Sacha Lévy
+	 * */
 	public static String getPlayerName(Player player) {
 		return player.getUser().getName();
 	}
 	
 	/**
-	 * Query methods for the UI
+	 * helper method to get name of player
 	 * 
 	 * @author Sacha Lévy
+	 * @param  whitePlayerNewTIme
 	 * */
 	public static void setWhitePlayerTime(Time new_time) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -816,6 +1010,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @param  blackPlayerNewTIme
 	 * */
 	public static void setBlackPlayerTime(Time new_time) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -826,6 +1021,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @return BlackPlayerRemainingTime
 	 * */
 	public static Time getBlackRemainingTime() {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -838,6 +1034,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @return playerMovingName
 	 * */
 	public static String getPlayerMovingName() {
 		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
@@ -848,10 +1045,24 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @return playerTOMoveName
 	 * */
 	public static String getPlayerToMoveName() {
 		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
 		return current_position.getPlayerToMove().getUser().getName();
+	}
+	
+	/**
+	 * returns a string containing information on current players
+	 * 
+	 * @author Sacha Lévy
+	 * @return information on current state of the game
+	 * */
+	public static String currentStatePlayers() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game currentGame = quoridor.getCurrentGame();
+		String return_statement = "current player  moving : "+getPlayerToMoveName() +"\n"+ "Next player moving:" + currentGame.getCurrentPosition().getPlayerToMove().getNextPlayer().getUser().getName();
+		return return_statement;
 	}
 
 /////////////////////////////////////////////////////
@@ -1616,13 +1827,6 @@ public class Quoridor223Controller {
 				quoridor.getCurrentGame().getBlackPlayer().getRemainingTime(), name.get(0), name.get(1),
 				playerToMoveName);
 		return listOfPlayers;
-	}
-	// @sacha: helpers for cucumber step definitions
-	public static String currentStatePlayers() {
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game currentGame = quoridor.getCurrentGame();
-		String return_statement = "current player  moving : "+getPlayerToMoveName() +"\n"+ "Next player moving:" + currentGame.getCurrentPosition().getPlayerToMove().getNextPlayer().getUser().getName();
-		return return_statement;
 	}
 
 }
