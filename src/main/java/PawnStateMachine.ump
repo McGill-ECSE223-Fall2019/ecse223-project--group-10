@@ -86,9 +86,6 @@ class PawnBehavior {
     	}
     }
     
-    		
-    
-
     // Returns the current row number of the pawn
     int getCurrentPawnRow() { return 0; }
     
@@ -106,5 +103,5 @@ class PawnBehavior {
     
     // Enumeration for the possible moving directions
     // (directions are from the viewpoint of white player)
-    enum MoveDirection { East, South, West, North; }
+    enum MoveDirection { East, South, West, North ;}
 }
