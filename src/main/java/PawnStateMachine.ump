@@ -2,7 +2,7 @@ namespace ca.mcgill.ecse223.quoridor.controller;
 
 use QuoridorGame.ump;
 
-class PawnBehavior1 {
+class PawnBehavior {
 
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
