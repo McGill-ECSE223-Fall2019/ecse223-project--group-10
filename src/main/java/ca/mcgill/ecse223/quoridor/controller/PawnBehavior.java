@@ -581,25 +581,25 @@ public class PawnBehavior
   /**
    * Returns the current row number of the pawn
    */
-  // line 90 "../../../../../PawnStateMachine.ump"
+  // line 91 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
-    return 0;
+    return Quoridor223Controller.getCurrentPawnRow();
   }
 
 
   /**
    * Returns the current column number of the pawn
    */
-  // line 93 "../../../../../PawnStateMachine.ump"
+  // line 96 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
-    return 0;
+    return Quoridor223Controller.getCurrentPawnColumn();
   }
 
 
   /**
    * Returns if it is legal to step in the given direction
    */
-  // line 96 "../../../../../PawnStateMachine.ump"
+  // line 100 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(MoveDirection dir){
     return false;
   }
@@ -608,7 +608,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to jump in the given direction
    */
-  // line 99 "../../../../../PawnStateMachine.ump"
+  // line 103 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(MoveDirection dir){
     return false;
   }
@@ -617,7 +617,7 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 102 "../../../../../PawnStateMachine.ump"
+  // line 106 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     
   }
@@ -626,7 +626,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 106 "../../../../../PawnStateMachine.ump"
+  // line 110 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;

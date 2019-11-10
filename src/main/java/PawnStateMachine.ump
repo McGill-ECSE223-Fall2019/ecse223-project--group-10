@@ -87,10 +87,14 @@ class PawnBehavior {
     }
     
     // Returns the current row number of the pawn
-    int getCurrentPawnRow() { return 0; }
+    int getCurrentPawnRow() { 
+		return Quoridor223Controller.getCurrentPawnRow();
+	}
     
     // Returns the current column number of the pawn
-    int getCurrentPawnColumn() { return 0; }
+    int getCurrentPawnColumn() { 
+		return Quoridor223Controller.getCurrentPawnColumn();
+	}
     
     // Returns if it is legal to step in the given direction
     boolean isLegalStep(MoveDirection dir) { return false; }
