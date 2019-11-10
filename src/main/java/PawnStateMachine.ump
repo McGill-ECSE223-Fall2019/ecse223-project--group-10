@@ -6,8 +6,42 @@ class PawnBehavior {
 
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
-
-    pawnSM {
+    PawnSM {
+		Playing{
+	
+		}
+		Finished{
+		}
+    }
+    PawnSMPlayingNorthSouth{
+    	Null{
+    	}
+    	NorthSouth{
+    	}
+    }
+    PawnSMPlayingNorthSouthNorthSouth{
+    	Null{}
+    	Setup{}
+    	AtNorthEdge{}
+    	AtNorthBorder{}
+    	AtSouthEdge{}
+    	AtSouthBorder{}
+    	MiddleNS{}
+    }
+    PawnSMPlayingEastWest{
+    	Null{
+    	}
+    	EastWest{
+    	}
+    }
+    PawnSMPlayingEastWestEastWest{
+    	Null{}
+    	Setup{}
+    	AtEastBorder{}
+    	AtEastEdge{}
+    	AtWestBorder{}
+    	AtWestEdge{}
+    	MiddleEW{}
     }
 
     // Returns the current row number of the pawn
