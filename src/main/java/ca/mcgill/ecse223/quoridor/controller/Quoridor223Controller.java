@@ -1184,24 +1184,6 @@ public class Quoridor223Controller {
 		players.add(new TOPlayer(row, col, TOPlayer.Color.White));
 		return players;
 	}
-	public static int getCurrentPawnRow() {
-		if(!isRunning())return -1;
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
-		if(curPlayer==curGame.getWhitePlayer()) {
-			return curGame.getCurrentPosition().getWhitePosition().getTile().getRow();
-		}
-		return curGame.getCurrentPosition().getBlackPosition().getTile().getRow();
-	}
-	public static int getCurrentPawnColumn() {
-		if(!isRunning())return -1;
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
-		if(curPlayer==curGame.getWhitePlayer()) {
-			return curGame.getCurrentPosition().getWhitePosition().getTile().getColumn();
-		}
-		return curGame.getCurrentPosition().getBlackPosition().getTile().getColumn();
-	}
 	/**
 	 *  @author Le-Li Mao
 	 * @param aWall

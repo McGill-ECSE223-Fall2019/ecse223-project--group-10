@@ -583,23 +583,29 @@ public class PawnBehavior
    */
   // line 91 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
-    return Quoridor223Controller.getCurrentPawnRow();
+    if(player==currentGame.getWhitePlayer()) {
+			return currentGame.getCurrentPosition().getWhitePosition().getTile().getRow();
+		}
+		return currentGame.getCurrentPosition().getBlackPosition().getTile().getRow();
   }
 
 
   /**
    * Returns the current column number of the pawn
    */
-  // line 96 "../../../../../PawnStateMachine.ump"
+  // line 99 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
-    return Quoridor223Controller.getCurrentPawnColumn();
+    if(player==currentGame.getWhitePlayer()) {
+			return currentGame.getCurrentPosition().getWhitePosition().getTile().getColumn();
+		}
+		return currentGame.getCurrentPosition().getBlackPosition().getTile().getColumn();
   }
 
 
   /**
    * Returns if it is legal to step in the given direction
    */
-  // line 100 "../../../../../PawnStateMachine.ump"
+  // line 106 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(MoveDirection dir){
     return false;
   }
@@ -608,7 +614,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to jump in the given direction
    */
-  // line 103 "../../../../../PawnStateMachine.ump"
+  // line 109 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(MoveDirection dir){
     return false;
   }
@@ -617,7 +623,7 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 106 "../../../../../PawnStateMachine.ump"
+  // line 112 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     
   }
@@ -626,7 +632,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 110 "../../../../../PawnStateMachine.ump"
+  // line 116 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;
