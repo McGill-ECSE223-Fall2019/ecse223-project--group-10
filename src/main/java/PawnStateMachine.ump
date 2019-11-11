@@ -14,7 +14,7 @@ class PawnBehavior {
     				startGame -> AtNorthEdge
     			}
     			AtNorthEdge{
-    				moveUp -> AtNorthEdge;
+    				moveUp -> /{illegalMove();} AtNorthEdge;
     				moveDown [isLegalStep(MoveDirection.South) && !isLegalJump(MoveDirection.South)] -> AtNorthBorder;
     				moveDown [isLegalStep(MoveDirection.South) && isLegalJump(MoveDirection.South)] -> MiddleNS;
     			}
@@ -103,10 +103,34 @@ class PawnBehavior {
 	}
     
     // Returns if it is legal to step in the given direction
-    boolean isLegalStep(MoveDirection dir) { return false; }
+    boolean isLegalStep(MoveDirection dir) { 
+    	switch(dir) {
+    		case North:
+    			break;
+    		case South:
+    			break;
+    		case West:
+    			break;
+    		case East:
+    			break;
+    	}
+    return true;
+    }
     
     // Returns if it is legal to jump in the given direction
-    boolean isLegalJump(MoveDirection dir) { return false; }
+    boolean isLegalJump(MoveDirection dir) {
+    	switch(dir) {
+    		case North:
+    			break;
+    		case South:
+    			break;
+    		case West:
+    			break;
+    		case East:
+    			break;
+    	}
+    return true;
+    }
 
     // Action to be called when an illegal move is attempted
     void illegalMove() { }

@@ -89,6 +89,8 @@ public class PawnBehavior
     {
       case AtNorthEdge:
         exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 17 "../../../../../PawnStateMachine.ump"
+        illegalMove();
         setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge);
         wasEventProcessed = true;
         break;
@@ -605,25 +607,45 @@ public class PawnBehavior
   /**
    * Returns if it is legal to step in the given direction
    */
-  // line 106 "../../../../../PawnStateMachine.ump"
+  // line 107 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(MoveDirection dir){
-    return false;
+    switch(dir) {
+    		case North:
+    			break;
+    		case South:
+    			break;
+    		case West:
+    			break;
+    		case East:
+    			break;
+    	}
+    return true;
   }
 
 
   /**
    * Returns if it is legal to jump in the given direction
    */
-  // line 109 "../../../../../PawnStateMachine.ump"
+  // line 122 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(MoveDirection dir){
-    return false;
+    switch(dir) {
+    		case North:
+    			break;
+    		case South:
+    			break;
+    		case West:
+    			break;
+    		case East:
+    			break;
+    	}
+    return true;
   }
 
 
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 112 "../../../../../PawnStateMachine.ump"
+  // line 136 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     
   }
@@ -632,7 +654,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 116 "../../../../../PawnStateMachine.ump"
+  // line 140 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;
