@@ -2,6 +2,7 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package ca.mcgill.ecse223.quoridor.controller;
+import java.util.HashMap;
 import ca.mcgill.ecse223.quoridor.model.*;
 
 // line 5 "../../../../../PawnStateMachine.ump"
@@ -609,14 +610,40 @@ public class PawnBehavior
    */
   // line 107 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(MoveDirection dir){
+    HashMap<Integer, Boolean> wallMap = getWallMap();
+	int row = getCurrentPawnRow();
+	int col = getCurrentPawnColumn();
+	PlayerPosition otherPlayerPosition = player.equals(currentGame.getWhitePlayer())?currentGame.getCurrentPosition().getBlackPosition():currentGame.getCurrentPosition().getWhitePosition();
+	int otherRow = otherPlayerPosition.getTile().getRow();
+	int otherCol = otherPlayerPosition.getTile().getColumn();
     switch(dir) {
     		case North:
+    			row--;
+    			if(pawnSMPlayingNorthSouth==PawnSMPlayingNorthSouth.Null || pawnSMPlayingNorthSouthNorthSouth==PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge)return false;
+    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return false;
+    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return false;
+    			if(col==otherCol&&row==otherRow)return false;
     			break;
     		case South:
+    			row++;
+    			if(pawnSMPlayingNorthSouth==PawnSMPlayingNorthSouth.Null || pawnSMPlayingNorthSouthNorthSouth==PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge)return false;
+    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return false;
+    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return false;
+    			if(col==otherCol&&row==otherRow)return false;
     			break;
     		case West:
+    			col--;
+    			if(pawnSMPlayingEastWest==PawnSMPlayingEastWest.Null||pawnSMPlayingEastWestEastWest==PawnSMPlayingEastWestEastWest.AtWestBorder)return false;
+    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return false;
+    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return false;
+    			if(col==otherCol&&row==otherRow)return false;
     			break;
     		case East:
+    			col++;
+    			if(pawnSMPlayingEastWest==PawnSMPlayingEastWest.Null||pawnSMPlayingEastWestEastWest==PawnSMPlayingEastWestEastWest.AtWestBorder)return false;
+    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return false;
+    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return false;
+    			if(col==otherCol&&row==otherRow)return false;
     			break;
     	}
     return true;
@@ -626,7 +653,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to jump in the given direction
    */
-  // line 122 "../../../../../PawnStateMachine.ump"
+  // line 148 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(MoveDirection dir){
     switch(dir) {
     		case North:
@@ -645,7 +672,7 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 136 "../../../../../PawnStateMachine.ump"
+  // line 186 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     
   }
@@ -654,7 +681,35 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 140 "../../../../../PawnStateMachine.ump"
+  // line 160 "../../../../../PawnStateMachine.ump"
+  HashMap<Integer,Boolean> getWallMap () 
+  {
+    HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();		
+		//TODO: switch to player list (more convenient if 2+)
+		for (Wall wall : currentGame.getCurrentPosition().getBlackWallsOnBoard()) {
+			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
+			WallMove wall_move = wall.getMove();
+			int row = wall_move.getTargetTile().getRow();
+			int col = wall_move.getTargetTile().getColumn();
+			boolean dir_attr = false;
+			if (wall_move.getWallDirection().equals(Direction.Horizontal))
+				dir_attr = true;
+			wallPositions.put(row * 9 + col, dir_attr);
+		}
+		for (Wall wall : currentGame.getCurrentPosition().getWhiteWallsOnBoard()) {
+			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
+			WallMove wall_move = wall.getMove();
+			int row = wall_move.getTargetTile().getRow();
+			int col = wall_move.getTargetTile().getColumn();
+			boolean dir_attr = false;
+			if (wall_move.getWallDirection().equals(Direction.Horizontal))
+				dir_attr = true;
+			wallPositions.put(row * 9 + col, dir_attr);
+		}
+		return wallPositions;
+  }
+
+// line 190 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;
