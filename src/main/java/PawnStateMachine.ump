@@ -3,7 +3,7 @@ namespace ca.mcgill.ecse223.quoridor.controller;
 use QuoridorGame.ump;
 
 class PawnBehavior {
-
+	depend java.util.HashMap;
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
 
@@ -104,14 +104,40 @@ class PawnBehavior {
     
     // Returns if it is legal to step in the given direction
     boolean isLegalStep(MoveDirection dir) { 
-    	switch(dir) {
+    	HashMap<Integer, Boolean> wallMap = getWallMap();
+	int row = getCurrentPawnRow();
+	int col = getCurrentPawnColumn();
+	PlayerPosition otherPlayerPosition = player.equals(currentGame.getWhitePlayer())?currentGame.getCurrentPosition().getBlackPosition():currentGame.getCurrentPosition().getWhitePosition();
+	int otherRow = otherPlayerPosition.getTile().getRow();
+	int otherCol = otherPlayerPosition.getTile().getColumn();
+    switch(dir) {
     		case North:
+    			row--;
+    			if(pawnSMPlayingNorthSouth==PawnSMPlayingNorthSouth.Null || pawnSMPlayingNorthSouthNorthSouth==PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge)return false;
+    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return false;
+    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return false;
+    			if(col==otherCol&&row==otherRow)return false;
     			break;
     		case South:
+    			row++;
+    			if(pawnSMPlayingNorthSouth==PawnSMPlayingNorthSouth.Null || pawnSMPlayingNorthSouthNorthSouth==PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge)return false;
+    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return false;
+    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return false;
+    			if(col==otherCol&&row==otherRow)return false;
     			break;
     		case West:
+    			col--;
+    			if(pawnSMPlayingEastWest==PawnSMPlayingEastWest.Null||pawnSMPlayingEastWestEastWest==PawnSMPlayingEastWestEastWest.AtWestBorder)return false;
+    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return false;
+    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return false;
+    			if(col==otherCol&&row==otherRow)return false;
     			break;
     		case East:
+    			col++;
+    			if(pawnSMPlayingEastWest==PawnSMPlayingEastWest.Null||pawnSMPlayingEastWestEastWest==PawnSMPlayingEastWestEastWest.AtWestBorder)return false;
+    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return false;
+    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return false;
+    			if(col==otherCol&&row==otherRow)return false;
     			break;
     	}
     return true;
@@ -131,7 +157,31 @@ class PawnBehavior {
     	}
     return true;
     }
-
+	HashMap<Integer,Boolean> getWallMap(){
+	  HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();		
+		//TODO: switch to player list (more convenient if 2+)
+		for (Wall wall : currentGame.getCurrentPosition().getBlackWallsOnBoard()) {
+			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
+			WallMove wall_move = wall.getMove();
+			int row = wall_move.getTargetTile().getRow();
+			int col = wall_move.getTargetTile().getColumn();
+			boolean dir_attr = false;
+			if (wall_move.getWallDirection().equals(Direction.Horizontal))
+				dir_attr = true;
+			wallPositions.put(row * 9 + col, dir_attr);
+		}
+		for (Wall wall : currentGame.getCurrentPosition().getWhiteWallsOnBoard()) {
+			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
+			WallMove wall_move = wall.getMove();
+			int row = wall_move.getTargetTile().getRow();
+			int col = wall_move.getTargetTile().getColumn();
+			boolean dir_attr = false;
+			if (wall_move.getWallDirection().equals(Direction.Horizontal))
+				dir_attr = true;
+			wallPositions.put(row * 9 + col, dir_attr);
+		}
+		return wallPositions;
+  }
     // Action to be called when an illegal move is attempted
     void illegalMove() { }
     
