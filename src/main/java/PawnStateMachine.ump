@@ -17,21 +17,25 @@ class PawnBehavior {
     				moveUp -> /{illegalMove();} AtNorthEdge;
     				moveDown [isLegalStep(MoveDirection.South)] -> AtNorthBorder;
     				moveDown [isLegalJump(MoveDirection.South)] -> MiddleNS;
+    				moveDown -> /{illegalMove();} AtNorthEdge;
     			}
     			AtNorthBorder{
     				moveUp [isLegalStep(MoveDirection.North)]  -> AtNorthEdge;
     				moveUp -> /{illegalMove();} AtNorthBorder;
     				moveDown [isLegalStep(MoveDirection.South)] -> MiddleNS;
     				moveDown [isLegalJump(MoveDirection.South)] -> MiddleNS;
+    				moveDown -> /{illegalMove();} AtNorthBorder;
     			}
     			AtSouthEdge{
     				moveUp [isLegalStep(MoveDirection.North)]  -> AtNorthBorder;
     				moveUp [isLegalJump(MoveDirection.North)]  -> MiddleNS;
+    				moveUp -> /{illegalMove();} AtSouthEdge;
     				moveDown -> /{illegalMove();} AtSouthEdge;
     			} 
     			AtSouthBorder{
     				moveUp [isLegalStep(MoveDirection.North)] -> MiddleNS;
     				moveUp [isLegalJump(MoveDirection.North)] -> MiddleNS;
+    				moveUp -> /{illegalMove();} AtSouthBorder;
     				moveDown [isLegalStep(MoveDirection.South)] -> AtSouthEdge;
     				moveDown -> /{illegalMove();} AtSouthBorder;
     			}
@@ -39,7 +43,7 @@ class PawnBehavior {
     				moveUp [getCurrentPawnRow()==3&&isLegalJump(MoveDirection.North)] -> AtNorthEdge;
     				moveUp [getCurrentPawnRow()==3&&isLegalStep(MoveDirection.North)] -> AtNorthBorder;
     				moveUp [getCurrentPawnRow()==4&&isLegalJump(MoveDirection.North)] -> AtNorthBorder;
-    				moveUp -> MiddleNS;
+    				moveUp []-> MiddleNS;
     				
     				moveDown [getCurrentPawnRow()==7&&isLegalStep(MoveDirection.South)] -> AtSouthBorder;
     				moveDown [getCurrentPawnRow()==7&&isLegalJump(MoveDirection.South)] -> AtSouthEdge;
@@ -126,7 +130,7 @@ class PawnBehavior {
 		int row = getCurrentPawnRow();
 		int col = getCurrentPawnColumn();
 		if(isThereWallInDir(dir,row,col))return false;
-		if(!isTherePlayerInDir(dir,row,col)return false;
+		if(!isTherePlayerInDir(dir,row,col))return false;
 		switch(dir){
 			case North:
 				row--;
@@ -171,7 +175,7 @@ class PawnBehavior {
   }
     // Action to be called when an illegal move is attempted
     void illegalMove() { }
-   private boolean isThereWallInDir(int row, int col, MoveDirection dir){
+   private boolean isThereWallInDir(MoveDirection dir, int row, int col){
     HashMap<Integer, Boolean> wallMap = getWallMap();
 	  switch(dir) {
 	  	case North:
@@ -216,6 +220,7 @@ class PawnBehavior {
 	    return false;
    }
    private boolean isWinningMove(){
+   		return false;
    }
     // Enumeration for the possible moving directions
     // (directions are from the viewpoint of white player)
