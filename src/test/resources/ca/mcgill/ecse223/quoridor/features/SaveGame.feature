@@ -1,19 +1,20 @@
-Feature: Save Position
-  As a player, I want to be able to save the actual position during a Quoridor game so that I can continue the game at a later stage from the exact position.
+Feature: Save Game
+As a player, I want to save the current game in a text file 
+even if the game has not yet been finished so that I can continue or review it later.
 
   Background: 
     Given The game is running
 
-  Scenario Outline: Save position
+  Scenario Outline: Save game
   	Given No file "<filename>" exists in the filesystem
     When The user initiates to save the game with name "<filename>"
     Then A file with "<filename>" shall be created in the filesystem
 
     Examples: 
       | filename           |
-      | save_game_test.dat |
+      | save_game_test.mov |
 
-  Scenario Outline: Save position with existing file name
+  Scenario Outline: Save game with existing file name
   	Given File "<filename>" exists in the filesystem
     When The user initiates to save the game with name "<filename>"
     And The user confirms to overwrite existing file
@@ -21,9 +22,9 @@ Feature: Save Position
 
     Examples: 
       | filename           |
-      | save_game_test.dat |
+      | save_game_test.mov |
 
-  Scenario Outline: Save position cancelled due to existing file name
+  Scenario Outline: Save game cancelled due to existing file name
   	Given File "<filename>" exists in the filesystem
     When The user initiates to save the game with name "<filename>"
     And The user cancels to overwrite existing file
@@ -31,5 +32,5 @@ Feature: Save Position
 
     Examples: 
       | filename           |
-      | save_game_test.dat |
+      | save_game_test.mov |
       
