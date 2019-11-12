@@ -616,36 +616,21 @@ public class PawnBehavior
 	PlayerPosition otherPlayerPosition = player.equals(currentGame.getWhitePlayer())?currentGame.getCurrentPosition().getBlackPosition():currentGame.getCurrentPosition().getWhitePosition();
 	int otherRow = otherPlayerPosition.getTile().getRow();
 	int otherCol = otherPlayerPosition.getTile().getColumn();
+	if(isThereWallInDir(row, col, dir))return false;
     switch(dir) {
     		case North:
-    			row--;
-    			if(pawnSMPlayingNorthSouth==PawnSMPlayingNorthSouth.Null || pawnSMPlayingNorthSouthNorthSouth==PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge)return false;
-    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return false;
-    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return false;
-    			if(col==otherCol&&row==otherRow)return false;
+    			if(col==otherCol&&row-1==otherRow)return false;
     			break;
     		case South:
-    			row++;
-    			if(pawnSMPlayingNorthSouth==PawnSMPlayingNorthSouth.Null || pawnSMPlayingNorthSouthNorthSouth==PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge)return false;
-    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return false;
-    			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return false;
-    			if(col==otherCol&&row==otherRow)return false;
+    			if(col==otherCol&&row+1==otherRow)return false;
     			break;
     		case West:
-    			col--;
-    			if(pawnSMPlayingEastWest==PawnSMPlayingEastWest.Null||pawnSMPlayingEastWestEastWest==PawnSMPlayingEastWestEastWest.AtWestBorder)return false;
-    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return false;
-    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return false;
-    			if(col==otherCol&&row==otherRow)return false;
+    			if(col-1==otherCol&&row==otherRow)return false;
     			break;
     		case East:
-    			col++;
-    			if(pawnSMPlayingEastWest==PawnSMPlayingEastWest.Null||pawnSMPlayingEastWestEastWest==PawnSMPlayingEastWestEastWest.AtWestBorder)return false;
-    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return false;
-    			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return false;
-    			if(col==otherCol&&row==otherRow)return false;
+    			if(col+1==otherCol&&row==otherRow)return false;
     			break;
-    	}
+    }
     return true;
   }
 
@@ -653,7 +638,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to jump in the given direction
    */
-  // line 148 "../../../../../PawnStateMachine.ump"
+  // line 132 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(MoveDirection dir){
     switch(dir) {
     		case North:
@@ -672,16 +657,45 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 186 "../../../../../PawnStateMachine.ump"
+  // line 170 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     
   }
+
+  // line 172 "../../../../../PawnStateMachine.ump"
+   private boolean isThereWallInDir(int row, int col, MoveDirection dir){
+    HashMap<Integer, Boolean> wallMap = getWallMap();
+	  switch(dir) {
+	  	case North:
+	  		row-=1;
+	  		if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return true;
+			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return true;
+	  		break;
+	  	case South:
+	  		if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return true;
+			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return true;
+	  		break;
+	  	case East:
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return true;
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return true;
+	  		break;
+	  	case West:
+	  		col--;
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return true;
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return true;
+	  		break;
+	  }
+	  return false;
+  }
+   private boolean isTherePlayerInDir() {
+	   
+   }
   
   //------------------------
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 160 "../../../../../PawnStateMachine.ump"
+  // line 144 "../../../../../PawnStateMachine.ump"
   HashMap<Integer,Boolean> getWallMap () 
   {
     HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();		
@@ -709,7 +723,7 @@ public class PawnBehavior
 		return wallPositions;
   }
 
-// line 190 "../../../../../PawnStateMachine.ump"
+// line 195 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;
