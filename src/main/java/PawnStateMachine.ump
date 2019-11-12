@@ -59,7 +59,7 @@ class PawnBehavior {
     		
     		EastWest{
     			Setup{
-    				startGame -> MiddleEW
+    				startGame -> [player.equals(CurrentGame.getWhitePlayer)]MiddleEW
     			}
     			AtEastEdge{
     				moveRight -> /{illegalMove();} AtEastEdge;
