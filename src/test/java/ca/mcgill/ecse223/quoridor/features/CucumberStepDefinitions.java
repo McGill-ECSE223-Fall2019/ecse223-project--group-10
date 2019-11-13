@@ -517,6 +517,61 @@ public class CucumberStepDefinitions {
 
 	
 	// **********************************************
+	// MovePawn and JumpPawn ************************
+	// **********************************************
+	@And("The player is located at {int}:{int}")
+	public void thePlayerIsLocatedAt(int row, int col) {
+		
+	}
+	
+	@And("The opponent is located at {int}:{int}")
+	public void theOpponentIsLocatedAt(int row, int col) {
+		
+	}
+	
+	@And("There are no {string} walls {string} from the player nearby")
+	public static void noWallLeftFromThePlayerNearBy(String dir, String side) {
+		
+	}
+	
+	
+	@And("There are no {string} walls {string} from the player")
+	public void thereAreNoWallsFromThePlayer(String dir, String side) {
+		
+	}
+	
+	@And("The opponent is not {string} from the player")
+	public void thereOpponentIsNotSideFromThePlayer(String side) {
+		
+	}
+	
+	@When("Player {string} initiates to move {string}")
+	public void playerInitiatesToMove(String name, String side) {
+		
+	}
+	
+	@Then("The move {string} shall be {string}")
+	public void theMoveSideShallBeStatus(String side, String status) {
+		
+	}
+	
+	@And("Player's new position shall be {int}:{int}")
+	public void playerNewPositionShallBe(int row, int col){
+		
+	}
+	
+	@And("The next player to move shall become {string}")
+	public void theNextPlayerToMoveBeCome(String name) {
+		
+	}
+	
+	@And("There is a {string} wall at {int}:{int}")
+	public void thereIsAWall(String dir, int row, int col) {
+		
+	}
+	
+	
+	// **********************************************
 	// GrabWall and RotateWall
 	// **********************************************
 
