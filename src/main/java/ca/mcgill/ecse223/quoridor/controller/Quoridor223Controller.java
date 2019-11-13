@@ -485,7 +485,7 @@ public class Quoridor223Controller {
 		// if the file exists already, prompt the user to agree to overwrite the file
 		boolean doesFileExist = false;
 		boolean savedPosition = false;
-		String relPath = "./ca.mcgill.ecse223.quoridor/" + filename;
+		String relPath = "./src/main/resources/gameFiles/" + filename;
 		
 		//check if file exists
 		doesFileExist = checkIfFileExists(relPath);
@@ -514,7 +514,7 @@ public class Quoridor223Controller {
 		//System.out.println("called load position");
 		
 		boolean loadedPosition = false;
-		String relPath = "./ca.mcgill.ecse223.quoridor/" + filename;
+		String relPath = "./src/main/resources/gameFiles/" + filename;
 
 		if(checkLoadFileIsValid(relPath)) {
 			// add all the move data from the loadFile to the game
@@ -1083,7 +1083,7 @@ public class Quoridor223Controller {
 	 * @param col
 	 * @return tile of the given row and column
 	 */
-	private static Tile getTile(int row, int col) {
+	public static Tile getTile(int row, int col) {
 		Board board = QuoridorApplication.getQuoridor().getBoard();
 		return board.getTile((row - 1) * 9 + (col - 1));
 	}
