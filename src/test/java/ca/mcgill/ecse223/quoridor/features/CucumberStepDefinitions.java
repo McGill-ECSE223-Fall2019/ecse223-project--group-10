@@ -171,8 +171,8 @@ public class CucumberStepDefinitions {
 	// **********************************************
 
 	/**
+	 * Feature 1: Start New Game
 	 * Scenario: Initiate a new game
-	 * 
 	 * @author Vanessa Ifrah
 	 */
 	@When("A new game is being initialized")
@@ -182,6 +182,9 @@ public class CucumberStepDefinitions {
 		Quoridor223Controller.createGame();
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@And("White player chooses a username")
 	public void whitePlayerChoosesAUsername() {
 
@@ -190,18 +193,27 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@And("Black player chooses a username")
 	public void blackPlayerChoosesAUsername() {
 		// black/second player chooses their name
 		Quoridor223Controller.setUser("Jessica", "black");
 	}
 
+	/**
+	 *  @author Vanessa Ifrah
+	 */
 	@And("Total thinking time is set")
 	public void totalThinkingTimeIsSet() {
 		Quoridor223Controller.setThinkingTime(Time.valueOf("00:10:00"), "Vanessa");
 		Quoridor223Controller.setThinkingTime(Time.valueOf("00:10:00"), "Jessica");
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@Then("The game shall become ready to start")
 	public void theGameShallBecomeReadyToStart() {
 
@@ -211,8 +223,8 @@ public class CucumberStepDefinitions {
 	}
 
 	/**
-	 * Scenario: Start Clock
-	 * 
+	 * Feature 1: Start New Game
+	 * Scenario: Start clock
 	 * @author Vanessa Ifrah
 	 */
 	@Given("The game is ready to start")
@@ -224,6 +236,9 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@When("I start the clock")
 	public void iStartTheClock() {
 
@@ -232,6 +247,9 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@Then("The game shall be running")
 	public void theGameShallBeRunning() {
 
@@ -240,6 +258,9 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	@And("The board shall be initialized")
 	public void theBoardShallBeInitialized() {
 		assertEquals(QuoridorApplication.getQuoridor().hasBoard(), true);
@@ -247,9 +268,10 @@ public class CucumberStepDefinitions {
 	}
 
 	/**
+	 * Feature 2: Provide Select User Naame
 	 * Scenario: Select existing user name
-	 * 
 	 * @author Vanessa Ifrah
+	 * @param playerColor
 	 */
 	@Given("Next player to set user name is {string}")
 	public void nextPlayerToSetUserNameIs(String playerColor) {
@@ -258,6 +280,10 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * @param userName
+	 */
 	@And("There is existing user {string}")
 	public void thereIsExistingUser(String userName) {
 
@@ -276,6 +302,10 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * @param userName
+	 */
 	@When("The player selects existing {string}")
 	public void thePlayerSelectsExisting(String userName) {
 
@@ -288,6 +318,11 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * @param playerColor
+	 * @param userName
+	 */
 	@Then("The name of player {string} in the new game shall be {string}")
 	public void theNameOfPlayerInTheNewGameShallBe(String playerColor, String userName) {
 
@@ -301,9 +336,10 @@ public class CucumberStepDefinitions {
 	}
 
 	/**
+	 * Feature 2: Provide Select User Name
 	 * Scenario: Create new user name
-	 * 
 	 * @author Vanessa Ifrah
+	 * @param userName
 	 */
 	@And("There is no existing user {string}")
 	public void thereIsNoExistingUser(String userName) {
@@ -312,6 +348,10 @@ public class CucumberStepDefinitions {
 
 	}
 	
+	/**
+	 * @author Vanessa Ifrah
+	 * @param userName
+	 */
 	@When("The player provides new user name: {string}")
 	public void thePlayerProvidesNewUserName(String userName) {
 
@@ -320,9 +360,10 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
+	 * Feature 2: Provide Select User Name
 	 * Scenario: User name already exists
-	 * 
 	 * @author Vanessa Ifrah
+	 * @param userName
 	 */
 	@Then("The player shall be warned that {string} already exists")
 	public void thePlayerShallBeWarnedThatUserNameAlreadyExists(String userName) {
@@ -332,6 +373,10 @@ public class CucumberStepDefinitions {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * @param playerColor
+	 */
 	@And("Next player to set user name shall be {string}")
 	public void nextPlayerToSetUserNameShallBe(String playerColor) {
 
@@ -470,6 +515,61 @@ public class CucumberStepDefinitions {
 	// SetTotalThinkingTime and InitializeBoard end here
 	// **********************************************
 
+	
+	// **********************************************
+	// MovePawn and JumpPawn ************************
+	// **********************************************
+	@And("The player is located at {int}:{int}")
+	public void thePlayerIsLocatedAt(int row, int col) {
+		
+	}
+	
+	@And("The opponent is located at {int}:{int}")
+	public void theOpponentIsLocatedAt(int row, int col) {
+		
+	}
+	
+	@And("There are no {string} walls {string} from the player nearby")
+	public static void noWallLeftFromThePlayerNearBy(String dir, String side) {
+		
+	}
+	
+	
+	@And("There are no {string} walls {string} from the player")
+	public void thereAreNoWallsFromThePlayer(String dir, String side) {
+		
+	}
+	
+	@And("The opponent is not {string} from the player")
+	public void thereOpponentIsNotSideFromThePlayer(String side) {
+		
+	}
+	
+	@When("Player {string} initiates to move {string}")
+	public void playerInitiatesToMove(String name, String side) {
+		
+	}
+	
+	@Then("The move {string} shall be {string}")
+	public void theMoveSideShallBeStatus(String side, String status) {
+		
+	}
+	
+	@And("Player's new position shall be {int}:{int}")
+	public void playerNewPositionShallBe(int row, int col){
+		
+	}
+	
+	@And("The next player to move shall become {string}")
+	public void theNextPlayerToMoveBeCome(String name) {
+		
+	}
+	
+	@And("There is a {string} wall at {int}:{int}")
+	public void thereIsAWall(String dir, int row, int col) {
+		
+	}
+	
 	
 	// **********************************************
 	// GrabWall and RotateWall
@@ -1487,6 +1587,11 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * ValidatePosition.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 */
 	@Then("The position shall be {string}")
 	public void the_position_shall_be(String string) {
 		String result = "error";
@@ -1501,6 +1606,11 @@ public class CucumberStepDefinitions {
 		
 	}
 
+	/**
+	 * ValidatePosition.feature
+	 * @author Sacha Lévy
+	 * @param int1, int2, string
+	 */
 	@Given("A game position is supplied with wall coordinate {int}:{int}-{string}")
 	public void a_game_position_is_supplied_with_wall_coordinate(Integer int1, Integer int2, String string) {
 		Direction dir = string.equals("horizontal") ? Direction.Horizontal: Direction.Vertical;
@@ -1508,11 +1618,19 @@ public class CucumberStepDefinitions {
 	    System.out.println(Quoridor223Controller.hasWallMoveCandidate());
 	}
 
+	/**
+	 * ValidatePosition.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("The position shall be valid")
 	public void the_position_shall_be_valid() {
 	    assertEquals("valid", Quoridor223Controller.isPositionValid());
 	}
 
+	/**
+	 * ValidatePosition.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("The position shall be invalid")
 	public void the_position_shall_be_invalid() {
 	    assertEquals("invalid", Quoridor223Controller.isPositionValid());
@@ -1526,16 +1644,31 @@ public class CucumberStepDefinitions {
 	 * @throws InterruptedException 
 	 */
 	private boolean isClockRunning(String color) throws InterruptedException {
-		Player player = Quoridor223Controller.getPlayerByColor(color);
-		Time tmp_time = player.getRemainingTime();
-		Thread.sleep(1500);
+		//Player player = Quoridor223Controller.getPlayerByColor(color);
+		//Time tmp_time = player.getRemainingTime();
+		Thread.sleep(1200);
 		//System.out.println(tmp_time.toString());
-		if (tmp_time.toString().equals(player.getRemainingTime().toString()))
-			return false;
-		else
-			return true;
+		//if (tmp_time.toString().equals(player.getRemainingTime().toString())) {
+		//	return false;
+		//}
+		//else {return true;}
+		if(color.equals("white")) {
+			return gamePage.isWhiteClockRunning();
+		}
+		else {
+			return !gamePage.isWhiteClockRunning();
+		}
+		
+	
 	}
 
+	/**
+	 * helper method to check if given player is next to move
+	 * 
+	 * @param other
+	 * @author Sacha Lévy
+	 * @return isPlayerNextToMove
+	 * */
 	private boolean isNextPlayerToMove(Player other) {
 		if (other.equals(QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove()))
 			return true;
@@ -1546,14 +1679,30 @@ public class CucumberStepDefinitions {
 	/**
 	 * SwitchCurrentPlayer.feature
 	 * @author Sacha Lévy
+	 * @param string 
 	 * */
 	@Given("The player to move is {string}")
 	public void the_player_to_move_is(String string) {
 		// Write code here that turns the phrase above into concrete actions
+		if(string.equalsIgnoreCase("black")) {
+			gamePage.clickGrabWall();
+			gamePage.clickDropWall();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		assertEquals(true, Quoridor223Controller.setCurrentPlayerToMoveByColor(string));
 		//System.out.println(Quoridor223Controller.currentStatePlayers());
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@Given("The clock of {string} is running")
 	public void the_clock_of_is_running(String string) {
 		try {
@@ -1564,6 +1713,11 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@Given("The clock of {string} is stopped")
 	public void the_clock_of_is_stopped(String string) {
 		// Write code here that turns the phrase above into concrete actions
@@ -1575,27 +1729,48 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@When("Player {string} completes his move")
 	public void player_completes_his_move(String string) {
 		gamePage.clickGrabWall();
 		gamePage.clickDropWall();
 		assertEquals(false,Quoridor223Controller.hasWallMoveCandidate());
-	}
-
-	@Then("The user interface shall be showing it is {string} turn")
-	public void the_user_interface_shall_be_showing_it_is_turn(String string) {
-		// Write code here that turns the phrase above into concrete actions
-		//System.out.println("current player moving"+string + "  " + Quoridor223Controller.getPlayerNameByColor(string));
 		try {
-			Thread.sleep(3000);
+			Thread.sleep(4000);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
+	@Then("The user interface shall be showing it is {string} turn")
+	public void the_user_interface_shall_be_showing_it_is_turn(String string) {
+		// Write code here that turns the phrase above into concrete actions
+		//System.out.println("current player moving"+string + "  " + Quoridor223Controller.getPlayerNameByColor(string));
+//		try {
+//			Thread.sleep(3000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		//System.out.println(gamePage.getDialogBoxText());
 		assertEquals("It is "+Quoridor223Controller.getPlayerNameByColor(string)+"'s Turn !!", gamePage.getDialogBoxText());
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@Then("The clock of {string} shall be stopped")
 	public void the_clock_of_shall_be_stopped(String string) {
 		// Write code here that turns the phrase above into concrete actions
@@ -1607,6 +1782,11 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string 
+	 * */
 	@Then("The clock of {string} shall be running")
 	public void the_clock_of_shall_be_running(String string) {
 		// Write code here that turns the phrase above into concrete actions
@@ -1618,6 +1798,11 @@ public class CucumberStepDefinitions {
 		}
 	}
 
+	/**
+	 * SwitchCurrentPlayer.feature
+	 * @author Sacha Lévy
+	 * @param string
+	 * */
 	@Then("The next player to move shall be {string}")
 	public void the_next_player_to_move_shall_be(String string) {
 		// Write code here that turns the phrase above into concrete actions

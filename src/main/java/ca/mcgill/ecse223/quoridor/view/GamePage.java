@@ -68,7 +68,10 @@ public class GamePage extends JFrame {
 	private JButton btnDown;
 	private JButton btnRight;
 	private JButton btnLeft;
-
+	private JButton btnUpLeft;
+	private JButton btnUpRight;
+	private JButton btnDownRight;
+	private JButton btnDownLeft;
 	public GamePage() {
 		initComponent();
 	}
@@ -128,7 +131,7 @@ public class GamePage extends JFrame {
 		forfeit = new JButton("Forfeit Game");
 		forfeit.setBackground(new Color(204, 153, 102));
 		forfeit.setFont(new Font("Arial", Font.PLAIN, 13));
-		forfeit.setBounds(750, 507, 120, 40);
+		forfeit.setBounds(750, 606, 120, 40);
 
 		// initialize save, replay, new game
 		saveGame = new JButton("Save Game");
@@ -156,23 +159,38 @@ public class GamePage extends JFrame {
 		gameMessage.setBounds(90, 28, 500, 46);
 
 		// move buttons
-		btnLeft = new JButton("LEFT");
+		btnLeft = new JButton("\u2190");
 		btnLeft.setBackground(new Color(204, 153, 102));
-		btnLeft.setFont(new Font("Arial", Font.PLAIN, 13));
-		btnLeft.setBounds(678, 356, 80, 80);
-		btnRight = new JButton("RIGHT");
+		btnLeft.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnLeft.setBounds(680, 330, 80, 80);
+		btnRight = new JButton("\u2192");
 		btnRight.setBackground(new Color(204, 153, 102));
-		btnRight.setFont(new Font("Arial", Font.PLAIN, 13));
-		btnRight.setBounds(860, 356, 80, 80);
-		btnDown = new JButton("DOWN");
+		btnRight.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnRight.setBounds(860, 330, 80, 80);
+		btnDown = new JButton("\u2193");
 		btnDown.setBackground(new Color(204, 153, 102));
-		btnDown.setFont(new Font("Arial", Font.PLAIN, 13));
-		btnDown.setBounds(770, 356, 80, 80);
-		btnUp = new JButton("UP");
+		btnDown.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnDown.setBounds(770, 420, 80, 80);
+		btnUp = new JButton("\u2191");
 		btnUp.setBackground(new Color(204, 153, 102));
-		btnUp.setFont(new Font("Arial", Font.PLAIN, 13));
-		btnUp.setBounds(770, 266, 80, 80);
-
+		btnUp.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnUp.setBounds(770, 240, 80, 80);
+		btnUpLeft = new JButton("\u2196");
+		btnUpLeft.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnUpLeft.setBackground(new Color(204, 153, 102));
+		btnUpLeft.setBounds(680, 240, 80, 80);
+		btnDownLeft = new JButton("\u2199");
+		btnDownLeft.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnDownLeft.setBackground(new Color(204, 153, 102));
+		btnDownLeft.setBounds(680, 420, 80, 80);
+		btnDownRight = new JButton("\u2198");
+		btnDownRight.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnDownRight.setBackground(new Color(204, 153, 102));
+		btnDownRight.setBounds(860, 420, 80, 80);
+		btnUpRight = new JButton("\u2197");
+		btnUpRight.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnUpRight.setBackground(new Color(204, 153, 102));
+		btnUpRight.setBounds(860, 240, 80, 80);
 		// ------------------------- Add to Panel ----------------------------//
 		getContentPane().setLayout(null);
 		getContentPane().add(gameMessage);
@@ -192,7 +210,10 @@ public class GamePage extends JFrame {
 		getContentPane().add(btnDown);
 		getContentPane().add(btnRight);
 		getContentPane().add(btnLeft);
-
+		getContentPane().add(btnUpLeft);
+		getContentPane().add(btnUpRight);
+		getContentPane().add(btnDownRight);
+		getContentPane().add(btnDownLeft);
 		// ------------------------- Add Event Listener ----------------------------//
 		// set game to run
 		boardComponent.repaint();
@@ -451,6 +472,10 @@ public class GamePage extends JFrame {
 		if(dir.equalsIgnoreCase("RIGHT"))btnRight.doClick();
 
 	}
+	public boolean isWhiteClockRunning() {
+		return whiteClockIsRunning;
+	}
+	
 	public void clickDropWall() {
 		dropWall.doClick();
 	}

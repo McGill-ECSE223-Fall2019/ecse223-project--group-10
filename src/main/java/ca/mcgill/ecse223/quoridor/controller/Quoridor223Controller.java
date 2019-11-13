@@ -49,6 +49,9 @@ public class Quoridor223Controller {
 
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	public static void setGameToReady() {
 		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -56,6 +59,9 @@ public class Quoridor223Controller {
 		curGame.setGameStatus(GameStatus.ReadyToStart);
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 */
 	public static void setGameToRun() {
 		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -89,6 +95,14 @@ public class Quoridor223Controller {
 		}
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * 
+	 * @param playerName1
+	 * @param playerName2
+	 * @return
+	 * @throws UnsupportedOperationException
+	 */
 	public static List<User> selectUser(String playerName1, String playerName2) throws UnsupportedOperationException {
 
 		// load the user
@@ -103,10 +117,9 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * helper method to check is name exists
-	 * 
 	 * @author Vanessa Ifrah
 	 * @param name
+	 * @return
 	 */
 	public static boolean checkNameList(String name) {
 
@@ -136,10 +149,9 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * helper method to warn user if name is duplicate
-	 * 
 	 * @author Vanessa Ifrah
 	 * @param name
+	 * @return
 	 */
 	public static boolean warnUser(String name) {
 		
@@ -599,7 +611,7 @@ public class Quoridor223Controller {
 	 * 
 	 * @param int1, int2, dir
 	 * @author Sacha Lévy
-	 * @return boolean
+	 * @return wasWallSetAsNewWallCandidate
 	 * */
 	public static boolean createNewWallMoveCandidate(Integer int1, Integer int2, Direction dir) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -785,6 +797,12 @@ public class Quoridor223Controller {
 		return false;
 	}
 	
+	/**
+	 * check if the walls on board overlapp
+	 * 
+	 * @author Sacha Lévy
+	 * @return doWallsOnBoardOverlap
+	 * */
 	public static boolean doWallsOverlap() {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();	
 		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
@@ -842,6 +860,7 @@ public class Quoridor223Controller {
 	 * create a hashmap for the walls on board to check
 	 * 
 	 * @author Sacha Lévy
+	 * @return wallPositions
 	 * */
 	private static HashMap<Integer, Boolean> loadWallPositionsMap() throws InvalidOperationException{
 		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
@@ -877,6 +896,7 @@ public class Quoridor223Controller {
 	 * check if the wall position exists on the board
 	 * 
 	 * @author Sacha Lévy
+	 * @return isWallCandidatePositionValid
 	 * */
 	private static boolean isWallCandidatePositionValid() throws UnsupportedOperationException{
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -905,6 +925,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @return  whiteplayer remaining time
 	 * */
 	public static Time getWhiteRemainingTime() {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -918,6 +939,7 @@ public class Quoridor223Controller {
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
+	 * @param whitePlayerNewName
 	 * */
 	public static void setWhitePlayerName(String new_name) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1143,7 +1165,7 @@ public class Quoridor223Controller {
 		if (curGame.getWallMoveCandidate() == null)return null;
 		return convertWall(curGame.getWallMoveCandidate().getWallPlaced());
 	}
-
+	
 	/**
 	 * Get a list of player object on the board
 	 * @author Le-Li Mao
