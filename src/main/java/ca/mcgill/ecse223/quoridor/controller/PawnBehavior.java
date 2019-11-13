@@ -8,7 +8,6 @@ import ca.mcgill.ecse223.quoridor.model.*;
 // line 5 "../../../../../PawnStateMachine.ump"
 public class PawnBehavior
 {
-
   //------------------------
   // MEMBER VARIABLES
   //------------------------
@@ -1079,6 +1078,25 @@ public class PawnBehavior
     return wasEventProcessed;
   }
 
+  public boolean finishGame()
+  {
+    boolean wasEventProcessed = false;
+    
+    PawnSMPlayingEastWestEastWest aPawnSMPlayingEastWestEastWest = pawnSMPlayingEastWestEastWest;
+    switch (aPawnSMPlayingEastWestEastWest)
+    {
+      case MiddleEW:
+        exitPawnSM();
+        setPawnSM(PawnSM.Finished);
+        wasEventProcessed = true;
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
   private void exitPawnSM()
   {
     switch(pawnSM)
@@ -1386,21 +1404,47 @@ public class PawnBehavior
 
   // line 304 "../../../../../PawnStateMachine.ump"
    private boolean isLegalDiagonalMove(MoveDirection dir){
+    int row = getCurrentPawnRow();
+	int col = getCurrentPawnColumn();
     switch(dir){
    			case North:
+   				if(isTherePlayerInDir(MoveDirection.North,row,col)) {
+   					if(isThereWallInDir(MoveDirection.North, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.North, row-1, col))return false;
+   					if(isThereWallInDir(MoveDirection.West, row-1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.West, row, col)) {
+   					if(isThereWallInDir(MoveDirection.West, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.West, row, col-1))return false;
+   					if(isThereWallInDir(MoveDirection.North, row, col-1))return false;
+   				}
+   				else return false;
+   				break;
    			case South:
    			case East:
+   				if(isTherePlayerInDir(MoveDirection.North,row,col)) {
+   					if(isThereWallInDir(MoveDirection.North, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.North, row-1, col))return false;
+   					if(isThereWallInDir(MoveDirection.East, row-1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.East, row, col)) {
+   					if(isThereWallInDir(MoveDirection.East, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.East, row, col+1))return false;
+   					if(isThereWallInDir(MoveDirection.North, row, col+1))return false;
+   				}
+   				else return false;
+   				break;
    			case West:
    		}
    		return true;
   }
 
-  // line 313 "../../../../../PawnStateMachine.ump"
+  // line 340 "../../../../../PawnStateMachine.ump"
    private boolean isWinningMove(){
     return false;
   }
 
-  // line 316 "../../../../../PawnStateMachine.ump"
+  // line 343 "../../../../../PawnStateMachine.ump"
    private boolean isWhite(){
     return player.equals(currentGame.getWhitePlayer());
   }
@@ -1437,7 +1481,7 @@ public class PawnBehavior
 		return wallPositions;
   }
 
-// line 320 "../../../../../PawnStateMachine.ump"
+// line 347 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;
