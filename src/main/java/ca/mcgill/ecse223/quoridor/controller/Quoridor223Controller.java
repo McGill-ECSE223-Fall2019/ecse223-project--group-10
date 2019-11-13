@@ -407,7 +407,39 @@ public class Quoridor223Controller {
 	 * @param side
 	 * parameters implemented using the TOWall will soon have a TOPawn for clarity
 	*/
-	/*public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
+//	public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
+//		if (!isRunning()) throw new GameNotRunningException("Game not running");
+//		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+//		Board current_board = QuoridorApplication.getQuoridor().getBoard();
+//		
+//		// get player moving
+//		PlayerPosition current_position;
+//		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
+//		else current_position = current_game.getCurrentPosition().getBlackPosition();
+//
+//		int newRow = current_position.getTile().getRow()
+//				+ (side == TOWall.Side.Up ? -1 : side == TOWall.Side.Down ? 1 : 0);
+//		int newCol = current_position.getTile().getColumn()
+//				+ (side == TOWall.Side.Left ? -1 : side == TOWall.Side.Right ? 1 : 0);
+//
+//		if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
+//		if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+//		
+//		// might need to get the next tile using indexes & get from tiles list in board
+//		Tile next_tile = new Tile(newRow, newCol, current_board);
+//		current_position.setTile(next_tile);
+//		SwitchPlayer();
+//	}
+	
+
+	/**
+	 * tryPawnMove 
+	 * @author Vanessa Ifrah
+	 * @param name
+	 * @param side
+	 * @throws GameNotRunningException
+	*/
+	public static boolean tryPawnMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Board current_board = QuoridorApplication.getQuoridor().getBoard();
@@ -418,19 +450,27 @@ public class Quoridor223Controller {
 		else current_position = current_game.getCurrentPosition().getBlackPosition();
 
 		int newRow = current_position.getTile().getRow()
-				+ (side == TOWall.Side.Up ? -1 : side == TOWall.Side.Down ? 1 : 0);
+				+ (side == "up" ? -1 : side == "down" ? 1 : 0);
 		int newCol = current_position.getTile().getColumn()
-				+ (side == TOWall.Side.Left ? -1 : side == TOWall.Side.Right ? 1 : 0);
+				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
 
-		if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
-		if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+		boolean error = false;
+		try {
+			if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
+			if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+		} catch (Exception e) {
+			error = true;
+		}	
 		
-		// might need to get the next tile using indexes & get from tiles list in board
+		// set new tile
 		Tile next_tile = new Tile(newRow, newCol, current_board);
 		current_position.setTile(next_tile);
 		SwitchPlayer();
-	}*/
-
+		
+		return error;
+	}
+	
+	
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin
 	 * Feature 8: DropWall.feature
@@ -920,6 +960,35 @@ public class Quoridor223Controller {
 		current_position.setPlayerToMove(current_player.getNextPlayer());
 		current_player.getNextPlayer().setNextPlayer(current_player);
 	}
+	
+	/////////////////////////////////////////////////////
+	//////////// Move Pawn and Jump Pawn/////////////////
+	/////////////////////////////////////////////////////
+	
+	public static void movePawn(TOPlayer.Side side) throws GameNotRunningException, InvalidOperationException {
+		//call specific behaviour and call the specific move that is received by the player
+		if (!isRunning())
+			throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		
+		if (curGame.getWallMoveCandidate() != null) {
+			throw new InvalidOperationException("Wall is currently in hand");
+		}
+		
+		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
+		
+		if (curPlayer.equals(curGame.getWhitePlayer())) {
+			///
+		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
+			///
+		}
+	}
+	
+	/////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////
+	//////////// Helper and Query methods////////////////
+	/////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////
 	
 	/**
 	 * Query methods for the UI

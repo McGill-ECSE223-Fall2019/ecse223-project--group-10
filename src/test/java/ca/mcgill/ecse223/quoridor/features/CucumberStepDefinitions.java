@@ -20,6 +20,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -55,6 +56,7 @@ public class CucumberStepDefinitions {
 	private String cucumberFilename	= null;
 	private GamePage gamePage;
 	private boolean loadSuccessful = false;
+	private boolean moveSuccessful = false;
 	private ArrayList<Player> createUsersAndPlayers;
 	private String gameDirectory = "./src/main/resources/gameFiles/";
 
@@ -542,17 +544,22 @@ public class CucumberStepDefinitions {
 	}
 	
 	@And("The opponent is not {string} from the player")
-	public void thereOpponentIsNotSideFromThePlayer(String side) {
+	public void theOpponentIsNotSideFromThePlayer(String side) {
 		
 	}
 	
 	@When("Player {string} initiates to move {string}")
-	public void playerInitiatesToMove(String name, String side) {
-		
+	public void playerInitiatesToMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
+	
+		moveSuccessful = Quoridor223Controller.tryPawnMove(name, side);
+			
 	}
 	
 	@Then("The move {string} shall be {string}")
-	public void theMoveSideShallBeStatus(String side, String status) {
+	public void theMoveSideShallBeStatus(String side, String status) throws GameNotRunningException, InvalidOperationException {
+		
+		if (status == "success") assertTrue(moveSuccessful);
+		else assertFalse(moveSuccessful);
 		
 	}
 	
