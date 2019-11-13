@@ -18,6 +18,7 @@ class PawnBehavior {
     				moveDown [isLegalStep(MoveDirection.South)] -> AtNorthBorder;
     				moveDown [isLegalJump(MoveDirection.South)] -> MiddleNS;
     				moveDown -> /{illegalMove();} AtNorthEdge;
+    				
     			}
     			AtNorthBorder{
     				moveUp [isLegalStep(MoveDirection.North)]  -> AtNorthEdge;
