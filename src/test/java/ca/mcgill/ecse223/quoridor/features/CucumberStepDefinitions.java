@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -20,6 +21,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -264,7 +266,7 @@ public class CucumberStepDefinitions {
 	@And("The board shall be initialized")
 	public void theBoardShallBeInitialized() {
 		assertEquals(QuoridorApplication.getQuoridor().hasBoard(), true);
-
+		
 	}
 
 	/**
@@ -411,7 +413,6 @@ public class CucumberStepDefinitions {
 	@Then("Both players shall have {int}:{int} remaining time left")
 	public void bothPlayerShallHaveSameRemainingTime(int min, int sec) {
 		
-
 		// get remaining time of both player
 		Time playerBlackTime = Quoridor223Controller.getRemainingTime("white");
 		Time playerWhiteTime = Quoridor223Controller.getRemainingTime("black");
@@ -521,22 +522,19 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	@And("The player is located at {int}:{int}")
 	public void thePlayerIsLocatedAt(int row, int col) {
-		
+		String player = "player";
+		assertTrue("The player is not located at {int}:{int}", playerIsLocatedAt(player, row, col));
 	}
 	
 	@And("The opponent is located at {int}:{int}")
 	public void theOpponentIsLocatedAt(int row, int col) {
-		
+		String player = "opponent";
+		assertTrue("The opponent is not located at {int}:{int}", playerIsLocatedAt(player, row, col));
 	}
 	
 	@And("There are no {string} walls {string} from the player nearby")
-	public static void noWallLeftFromThePlayerNearBy(String dir, String side) {
-		
-	}
-	
-	
-	@And("There are no {string} walls {string} from the player")
-	public void thereAreNoWallsFromThePlayer(String dir, String side) {
+	public static void thereAreNoWallsFromThePlayerNearBy(String dir, String side) {
+		assertTrue("There are {string} walls {string} from the player nearby", hasWallsFromThePlayerNearby(dir, side));
 		
 	}
 	
@@ -568,6 +566,73 @@ public class CucumberStepDefinitions {
 	@And("There is a {string} wall at {int}:{int}")
 	public void thereIsAWall(String dir, int row, int col) {
 		
+	}
+	
+	private static boolean hasWallsFromThePlayerNearby(String dir, String side) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player current_player = current_game.getCurrentPosition().getPlayerToMove();
+		PlayerPosition current_position;
+		String player;
+		
+		if(current_player.equals(current_game.getBlackPlayer())) {
+			current_position = current_game.getCurrentPosition().getBlackPosition();
+			player = "black";
+		}
+		else {
+			current_position = current_game.getCurrentPosition().getWhitePosition();
+			player = "white";
+		} 
+		int row = current_position.getTile().getRow();
+		int col = current_position.getTile().getColumn();
+		
+		// check if there is a wall from the player to Move nearby 
+		boolean direction = dir.equals("horizontal") ? true : false;
+		HashMap<Integer, Boolean> player_walls = loadPlayerWallsHash(player);
+			
+		// row ++ col --
+		if(side.equals("upleft")) if(player_walls.get((row+1)*9+col-1)!=null) return false; 
+		// row ++ col ++
+		else if(side.equals("upright")) if(player_walls.get((row+1)*9+col+1)!=null) return false; 
+		// row -- col --
+		else if(side.equals("downleft")) if(player_walls.get((row-1)*9+col-1)!=null) return false; 
+		// row -- col ++
+		else if(side.equals("downright")) if(player_walls.get((row-1)*9+col+1)!=null) return false; 
+		else return true;
+		
+		return true;
+	}
+	
+	private static HashMap<Integer, Boolean> loadPlayerWallsHash(String color) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
+		List<Wall> walls;
+		if(color.equals("black")) walls = current_game.getCurrentPosition().getBlackWallsOnBoard();
+		else walls = current_game.getCurrentPosition().getWhiteWallsOnBoard();
+		for(Wall wall: walls) {
+			WallMove wall_move = wall.getMove();
+			int row = wall_move.getTargetTile().getRow();
+			int col = wall_move.getTargetTile().getColumn();
+			boolean dir_attr = false;
+			if (wall_move.getWallDirection().equals(Direction.Horizontal))
+				dir_attr = true;
+			wallPositions.put(row * 9 + col, dir_attr);
+		}
+		return wallPositions;
+	}
+	
+	private boolean playerIsLocatedAt(String player, int row, int col) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player current_player;
+		PlayerPosition current_position;
+		// because current player is the player to move in the game position
+		if(player.equals("player")) current_player = current_game.getCurrentPosition().getPlayerToMove();
+		else current_player = current_game.getCurrentPosition().getPlayerToMove().getNextPlayer();
+		
+		if(current_player.equals(current_game.getBlackPlayer())) current_position = current_game.getCurrentPosition().getBlackPosition();
+		else current_position = current_game.getCurrentPosition().getWhitePosition();
+		
+		if (current_position.getTile().getColumn()!=col||current_position.getTile().getRow()!=row) return false;		
+		return true;
 	}
 	
 	
@@ -1559,61 +1624,6 @@ public class CucumberStepDefinitions {
 		} else {
 			return game.getBlackPlayer();
 		}
-	}
-	
-// MovePlayer feature
-	@Given("The player is located at {int}:{int}")
-	public void the_player_is_located_at(Integer int1, Integer int2) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
-	}
-
-	@Given("There are no {string} walls {string} from the player")
-	public void there_are_no_walls_from_the_player(String string, String string2) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
-	}
-
-	@Given("The opponent is not {string} from the player")
-	public void the_opponent_is_not_from_the_player(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
-	}
-
-	@When("Player {string} initiates to move {string}")
-	public void player_initiates_to_move(String string, String string2) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
-	}
-
-	@Then("The move {string} shall be {string}")
-	public void the_move_shall_be(String string, String string2) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
-	}
-
-	@Then("Player's new position shall be {int}:{int}")
-	public void player_s_new_position_shall_be(Integer int1, Integer int2) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
-	}
-
-	@Then("The next player to move shall become {string}")
-	public void the_next_player_to_move_shall_become(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
-	}
-
-	@Given("There is a {string} wall {string} from the player")
-	public void there_is_a_wall_from_the_player(String string, String string2) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
-	}
-
-	@Given("My opponent is not {string} from the player")
-	public void my_opponent_is_not_from_the_player(String string) {
-	    // Write code here that turns the phrase above into concrete actions
-	    throw new cucumber.api.PendingException();
 	}
 	
 // ValidatePosition feature

@@ -303,10 +303,13 @@ class PawnBehavior {
    }
    private boolean isLegalDiagonalMove(MoveDirection dir){
  	  	switch(dir){
+   			int cur
+   			int 
    			case North:
+   			
    				// check all cases where its not legal:
    					// if there isn't a pawn and a wall in front of player
-   				
+   					
    			case South:
    					
    			case East:
