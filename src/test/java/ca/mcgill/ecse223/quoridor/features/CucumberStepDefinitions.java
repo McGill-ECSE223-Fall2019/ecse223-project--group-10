@@ -568,9 +568,7 @@ public class CucumberStepDefinitions {
 	}
 	
 	@And("The next player to move shall become {string}")
-	public void theNextPlayerToMoveBeCome(String name) throws UnsupportedOperationException, GameNotRunningException {
-		
-//		Quoridor223Controller.SwitchPlayer();
+	public void theNextPlayerToMoveBeCome(String name) {
 		
 	}
 	
