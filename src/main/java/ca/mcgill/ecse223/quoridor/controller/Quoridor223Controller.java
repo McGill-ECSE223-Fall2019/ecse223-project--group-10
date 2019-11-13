@@ -407,7 +407,40 @@ public class Quoridor223Controller {
 	 * @param side
 	 * parameters implemented using the TOWall will soon have a TOPawn for clarity
 	*/
-	/*public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
+//	public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
+//		if (!isRunning()) throw new GameNotRunningException("Game not running");
+//		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+//		Board current_board = QuoridorApplication.getQuoridor().getBoard();
+//		
+//		// get player moving
+//		PlayerPosition current_position;
+//		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
+//		else current_position = current_game.getCurrentPosition().getBlackPosition();
+//
+//		int newRow = current_position.getTile().getRow()
+//				+ (side == TOWall.Side.Up ? -1 : side == TOWall.Side.Down ? 1 : 0);
+//		int newCol = current_position.getTile().getColumn()
+//				+ (side == TOWall.Side.Left ? -1 : side == TOWall.Side.Right ? 1 : 0);
+//
+//		if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
+//		if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+//		
+//		// might need to get the next tile using indexes & get from tiles list in board
+//		Tile next_tile = new Tile(newRow, newCol, current_board);
+//		current_position.setTile(next_tile);
+//		SwitchPlayer();
+//	}
+	
+
+	/**
+	 * tryPlayerMove helper method
+	 * @author Vanessa Ifrah
+	 * @param side
+	 * @param side
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
+	*/
+	public static void initiatePawnMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Board current_board = QuoridorApplication.getQuoridor().getBoard();
@@ -418,18 +451,44 @@ public class Quoridor223Controller {
 		else current_position = current_game.getCurrentPosition().getBlackPosition();
 
 		int newRow = current_position.getTile().getRow()
-				+ (side == TOWall.Side.Up ? -1 : side == TOWall.Side.Down ? 1 : 0);
+				+ (side == "up" ? -1 : side == "down" ? 1 : 0);
 		int newCol = current_position.getTile().getColumn()
-				+ (side == TOWall.Side.Left ? -1 : side == TOWall.Side.Right ? 1 : 0);
+				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
 
-		if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
-		if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
-		
-		// might need to get the next tile using indexes & get from tiles list in board
+		// set new tile
 		Tile next_tile = new Tile(newRow, newCol, current_board);
 		current_position.setTile(next_tile);
-		SwitchPlayer();
-	}*/
+	}
+	
+	/**
+	 * tryPlayerMove helper method
+	 * @author Vanessa Ifrah
+	 * @param side
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
+	*/
+	public static String tryPawnMove(String side) throws GameNotRunningException, InvalidOperationException {
+		if (!isRunning()) throw new GameNotRunningException("Game not running");
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Board current_board = QuoridorApplication.getQuoridor().getBoard();
+		
+		// get player moving
+		PlayerPosition current_position;
+		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
+		else current_position = current_game.getCurrentPosition().getBlackPosition();
+
+		int newRow = current_position.getTile().getRow()
+				+ (side == "up" ? -1 : side == "down" ? 1 : 0);
+		int newCol = current_position.getTile().getColumn()
+				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
+
+		// check if new position/move is legal
+		String status;
+		if (isPawnMoveLegal(newRow, newCol)) status = "success";
+		else status = "illegal";
+		
+		return status;
+	}
 
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin

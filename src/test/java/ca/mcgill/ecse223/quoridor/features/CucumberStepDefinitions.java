@@ -20,6 +20,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -541,17 +542,49 @@ public class CucumberStepDefinitions {
 	}
 	
 	@And("The opponent is not {string} from the player")
-	public void thereOpponentIsNotSideFromThePlayer(String side) {
+	public void theOpponentIsNotSideFromThePlayer(String side) {
 		
 	}
 	
 	@When("Player {string} initiates to move {string}")
 	public void playerInitiatesToMove(String name, String side) {
+	
+		if (name == "white") {
+			// get current white player position
+			PlayerPosition currentPosition = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+			
+			// calculate new row and new column
+			int newRow = currentPosition.getTile().getRow()
+					+ (side == "up" ? -1 : side == "down" ? 1 : 0);
+			int newCol = currentPosition.getTile().getColumn()
+					+ (side == "left" ? -1 : side == "right" ? 1 : 0);
+
+			// set new position
+			Tile next_tile = new Tile(newRow, newCol, QuoridorApplication.getQuoridor().getBoard());
+			currentPosition.setTile(next_tile);
+			
+		} else {
+			// get current white player position
+			PlayerPosition currentPosition = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+			
+			// calculate new row and new column
+			int newRow = currentPosition.getTile().getRow()
+					+ (side == "up" ? -1 : side == "down" ? 1 : 0);
+			int newCol = currentPosition.getTile().getColumn()
+					+ (side == "left" ? -1 : side == "right" ? 1 : 0);
+			
+			// set new position
+			Tile next_tile = new Tile(newRow, newCol, QuoridorApplication.getQuoridor().getBoard());
+			currentPosition.setTile(next_tile);
+		}
 		
 	}
 	
 	@Then("The move {string} shall be {string}")
-	public void theMoveSideShallBeStatus(String side, String status) {
+	public void theMoveSideShallBeStatus(String side, String status) throws GameNotRunningException, InvalidOperationException {
+		
+		// try to move to the side
+		assertEquals(Quoridor223Controller.tryPawnMove(side), status);
 		
 	}
 	

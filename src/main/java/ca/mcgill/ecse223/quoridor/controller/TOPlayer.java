@@ -12,6 +12,7 @@ public class TOPlayer
   //------------------------
 
   public enum Color { White, Black }
+  public enum Side { Up, Down, Left, Right, UpRight, UpLeft, DownRight, DownLeft }
 
   //------------------------
   // MEMBER VARIABLES
