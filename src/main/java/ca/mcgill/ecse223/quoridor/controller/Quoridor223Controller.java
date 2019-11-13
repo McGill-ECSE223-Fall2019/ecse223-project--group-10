@@ -433,7 +433,7 @@ public class Quoridor223Controller {
 	
 
 	/**
-	 * tryPlayerMove helper method
+	 * tryPawnMove 
 	 * @author Vanessa Ifrah
 	 * @param name
 	 * @param side
@@ -470,36 +470,7 @@ public class Quoridor223Controller {
 		return error;
 	}
 	
-	/**
-	 * tryPlayerMove helper method
-	 * @author Vanessa Ifrah
-	 * @param side
-	 * @throws GameNotRunningException
-	 * @throws InvalidOperationException
-	*/
-//	public static String tryPawnMove(String side) throws GameNotRunningException, InvalidOperationException {
-//		if (!isRunning()) throw new GameNotRunningException("Game not running");
-//		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-//		Board current_board = QuoridorApplication.getQuoridor().getBoard();
-//		
-//		// get player moving
-//		PlayerPosition current_position;
-//		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
-//		else current_position = current_game.getCurrentPosition().getBlackPosition();
-//
-//		int newRow = current_position.getTile().getRow()
-//				+ (side == "up" ? -1 : side == "down" ? 1 : 0);
-//		int newCol = current_position.getTile().getColumn()
-//				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
-//
-//		// check if new position/move is legal
-//		String status;
-//		if (isPawnMoveLegal(newRow, newCol)) status = "success";
-//		else status = "illegal";
-//		
-//		return status;
-//	}
-
+	
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin
 	 * Feature 8: DropWall.feature
