@@ -307,9 +307,13 @@ class PawnBehavior {
    			case East:
    			case West:
    		}
+   		return true;
    }
    private boolean isWinningMove(){
    		return false;
+   }
+   private boolean isWhite(){
+   		return player.equals(currentGame.getWhitePlayer());
    }
     // Enumeration for the possible moving directions
     // (directions are from the viewpoint of white player)

@@ -1385,8 +1385,24 @@ public class PawnBehavior
   }
 
   // line 304 "../../../../../PawnStateMachine.ump"
+   private boolean isLegalDiagonalMove(MoveDirection dir){
+    switch(dir){
+   			case North:
+   			case South:
+   			case East:
+   			case West:
+   		}
+   		return true;
+  }
+
+  // line 313 "../../../../../PawnStateMachine.ump"
    private boolean isWinningMove(){
     return false;
+  }
+
+  // line 316 "../../../../../PawnStateMachine.ump"
+   private boolean isWhite(){
+    return player.equals(currentGame.getWhitePlayer());
   }
   
   //------------------------
@@ -1421,7 +1437,7 @@ public class PawnBehavior
 		return wallPositions;
   }
 
-// line 308 "../../../../../PawnStateMachine.ump"
+// line 320 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;
