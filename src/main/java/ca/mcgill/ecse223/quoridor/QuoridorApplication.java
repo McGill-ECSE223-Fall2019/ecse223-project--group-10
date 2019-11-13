@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.quoridor;
 
+import ca.mcgill.ecse223.quoridor.controller.PawnBehavior;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.view.GamePage;
 import ca.mcgill.ecse223.quoridor.view.SetNamePage;
@@ -24,7 +25,10 @@ public class QuoridorApplication {
 		}
 		return quoridor;
 	}
-	
+//	public static PawnBehavior GetPawnBehavior() {
+//		Quoridor quoridor = getQuoridor();
+//		
+//	}
 	public static void setMainPage() {
 		if(timePage != null) {
 			timePage.setVisible(false);
