@@ -21,7 +21,7 @@ class PawnBehavior {
     				
     				moveDownLeft [isLegalDiagonalMove(MoveDirection.West)] -> AtNorthBorder;
     				moveDownRight [isLegalDiagonalMove(MoveDirection.South)] -> AtNorthBorder;
-    				
+
     				moveUpRight -> /{illegalMove();} AtNorthEdge;
     				moveUpLeft -> /{illegalMove();} AtNorthEdge;
     			}
@@ -98,7 +98,10 @@ class PawnBehavior {
     				moveLeft [isLegalJump(MoveDirection.West)] -> MiddleEW;
     				moveLeft -> /{illegalMove();} AtEastEdge;
     			
-    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)]-> AtNorthEdge;
+    				moveUpRight ->/{illegalMove();}  AtEastEdge;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)]-> AtEastBorder;
+    				moveDownRight ->/{illegalMove();}  AtEastEdge;
+    				moveDownLeft [isLegalDiagonalMove(MoveDirection.South)] -> AtEastBorder;
     			}
     			AtEastBorder{
     				moveRight [isLegalStep(MoveDirection.East)]  -> AtEastEdge;
@@ -107,8 +110,10 @@ class PawnBehavior {
     				moveLeft [isLegalJump(MoveDirection.West)] -> MiddleEW;
     				moveLeft -> /{illegalMove();} AtEastBorder;
     				
-    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] -> AtEastEdge;
-    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)]-> MiddleEW;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] -> MiddleEW;
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)]-> AtEastEdge;
+    				moveDownLeft [isLegalDiagonalMove(MoveDirection.North)] -> MiddleEW;
+    				moveDownRight [isLegalDiagonalMove(MoveDirection.South)] -> AtEastEdge;
     			}
     			AtWestEdge{
     				moveRight [isLegalStep(MoveDirection.East)]  -> AtWestBorder;
@@ -116,7 +121,10 @@ class PawnBehavior {
     				moveRight -> /{illegalMove();} AtWestEdge;
     				moveLeft -> /{illegalMove();} AtWestEdge;
     				
-    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] -> AtNorthEdge;
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] -> AtWestBorder;
+    				moveUpLeft -> /{illegalMove();} AtWestEdge;
+    				moveDownLeft -> /{illegalMove();} AtWestEdge;
+    				moveDownRight [isLegalDiagonalMove(MoveDirection.South)] -> AtWestBorder;
     			} 
     			AtWestBorder{
     				moveRight [isLegalStep(MoveDirection.East)] -> MiddleEW;
@@ -125,8 +133,10 @@ class PawnBehavior {
     				moveLeft [isLegalStep(MoveDirection.West)] -> AtWestEdge;
     				moveLeft -> /{illegalMove();} AtWestBorder;
     				
-    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] -> AtNorthEdge;
-    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)]-> AtNorthEdge;
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] -> MiddleEW;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)]-> AtWestEdge;
+    				moveDownLeft [isLegalDiagonalMove(MoveDirection.West)] -> AtWestEdge;
+    				moveDownRight [isLegalDiagonalMove(MoveDirection.South)] -> MiddleEW;
     			}
     			MiddleEW{
     				moveRight [isLegalStep(MoveDirection.East) && getCurrentPawnColumn()==7] -> AtEastBorder;
@@ -136,8 +146,11 @@ class PawnBehavior {
     				moveRight [isLegalJump(MoveDirection.East)] -> MiddleEW;
     				moveRight -> /{illegalMove();} MiddleEW;
     				
-    				moveUpRight[getCurrentPawnColumn()==7&&isLegalDiagonalMove(MoveDirection.East)] -> AtNorthEdge;
-    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] -> AtNorthEdge;
+    				moveUpRight[getCurrentPawnColumn()==7&&isLegalDiagonalMove(MoveDirection.East)] -> AtEastBorder;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] -> MiddleEW;
+    				
+    				movedownRight[getCurrentPawnColumn()==7&&isLegalDiagonalMove(MoveDirection.South)] -> AtEastBorder;
+    				movedownLeft[isLegalDiagonalMove(MoveDirection.West)] -> MiddleEW;
     				
     				moveLeft [getCurrentPawnColumn()==3&&isLegalStep(MoveDirection.West)] -> AtWestBorder;
     				moveLeft [getCurrentPawnColumn()==3&&isLegalJump(MoveDirection.West)] -> AtWestEdge;
@@ -146,8 +159,10 @@ class PawnBehavior {
     				moveLeft [isLegalJump(MoveDirection.West)] -> MiddleEW;
     				moveLeft -> /{illegalMove();} MiddleEW;
     				
-    				moveUpLeft[getCurrentPawnColumn()==3 && isLegalDiagonalMove(MoveDirection.North)]-> AtNorthEdge;
-    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)]-> AtNorthEdge;
+    				moveUpLeft[getCurrentPawnColumn()==3 && isLegalDiagonalMove(MoveDirection.East)]-> AtWestBorder;
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.North)]-> MiddleEW;
+    				moveDownLeft[getCurrentPawnColumn()==3 && isLegalDiagonalMove(MoveDirection.West)]-> AtWestBorder;
+    				moveDownRight[isLegalDiagonalMove(MoveDirection.South)]-> MiddleEW;
     			}
     		}
     	}
