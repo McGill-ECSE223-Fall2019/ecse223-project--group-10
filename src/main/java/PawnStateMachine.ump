@@ -6,7 +6,7 @@ class PawnBehavior {
 	depend java.util.HashMap;
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
-
+    
     pawnSM {
     	Playing{
     		NorthSouth{
@@ -54,7 +54,8 @@ class PawnBehavior {
     				moveDown [isLegalJump(MoveDirection.South)]-> MiddleNS;
     				moveDown -> /{illegalMove();} MiddleNS;
     			}
-    		} 
+    		}
+    		
     		||
     		
     		EastWest{
@@ -104,14 +105,13 @@ class PawnBehavior {
     			}
     		}
     	}
-    	
     	Finished{
-  
+  			
     	}
     }
     
     // Returns the current row number of the pawn
-    int getCurrentPawnRow() { 
+   int getCurrentPawnRow() { 
 		if(player==currentGame.getWhitePlayer()) {
 			return currentGame.getCurrentPosition().getWhitePosition().getTile().getRow();
 		}
@@ -186,7 +186,9 @@ class PawnBehavior {
 		return wallPositions;
   }
     // Action to be called when an illegal move is attempted
-    void illegalMove() { }
+   void illegalMove() {
+   	// what chain of events should be triggered ???
+   }
    private boolean isThereWallInDir(MoveDirection dir, int row, int col){
     HashMap<Integer, Boolean> wallMap = getWallMap();
 	  switch(dir) {
