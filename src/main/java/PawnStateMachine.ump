@@ -3,26 +3,238 @@ namespace ca.mcgill.ecse223.quoridor.controller;
 use QuoridorGame.ump;
 
 class PawnBehavior {
-
+	depend java.util.HashMap;
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
 
     pawnSM {
+    	Playing{
+    		NorthSouth{
+    			Setup{
+    				startGame -> AtNorthEdge
+    			}
+    			AtNorthEdge{
+    				moveUp -> /{illegalMove();} AtNorthEdge;
+    				moveDown [isLegalStep(MoveDirection.South)] -> AtNorthBorder;
+    				moveDown [isLegalJump(MoveDirection.South)] -> MiddleNS;
+    				moveDown -> /{illegalMove();} AtNorthEdge;
+    			}
+    			AtNorthBorder{
+    				moveUp [isLegalStep(MoveDirection.North)]  -> AtNorthEdge;
+    				moveUp -> /{illegalMove();} AtNorthBorder;
+    				moveDown [isLegalStep(MoveDirection.South)] -> MiddleNS;
+    				moveDown [isLegalJump(MoveDirection.South)] -> MiddleNS;
+    				moveDown -> /{illegalMove();} AtNorthBorder;
+    			}
+    			AtSouthEdge{
+    				moveUp [isLegalStep(MoveDirection.North)]  -> AtNorthBorder;
+    				moveUp [isLegalJump(MoveDirection.North)]  -> MiddleNS;
+    				moveUp -> /{illegalMove();} AtSouthEdge;
+    				moveDown -> /{illegalMove();} AtSouthEdge;
+    			} 
+    			AtSouthBorder{
+    				moveUp [isLegalStep(MoveDirection.North)] -> MiddleNS;
+    				moveUp [isLegalJump(MoveDirection.North)] -> MiddleNS;
+    				moveUp -> /{illegalMove();} AtSouthBorder;
+    				moveDown [isLegalStep(MoveDirection.South)] -> AtSouthEdge;
+    				moveDown -> /{illegalMove();} AtSouthBorder;
+    			}
+    			MiddleNS{
+    				moveUp [getCurrentPawnRow()==3&&isLegalJump(MoveDirection.North)] -> AtNorthEdge;
+    				moveUp [getCurrentPawnRow()==3&&isLegalStep(MoveDirection.North)] -> AtNorthBorder;
+    				moveUp [getCurrentPawnRow()==4&&isLegalJump(MoveDirection.North)] -> AtNorthBorder;
+    				moveUp [isLegalStep(MoveDirection.North)]-> MiddleNS;
+    				moveUp [isLegalJump(MoveDirection.North)]-> MiddleNS;
+    				moveUp -> /{illegalMove();} MiddleNS;
+    				
+    				moveDown [getCurrentPawnRow()==7&&isLegalStep(MoveDirection.South)] -> AtSouthBorder;
+    				moveDown [getCurrentPawnRow()==7&&isLegalJump(MoveDirection.South)] -> AtSouthEdge;
+    				moveDown [getCurrentPawnRow()==6&&isLegalJump(MoveDirection.South)] -> AtNorthBorder;
+    				moveDown [isLegalStep(MoveDirection.South)]-> MiddleNS;
+    				moveDown [isLegalJump(MoveDirection.South)]-> MiddleNS;
+    				moveDown -> /{illegalMove();} MiddleNS;
+    			}
+    		} 
+    		||
+    		
+    		EastWest{
+    			Setup{
+    				startGame -> [player.equals(CurrentGame.getWhitePlayer)]MiddleEW
+    			}
+    			AtEastEdge{
+    				moveRight -> /{illegalMove();} AtEastEdge;
+    				moveLeft [isLegalStep(MoveDirection.West)] -> AtWestBorder;
+    				moveLeft [isLegalJump(MoveDirection.West)] -> MiddleEW;
+    				moveLeft -> /{illegalMove();} AtEastEdge;
+    			}
+    			AtEastBorder{
+    				moveRight [isLegalStep(MoveDirection.East)]  -> AtEastEdge;
+    				moveRight -> /{illegalMove();} AtEastBorder;
+    				moveLeft [isLegalStep(MoveDirection.West)] -> MiddleEW;
+    				moveLeft [isLegalJump(MoveDirection.West)] -> MiddleEW;
+    				moveLeft -> /{illegalMove();} AtEastBorder;
+    			}
+    			AtWestEdge{
+    				moveRight [isLegalStep(MoveDirection.East)]  -> AtWestBorder;
+    				moveRight [isLegalJump(MoveDirection.East)]  -> MiddleEW;
+    				moveRight -> /{illegalMove();} AtWestEdge;
+    				moveLeft -> /{illegalMove();} AtWestEdge;
+    			} 
+    			AtWestBorder{
+    				moveRight [isLegalStep(MoveDirection.East)] -> MiddleEW;
+    				moveRight [isLegalJump(MoveDirection.East)] -> MiddleEW;
+    				moveRight -> /{illegalMove();} AtWestBorder;
+    				moveLeft [isLegalStep(MoveDirection.West)] -> AtWestEdge;
+    				moveLeft -> /{illegalMove();} AtWestBorder;
+    			}
+    			MiddleEW{
+    				moveRight [isLegalStep(MoveDirection.East) && getCurrentPawnColumn()==7] -> AtEastBorder;
+    				moveRight [isLegalJump(MoveDirection.East) && getCurrentPawnColumn()==7] -> AtEastEdge;
+    				moveRight [isLegalJump(MoveDirection.East) && getCurrentPawnColumn()==6] -> AtEastBorder;
+    				moveRight [isLegalStep(MoveDirection.East)] -> MiddleEW;
+    				moveRight [isLegalJump(MoveDirection.East)] -> MiddleEW;
+    				moveRight -> /{illegalMove();} MiddleEW;
+    				
+    				moveLeft [getCurrentPawnColumn()==3&&isLegalStep(MoveDirection.West)] -> AtWestBorder;
+    				moveLeft [getCurrentPawnColumn()==3&&isLegalJump(MoveDirection.West)] -> AtWestEdge;
+    				moveLeft [getCurrentPawnColumn()==4&&isLegalJump(MoveDirection.West)] -> AtWestBorder;
+    				moveLeft [isLegalStep(MoveDirection.West)] -> MiddleEW;
+    				moveLeft [isLegalJump(MoveDirection.West)] -> MiddleEW;
+    				moveLeft -> /{illegalMove();} MiddleEW;
+    			}
+    		}
+    	}
+    	
+    	Finished{
+  
+    	}
     }
-
+    
     // Returns the current row number of the pawn
-    int getCurrentPawnRow() { return 0; }
+    int getCurrentPawnRow() { 
+		if(player==currentGame.getWhitePlayer()) {
+			return currentGame.getCurrentPosition().getWhitePosition().getTile().getRow();
+		}
+		return currentGame.getCurrentPosition().getBlackPosition().getTile().getRow();
+	}
+    
     // Returns the current column number of the pawn
-    int getCurrentPawnColumn() { return 0; }
+    int getCurrentPawnColumn() { 
+		if(player==currentGame.getWhitePlayer()) {
+			return currentGame.getCurrentPosition().getWhitePosition().getTile().getColumn();
+		}
+		return currentGame.getCurrentPosition().getBlackPosition().getTile().getColumn();
+	}
+    
     // Returns if it is legal to step in the given direction
-    boolean isLegalStep(MoveDirection dir) { return false; }
+    boolean isLegalStep(MoveDirection dir) { 
+	    HashMap<Integer, Boolean> wallMap = getWallMap();
+		int row = getCurrentPawnRow();
+		int col = getCurrentPawnColumn();
+		if(isTherePlayerInDir(dir,row,col))return false;
+		if(isThereWallInDir(dir,row,col))return false;
+	    return true;
+    }
+    
     // Returns if it is legal to jump in the given direction
-    boolean isLegalJump(MoveDirection dir) { return false; }
-
+    boolean isLegalJump(MoveDirection dir) {
+    	HashMap<Integer, Boolean> wallMap = getWallMap();
+		int row = getCurrentPawnRow();
+		int col = getCurrentPawnColumn();
+		if(isThereWallInDir(dir,row,col))return false;
+		if(!isTherePlayerInDir(dir,row,col))return false;
+		switch(dir){
+			case North:
+				row--;
+				break;
+			case South:
+				row++;
+				break;
+			case East:
+				col++;
+				break;
+			case West:
+				col--;
+				break;
+		}
+		if(isThereWallInDir(dir,row,col))return false;
+    	return true;
+    }
+	HashMap<Integer,Boolean> getWallMap(){
+	  HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();		
+		//TODO: switch to player list (more convenient if 2+)
+		for (Wall wall : currentGame.getCurrentPosition().getBlackWallsOnBoard()) {
+			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
+			WallMove wall_move = wall.getMove();
+			int row = wall_move.getTargetTile().getRow();
+			int col = wall_move.getTargetTile().getColumn();
+			boolean dir_attr = false;
+			if (wall_move.getWallDirection().equals(Direction.Horizontal))
+				dir_attr = true;
+			wallPositions.put(row * 9 + col, dir_attr);
+		}
+		for (Wall wall : currentGame.getCurrentPosition().getWhiteWallsOnBoard()) {
+			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
+			WallMove wall_move = wall.getMove();
+			int row = wall_move.getTargetTile().getRow();
+			int col = wall_move.getTargetTile().getColumn();
+			boolean dir_attr = false;
+			if (wall_move.getWallDirection().equals(Direction.Horizontal))
+				dir_attr = true;
+			wallPositions.put(row * 9 + col, dir_attr);
+		}
+		return wallPositions;
+  }
     // Action to be called when an illegal move is attempted
     void illegalMove() { }
-    
+   private boolean isThereWallInDir(MoveDirection dir, int row, int col){
+    HashMap<Integer, Boolean> wallMap = getWallMap();
+	  switch(dir) {
+	  	case North:
+	  		row-=1;
+	  		if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return true;
+			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return true;
+	  		break;
+	  	case South:
+	  		if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return true;
+			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return true;
+	  		break;
+	  	case East:
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return true;
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return true;
+	  		break;
+	  	case West:
+	  		col--;
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return true;
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return true;
+	  		break;
+	  }
+	  return false;
+  }
+  private boolean isTherePlayerInDir(MoveDirection dir, int row, int col) {
+	   PlayerPosition otherPlayerPosition = player.equals(currentGame.getWhitePlayer())?currentGame.getCurrentPosition().getBlackPosition():currentGame.getCurrentPosition().getWhitePosition();
+		int otherRow = otherPlayerPosition.getTile().getRow();
+		int otherCol = otherPlayerPosition.getTile().getColumn();
+	    switch(dir) {
+	    		case North:
+	    			if(col==otherCol&&row-1==otherRow)return true;
+	    			break;
+	    		case South:
+	    			if(col==otherCol&&row+1==otherRow)return true;
+	    			break;
+	    		case West:
+	    			if(col-1==otherCol&&row==otherRow)return true;
+	    			break;
+	    		case East:
+	    			if(col+1==otherCol&&row==otherRow)return true;
+	    			break;
+	   }
+	    return false;
+   }
+   private boolean isWinningMove(){
+   		return false;
+   }
     // Enumeration for the possible moving directions
     // (directions are from the viewpoint of white player)
-    enum MoveDirection { East, South, West, North; }
+    enum MoveDirection { East, South, West, North ;}
 }

@@ -523,25 +523,6 @@ public class Quoridor223Controller {
 		return loadedPosition;
 	}
 	
-	/**
-	 * helper method to get validity of board position for cucumber stepDef
-	 * 
-	 * @author Sacha Lévy
-	 * @return isValid
-	 * */
-	public static String isPositionValid() {
-		String isValid = "invalid";
-		try {
-			if (validatePosition()) isValid = "valid";
-			else isValid = "invalid";
-		} catch (UnsupportedOperationException | GameNotRunningException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		return isValid;
-	} 
-
 	//TODO: think about how to implement in more than 2 players way
 	/**
 	 * Feature 11: ValidatePosition, validate a wall position by checking overlapping walls and player position
@@ -561,13 +542,52 @@ public class Quoridor223Controller {
 			if (!isWallCandidatePositionValid()) return false;
 			if (isWallMoveCandidateOverlapping()) return false;
 		} else {
+			// TODO: implement the pawn behavior checking within the validate position, uniform method
 			if (!isPlayerPositionValid()) return false;
 			if (isPlayerPositionOverlapping()) return false;
-			// TODO: further check if the last player's move didn't cross any walls
 		}
 		return true;
 	}
 	
+	/**
+	 * Feature 12: SwitchPlayer, switch the players after a move is completed (dropWall for the moment)
+	 * 
+	 * @author Sacha Lévy
+	 * @throws GameNotRunningException
+	 * @throws UnsupportedOperationException
+	 */
+	public static void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException {
+		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		Player current_player = current_position.getPlayerToMove();
+		current_position.setPlayerToMove(current_player.getNextPlayer());
+		current_player.getNextPlayer().setNextPlayer(current_player);
+	}
+	
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+//////Sacha's Helper and Query methods Begins
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+	
+	/**
+	 * helper method to get validity of board position for cucumber stepDef
+	 * 
+	 * @author Sacha Lévy
+	 * @return isValid
+	 * */
+	public static String isPositionValid() {
+		String isValid = "invalid";
+		try {
+			if (validatePosition()) isValid = "valid";
+			else isValid = "invalid";
+		} catch (UnsupportedOperationException | GameNotRunningException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return isValid;
+	} 
+
 	/**
 	 * query method to get name of a player based on its color
 	 * i.e. username for black/white players
@@ -906,20 +926,6 @@ public class Quoridor223Controller {
 	}
 
 	/**
-	 * Feature 12: SwitchPlayer, switch the players after a move is completed (dropWall for the moment)
-	 * 
-	 * @author Sacha Lévy
-	 * @throws GameNotRunningException
-	 * @throws UnsupportedOperationException
-	 */
-	public static void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException {
-		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
-		Player current_player = current_position.getPlayerToMove();
-		current_position.setPlayerToMove(current_player.getNextPlayer());
-		current_player.getNextPlayer().setNextPlayer(current_player);
-	}
-	
-	/**
 	 * Query methods for the UI
 	 * 
 	 * @author Sacha Lévy
@@ -1043,6 +1049,12 @@ public class Quoridor223Controller {
 		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
 		return current_position.getPlayerToMove().getUser().getName();
 	}
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+//////Sacha's Helper and Query methods Ends
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
@@ -1163,7 +1175,7 @@ public class Quoridor223Controller {
 		if (curGame.getWallMoveCandidate() == null)return null;
 		return convertWall(curGame.getWallMoveCandidate().getWallPlaced());
 	}
-
+	
 	/**
 	 * Get a list of player object on the board
 	 * @author Le-Li Mao
