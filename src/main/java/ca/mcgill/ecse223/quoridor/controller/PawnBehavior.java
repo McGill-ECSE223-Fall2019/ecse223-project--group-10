@@ -1386,10 +1386,36 @@ public class PawnBehavior
 
   // line 304 "../../../../../PawnStateMachine.ump"
    private boolean isLegalDiagonalMove(MoveDirection dir){
+	int row = getCurrentPawnRow();
+	int col = getCurrentPawnColumn();
     switch(dir){
    			case North:
+   				if(isTherePlayerInDir(MoveDirection.North,row,col)) {
+   					if(isThereWallInDir(MoveDirection.North, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.North, row-1, col))return false;
+   					if(isThereWallInDir(MoveDirection.West, row-1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.West, row, col)) {
+   					if(isThereWallInDir(MoveDirection.West, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.West, row, col-1))return false;
+   					if(isThereWallInDir(MoveDirection.North, row, col-1))return false;
+   				}
+   				else return false;
+   				break;
    			case South:
    			case East:
+   				if(isTherePlayerInDir(MoveDirection.North,row,col)) {
+   					if(isThereWallInDir(MoveDirection.North, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.North, row-1, col))return false;
+   					if(isThereWallInDir(MoveDirection.East, row-1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.East, row, col)) {
+   					if(isThereWallInDir(MoveDirection.East, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.East, row, col+1))return false;
+   					if(isThereWallInDir(MoveDirection.North, row, col+1))return false;
+   				}
+   				else return false;
+   				break;
    			case West:
    		}
    		return true;
