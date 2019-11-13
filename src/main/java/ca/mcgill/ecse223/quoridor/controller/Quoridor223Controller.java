@@ -435,12 +435,11 @@ public class Quoridor223Controller {
 	/**
 	 * tryPlayerMove helper method
 	 * @author Vanessa Ifrah
-	 * @param side
+	 * @param name
 	 * @param side
 	 * @throws GameNotRunningException
-	 * @throws InvalidOperationException
 	*/
-	public static void initiatePawnMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
+	public static boolean tryPawnMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Board current_board = QuoridorApplication.getQuoridor().getBoard();
@@ -455,9 +454,20 @@ public class Quoridor223Controller {
 		int newCol = current_position.getTile().getColumn()
 				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
 
+		boolean error = false;
+		try {
+			if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
+			if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+		} catch (Exception e) {
+			error = true;
+		}	
+		
 		// set new tile
 		Tile next_tile = new Tile(newRow, newCol, current_board);
 		current_position.setTile(next_tile);
+		SwitchPlayer();
+		
+		return error;
 	}
 	
 	/**
@@ -467,28 +477,28 @@ public class Quoridor223Controller {
 	 * @throws GameNotRunningException
 	 * @throws InvalidOperationException
 	*/
-	public static String tryPawnMove(String side) throws GameNotRunningException, InvalidOperationException {
-		if (!isRunning()) throw new GameNotRunningException("Game not running");
-		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Board current_board = QuoridorApplication.getQuoridor().getBoard();
-		
-		// get player moving
-		PlayerPosition current_position;
-		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
-		else current_position = current_game.getCurrentPosition().getBlackPosition();
-
-		int newRow = current_position.getTile().getRow()
-				+ (side == "up" ? -1 : side == "down" ? 1 : 0);
-		int newCol = current_position.getTile().getColumn()
-				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
-
-		// check if new position/move is legal
-		String status;
-		if (isPawnMoveLegal(newRow, newCol)) status = "success";
-		else status = "illegal";
-		
-		return status;
-	}
+//	public static String tryPawnMove(String side) throws GameNotRunningException, InvalidOperationException {
+//		if (!isRunning()) throw new GameNotRunningException("Game not running");
+//		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+//		Board current_board = QuoridorApplication.getQuoridor().getBoard();
+//		
+//		// get player moving
+//		PlayerPosition current_position;
+//		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
+//		else current_position = current_game.getCurrentPosition().getBlackPosition();
+//
+//		int newRow = current_position.getTile().getRow()
+//				+ (side == "up" ? -1 : side == "down" ? 1 : 0);
+//		int newCol = current_position.getTile().getColumn()
+//				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
+//
+//		// check if new position/move is legal
+//		String status;
+//		if (isPawnMoveLegal(newRow, newCol)) status = "success";
+//		else status = "illegal";
+//		
+//		return status;
+//	}
 
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin

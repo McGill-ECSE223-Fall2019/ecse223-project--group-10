@@ -56,6 +56,7 @@ public class CucumberStepDefinitions {
 	private String cucumberFilename	= null;
 	private GamePage gamePage;
 	private boolean loadSuccessful = false;
+	private boolean moveSuccessful = false;
 	private ArrayList<Player> createUsersAndPlayers;
 
 	@Given("^The game is not running$")
@@ -547,44 +548,17 @@ public class CucumberStepDefinitions {
 	}
 	
 	@When("Player {string} initiates to move {string}")
-	public void playerInitiatesToMove(String name, String side) {
+	public void playerInitiatesToMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
 	
-		if (name == "white") {
-			// get current white player position
-			PlayerPosition currentPosition = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+		moveSuccessful = Quoridor223Controller.tryPawnMove(name, side);
 			
-			// calculate new row and new column
-			int newRow = currentPosition.getTile().getRow()
-					+ (side == "up" ? -1 : side == "down" ? 1 : 0);
-			int newCol = currentPosition.getTile().getColumn()
-					+ (side == "left" ? -1 : side == "right" ? 1 : 0);
-
-			// set new position
-			Tile next_tile = new Tile(newRow, newCol, QuoridorApplication.getQuoridor().getBoard());
-			currentPosition.setTile(next_tile);
-			
-		} else {
-			// get current white player position
-			PlayerPosition currentPosition = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
-			
-			// calculate new row and new column
-			int newRow = currentPosition.getTile().getRow()
-					+ (side == "up" ? -1 : side == "down" ? 1 : 0);
-			int newCol = currentPosition.getTile().getColumn()
-					+ (side == "left" ? -1 : side == "right" ? 1 : 0);
-			
-			// set new position
-			Tile next_tile = new Tile(newRow, newCol, QuoridorApplication.getQuoridor().getBoard());
-			currentPosition.setTile(next_tile);
-		}
-		
 	}
 	
 	@Then("The move {string} shall be {string}")
 	public void theMoveSideShallBeStatus(String side, String status) throws GameNotRunningException, InvalidOperationException {
 		
-		// try to move to the side
-		assertEquals(Quoridor223Controller.tryPawnMove(side), status);
+		if (status == "success") assertTrue(moveSuccessful);
+		else assertFalse(moveSuccessful);
 		
 	}
 	
@@ -594,7 +568,9 @@ public class CucumberStepDefinitions {
 	}
 	
 	@And("The next player to move shall become {string}")
-	public void theNextPlayerToMoveBeCome(String name) {
+	public void theNextPlayerToMoveBeCome(String name) throws UnsupportedOperationException, GameNotRunningException {
+		
+//		Quoridor223Controller.SwitchPlayer();
 		
 	}
 	
