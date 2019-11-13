@@ -17,6 +17,7 @@ class TOWall {
 }
 class TOPlayer {
 	enum Color {White,Black};
+	enum Side {Up,Down,Left,Right,UpRight,UpLeft,DownRight,DownLeft};
 	Integer row;
 	Integer col;
 	Color color;
