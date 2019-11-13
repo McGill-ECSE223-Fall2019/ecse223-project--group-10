@@ -921,6 +921,35 @@ public class Quoridor223Controller {
 		current_player.getNextPlayer().setNextPlayer(current_player);
 	}
 	
+	/////////////////////////////////////////////////////
+	//////////// Move Pawn and Jump Pawn/////////////////
+	/////////////////////////////////////////////////////
+	
+	public static void movePawn(TOPlayer.Side side) throws GameNotRunningException, InvalidOperationException {
+		//call specific behaviour and call the specific move that is received by the player
+		if (!isRunning())
+			throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		
+		if (curGame.getWallMoveCandidate() != null) {
+			throw new InvalidOperationException("Wall is currently in hand");
+		}
+		
+		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
+		
+		if (curPlayer.equals(curGame.getWhitePlayer())) {
+			///
+		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
+			///
+		}
+	}
+	
+	/////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////
+	//////////// Helper and Query methods////////////////
+	/////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////
+	
 	/**
 	 * Query methods for the UI
 	 * 

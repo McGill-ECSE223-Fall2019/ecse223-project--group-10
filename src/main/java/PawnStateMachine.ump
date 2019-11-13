@@ -169,8 +169,7 @@ class PawnBehavior {
     				moveDownLeft[isLegalDiagonalMove(MoveDirection.West)] -> MiddleEW;
     				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] -> MiddleEW;
 					finishGame -> Finished;
-
-    			}
+				}
     		}
     	}
     	
