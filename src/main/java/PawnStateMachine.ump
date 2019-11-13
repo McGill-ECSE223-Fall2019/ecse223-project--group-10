@@ -11,8 +11,8 @@ class PawnBehavior {
     	Playing{
     		NorthSouth{
     			Setup{
-    				startGame [isWhite()] -> AtNorthEdge
-    				startGame -> AtSouthEdge
+    				startGame [isWhite()] -> AtSouthEdge;
+    				startGame -> AtNorthEdge;
     			}
     			AtNorthEdge{
     				moveUp -> /{illegalMove();} AtNorthEdge;
@@ -91,7 +91,7 @@ class PawnBehavior {
     		
     		EastWest{
     			Setup{
-    				startGame -> [player.equals(CurrentGame.getWhitePlayer)]MiddleEW
+    				startGame -> MiddleEW;
     			}
     			AtEastEdge{
     				moveRight -> /{illegalMove();} AtEastEdge;
@@ -299,6 +299,14 @@ class PawnBehavior {
 	    			break;
 	   }
 	    return false;
+   }
+   private boolean isLegalDiagonalMove(MoveDirection dir){
+   		switch(dir){
+   			case North:
+   			case South:
+   			case East:
+   			case West:
+   		}
    }
    private boolean isWinningMove(){
    		return false;
