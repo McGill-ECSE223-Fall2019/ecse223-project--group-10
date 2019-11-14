@@ -978,9 +978,43 @@ public class Quoridor223Controller {
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
 		
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
-			///
+			PawnBehavior whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
+			if (side == TOPlayer.Side.Up) {
+				whiteBehavior.moveUp();
+			} else if (side == TOPlayer.Side.Down) {
+				whiteBehavior.moveDown();
+			} else if (side == TOPlayer.Side.Left) {
+				whiteBehavior.moveLeft();
+			} else if (side == TOPlayer.Side.Right) {
+				whiteBehavior.moveRight();
+			} else if (side == TOPlayer.Side.DownLeft) {
+				whiteBehavior.moveDownLeft();
+			} else if (side == TOPlayer.Side.DownRight) {
+				whiteBehavior.moveDownRight();
+			} else if (side == TOPlayer.Side.UpLeft) {
+				whiteBehavior.moveUpLeft();
+			} else if (side == TOPlayer.Side.UpRight) {
+				whiteBehavior.moveUpRight();
+			} 
 		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
-			///
+			PawnBehavior blackBehavior = QuoridorApplication.GetBlackPawnBehavior();
+			if (side == TOPlayer.Side.Up) {
+				blackBehavior.moveUp();
+			} else if (side == TOPlayer.Side.Down) {
+				blackBehavior.moveDown();
+			} else if (side == TOPlayer.Side.Left) {
+				blackBehavior.moveLeft();
+			} else if (side == TOPlayer.Side.Right) {
+				blackBehavior.moveRight();
+			} else if (side == TOPlayer.Side.DownLeft) {
+				blackBehavior.moveDownLeft();
+			} else if (side == TOPlayer.Side.DownRight) {
+				blackBehavior.moveDownRight();
+			} else if (side == TOPlayer.Side.UpLeft) {
+				blackBehavior.moveUpLeft();
+			} else if (side == TOPlayer.Side.UpRight) {
+				blackBehavior.moveUpRight();
+			} 
 		}
 	}
 	
