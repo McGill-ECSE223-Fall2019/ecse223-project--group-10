@@ -1079,6 +1079,25 @@ public class PawnBehavior
     return wasEventProcessed;
   }
 
+  public boolean finishGame()
+  {
+    boolean wasEventProcessed = false;
+    
+    PawnSMPlayingEastWestEastWest aPawnSMPlayingEastWestEastWest = pawnSMPlayingEastWestEastWest;
+    switch (aPawnSMPlayingEastWestEastWest)
+    {
+      case MiddleEW:
+        exitPawnSM();
+        setPawnSM(PawnSM.Finished);
+        wasEventProcessed = true;
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
   private void exitPawnSM()
   {
     switch(pawnSM)
@@ -1264,7 +1283,7 @@ public class PawnBehavior
   /**
    * Returns the current row number of the pawn
    */
-  // line 184 "../../../../../PawnStateMachine.ump"
+  // line 183 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
     if(player==currentGame.getWhitePlayer()) {
 			return currentGame.getCurrentPosition().getWhitePosition().getTile().getRow();
@@ -1276,7 +1295,7 @@ public class PawnBehavior
   /**
    * Returns the current column number of the pawn
    */
-  // line 192 "../../../../../PawnStateMachine.ump"
+  // line 191 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
     if(player==currentGame.getWhitePlayer()) {
 			return currentGame.getCurrentPosition().getWhitePosition().getTile().getColumn();
@@ -1288,7 +1307,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to step in the given direction
    */
-  // line 200 "../../../../../PawnStateMachine.ump"
+  // line 199 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(MoveDirection dir){
     HashMap<Integer, Boolean> wallMap = getWallMap();
 		int row = getCurrentPawnRow();
@@ -1302,7 +1321,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to jump in the given direction
    */
-  // line 210 "../../../../../PawnStateMachine.ump"
+  // line 209 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(MoveDirection dir){
     HashMap<Integer, Boolean> wallMap = getWallMap();
 		int row = getCurrentPawnRow();
@@ -1331,12 +1350,13 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 259 "../../../../../PawnStateMachine.ump"
+
+  // line 257 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     // what chain of events should be triggered ???
   }
 
-  // line 262 "../../../../../PawnStateMachine.ump"
+  // line 259 "../../../../../PawnStateMachine.ump"
    private boolean isThereWallInDir(MoveDirection dir, int row, int col){
     HashMap<Integer, Boolean> wallMap = getWallMap();
 	  switch(dir) {
@@ -1362,7 +1382,8 @@ public class PawnBehavior
 	  return false;
   }
 
-  // line 286 "../../../../../PawnStateMachine.ump"
+
+  // line 283 "../../../../../PawnStateMachine.ump"
    private boolean isTherePlayerInDir(MoveDirection dir, int row, int col){
     PlayerPosition otherPlayerPosition = player.equals(currentGame.getWhitePlayer())?currentGame.getCurrentPosition().getBlackPosition():currentGame.getCurrentPosition().getWhitePosition();
 		int otherRow = otherPlayerPosition.getTile().getRow();
@@ -1384,23 +1405,49 @@ public class PawnBehavior
 	    return false;
   }
 
-  // line 306 "../../../../../PawnStateMachine.ump"
+  // line 303 "../../../../../PawnStateMachine.ump"
    private boolean isLegalDiagonalMove(MoveDirection dir){
+    int row = getCurrentPawnRow();
+	int col = getCurrentPawnColumn();
     switch(dir){
    			case North:
+   				if(isTherePlayerInDir(MoveDirection.North,row,col)) {
+   					if(isThereWallInDir(MoveDirection.North, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.North, row-1, col))return false;
+   					if(isThereWallInDir(MoveDirection.West, row-1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.West, row, col)) {
+   					if(isThereWallInDir(MoveDirection.West, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.West, row, col-1))return false;
+   					if(isThereWallInDir(MoveDirection.North, row, col-1))return false;
+   				}
+   				else return false;
+   				break;
    			case South:
    			case East:
+   				if(isTherePlayerInDir(MoveDirection.North,row,col)) {
+   					if(isThereWallInDir(MoveDirection.North, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.North, row-1, col))return false;
+   					if(isThereWallInDir(MoveDirection.East, row-1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.East, row, col)) {
+   					if(isThereWallInDir(MoveDirection.East, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.East, row, col+1))return false;
+   					if(isThereWallInDir(MoveDirection.North, row, col+1))return false;
+   				}
+   				else return false;
+   				break;
    			case West:
    		}
    		return true;
   }
 
-  // line 315 "../../../../../PawnStateMachine.ump"
+  // line 339 "../../../../../PawnStateMachine.ump"
    private boolean isWinningMove(){
     return false;
   }
 
-  // line 318 "../../../../../PawnStateMachine.ump"
+  // line 342 "../../../../../PawnStateMachine.ump"
    private boolean isWhite(){
     return player.equals(currentGame.getWhitePlayer());
   }
@@ -1409,7 +1456,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 232 "../../../../../PawnStateMachine.ump"
+  // line 231 "../../../../../PawnStateMachine.ump"
   HashMap<Integer,Boolean> getWallMap () 
   {
     HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();		
@@ -1437,7 +1484,7 @@ public class PawnBehavior
 		return wallPositions;
   }
 
-// line 322 "../../../../../PawnStateMachine.ump"
+// line 346 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;

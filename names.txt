@@ -20,4 +20,27 @@ Daniel
 Marton
 Daniel
 Marton
+<<<<<<< HEAD
 Andrew
+=======
+Daniel
+Marton
+Daniel
+Marton
+Daniel
+Marton
+Daniel
+Marton
+Daniel
+Marton
+Daniel
+Marton
+Daniel
+Marton
+Daniel
+Marton
+Daniel
+Marton
+Daniel
+Marton
+>>>>>>> origin/master
