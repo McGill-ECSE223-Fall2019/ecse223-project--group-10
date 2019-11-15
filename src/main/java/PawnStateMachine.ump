@@ -334,13 +334,33 @@ class PawnBehavior {
    		}
    		return true;
   }
-
+   private void updateMove(int i, int j){
+   		GamePosition clone = clonePosition(currentGame.getCurrentPosition());
+   }
    private boolean isWinningMove(){
    		return false;
    }
    private boolean isWhite(){
    		return player.equals(currentGame.getWhitePlayer());
    }
+   private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
+		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
+	}
+   private static GamePosition clonePosition(GamePosition oldPosition) {
+		PlayerPosition newWhitePosition = clonePlayerPosition(oldPosition.getWhitePosition());
+		PlayerPosition newBlackPosition = clonePlayerPosition(oldPosition.getBlackPosition());
+		GamePosition newPosition = new GamePosition(oldPosition.getId() + 1, newWhitePosition, newBlackPosition,
+				oldPosition.getPlayerToMove(), oldPosition.getGame());
+		for (Wall wall : oldPosition.getBlackWallsInStock())
+			newPosition.addBlackWallsInStock(wall);
+		for (Wall wall : oldPosition.getWhiteWallsInStock())
+			newPosition.addWhiteWallsInStock(wall);
+		for (Wall wall : oldPosition.getBlackWallsOnBoard())
+			newPosition.addBlackWallsOnBoard(wall);
+		for (Wall wall : oldPosition.getWhiteWallsOnBoard())
+			newPosition.addWhiteWallsOnBoard(wall);
+		return newPosition;
+	}
     // Enumeration for the possible moving directions
     // (directions are from the viewpoint of white player)
     enum MoveDirection { East, South, West, North ;}
