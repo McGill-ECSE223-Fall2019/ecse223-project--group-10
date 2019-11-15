@@ -443,31 +443,35 @@ public class Quoridor223Controller {
 		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Board current_board = QuoridorApplication.getQuoridor().getBoard();
-		
-		// get player moving
 		PlayerPosition current_position;
-		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
-		else current_position = current_game.getCurrentPosition().getBlackPosition();
+		// get player moving
+		if(name.equals("black")) current_position = current_game.getCurrentPosition().getBlackPosition();
+		else current_position = current_game.getCurrentPosition().getWhitePosition();
+		//if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
+		//else current_position = current_game.getCurrentPosition().getBlackPosition();
 
 		int newRow = current_position.getTile().getRow()
 				+ (side == "up" ? -1 : side == "down" ? 1 : 0);
 		int newCol = current_position.getTile().getColumn()
 				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
-
+	
 		boolean error = false;
-		try {
-			if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
-			if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
-		} catch (Exception e) {
-			error = true;
-		}	
+		
+		//TODO: implement in pawn move legal to check if the positions are correct
+		// even if redundant regarding the sm
+		//try {
+		//	if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
+		//	if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+		//} catch (Exception e) {
+		//	error = true;
+		//}	
 		
 		// set new tile
 		Tile next_tile = new Tile(newRow, newCol, current_board);
 		current_position.setTile(next_tile);
-		SwitchPlayer();
+		//SwitchPlayer();
 		
-		return error;
+		return !error;
 	}
 	
 	
