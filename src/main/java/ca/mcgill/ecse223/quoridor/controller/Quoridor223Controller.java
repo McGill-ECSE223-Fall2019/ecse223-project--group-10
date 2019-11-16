@@ -1167,7 +1167,7 @@ public class Quoridor223Controller {
 	 * @author Le-Li Mao
 	 * @return game the is game running
 	 */
-	private static boolean isRunning() {
+	public static boolean isRunning() {
 		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (current == null || current.getGameStatus()!=Game.GameStatus.Running)
 			return false;
@@ -1182,7 +1182,7 @@ public class Quoridor223Controller {
 	 * @param col
 	 * @return Is position valid 
 	 */
-	private static boolean isWallPositionValid(int row, int col) {
+	public static boolean isWallPositionValid(int row, int col) {
 		return (row > 0 && col > 0 && row < 9 && col < 9);
 	}
 
