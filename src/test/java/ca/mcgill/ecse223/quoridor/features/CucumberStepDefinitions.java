@@ -20,6 +20,7 @@ import javax.swing.JOptionPane;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
+import ca.mcgill.ecse223.quoridor.controller.PawnBehavior;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -559,15 +560,17 @@ public class CucumberStepDefinitions {
 	@When("Player {string} initiates to move {string}")
 	public void playerInitiatesToMove(String color, String side) throws GameNotRunningException, InvalidOperationException {
 		playerTryingToMove = color;
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
 		gamePage.clickMovePlayer(side);
 	}
 	
 	@Then("The move {string} shall be {string}")
 	public void theMoveSideShallBeStatus(String side, String status) throws GameNotRunningException, InvalidOperationException {
 		boolean valid = false;	
-		if(!gamePage.getGameMessage().equals("Illegal Move")&& status.equals("success"))valid = true;
-		if(gamePage.getGameMessage().equals("Illegal Move")&& status.equals("illegal"))valid = true;
-		System.out.println("-------------------"+gamePage.getGameMessage());
+		if(!gamePage.getGameMessage().equals("Illegal Move") && status.equals("success"))valid = true;
+		if(gamePage.getGameMessage().equals("Illegal Move") && status.equals("illegal"))valid = true;
+		if(!valid)System.out.println("----------------------------------------------"+ gamePage.getGameMessage());
 		assertTrue("Illegal move are made or legal move are not made",valid);
 	}
 	
@@ -1317,13 +1320,25 @@ public class CucumberStepDefinitions {
 	@After
 	public void tearDown() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		PawnBehavior white = QuoridorApplication.GetWhitePawnBehavior();
+		PawnBehavior black = QuoridorApplication.GetBlackPawnBehavior();
 		// Avoid null pointer for step definitions that are not yet implemented.
 		// gamePage.delete();
 		gamePage = null;
+		
 		if (quoridor != null) {
 			quoridor.delete();
 			quoridor = null;
 		}
+		if(white!=null) {
+			white.delete();
+			white = null;
+		}
+		if(black!=null) {
+			black.delete();
+			black = null;
+		}
+		QuoridorApplication.delete();
 		for (int i = 0; i < 20; i++) {
 			Wall wall = Wall.getWithId(i + 1);
 			if (wall != null) {
@@ -1621,7 +1636,7 @@ public class CucumberStepDefinitions {
 	 */
 	public static boolean checkCurrentPlayerToMoveByColor(String playerColor) {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		return game.getCurrentPosition().getPlayerToMove().getNextPlayer().equals(getPlayerByColor(playerColor));
+		return game.getCurrentPosition().getPlayerToMove().equals(getPlayerByColor(playerColor));
 	}
 	
 	/**
@@ -1641,7 +1656,7 @@ public class CucumberStepDefinitions {
 		Wall curWall = curPlayer.getWalls().get(curPlayer.getWalls().size()-1);
 		
 		WallMove candidate = new WallMove(moveNum, roundNum, curPlayer,
-				Quoridor223Controller.getTile(row, col), game, stringToDirection(direction), curWall);
+		Quoridor223Controller.getTile(row, col), game, stringToDirection(direction), curWall);
 		
 		game.setWallMoveCandidate(candidate);
 		

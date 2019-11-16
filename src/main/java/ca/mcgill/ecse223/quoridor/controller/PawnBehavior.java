@@ -726,7 +726,7 @@ public class PawnBehavior
           wasEventProcessed = true;
           break;
         }
-        if (isLegalDiagonalMove(MoveDirection.North))
+        if (isLegalDiagonalMove(MoveDirection.East))
         {
           exitPawnSMPlayingEastWestEastWest();
         // line 132 "../../../../../PawnStateMachine.ump"
@@ -1271,7 +1271,7 @@ public class PawnBehavior
    */
   // line 156 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
-    if(player==currentGame.getWhitePlayer()) {
+    if(player.equals(currentGame.getWhitePlayer())) {
 			return currentGame.getCurrentPosition().getWhitePosition().getTile().getRow();
 		}
 		return currentGame.getCurrentPosition().getBlackPosition().getTile().getRow();
@@ -1283,7 +1283,7 @@ public class PawnBehavior
    */
   // line 164 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
-    if(player==currentGame.getWhitePlayer()) {
+    if(player.equals(currentGame.getWhitePlayer())) {
 			return currentGame.getCurrentPosition().getWhitePosition().getTile().getColumn();
 		}
 		return currentGame.getCurrentPosition().getBlackPosition().getTile().getColumn();
