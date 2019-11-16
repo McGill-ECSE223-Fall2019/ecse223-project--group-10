@@ -90,15 +90,36 @@ public class PawnBehavior
     switch (aPawnSMPlayingNorthSouthNorthSouth)
     {
       case Setup:
-        if (isWhite())
+        if (getCurrentPawnRow()==1)
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge);
+          wasEventProcessed = true;
+          break;
+        }
+        if (getCurrentPawnRow()==2)
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthBorder);
+          wasEventProcessed = true;
+          break;
+        }
+        if (getCurrentPawnRow()==9)
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge);
           wasEventProcessed = true;
           break;
         }
+        if (getCurrentPawnRow()==8)
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtSouthBorder);
+          wasEventProcessed = true;
+          break;
+        }
         exitPawnSMPlayingNorthSouthNorthSouth();
-        setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge);
+        setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
         wasEventProcessed = true;
         break;
       default:
@@ -108,126 +129,37 @@ public class PawnBehavior
     switch (aPawnSMPlayingEastWestEastWest)
     {
       case Setup:
+        if (getCurrentPawnColumn()==1)
+        {
+          exitPawnSMPlayingEastWestEastWest();
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestEdge);
+          wasEventProcessed = true;
+          break;
+        }
+        if (getCurrentPawnColumn()==2)
+        {
+          exitPawnSMPlayingEastWestEastWest();
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
+          wasEventProcessed = true;
+          break;
+        }
+        if (getCurrentPawnColumn()==9)
+        {
+          exitPawnSMPlayingEastWestEastWest();
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastEdge);
+          wasEventProcessed = true;
+          break;
+        }
+        if (getCurrentPawnColumn()==8)
+        {
+          exitPawnSMPlayingEastWestEastWest();
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
+          wasEventProcessed = true;
+          break;
+        }
         exitPawnSMPlayingEastWestEastWest();
         setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
         wasEventProcessed = true;
-        break;
-      default:
-        // Other states do respond to this event
-    }
-
-    return wasEventProcessed;
-  }
-
-  public boolean moveUp()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMPlayingNorthSouthNorthSouth aPawnSMPlayingNorthSouthNorthSouth = pawnSMPlayingNorthSouthNorthSouth;
-    switch (aPawnSMPlayingNorthSouthNorthSouth)
-    {
-      case AtNorthEdge:
-        exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 18 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge);
-        wasEventProcessed = true;
-        break;
-      case AtNorthBorder:
-        if (isLegalStep(MoveDirection.North))
-        {
-          exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 26 "../../../../../PawnStateMachine.ump"
-          updateMove(-1,0);
-          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case AtSouthEdge:
-        if (isLegalStep(MoveDirection.North))
-        {
-          exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 36 "../../../../../PawnStateMachine.ump"
-          updateMove(-1,0);
-          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalJump(MoveDirection.North))
-        {
-          exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 37 "../../../../../PawnStateMachine.ump"
-          updateMove(-2,0);
-          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case AtSouthBorder:
-        if (isLegalStep(MoveDirection.North))
-        {
-          exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 43 "../../../../../PawnStateMachine.ump"
-          updateMove(-1,0);
-          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalJump(MoveDirection.North))
-        {
-          exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 44 "../../../../../PawnStateMachine.ump"
-          updateMove(-2,0);
-          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case MiddleNS:
-        if (getCurrentPawnRow()==3&&isLegalJump(MoveDirection.North))
-        {
-          exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 53 "../../../../../PawnStateMachine.ump"
-          updateMove(-1,0);
-          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        if (getCurrentPawnRow()==3&&isLegalStep(MoveDirection.North))
-        {
-          exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 54 "../../../../../PawnStateMachine.ump"
-          updateMove(-2,0);
-          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if (getCurrentPawnRow()==4&&isLegalJump(MoveDirection.North))
-        {
-          exitPawnSMPlayingNorthSouthNorthSouth();
-          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalStep(MoveDirection.North))
-        {
-          exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 56 "../../../../../PawnStateMachine.ump"
-          updateMove(-1,0);
-          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalJump(MoveDirection.North))
-        {
-          exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 57 "../../../../../PawnStateMachine.ump"
-          updateMove(-2,0);
-          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
-          wasEventProcessed = true;
-          break;
-        }
         break;
       default:
         // Other states do respond to this event
@@ -247,7 +179,7 @@ public class PawnBehavior
         if (isLegalStep(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 19 "../../../../../PawnStateMachine.ump"
+        // line 21 "../../../../../PawnStateMachine.ump"
           updateMove(1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthBorder);
           wasEventProcessed = true;
@@ -256,7 +188,7 @@ public class PawnBehavior
         if (isLegalJump(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 20 "../../../../../PawnStateMachine.ump"
+        // line 22 "../../../../../PawnStateMachine.ump"
           updateMove(2,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
           wasEventProcessed = true;
@@ -267,7 +199,7 @@ public class PawnBehavior
         if (isLegalStep(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 27 "../../../../../PawnStateMachine.ump"
+        // line 29 "../../../../../PawnStateMachine.ump"
           updateMove(1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
           wasEventProcessed = true;
@@ -276,7 +208,7 @@ public class PawnBehavior
         if (isLegalJump(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 28 "../../../../../PawnStateMachine.ump"
+        // line 30 "../../../../../PawnStateMachine.ump"
           updateMove(2,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
           wasEventProcessed = true;
@@ -287,7 +219,7 @@ public class PawnBehavior
         if (isLegalStep(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 45 "../../../../../PawnStateMachine.ump"
+        // line 47 "../../../../../PawnStateMachine.ump"
           updateMove(1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge);
           wasEventProcessed = true;
@@ -298,7 +230,7 @@ public class PawnBehavior
         if (getCurrentPawnRow()==7&&isLegalStep(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 64 "../../../../../PawnStateMachine.ump"
+        // line 66 "../../../../../PawnStateMachine.ump"
           updateMove(1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtSouthBorder);
           wasEventProcessed = true;
@@ -307,7 +239,7 @@ public class PawnBehavior
         if (getCurrentPawnRow()==7&&isLegalJump(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 65 "../../../../../PawnStateMachine.ump"
+        // line 67 "../../../../../PawnStateMachine.ump"
           updateMove(2,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge);
           wasEventProcessed = true;
@@ -316,7 +248,7 @@ public class PawnBehavior
         if (getCurrentPawnRow()==6&&isLegalJump(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 66 "../../../../../PawnStateMachine.ump"
+        // line 68 "../../../../../PawnStateMachine.ump"
           updateMove(2,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthBorder);
           wasEventProcessed = true;
@@ -325,7 +257,7 @@ public class PawnBehavior
         if (isLegalStep(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 67 "../../../../../PawnStateMachine.ump"
+        // line 69 "../../../../../PawnStateMachine.ump"
           updateMove(1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
           wasEventProcessed = true;
@@ -334,7 +266,7 @@ public class PawnBehavior
         if (isLegalJump(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 68 "../../../../../PawnStateMachine.ump"
+        // line 70 "../../../../../PawnStateMachine.ump"
           updateMove(2,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
           wasEventProcessed = true;
@@ -387,8 +319,6 @@ public class PawnBehavior
         if (getCurrentPawnRow()==7&&isLegalDiagonalMove(MoveDirection.West))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 70 "../../../../../PawnStateMachine.ump"
-          updateMove(1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtSouthBorder);
           wasEventProcessed = true;
           break;
@@ -396,8 +326,6 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.West))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 72 "../../../../../PawnStateMachine.ump"
-          updateMove(1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
           wasEventProcessed = true;
           break;
@@ -410,34 +338,33 @@ public class PawnBehavior
     switch (aPawnSMPlayingEastWestEastWest)
     {
       case AtEastEdge:
-        if (isLegalDiagonalMove(MoveDirection.South))
+        if (isLegalDiagonalMove(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 92 "../../../../../PawnStateMachine.ump"
+          updateMove(1,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
           wasEventProcessed = true;
           break;
         }
         break;
       case AtEastBorder:
-        if (isLegalDiagonalMove(MoveDirection.North))
+        if (isLegalDiagonalMove(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 101 "../../../../../PawnStateMachine.ump"
+          updateMove(1,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
         }
         break;
-      case AtWestEdge:
-        exitPawnSMPlayingEastWestEastWest();
-        // line 110 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestEdge);
-        wasEventProcessed = true;
-        break;
       case AtWestBorder:
         if (isLegalDiagonalMove(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 119 "../../../../../PawnStateMachine.ump"
+          updateMove(1,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestEdge);
           wasEventProcessed = true;
           break;
@@ -447,6 +374,8 @@ public class PawnBehavior
         if (getCurrentPawnColumn()==3&&isLegalDiagonalMove(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 143 "../../../../../PawnStateMachine.ump"
+          updateMove(1,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
           wasEventProcessed = true;
           break;
@@ -454,6 +383,8 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 144 "../../../../../PawnStateMachine.ump"
+          updateMove(1,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
@@ -505,8 +436,6 @@ public class PawnBehavior
         if (getCurrentPawnRow()==7&&isLegalDiagonalMove(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 71 "../../../../../PawnStateMachine.ump"
-          updateMove(1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtSouthBorder);
           wasEventProcessed = true;
           break;
@@ -514,8 +443,6 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.South))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 73 "../../../../../PawnStateMachine.ump"
-          updateMove(1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
           wasEventProcessed = true;
           break;
@@ -531,6 +458,8 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.South))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 102 "../../../../../PawnStateMachine.ump"
+          updateMove(1,1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastEdge);
           wasEventProcessed = true;
           break;
@@ -540,6 +469,8 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.South))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 109 "../../../../../PawnStateMachine.ump"
+          updateMove(1,1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
           wasEventProcessed = true;
           break;
@@ -549,6 +480,8 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.South))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 120 "../../../../../PawnStateMachine.ump"
+          updateMove(1,1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
@@ -558,6 +491,8 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.South))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 132 "../../../../../PawnStateMachine.ump"
+          updateMove(1,1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
@@ -565,7 +500,121 @@ public class PawnBehavior
         if (getCurrentPawnColumn()==7&&isLegalDiagonalMove(MoveDirection.South))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 133 "../../../../../PawnStateMachine.ump"
+          updateMove(1,1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      default:
+        // Other states do respond to this event
+    }
+
+    return wasEventProcessed;
+  }
+
+  public boolean moveUp()
+  {
+    boolean wasEventProcessed = false;
+    
+    PawnSMPlayingNorthSouthNorthSouth aPawnSMPlayingNorthSouthNorthSouth = pawnSMPlayingNorthSouthNorthSouth;
+    switch (aPawnSMPlayingNorthSouthNorthSouth)
+    {
+      case AtNorthBorder:
+        if (isLegalStep(MoveDirection.North))
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 28 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,0);
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      case AtSouthEdge:
+        if (isLegalStep(MoveDirection.North))
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 38 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,0);
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtSouthBorder);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isLegalJump(MoveDirection.North))
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 39 "../../../../../PawnStateMachine.ump"
+          updateMove(-2,0);
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      case AtSouthBorder:
+        if (isLegalStep(MoveDirection.North))
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 45 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,0);
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isLegalJump(MoveDirection.North))
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 46 "../../../../../PawnStateMachine.ump"
+          updateMove(-2,0);
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      case MiddleNS:
+        if (getCurrentPawnRow()==3&&isLegalJump(MoveDirection.North))
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 55 "../../../../../PawnStateMachine.ump"
+          updateMove(-2,0);
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge);
+          wasEventProcessed = true;
+          break;
+        }
+        if (getCurrentPawnRow()==3&&isLegalStep(MoveDirection.North))
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 56 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,0);
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthBorder);
+          wasEventProcessed = true;
+          break;
+        }
+        if (getCurrentPawnRow()==4&&isLegalJump(MoveDirection.North))
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 57 "../../../../../PawnStateMachine.ump"
+          updateMove(-2,0);
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthBorder);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isLegalStep(MoveDirection.North))
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 58 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,0);
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isLegalJump(MoveDirection.North))
+        {
+          exitPawnSMPlayingNorthSouthNorthSouth();
+        // line 59 "../../../../../PawnStateMachine.ump"
+          updateMove(-2,0);
+          setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
           wasEventProcessed = true;
           break;
         }
@@ -616,8 +665,6 @@ public class PawnBehavior
         if (getCurrentPawnRow()==3&&isLegalDiagonalMove(MoveDirection.East))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 59 "../../../../../PawnStateMachine.ump"
-          updateMove(-1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthBorder);
           wasEventProcessed = true;
           break;
@@ -625,8 +672,6 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.East))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 61 "../../../../../PawnStateMachine.ump"
-          updateMove(-1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
           wasEventProcessed = true;
           break;
@@ -642,6 +687,8 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.East))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 100 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastEdge);
           wasEventProcessed = true;
           break;
@@ -651,6 +698,8 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.East))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 108 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
           wasEventProcessed = true;
           break;
@@ -660,6 +709,8 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.East))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 116 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
@@ -669,6 +720,8 @@ public class PawnBehavior
         if (getCurrentPawnColumn()==7&&isLegalDiagonalMove(MoveDirection.East))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 130 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
           wasEventProcessed = true;
           break;
@@ -676,6 +729,8 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.North))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 131 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
@@ -727,8 +782,6 @@ public class PawnBehavior
         if (getCurrentPawnRow()==3&&isLegalDiagonalMove(MoveDirection.North))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 60 "../../../../../PawnStateMachine.ump"
-          updateMove(-1,-0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.AtNorthBorder);
           wasEventProcessed = true;
           break;
@@ -736,8 +789,6 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.North))
         {
           exitPawnSMPlayingNorthSouthNorthSouth();
-        // line 62 "../../../../../PawnStateMachine.ump"
-          updateMove(-1,0);
           setPawnSMPlayingNorthSouthNorthSouth(PawnSMPlayingNorthSouthNorthSouth.MiddleNS);
           wasEventProcessed = true;
           break;
@@ -753,6 +804,8 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.North))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 91 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
           wasEventProcessed = true;
           break;
@@ -762,31 +815,30 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.North))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 99 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
         }
         break;
-      case AtWestEdge:
-        exitPawnSMPlayingEastWestEastWest();
-        // line 109 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestEdge);
-        wasEventProcessed = true;
-        break;
       case AtWestBorder:
         if (isLegalDiagonalMove(MoveDirection.North))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 117 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestEdge);
           wasEventProcessed = true;
           break;
         }
         break;
       case MiddleEW:
-        if (getCurrentPawnColumn()==3&&isLegalDiagonalMove(MoveDirection.East))
+        if (getCurrentPawnColumn()==3&&isLegalDiagonalMove(MoveDirection.North))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 141 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
           wasEventProcessed = true;
           break;
@@ -794,129 +846,12 @@ public class PawnBehavior
         if (isLegalDiagonalMove(MoveDirection.North))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 142 "../../../../../PawnStateMachine.ump"
+          updateMove(-1,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
         }
-        break;
-      default:
-        // Other states do respond to this event
-    }
-
-    return wasEventProcessed;
-  }
-
-  public boolean moveRight()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMPlayingEastWestEastWest aPawnSMPlayingEastWestEastWest = pawnSMPlayingEastWestEastWest;
-    switch (aPawnSMPlayingEastWestEastWest)
-    {
-      case AtEastEdge:
-        exitPawnSMPlayingEastWestEastWest();
-        // line 83 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastEdge);
-        wasEventProcessed = true;
-        break;
-      case AtEastBorder:
-        if (isLegalStep(MoveDirection.East))
-        {
-          exitPawnSMPlayingEastWestEastWest();
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        exitPawnSMPlayingEastWestEastWest();
-        // line 92 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
-        wasEventProcessed = true;
-        break;
-      case AtWestEdge:
-        if (isLegalStep(MoveDirection.East))
-        {
-          exitPawnSMPlayingEastWestEastWest();
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalJump(MoveDirection.East))
-        {
-          exitPawnSMPlayingEastWestEastWest();
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
-          wasEventProcessed = true;
-          break;
-        }
-        exitPawnSMPlayingEastWestEastWest();
-        // line 105 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestEdge);
-        wasEventProcessed = true;
-        break;
-      case AtWestBorder:
-        if (isLegalStep(MoveDirection.East))
-        {
-          exitPawnSMPlayingEastWestEastWest();
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalJump(MoveDirection.East))
-        {
-          exitPawnSMPlayingEastWestEastWest();
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
-          wasEventProcessed = true;
-          break;
-        }
-        exitPawnSMPlayingEastWestEastWest();
-        // line 117 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
-        wasEventProcessed = true;
-        break;
-      case MiddleEW:
-        if (isLegalStep(MoveDirection.East)&&getCurrentPawnColumn()==7)
-        {
-          exitPawnSMPlayingEastWestEastWest();
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalJump(MoveDirection.East)&&getCurrentPawnColumn()==7)
-        {
-          exitPawnSMPlayingEastWestEastWest();
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalJump(MoveDirection.East)&&getCurrentPawnColumn()==6)
-        {
-          exitPawnSMPlayingEastWestEastWest();
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalStep(MoveDirection.East))
-        {
-          exitPawnSMPlayingEastWestEastWest();
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalJump(MoveDirection.East))
-        {
-          exitPawnSMPlayingEastWestEastWest();
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
-          wasEventProcessed = true;
-          break;
-        }
-        exitPawnSMPlayingEastWestEastWest();
-        // line 134 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
-        wasEventProcessed = true;
         break;
       default:
         // Other states do respond to this event
@@ -936,31 +871,28 @@ public class PawnBehavior
         if (isLegalStep(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
-        // line 84 "../../../../../PawnStateMachine.ump"
+        // line 89 "../../../../../PawnStateMachine.ump"
           updateMove(0,-1);
-          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
           wasEventProcessed = true;
           break;
         }
         if (isLegalJump(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
-        // line 85 "../../../../../PawnStateMachine.ump"
-          updateMove(0,-1);
+        // line 90 "../../../../../PawnStateMachine.ump"
+          updateMove(0,-2);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
         }
-        exitPawnSMPlayingEastWestEastWest();
-        // line 86 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastEdge);
-        wasEventProcessed = true;
         break;
       case AtEastBorder:
         if (isLegalStep(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 96 "../../../../../PawnStateMachine.ump"
+          updateMove(0,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
@@ -968,41 +900,30 @@ public class PawnBehavior
         if (isLegalJump(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 97 "../../../../../PawnStateMachine.ump"
+          updateMove(0,-2);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
         }
-        exitPawnSMPlayingEastWestEastWest();
-        // line 95 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
-        wasEventProcessed = true;
-        break;
-      case AtWestEdge:
-        exitPawnSMPlayingEastWestEastWest();
-        // line 106 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestEdge);
-        wasEventProcessed = true;
         break;
       case AtWestBorder:
         if (isLegalStep(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 114 "../../../../../PawnStateMachine.ump"
+          updateMove(0,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestEdge);
           wasEventProcessed = true;
           break;
         }
-        exitPawnSMPlayingEastWestEastWest();
-        // line 119 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
-        wasEventProcessed = true;
         break;
       case MiddleEW:
         if (getCurrentPawnColumn()==3&&isLegalStep(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 135 "../../../../../PawnStateMachine.ump"
+          updateMove(0,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
           wasEventProcessed = true;
           break;
@@ -1010,6 +931,8 @@ public class PawnBehavior
         if (getCurrentPawnColumn()==3&&isLegalJump(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 136 "../../../../../PawnStateMachine.ump"
+          updateMove(0,-2);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestEdge);
           wasEventProcessed = true;
           break;
@@ -1017,6 +940,8 @@ public class PawnBehavior
         if (getCurrentPawnColumn()==4&&isLegalJump(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 137 "../../../../../PawnStateMachine.ump"
+          updateMove(0,-2);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
           wasEventProcessed = true;
           break;
@@ -1024,6 +949,8 @@ public class PawnBehavior
         if (isLegalStep(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 138 "../../../../../PawnStateMachine.ump"
+          updateMove(0,-1);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
@@ -1031,15 +958,12 @@ public class PawnBehavior
         if (isLegalJump(MoveDirection.West))
         {
           exitPawnSMPlayingEastWestEastWest();
+        // line 139 "../../../../../PawnStateMachine.ump"
+          updateMove(0,-2);
           setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
           wasEventProcessed = true;
           break;
         }
-        exitPawnSMPlayingEastWestEastWest();
-        // line 147 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
-        wasEventProcessed = true;
         break;
       default:
         // Other states do respond to this event
@@ -1048,17 +972,110 @@ public class PawnBehavior
     return wasEventProcessed;
   }
 
-  public boolean finishGame()
+  public boolean moveRight()
   {
     boolean wasEventProcessed = false;
     
     PawnSMPlayingEastWestEastWest aPawnSMPlayingEastWestEastWest = pawnSMPlayingEastWestEastWest;
     switch (aPawnSMPlayingEastWestEastWest)
     {
+      case AtEastBorder:
+        if (isLegalStep(MoveDirection.East))
+        {
+          exitPawnSMPlayingEastWestEastWest();
+        // line 95 "../../../../../PawnStateMachine.ump"
+          updateMove(0,1);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastEdge);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      case AtWestEdge:
+        if (isLegalStep(MoveDirection.East))
+        {
+          exitPawnSMPlayingEastWestEastWest();
+        // line 105 "../../../../../PawnStateMachine.ump"
+          updateMove(0,1);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtWestBorder);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isLegalJump(MoveDirection.East))
+        {
+          exitPawnSMPlayingEastWestEastWest();
+        // line 106 "../../../../../PawnStateMachine.ump"
+          updateMove(0,2);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
+      case AtWestBorder:
+        if (isLegalStep(MoveDirection.East))
+        {
+          exitPawnSMPlayingEastWestEastWest();
+        // line 112 "../../../../../PawnStateMachine.ump"
+          updateMove(0,1);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isLegalJump(MoveDirection.East))
+        {
+          exitPawnSMPlayingEastWestEastWest();
+        // line 113 "../../../../../PawnStateMachine.ump"
+          updateMove(0,2);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
+          wasEventProcessed = true;
+          break;
+        }
+        break;
       case MiddleEW:
-        exitPawnSM();
-        setPawnSM(PawnSM.Finished);
-        wasEventProcessed = true;
+        if (isLegalStep(MoveDirection.East)&&getCurrentPawnColumn()==7)
+        {
+          exitPawnSMPlayingEastWestEastWest();
+        // line 124 "../../../../../PawnStateMachine.ump"
+          updateMove(0,1);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isLegalJump(MoveDirection.East)&&getCurrentPawnColumn()==7)
+        {
+          exitPawnSMPlayingEastWestEastWest();
+        // line 125 "../../../../../PawnStateMachine.ump"
+          updateMove(0,2);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastEdge);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isLegalJump(MoveDirection.East)&&getCurrentPawnColumn()==6)
+        {
+          exitPawnSMPlayingEastWestEastWest();
+        // line 126 "../../../../../PawnStateMachine.ump"
+          updateMove(0,2);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.AtEastBorder);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isLegalStep(MoveDirection.East))
+        {
+          exitPawnSMPlayingEastWestEastWest();
+        // line 127 "../../../../../PawnStateMachine.ump"
+          updateMove(0,1);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
+          wasEventProcessed = true;
+          break;
+        }
+        if (isLegalJump(MoveDirection.East))
+        {
+          exitPawnSMPlayingEastWestEastWest();
+        // line 128 "../../../../../PawnStateMachine.ump"
+          updateMove(0,2);
+          setPawnSMPlayingEastWestEastWest(PawnSMPlayingEastWestEastWest.MiddleEW);
+          wasEventProcessed = true;
+          break;
+        }
         break;
       default:
         // Other states do respond to this event
@@ -1252,7 +1269,7 @@ public class PawnBehavior
   /**
    * Returns the current row number of the pawn
    */
-  // line 166 "../../../../../PawnStateMachine.ump"
+  // line 156 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
     if(player==currentGame.getWhitePlayer()) {
 			return currentGame.getCurrentPosition().getWhitePosition().getTile().getRow();
@@ -1264,7 +1281,7 @@ public class PawnBehavior
   /**
    * Returns the current column number of the pawn
    */
-  // line 174 "../../../../../PawnStateMachine.ump"
+  // line 164 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
     if(player==currentGame.getWhitePlayer()) {
 			return currentGame.getCurrentPosition().getWhitePosition().getTile().getColumn();
@@ -1276,7 +1293,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to step in the given direction
    */
-  // line 182 "../../../../../PawnStateMachine.ump"
+  // line 172 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(MoveDirection dir){
     HashMap<Integer, Boolean> wallMap = getWallMap();
 		int row = getCurrentPawnRow();
@@ -1290,7 +1307,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to jump in the given direction
    */
-  // line 192 "../../../../../PawnStateMachine.ump"
+  // line 182 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(MoveDirection dir){
     HashMap<Integer, Boolean> wallMap = getWallMap();
 		int row = getCurrentPawnRow();
@@ -1319,12 +1336,12 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 240 "../../../../../PawnStateMachine.ump"
+  // line 230 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     
   }
 
-  // line 242 "../../../../../PawnStateMachine.ump"
+  // line 232 "../../../../../PawnStateMachine.ump"
    private boolean isThereWallInDir(MoveDirection dir, int row, int col){
     HashMap<Integer, Boolean> wallMap = getWallMap();
 	  switch(dir) {
@@ -1350,7 +1367,7 @@ public class PawnBehavior
 	  return false;
   }
 
-  // line 266 "../../../../../PawnStateMachine.ump"
+  // line 256 "../../../../../PawnStateMachine.ump"
    private boolean isTherePlayerInDir(MoveDirection dir, int row, int col){
     PlayerPosition otherPlayerPosition = player.equals(currentGame.getWhitePlayer())?currentGame.getCurrentPosition().getBlackPosition():currentGame.getCurrentPosition().getWhitePosition();
 		int otherRow = otherPlayerPosition.getTile().getRow();
@@ -1372,7 +1389,7 @@ public class PawnBehavior
 	    return false;
   }
 
-  // line 286 "../../../../../PawnStateMachine.ump"
+  // line 276 "../../../../../PawnStateMachine.ump"
    private boolean isLegalDiagonalMove(MoveDirection dir){
     int row = getCurrentPawnRow();
 	int col = getCurrentPawnColumn();
@@ -1411,7 +1428,7 @@ public class PawnBehavior
    		return true;
   }
 
-  // line 323 "../../../../../PawnStateMachine.ump"
+  // line 313 "../../../../../PawnStateMachine.ump"
    private void updateMove(int i, int j){
     GamePosition clone = clonePosition(currentGame.getCurrentPosition());
 	    currentGame.setCurrentPosition(clone);
@@ -1423,24 +1440,24 @@ public class PawnBehavior
 	    playerpos.setTile(Quoridor223Controller.getTile(row+i,col+j));
   }
 
-  // line 333 "../../../../../PawnStateMachine.ump"
+  // line 323 "../../../../../PawnStateMachine.ump"
    private boolean isWinningMove(){
     if(isWhite()&&getCurrentPawnRow()==1)return true;
 	   if(!isWhite()&&getCurrentPawnRow()==9)return true;
 	   return false;
   }
 
-  // line 338 "../../../../../PawnStateMachine.ump"
+  // line 328 "../../../../../PawnStateMachine.ump"
    private boolean isWhite(){
     return player.equals(currentGame.getWhitePlayer());
   }
 
-  // line 341 "../../../../../PawnStateMachine.ump"
+  // line 331 "../../../../../PawnStateMachine.ump"
    private static  PlayerPosition clonePlayerPosition(PlayerPosition playerPos){
     return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
   }
 
-  // line 344 "../../../../../PawnStateMachine.ump"
+  // line 334 "../../../../../PawnStateMachine.ump"
    private static  GamePosition clonePosition(GamePosition oldPosition){
     PlayerPosition newWhitePosition = clonePlayerPosition(oldPosition.getWhitePosition());
 		PlayerPosition newBlackPosition = clonePlayerPosition(oldPosition.getBlackPosition());
@@ -1461,7 +1478,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 214 "../../../../../PawnStateMachine.ump"
+  // line 204 "../../../../../PawnStateMachine.ump"
   HashMap<Integer,Boolean> getWallMap () 
   {
     HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();		
@@ -1489,7 +1506,7 @@ public class PawnBehavior
 		return wallPositions;
   }
 
-// line 360 "../../../../../PawnStateMachine.ump"
+// line 350 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;

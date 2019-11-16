@@ -1052,6 +1052,7 @@ public class Quoridor223Controller {
 				}
 			} 
 		}
+		SwitchPlayer();
 	}
 	
 	/////////////////////////////////////////////////////
@@ -1368,6 +1369,9 @@ public class Quoridor223Controller {
 	 */
 	private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
 		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
+	}
+	public static String getCurrentColor() {
+		return isWhitePlayer()?"White":"Black";
 	}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
