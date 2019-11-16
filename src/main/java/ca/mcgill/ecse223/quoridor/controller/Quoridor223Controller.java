@@ -87,10 +87,10 @@ public class Quoridor223Controller {
 
 		// set player name according to their color
 		if (color.equals("white")) {
-			player = new Player(Time.valueOf("00:10:00"), user, 9, Direction.Horizontal);
+			player = new Player(Time.valueOf("00:10:00"), user, 1, Direction.Vertical);
 			curGame.setWhitePlayer(player);
 		} else {
-			player = new Player(Time.valueOf("00:10:00"), user, 1, Direction.Horizontal);
+			player = new Player(Time.valueOf("00:10:00"), user, 9, Direction.Vertical);
 			curGame.setBlackPlayer(player);
 		}
 	}
@@ -266,8 +266,8 @@ public class Quoridor223Controller {
 		}
 
 		// get tiles
-		Tile whitePlayerTile = quoridor.getBoard().getTile(36);
-		Tile blackPlayerTile = quoridor.getBoard().getTile(44);
+		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
 
 		Game currentGame = quoridor.getCurrentGame();
 
