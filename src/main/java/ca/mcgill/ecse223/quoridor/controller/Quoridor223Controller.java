@@ -431,48 +431,6 @@ public class Quoridor223Controller {
 //		SwitchPlayer();
 //	}
 	
-
-	/**
-	 * tryPawnMove 
-	 * @author Vanessa Ifrah
-	 * @param name
-	 * @param side
-	 * @throws GameNotRunningException
-	*/
-	public static boolean tryPawnMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
-		if (!isRunning()) throw new GameNotRunningException("Game not running");
-		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Board current_board = QuoridorApplication.getQuoridor().getBoard();
-		PlayerPosition current_position;
-		// get player moving
-		if(name.equals("black")) current_position = current_game.getCurrentPosition().getBlackPosition();
-		else current_position = current_game.getCurrentPosition().getWhitePosition();
-		//if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
-		//else current_position = current_game.getCurrentPosition().getBlackPosition();
-
-		int newRow = current_position.getTile().getRow()
-				+ (side == "up" ? -1 : side == "down" ? 1 : 0);
-		int newCol = current_position.getTile().getColumn()
-				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
-	
-		boolean error = false;
-		
-		//TODO: implement in pawn move legal to check if the positions are correct
-		// even if redundant regarding the sm
-		//try {
-		//	if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
-		//	if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
-		//} catch (Exception e) {
-		//	error = true;
-		//}	
-		
-		// set new tile
-		Tile next_tile = new Tile(newRow, newCol, current_board);
-		current_position.setTile(next_tile);
-		//SwitchPlayer();
-		
-		return !error;
-	}
 	
 	
 	/**
@@ -779,6 +737,7 @@ public class Quoridor223Controller {
 			if(curRow==newRow && wallPositions.get(cur_key).equals(Direction.Vertical) && cur_key==curRow*9+curCol) return false;
 			if(curCol==newCol && wallPositions.get(cur_key).equals(Direction.Horizontal) && cur_key==curRow*9+curCol) return false;
 		}
+		
 		return true;
 	}
 	/**
@@ -1001,6 +960,96 @@ public class Quoridor223Controller {
 		SwitchPlayer();
 	}
 
+	/**
+	 * tryPawnMove 
+	 * @author Vanessa Ifrah
+	 * @param name
+	 * @param side
+	 * @throws GameNotRunningException
+	*/
+	public static boolean tryPawnMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
+		if (!isRunning()) throw new GameNotRunningException("Game not running");
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Board current_board = QuoridorApplication.getQuoridor().getBoard();
+		PlayerPosition current_position;
+		// get player moving
+		if(name.equals("black")) current_position = current_game.getCurrentPosition().getBlackPosition();
+		else current_position = current_game.getCurrentPosition().getWhitePosition();
+		int row = current_position.getTile().getRow();
+		int col = current_position.getTile().getColumn();
+		
+		// transition to the sides languages
+		TOPlayer.Side dir;
+		if (side.equals("up")) {
+			//dir = TOPlayer.Side.Up;
+			movePawn(TOPlayer.Side.Up);
+		}
+		else if(side.equals("down")) {
+			//dir = TOPlayer.Side.Down;
+			movePawn(TOPlayer.Side.Down);
+		}
+		else if(side.equals("right")) {
+			//dir = TOPlayer.Side.Right;
+			movePawn(TOPlayer.Side.Right);
+		}
+		else if(side.equals("left")) {
+			//dir = TOPlayer.Side.Left;
+			movePawn(TOPlayer.Side.Left);
+		}
+		else if(side.equals("upright")) {
+			//dir = TOPlayer.Side.UpRight;
+			movePawn(TOPlayer.Side.UpRight);
+		}
+		else if(side.equals("upleft")) {
+			//dir = TOPlayer.Side.UpLeft;
+			movePawn(TOPlayer.Side.UpLeft);
+		}
+		else if(side.equals("downleft")) {
+			//dir = TOPlayer.Side.DownLeft;
+			movePawn(TOPlayer.Side.DownLeft);
+		}
+		else if(side.equals("downright")) {
+			//dir = TOPlayer.Side.DownRight;
+			movePawn(TOPlayer.Side.DownRight);
+		}
+		//else dir = TOPlayer.Side.Up; // default assignment
+		// attempt to move the pawn
+		//movePawn(dir);
+		System.out.println(String.format("switch to %s // old : row %d - col %d  new: row %d - col %d", side, current_position.getTile().getRow(), current_position.getTile().getColumn(), row, col));		
+	
+		if(current_position.getTile().getRow()==row&&current_position.getTile().getColumn()==col) {
+			//SwitchPlayer();	// should we switch player here ?
+			return false;
+		}
+		else {
+			SwitchPlayer();
+			return true;
+		}
+		//if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
+		//else current_position = current_game.getCurrentPosition().getBlackPosition();
+		
+		// down ++ right ++
+		//int newRow = current_position.getTile().getRow() + (side.contains("left") ? -1 : side.contains("right") ? 1 : 0);
+		//int newCol = current_position.getTile().getColumn() + (side.contains("up") ? -1 :side.contains("down") ? 1 : 0);
+		
+		
+		
+		//TODO: implement in pawn move legal to check if the positions are correct
+		// even if redundant regarding the sm
+		//try {
+		///	if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
+		//	if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+		//} catch (Exception e) {
+		//	error = true;
+		//}	
+		
+		// set new tile
+		//Tile next_tile = new Tile(newRow, newCol, current_board);
+		// current_position.setTile(next_tile);
+		//SwitchPlayer();
+		//return error;
+	}
+	
 	/////////////////////////////////////////////////////
 	//////////// Move Pawn and Jump Pawn/////////////////
 	/////////////////////////////////////////////////////

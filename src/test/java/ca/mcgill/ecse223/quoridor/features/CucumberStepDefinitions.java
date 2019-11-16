@@ -526,8 +526,8 @@ public class CucumberStepDefinitions {
 	public void thePlayerIsLocatedAt(int row, int col) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		// check if the setting method for player to move did work
-		//if(curGame.getBlackPlayer().equals(curGame.getCurrentPosition().getPlayerToMove())) System.out.println("black player moving");
-		//else System.out.println("white player moving");
+		if(curGame.getBlackPlayer().equals(curGame.getCurrentPosition().getPlayerToMove())) System.out.println("black player moving");
+		else System.out.println("white player moving");
 		String player = "player";
 		assertTrue("The player is not located at {int}:{int}", playerIsLocatedAt(player, row, col));
 	}
@@ -542,7 +542,6 @@ public class CucumberStepDefinitions {
 	public static void thereAreNoWallsFromThePlayerNearBy(String dir, String side) {
 		// should this method simply check that there are no walls from the player near by ? or set the board to conform ?
 		assertTrue("There are {string} walls {string} from the player nearby", hasWallsFromThePlayerNearby(dir, side));
-		
 	}
 	
 	@And("The opponent is not {string} from the player")
@@ -571,7 +570,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("Player's new position shall be {int}:{int}")
 	public void playerNewPositionShallBe(int row, int col){
-		System.out.println(String.format("{} {}", row, col));
+		//System.out.println(String.format("%d %d", row, col));
 		assertTrue("invalid position", checkCurrentPlayerPosition(row, col));
 	}
 	
@@ -579,9 +578,11 @@ public class CucumberStepDefinitions {
 	 * Then
 	 * @author Mitchell Keeley
 	 * @param color
+	 * @throws GameNotRunningException 
+	 * @throws UnsupportedOperationException 
 	 */
 	@And("The next player to move shall become {string}")
-	public void theNextPlayerToMoveBeCome(String color) {
+	public void theNextPlayerToMoveBeCome(String color) throws UnsupportedOperationException, GameNotRunningException {
 		assertTrue("next player not set properly", checkCurrentPlayerToMoveByColor(color));
 	}
 	
@@ -702,14 +703,25 @@ public class CucumberStepDefinitions {
 		// defines walls near the player
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player current_player;
+		String color;
 		PlayerPosition current_position;
+		
+		// player to move has been defined precedently
 		if(player.equals("player")) current_player = current_game.getCurrentPosition().getPlayerToMove();
 		else current_player = current_game.getCurrentPosition().getPlayerToMove().getNextPlayer();
 		
-		if(current_player.equals(current_game.getBlackPlayer())) current_position = current_game.getCurrentPosition().getBlackPosition();
-		else current_position = current_game.getCurrentPosition().getWhitePosition();
+		if(current_player.equals(current_game.getBlackPlayer())) {
+			current_position = current_game.getCurrentPosition().getBlackPosition();
+			color = "black";
+		}
+		else {
+			current_position = current_game.getCurrentPosition().getWhitePosition();
+			color = "white";
+		}
+		
 		// check definition of columns and rows
-		Tile new_position = new Tile(col, row, QuoridorApplication.getQuoridor().getBoard());
+		Tile new_position = new Tile(row, col, QuoridorApplication.getQuoridor().getBoard());
+		System.out.println(String.format("%s %s is located at row %d - col %d", color, player, row, col));
 		return current_position.setTile(new_position);
 		// check if the position of the player is the correct position
 		//if (current_position.getTile().getColumn()!=col||current_position.getTile().getRow()!=row) return false;		
@@ -1601,8 +1613,7 @@ public class CucumberStepDefinitions {
 	 */
 	public static boolean checkCurrentPlayerToMoveByColor(String playerColor) {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		
-		return game.getCurrentPosition().getPlayerToMove().equals(getPlayerByColor(playerColor));
+		return game.getCurrentPosition().getPlayerToMove().getNextPlayer().equals(getPlayerByColor(playerColor));
 	}
 	
 	/**
@@ -1674,14 +1685,19 @@ public class CucumberStepDefinitions {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game game = quoridor.getCurrentGame();
 		PlayerPosition playerPosition;
+		String color;
 		// why we need not to change the player in the try pawn move method => otherwise swaps everything here
 		if (game.getWhitePlayer().equals(game.getCurrentPosition().getPlayerToMove())) {
 			playerPosition = game.getCurrentPosition().getWhitePosition();
+			color = "white";
 		} else {
 			playerPosition = game.getCurrentPosition().getBlackPosition();
+			color = "black";
 		}
 		
 		Tile tile = playerPosition.getTile();
+		System.out.println(String.format("expected %s player position: row %d col %d", color, row, col));
+		System.out.println(String.format("actual %s player position: row %d col %d", color, tile.getRow(), tile.getColumn()));
 		if (tile.getRow() == row && tile.getColumn() == col) {
 			return true;
 		} else {
