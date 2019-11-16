@@ -851,7 +851,7 @@ public class Quoridor223Controller {
 	 * @author Sacha Lévy
 	 * @return wallPositions
 	 * */
-	private static HashMap<Integer, Boolean> loadWallPositionsMap() throws InvalidOperationException{
+	public static HashMap<Integer, Boolean> loadWallPositionsMap() throws InvalidOperationException{
 		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		
