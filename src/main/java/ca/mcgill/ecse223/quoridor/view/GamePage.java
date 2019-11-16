@@ -608,6 +608,9 @@ public class GamePage extends JFrame {
 		if(dir.equalsIgnoreCase("RIGHT"))btnRight.doClick();
 
 	}
+	public void clickMovePlayer(String dir) {
+		
+	}
 	public boolean isWhiteClockRunning() {
 		return whiteClockIsRunning;
 	}
