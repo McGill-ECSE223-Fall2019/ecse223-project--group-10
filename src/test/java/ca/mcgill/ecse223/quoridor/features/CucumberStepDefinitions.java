@@ -458,8 +458,7 @@ public class CucumberStepDefinitions {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		GamePosition position = quoridor.getCurrentGame().getCurrentPosition();
 		Tile whiteTile = position.getWhitePosition().getTile();
-
-		assertEquals(whiteTile, quoridor.getBoard().getTile(36));
+		assertEquals(whiteTile, quoridor.getBoard().getTile(76));
 	}
 
 	/**
@@ -471,7 +470,7 @@ public class CucumberStepDefinitions {
 		GamePosition position = quoridor.getCurrentGame().getCurrentPosition();
 		Tile blackTile = position.getBlackPosition().getTile();
 
-		assertEquals(blackTile, quoridor.getBoard().getTile(44));
+		assertEquals(blackTile, quoridor.getBoard().getTile(4));
 	}
 
 	/**
@@ -550,18 +549,17 @@ public class CucumberStepDefinitions {
 	}
 	
 	@When("Player {string} initiates to move {string}")
-	public void playerInitiatesToMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
-		playerTryingToMove = name;
-		moveSuccessful = Quoridor223Controller.tryPawnMove(name, side);
-			
+	public void playerInitiatesToMove(String color, String side) throws GameNotRunningException, InvalidOperationException {
+		playerTryingToMove = color;
+		gamePage.clickMovePlayer(side);
 	}
 	
 	@Then("The move {string} shall be {string}")
 	public void theMoveSideShallBeStatus(String side, String status) throws GameNotRunningException, InvalidOperationException {
-		
-		if (status == "success") assertTrue(moveSuccessful);
-		else assertFalse(moveSuccessful);
-		
+		boolean valid = false;	
+		if(!gamePage.getGameMessage().equals("Illegal Move")&& status.equals("success"))valid = true;
+		if(gamePage.getGameMessage().equals("Illegal Move")&& status.equals("illegal"))valid = true;
+		assertTrue("Illegal move are made or legal move are not made",valid);
 	}
 	
 	/**
