@@ -45,6 +45,10 @@ public class QuoridorApplication {
 		}
 		return blackBehavior;
 	}
+	public static void delete() {
+		blackBehavior= null;
+		whiteBehavior= null;
+	}
 	public static void setMainPage() {
 		if(timePage != null) {
 			timePage.setVisible(false);

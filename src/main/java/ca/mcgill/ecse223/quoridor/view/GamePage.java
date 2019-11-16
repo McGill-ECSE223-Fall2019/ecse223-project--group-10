@@ -219,6 +219,7 @@ public class GamePage extends JFrame {
 		// set game to run
 		boardComponent.repaint();
 		Quoridor223Controller.setGameToRun();
+		//TODO: implement moving witht eh keyboard directions commands
 		
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -236,6 +237,10 @@ public class GamePage extends JFrame {
 				} catch (GameNotRunningException eGrab) {
 					gameMessage.setText(eGrab.getLocalizedMessage());
 				}
+				btnUpRight.setEnabled(false);
+				btnUpLeft.setEnabled(false);
+				btnDownRight.setEnabled(false);
+				btnDownLeft.setEnabled(false);
 				boardComponent.repaint();
 			}
 		});
@@ -246,6 +251,7 @@ public class GamePage extends JFrame {
 		
 		btnUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				if(hasWallInHand() == true) {
 					try {
 						// add parameter if no wall selected then simply move pawn
@@ -263,6 +269,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.Up);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -291,6 +298,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.Down);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -318,6 +326,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.Left);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -345,6 +354,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.Right);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -364,6 +374,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.UpRight);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -381,6 +392,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.UpLeft);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -398,6 +410,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.DownRight);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -415,6 +428,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.DownLeft);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -456,6 +470,10 @@ public class GamePage extends JFrame {
 					gameMessage.setText(ex.getMessage());
 					// TODO: handle exception
 				}
+				btnUpRight.setEnabled(true);
+				btnUpLeft.setEnabled(true);
+				btnDownRight.setEnabled(true);
+				btnDownLeft.setEnabled(true);
 				boardComponent.repaint();
 			}
 
@@ -591,6 +609,35 @@ public class GamePage extends JFrame {
 		if(dir.equalsIgnoreCase("LEFT"))btnLeft.doClick();
 		if(dir.equalsIgnoreCase("RIGHT"))btnRight.doClick();
 
+	}
+	public void clickMovePlayer(String dir) {
+		
+		switch (dir) {
+		case "up":
+			btnUp.doClick();
+			break;
+		case "down":
+			btnDown.doClick();
+			break;
+		case "left":
+			btnLeft.doClick();
+			break;
+		case "right":
+			btnRight.doClick();
+			break;
+		case "upleft":
+			btnUpRight.doClick();
+			break;
+		case "upright":
+			btnUpRight.doClick();
+			break;
+		case "downleft":
+			btnDownLeft.doClick();
+			break;
+		case "downright":
+			btnDownRight.doClick();
+			break;
+		}
 	}
 	public boolean isWhiteClockRunning() {
 		return whiteClockIsRunning;

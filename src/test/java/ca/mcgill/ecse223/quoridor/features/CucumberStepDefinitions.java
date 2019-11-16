@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -19,6 +20,7 @@ import javax.swing.JOptionPane;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
+import ca.mcgill.ecse223.quoridor.controller.PawnBehavior;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -56,9 +58,9 @@ public class CucumberStepDefinitions {
 	private String cucumberFilename	= null;
 	private GamePage gamePage;
 	private boolean loadSuccessful = false;
-	private boolean moveSuccessful = false;
 	private ArrayList<Player> createUsersAndPlayers;
 	private String gameDirectory = "./src/main/resources/gameFiles/";
+	private String playerTryingToMove = null;
 
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
@@ -71,6 +73,8 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
+		QuoridorApplication.GetWhitePawnBehavior();
+		QuoridorApplication.GetBlackPawnBehavior();
 		gamePage = new GamePage();
 	}
 
@@ -267,7 +271,7 @@ public class CucumberStepDefinitions {
 	@And("The board shall be initialized")
 	public void theBoardShallBeInitialized() {
 		assertEquals(QuoridorApplication.getQuoridor().hasBoard(), true);
-
+		
 	}
 
 	/**
@@ -414,7 +418,6 @@ public class CucumberStepDefinitions {
 	@Then("Both players shall have {int}:{int} remaining time left")
 	public void bothPlayerShallHaveSameRemainingTime(int min, int sec) {
 		
-
 		// get remaining time of both player
 		Time playerBlackTime = Quoridor223Controller.getRemainingTime("white");
 		Time playerWhiteTime = Quoridor223Controller.getRemainingTime("black");
@@ -457,8 +460,7 @@ public class CucumberStepDefinitions {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		GamePosition position = quoridor.getCurrentGame().getCurrentPosition();
 		Tile whiteTile = position.getWhitePosition().getTile();
-
-		assertEquals(whiteTile, quoridor.getBoard().getTile(36));
+		assertEquals(whiteTile, quoridor.getBoard().getTile(76));
 	}
 
 	/**
@@ -470,7 +472,7 @@ public class CucumberStepDefinitions {
 		GamePosition position = quoridor.getCurrentGame().getCurrentPosition();
 		Tile blackTile = position.getBlackPosition().getTile();
 
-		assertEquals(blackTile, quoridor.getBoard().getTile(44));
+		assertEquals(blackTile, quoridor.getBoard().getTile(4));
 	}
 
 	/**
@@ -524,17 +526,29 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	@And("The player is located at {int}:{int}")
 	public void thePlayerIsLocatedAt(int row, int col) {
-		
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		// check if the setting method for player to move did work
+		if(curGame.getBlackPlayer().equals(curGame.getCurrentPosition().getPlayerToMove())) System.out.println("black player moving");
+		else System.out.println("white player moving");
+		String player = "player";
+		assertTrue("The player is not located at {int}:{int}", playerIsLocatedAt(player, row, col));
 	}
 	
 	@And("The opponent is located at {int}:{int}")
 	public void theOpponentIsLocatedAt(int row, int col) {
-		
+		String player = "opponent";
+		assertTrue("The opponent is not located at {int}:{int}", playerIsLocatedAt(player, row, col));
 	}
 	
 	@And("There are no {string} walls {string} from the player nearby")
-	public static void noWallLeftFromThePlayerNearBy(String dir, String side) {
-		
+	public static void thereAreNoWallsFromThePlayerNearBy(String dir, String side) {
+		// should this method simply check that there are no walls from the player near by ? or set the board to conform ?
+		assertTrue("There are {string} walls {string} from the player nearby", hasWallsFromThePlayerNearby(dir, side));
+	}
+	
+	@And("The opponent is not {string} from the player")
+	public void theOpponentIsNotSideFromThePlayer(String side) {
+		assertFalse("The opponent is {string} from the player", isOpponentSideFromThePlayer(side));
 	}
 	
 	
@@ -543,24 +557,21 @@ public class CucumberStepDefinitions {
 		
 	}
 	
-	@And("The opponent is not {string} from the player")
-	public void theOpponentIsNotSideFromThePlayer(String side) {
-		
-	}
-	
 	@When("Player {string} initiates to move {string}")
-	public void playerInitiatesToMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
-	
-		moveSuccessful = Quoridor223Controller.tryPawnMove(name, side);
-			
+	public void playerInitiatesToMove(String color, String side) throws GameNotRunningException, InvalidOperationException {
+		playerTryingToMove = color;
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
+		gamePage.clickMovePlayer(side);
 	}
 	
 	@Then("The move {string} shall be {string}")
 	public void theMoveSideShallBeStatus(String side, String status) throws GameNotRunningException, InvalidOperationException {
-		
-		if (status == "success") assertTrue(moveSuccessful);
-		else assertFalse(moveSuccessful);
-		
+		boolean valid = false;	
+		if(!gamePage.getGameMessage().equals("Illegal Move") && status.equals("success"))valid = true;
+		if(gamePage.getGameMessage().equals("Illegal Move") && status.equals("illegal"))valid = true;
+		if(!valid)System.out.println("----------------------------------------------"+ gamePage.getGameMessage());
+		assertTrue("Illegal move are made or legal move are not made",valid);
 	}
 	
 	/**
@@ -571,16 +582,18 @@ public class CucumberStepDefinitions {
 	 */
 	@And("Player's new position shall be {int}:{int}")
 	public void playerNewPositionShallBe(int row, int col){
-		assertTrue("invalid position", checkCurrentPlayerPosition(row, col));
+		assertTrue("invalid position", checkPlayerPositionByColor(playerTryingToMove, row, col));
 	}
 	
 	/**
 	 * Then
 	 * @author Mitchell Keeley
 	 * @param color
+	 * @throws GameNotRunningException 
+	 * @throws UnsupportedOperationException 
 	 */
 	@And("The next player to move shall become {string}")
-	public void theNextPlayerToMoveBeCome(String color) {
+	public void theNextPlayerToMoveBeCome(String color) throws UnsupportedOperationException, GameNotRunningException {
 		assertTrue("next player not set properly", checkCurrentPlayerToMoveByColor(color));
 	}
 	
@@ -596,6 +609,133 @@ public class CucumberStepDefinitions {
 	@And("There is a {string} wall at {int}:{int}")
 	public void thereIsAWall(String dir, int row, int col) throws GameNotRunningException, InvalidOperationException {
 		placeWallWithDirectionAt(dir, row, col);
+	}
+	
+	
+	private static boolean isOpponentSideFromThePlayer(String side) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player current_player = current_game.getCurrentPosition().getPlayerToMove();
+		PlayerPosition current_position;
+		PlayerPosition opponent_position;
+		
+		if(current_player.equals(current_game.getBlackPlayer())) {
+			current_position = current_game.getCurrentPosition().getBlackPosition();
+			opponent_position = current_game.getCurrentPosition().getWhitePosition();
+		}
+		else {
+			current_position = current_game.getCurrentPosition().getWhitePosition();
+			opponent_position = current_game.getCurrentPosition().getBlackPosition();
+		} 
+		
+		// inversion of directions because our board is filpped 90° ?
+		if(side.equals("up")) {
+			// up == col ++
+			if(current_position.getTile().getColumn()+1==opponent_position.getTile().getColumn()) return true;
+		}
+		else if (side.equals("down")) {
+			// down == col --
+			if(current_position.getTile().getColumn()-1==opponent_position.getTile().getColumn()) return true;
+		}
+		else if (side.equals("right")) {
+			// down == row ++
+			if(current_position.getTile().getRow()+1==opponent_position.getTile().getRow()) return true;
+		}
+		else if (side.equals("left")) {
+			// down == row --
+			if(current_position.getTile().getRow()-1==opponent_position.getTile().getRow()) return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * @param dir
+	 * @param side
+	 * @return hasWallsFromThePlayerNearby
+	 * */
+	private static boolean hasWallsFromThePlayerNearby(String dir, String side) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player current_player = current_game.getCurrentPosition().getPlayerToMove();
+		PlayerPosition current_position;
+		String player;
+		
+		if(current_player.equals(current_game.getBlackPlayer())) {
+			current_position = current_game.getCurrentPosition().getBlackPosition();
+			player = "black";
+		}
+		else {
+			current_position = current_game.getCurrentPosition().getWhitePosition();
+			player = "white";
+		} 
+		int row = current_position.getTile().getRow();
+		int col = current_position.getTile().getColumn();
+		
+		// check if there is a wall from the player to Move nearby 
+		boolean direction = dir.equals("horizontal") ? true : false;
+		HashMap<Integer, Boolean> player_walls = loadPlayerWallsHash(player);
+			
+		// row ++ col --
+		if(side.equals("upleft")) if(player_walls.get((row+1)*9+col-1)!=null) return false; 
+		// row ++ col ++
+		else if(side.equals("upright")) if(player_walls.get((row+1)*9+col+1)!=null) return false; 
+		// row -- col --
+		else if(side.equals("downleft")) if(player_walls.get((row-1)*9+col-1)!=null) return false; 
+		// row -- col ++
+		else if(side.equals("downright")) if(player_walls.get((row-1)*9+col+1)!=null) return false; 
+		else return true;
+		
+		return true;
+	}
+	
+	private static HashMap<Integer, Boolean> loadPlayerWallsHash(String color) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
+		List<Wall> walls;
+		if(color.equals("black")) walls = current_game.getCurrentPosition().getBlackWallsOnBoard();
+		else walls = current_game.getCurrentPosition().getWhiteWallsOnBoard();
+		for(Wall wall: walls) {
+			WallMove wall_move = wall.getMove();
+			int row = wall_move.getTargetTile().getRow();
+			int col = wall_move.getTargetTile().getColumn();
+			boolean dir_attr = false;
+			if (wall_move.getWallDirection().equals(Direction.Horizontal))
+				dir_attr = true;
+			wallPositions.put(row * 9 + col, dir_attr);
+		}
+		return wallPositions;
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * @param player, row, col
+	 * @return isThePlayerAtExpectedLocation
+	 * */
+	private boolean playerIsLocatedAt(String player, int row, int col) {
+		// defines walls near the player
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player current_player;
+		String color;
+		PlayerPosition current_position;
+		
+		// player to move has been defined precedently
+		if(player.equals("player")) current_player = current_game.getCurrentPosition().getPlayerToMove();
+		else current_player = current_game.getCurrentPosition().getPlayerToMove().getNextPlayer();
+		
+		if(current_player.equals(current_game.getBlackPlayer())) {
+			current_position = current_game.getCurrentPosition().getBlackPosition();
+			color = "black";
+		}
+		else {
+			current_position = current_game.getCurrentPosition().getWhitePosition();
+			color = "white";
+		}
+		
+		// check definition of columns and rows
+		Tile new_position = new Tile(row, col, QuoridorApplication.getQuoridor().getBoard());
+		System.out.println(String.format("%s %s is located at row %d - col %d", color, player, row, col));
+		return current_position.setTile(new_position);
+		// check if the position of the player is the correct position
+		//if (current_position.getTile().getColumn()!=col||current_position.getTile().getRow()!=row) return false;		
 	}
 	
 	/**
@@ -1180,13 +1320,25 @@ public class CucumberStepDefinitions {
 	@After
 	public void tearDown() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		PawnBehavior white = QuoridorApplication.GetWhitePawnBehavior();
+		PawnBehavior black = QuoridorApplication.GetBlackPawnBehavior();
 		// Avoid null pointer for step definitions that are not yet implemented.
 		// gamePage.delete();
 		gamePage = null;
+		
 		if (quoridor != null) {
 			quoridor.delete();
 			quoridor = null;
 		}
+		if(white!=null) {
+			white.delete();
+			white = null;
+		}
+		if(black!=null) {
+			black.delete();
+			black = null;
+		}
+		QuoridorApplication.delete();
 		for (int i = 0; i < 20; i++) {
 			Wall wall = Wall.getWithId(i + 1);
 			if (wall != null) {
@@ -1484,7 +1636,6 @@ public class CucumberStepDefinitions {
 	 */
 	public static boolean checkCurrentPlayerToMoveByColor(String playerColor) {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		
 		return game.getCurrentPosition().getPlayerToMove().equals(getPlayerByColor(playerColor));
 	}
 	
@@ -1505,7 +1656,7 @@ public class CucumberStepDefinitions {
 		Wall curWall = curPlayer.getWalls().get(curPlayer.getWalls().size()-1);
 		
 		WallMove candidate = new WallMove(moveNum, roundNum, curPlayer,
-				Quoridor223Controller.getTile(row, col), game, stringToDirection(direction), curWall);
+		Quoridor223Controller.getTile(row, col), game, stringToDirection(direction), curWall);
 		
 		game.setWallMoveCandidate(candidate);
 		
@@ -1557,14 +1708,19 @@ public class CucumberStepDefinitions {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game game = quoridor.getCurrentGame();
 		PlayerPosition playerPosition;
-		
+		String color;
+		// why we need not to change the player in the try pawn move method => otherwise swaps everything here
 		if (game.getWhitePlayer().equals(game.getCurrentPosition().getPlayerToMove())) {
 			playerPosition = game.getCurrentPosition().getWhitePosition();
+			color = "white";
 		} else {
 			playerPosition = game.getCurrentPosition().getBlackPosition();
+			color = "black";
 		}
 		
 		Tile tile = playerPosition.getTile();
+		System.out.println(String.format("expected %s player position: row %d col %d", color, row, col));
+		System.out.println(String.format("actual %s player position: row %d col %d", color, tile.getRow(), tile.getColumn()));
 		if (tile.getRow() == row && tile.getColumn() == col) {
 			return true;
 		} else {
@@ -1681,6 +1837,8 @@ public class CucumberStepDefinitions {
 			return game.getBlackPlayer();
 		}
 	}
+	
+// ValidatePosition feature
 	
 	/**
 	 * ValidatePosition.feature
@@ -1804,17 +1962,17 @@ public class CucumberStepDefinitions {
 	 * */
 	@Given("The player to move is {string}")
 	public void the_player_to_move_is(String string) {
-		// Write code here that turns the phrase above into concrete actions
-		if(string.equalsIgnoreCase("black")) {
-			gamePage.clickGrabWall();
-			gamePage.clickDropWall();
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
+		// Why the commented area needed ??
+		//if(string.equalsIgnoreCase("black")) {
+		//	gamePage.clickGrabWall();
+		//	gamePage.clickDropWall();
+		//	try {
+		//		Thread.sleep(1000);
+		//	} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		//		e.printStackTrace();
+		//	}
+		//}
 		assertEquals(true, Quoridor223Controller.setCurrentPlayerToMoveByColor(string));
 		//System.out.println(Quoridor223Controller.currentStatePlayers());
 	}
@@ -1827,6 +1985,7 @@ public class CucumberStepDefinitions {
 	@Given("The clock of {string} is running")
 	public void the_clock_of_is_running(String string) {
 		try {
+			Thread.sleep(3000);	// when setting long clock the feature still passes
 			assertEquals(true, isClockRunning(string));
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
