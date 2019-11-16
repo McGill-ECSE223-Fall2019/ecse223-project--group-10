@@ -5,32 +5,3 @@ Enan
 Mitchell
 Max
 Bob
-
-Daniel
-Marton
-Daniel
-Marton
-Daniel
-Marton
-Daniel
-<<<<<<< HEAD
-Marton
-Daniel
-Marton
-=======
->>>>>>> origin/master
-
-Daniel
-Marton
-Daniel
-=======
->>>>>>> origin/master
-Marton
-Daniel
-Marton
-Daniel
-Marton
-Daniel
-Marton
-Daniel
-Marton
