@@ -57,7 +57,6 @@ public class CucumberStepDefinitions {
 	private String cucumberFilename	= null;
 	private GamePage gamePage;
 	private boolean loadSuccessful = false;
-	private boolean moveSuccessful = false;
 	private ArrayList<Player> createUsersAndPlayers;
 	private String gameDirectory = "./src/main/resources/gameFiles/";
 
@@ -72,6 +71,8 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
+		QuoridorApplication.GetWhitePawnBehavior();
+		QuoridorApplication.GetBlackPawnBehavior();
 		gamePage = new GamePage();
 	}
 
@@ -555,7 +556,9 @@ public class CucumberStepDefinitions {
 	}
 	
 	@When("Player {string} initiates to move {string}")
-	public void playerInitiatesToMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
+	public void playerInitiatesToMove(String name, String side){
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
 		gamePage.clickMovePlayer(side);
 	}
 	
@@ -564,6 +567,7 @@ public class CucumberStepDefinitions {
 		boolean valid = false;	
 		if(!gamePage.getGameMessage().equals("Illegal Move")&& status.equals("success"))valid = true;
 		if(gamePage.getGameMessage().equals("Illegal Move")&& status.equals("illegal"))valid = true;
+		System.out.println("-------------------"+gamePage.getGameMessage());
 		assertTrue("Illegal move are made or legal move are not made",valid);
 	}
 	
@@ -575,7 +579,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("Player's new position shall be {int}:{int}")
 	public void playerNewPositionShallBe(int row, int col){
-		//System.out.println(String.format("%d %d", row, col));
+		System.out.println(String.format("%d %d", row, col));
 		assertTrue("invalid position", checkCurrentPlayerPosition(row, col));
 	}
 	
