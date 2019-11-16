@@ -432,6 +432,44 @@ public class Quoridor223Controller {
 //	}
 	
 	
+	/**
+	 * tryPawnMove 
+	 * @author Vanessa Ifrah
+	 * @param name
+	 * @param side
+	 * @throws GameNotRunningException
+	*//*
+	public static boolean tryPawnMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
+		if (!isRunning()) throw new GameNotRunningException("Game not running");
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Board current_board = QuoridorApplication.getQuoridor().getBoard();
+		
+		// get player moving
+		PlayerPosition current_position;
+		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
+		else current_position = current_game.getCurrentPosition().getBlackPosition();
+
+		int newRow = current_position.getTile().getRow()
+				+ (side == "up" ? -1 : side == "down" ? 1 : 0);
+		int newCol = current_position.getTile().getColumn()
+				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
+
+		boolean error = false;
+		try {
+			if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
+			if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+		} catch (Exception e) {
+			error = true;
+		}	
+		
+		// set new tile
+		Tile next_tile = getTile(newRow, newCol);
+		current_position.setTile(next_tile);
+		SwitchPlayer();
+		
+		return error;
+	}*/
+	
 	
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin
@@ -617,7 +655,7 @@ public class Quoridor223Controller {
 		Board current_board = QuoridorApplication.getQuoridor().getBoard();
 		// arbitrarily get the black position
 		PlayerPosition current_player_pos = current_position.getBlackPosition();
-		Tile current_black_tile = new Tile(int1, int2, current_board);
+		Tile current_black_tile = getTile(int1, int2);
 		return current_player_pos.setTile(current_black_tile);
 	}
 	
@@ -663,7 +701,7 @@ public class Quoridor223Controller {
 		// work with black walls
 		Wall curWall = current_game.getCurrentPosition().getBlackWallsInStock(0);
 		current_game.getCurrentPosition().removeBlackWallsInStock(curWall);
-		Tile target_tile = new Tile(int1, int2, current_board);
+		Tile target_tile = getTile(int1, int2);
 		WallMove curWallMove = new WallMove(moveNum, roundNum + 1, current_game.getBlackPlayer(), target_tile, current_game, dir, curWall);
 		return current_game.setWallMoveCandidate(curWallMove);		
 	}
@@ -1698,17 +1736,17 @@ public class Quoridor223Controller {
 			
 			// if the white player data is on the first line
 			if(saveFileFirstLine.contains("W:")) {
-				whiteTile = new Tile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileFirstLine.charAt(4)), board);
-				blackTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileSecondLine.charAt(4)), board);
+				whiteTile = getTile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
+						Character.getNumericValue(saveFileFirstLine.charAt(4)));
+				blackTile = getTile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
+						Character.getNumericValue(saveFileSecondLine.charAt(4)));
 			}
 			// else, the black player data is on the first line
 			else {
-				blackTile = new Tile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileFirstLine.charAt(4)), board);
-				whiteTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileSecondLine.charAt(4)), board);
+				blackTile = getTile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
+						Character.getNumericValue(saveFileFirstLine.charAt(4)));
+				whiteTile =getTile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
+						Character.getNumericValue(saveFileSecondLine.charAt(4)));
 			}
 			
 			// create the new player positions

@@ -4,6 +4,7 @@ Enan
 Mitchell
 Max
 Bob
+<<<<<<< HEAD
 Daniel
 Marton
 Daniel
@@ -53,3 +54,5 @@ Daniel
 Marton
 Daniel
 Marton
+=======
+>>>>>>> origin/master
