@@ -1484,7 +1484,6 @@ public class PawnBehavior
     HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();		
 		//TODO: switch to player list (more convenient if 2+)
 		for (Wall wall : currentGame.getCurrentPosition().getBlackWallsOnBoard()) {
-			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
 			WallMove wall_move = wall.getMove();
 			int row = wall_move.getTargetTile().getRow();
 			int col = wall_move.getTargetTile().getColumn();
@@ -1494,7 +1493,6 @@ public class PawnBehavior
 			wallPositions.put(row * 9 + col, dir_attr);
 		}
 		for (Wall wall : currentGame.getCurrentPosition().getWhiteWallsOnBoard()) {
-			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
 			WallMove wall_move = wall.getMove();
 			int row = wall_move.getTargetTile().getRow();
 			int col = wall_move.getTargetTile().getColumn();
