@@ -549,15 +549,15 @@ public class CucumberStepDefinitions {
 	
 	@When("Player {string} initiates to move {string}")
 	public void playerInitiatesToMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
-		
+		gamePage.clickMovePlayer(side);
 	}
 	
 	@Then("The move {string} shall be {string}")
 	public void theMoveSideShallBeStatus(String side, String status) throws GameNotRunningException, InvalidOperationException {
-		
-		if (status == "success") assertTrue(moveSuccessful);
-		else assertFalse(moveSuccessful);
-		
+		boolean valid = false;	
+		if(!gamePage.getGameMessage().equals("Illegal Move")&& status.equals("success"))valid = true;
+		if(gamePage.getGameMessage().equals("Illegal Move")&& status.equals("illegal"))valid = true;
+		assertTrue("Illegal move are made or legal move are not made",valid);
 	}
 	
 	/**
