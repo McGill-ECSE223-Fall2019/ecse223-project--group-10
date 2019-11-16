@@ -286,6 +286,19 @@ class PawnBehavior {
    				else return false;
    				break;
    			case South:
+   				if(row==9||col==9)return false;
+   				if(isTherePlayerInDir(MoveDirection.South,row,col)) {
+   					if(isThereWallInDir(MoveDirection.South, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.South, row+1, col)&&(row+1)!=9)return false;
+   					if(isThereWallInDir(MoveDirection.East, row+1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.East, row, col)) {
+   					if(isThereWallInDir(MoveDirection.East, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.East, row, col+1)&&(col+1)!=9)return false;
+   					if(isThereWallInDir(MoveDirection.South, row, col+1))return false;
+   				}
+   				else return false;
+   				break;
    			case East:
    				if(row==1||col==9)return false;
    				if(isTherePlayerInDir(MoveDirection.North,row,col)) {
@@ -301,6 +314,19 @@ class PawnBehavior {
    				else return false;
    				break;
    			case West:
+   				if(row==9||col==1)return false;
+   				if(isTherePlayerInDir(MoveDirection.South,row,col)) {
+   					if(isThereWallInDir(MoveDirection.South, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.South, row+1, col)&&(row+1)!=9)return false;
+   					if(isThereWallInDir(MoveDirection.West, row+1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.West, row, col)) {
+   					if(isThereWallInDir(MoveDirection.West, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.West, row, col-1)&&(col-1)!=1)return false;
+   					if(isThereWallInDir(MoveDirection.South, row, col-1))return false;
+   				}
+   				else return false;
+   				break;
    		}
    		return true;
   }
