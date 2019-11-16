@@ -609,7 +609,25 @@ public class GamePage extends JFrame {
 
 	}
 	public void clickMovePlayer(String dir) {
-		
+		switch (dir) {
+		case "up":
+			btnUp.doClick();
+			break;
+		case "down":
+			break;
+		case "left":
+			break;
+		case "right":
+			break;
+		case "upleft":
+			break;
+		case "upright":
+			break;
+		case "downleft":
+			break;
+		case "downright":
+			break;
+		}
 	}
 	public boolean isWhiteClockRunning() {
 		return whiteClockIsRunning;
