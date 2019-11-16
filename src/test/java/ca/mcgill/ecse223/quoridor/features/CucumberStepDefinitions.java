@@ -457,8 +457,7 @@ public class CucumberStepDefinitions {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		GamePosition position = quoridor.getCurrentGame().getCurrentPosition();
 		Tile whiteTile = position.getWhitePosition().getTile();
-
-		assertEquals(whiteTile, quoridor.getBoard().getTile(36));
+		assertEquals(whiteTile, quoridor.getBoard().getTile(76));
 	}
 
 	/**
@@ -470,7 +469,7 @@ public class CucumberStepDefinitions {
 		GamePosition position = quoridor.getCurrentGame().getCurrentPosition();
 		Tile blackTile = position.getBlackPosition().getTile();
 
-		assertEquals(blackTile, quoridor.getBoard().getTile(44));
+		assertEquals(blackTile, quoridor.getBoard().getTile(4));
 	}
 
 	/**
@@ -549,17 +548,23 @@ public class CucumberStepDefinitions {
 		assertFalse("The opponent is {string} from the player", isOpponentSideFromThePlayer(side));
 	}
 	
+	
+	@And("There are no {string} walls {string} from the player")
+	public void thereAreNoWallsFromThePlayer(String dir, String side) {
+		
+	}
+	
 	@When("Player {string} initiates to move {string}")
 	public void playerInitiatesToMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
-		moveSuccessful = Quoridor223Controller.tryPawnMove(name, side);
+		gamePage.clickMovePlayer(side);
 	}
 	
 	@Then("The move {string} shall be {string}")
-	public void theMoveSideShallBeStatus(String side, String status) throws GameNotRunningException, InvalidOperationException, InterruptedException {
-		//System.out.println(moveSuccessful);
-		if (status.equals("success")) assertTrue(moveSuccessful);
-		else assertFalse(moveSuccessful);
-		
+	public void theMoveSideShallBeStatus(String side, String status) throws GameNotRunningException, InvalidOperationException {
+		boolean valid = false;	
+		if(!gamePage.getGameMessage().equals("Illegal Move")&& status.equals("success"))valid = true;
+		if(gamePage.getGameMessage().equals("Illegal Move")&& status.equals("illegal"))valid = true;
+		assertTrue("Illegal move are made or legal move are not made",valid);
 	}
 	
 	/**

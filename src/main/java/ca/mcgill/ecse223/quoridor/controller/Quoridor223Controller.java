@@ -268,10 +268,11 @@ public class Quoridor223Controller {
 		// get tiles
 		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
 		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
-
-		Game currentGame = quoridor.getCurrentGame();
-
+		
+		//Initialize the Pawn Behavior
+		
 		// create players' initial positions
+		Game currentGame = quoridor.getCurrentGame();
 		PlayerPosition whitePlayerPosition = new PlayerPosition(currentGame.getWhitePlayer(), whitePlayerTile);
 		PlayerPosition blackPlayerPosition = new PlayerPosition(currentGame.getBlackPlayer(), blackPlayerTile);
 		GamePosition gamePosition = new GamePosition(0, whitePlayerPosition, blackPlayerPosition,
@@ -293,7 +294,10 @@ public class Quoridor223Controller {
 
 		// set next player
 		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
-		
+		PawnBehavior whitebehavior = QuoridorApplication.GetWhitePawnBehavior();
+		PawnBehavior blackbehavior = QuoridorApplication.GetBlackPawnBehavior();
+		whitebehavior.startGame();
+		blackbehavior.startGame();
 	}
 
 	/**
@@ -354,8 +358,8 @@ public class Quoridor223Controller {
 			} else {
 				Wall curWall = curGame.getCurrentPosition().getWhiteWallsInStock(0);
 				curGame.getCurrentPosition().removeWhiteWallsInStock(curWall);
-				WallMove curWallMove = new WallMove(moveNum + 1, roundNum + 1, curPlayer, curBoard.getTile(36), curGame,
-						Direction.Vertical, curWall);
+				WallMove curWallMove = new WallMove(moveNum + 1, roundNum + 1, curPlayer, curBoard.getTile(67), curGame,
+						Direction.Horizontal, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
 			}
 		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
@@ -364,8 +368,8 @@ public class Quoridor223Controller {
 			} else {
 				Wall curWall = curGame.getCurrentPosition().getBlackWallsInStock(0);
 				curGame.getCurrentPosition().removeBlackWallsInStock(curWall);
-				WallMove curWallMove = new WallMove(moveNum, roundNum + 1, curPlayer, curBoard.getTile(43), curGame,
-						Direction.Vertical, curWall);
+				WallMove curWallMove = new WallMove(moveNum, roundNum + 1, curPlayer, curBoard.getTile(4), curGame,
+						Direction.Horizontal, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
 			}
 		}
@@ -400,77 +404,6 @@ public class Quoridor223Controller {
 		// update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow, newCol));
 	}
-
-	/**
-	 * MovePlayer feature dev 
-	 * @author Sacha L2vy RPZ
-	 * @param side
-	 * parameters implemented using the TOWall will soon have a TOPawn for clarity
-	*/
-//	public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
-//		if (!isRunning()) throw new GameNotRunningException("Game not running");
-//		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-//		Board current_board = QuoridorApplication.getQuoridor().getBoard();
-//		
-//		// get player moving
-//		PlayerPosition current_position;
-//		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
-//		else current_position = current_game.getCurrentPosition().getBlackPosition();
-//
-//		int newRow = current_position.getTile().getRow()
-//				+ (side == TOWall.Side.Up ? -1 : side == TOWall.Side.Down ? 1 : 0);
-//		int newCol = current_position.getTile().getColumn()
-//				+ (side == TOWall.Side.Left ? -1 : side == TOWall.Side.Right ? 1 : 0);
-//
-//		if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
-//		if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
-//		
-//		// might need to get the next tile using indexes & get from tiles list in board
-//		Tile next_tile = new Tile(newRow, newCol, current_board);
-//		current_position.setTile(next_tile);
-//		SwitchPlayer();
-//	}
-	
-	
-	/**
-	 * tryPawnMove 
-	 * @author Vanessa Ifrah
-	 * @param name
-	 * @param side
-	 * @throws GameNotRunningException
-	*//*
-	public static boolean tryPawnMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
-		if (!isRunning()) throw new GameNotRunningException("Game not running");
-		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Board current_board = QuoridorApplication.getQuoridor().getBoard();
-		
-		// get player moving
-		PlayerPosition current_position;
-		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
-		else current_position = current_game.getCurrentPosition().getBlackPosition();
-
-		int newRow = current_position.getTile().getRow()
-				+ (side == "up" ? -1 : side == "down" ? 1 : 0);
-		int newCol = current_position.getTile().getColumn()
-				+ (side == "left" ? -1 : side == "right" ? 1 : 0);
-
-		boolean error = false;
-		try {
-			if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
-			if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
-		} catch (Exception e) {
-			error = true;
-		}	
-		
-		// set new tile
-		Tile next_tile = getTile(newRow, newCol);
-		current_position.setTile(next_tile);
-		SwitchPlayer();
-		
-		return error;
-	}*/
-	
-	
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin
 	 * Feature 8: DropWall.feature
@@ -1099,7 +1032,7 @@ public class Quoridor223Controller {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		
 		if (curGame.getWallMoveCandidate() != null) {
-			throw new InvalidOperationException("Wall is currently in hand");
+			throw new InvalidOperationException("Cannot move pawn since there is a wall in hand.");
 		}
 		
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
@@ -1107,42 +1040,75 @@ public class Quoridor223Controller {
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
 			PawnBehavior whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
 			if (side == TOPlayer.Side.Up) {
-				whiteBehavior.moveUp();
+				if(!whiteBehavior.moveUp()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.Down) {
-				whiteBehavior.moveDown();
+				if(!whiteBehavior.moveDown()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.Left) {
-				whiteBehavior.moveLeft();
+				if(!whiteBehavior.moveLeft()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.Right) {
-				whiteBehavior.moveRight();
+				if(!whiteBehavior.moveRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.DownLeft) {
-				whiteBehavior.moveDownLeft();
+				if(!whiteBehavior.moveDownLeft()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.DownRight) {
-				whiteBehavior.moveDownRight();
+				if(!whiteBehavior.moveDownRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.UpLeft) {
-				whiteBehavior.moveUpLeft();
+				if(!whiteBehavior.moveUpLeft()) {;
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.UpRight) {
-				whiteBehavior.moveUpRight();
+				if(!whiteBehavior.moveUpRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} 
 		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
 			PawnBehavior blackBehavior = QuoridorApplication.GetBlackPawnBehavior();
 			if (side == TOPlayer.Side.Up) {
-				blackBehavior.moveUp();
+				if(!blackBehavior.moveUp()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.Down) {
-				blackBehavior.moveDown();
+				if(!blackBehavior.moveDown()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.Left) {
-				blackBehavior.moveLeft();
+				if(!blackBehavior.moveLeft()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.Right) {
-				blackBehavior.moveRight();
+				if(!blackBehavior.moveRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.DownLeft) {
-				blackBehavior.moveDownLeft();
+				if(!blackBehavior.moveDownLeft()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.DownRight) {
-				blackBehavior.moveDownRight();
+				if(!blackBehavior.moveDownRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.UpLeft) {
-				blackBehavior.moveUpLeft();
+				if(!blackBehavior.moveUpLeft()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.UpRight) {
-				blackBehavior.moveUpRight();
+				if(!blackBehavior.moveUpRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} 
 		}
+		SwitchPlayer();
 	}
 	
 	/////////////////////////////////////////////////////
@@ -1464,6 +1430,9 @@ public class Quoridor223Controller {
 	 */
 	private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
 		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
+	}
+	public static String getCurrentColor() {
+		return isWhitePlayer()?"White":"Black";
 	}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
