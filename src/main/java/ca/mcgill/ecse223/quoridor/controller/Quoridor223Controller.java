@@ -947,13 +947,7 @@ public class Quoridor223Controller {
 		}
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
 	
-		
-		if(curPlayer.equals(curGame.getBlackPlayer())) {
-			System.out.println("black is moving");
-		}
-		else {
-			System.out.println("whiet is moving");
-		} 
+		 
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
 			PawnBehavior whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
 			if (side == TOPlayer.Side.Up) {
