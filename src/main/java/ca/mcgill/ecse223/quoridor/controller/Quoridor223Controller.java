@@ -463,7 +463,7 @@ public class Quoridor223Controller {
 		}	
 		
 		// set new tile
-		Tile next_tile = new Tile(newRow, newCol, current_board);
+		Tile next_tile = getTile(newRow, newCol);
 		current_position.setTile(next_tile);
 		SwitchPlayer();
 		
@@ -641,7 +641,7 @@ public class Quoridor223Controller {
 		Board current_board = QuoridorApplication.getQuoridor().getBoard();
 		// arbitrarily get the black position
 		PlayerPosition current_player_pos = current_position.getBlackPosition();
-		Tile current_black_tile = new Tile(int1, int2, current_board);
+		Tile current_black_tile = getTile(int1, int2);
 		return current_player_pos.setTile(current_black_tile);
 	}
 	
@@ -687,7 +687,7 @@ public class Quoridor223Controller {
 		// work with black walls
 		Wall curWall = current_game.getCurrentPosition().getBlackWallsInStock(0);
 		current_game.getCurrentPosition().removeBlackWallsInStock(curWall);
-		Tile target_tile = new Tile(int1, int2, current_board);
+		Tile target_tile = getTile(int1, int2);
 		WallMove curWallMove = new WallMove(moveNum, roundNum + 1, current_game.getBlackPlayer(), target_tile, current_game, dir, curWall);
 		return current_game.setWallMoveCandidate(curWallMove);		
 	}
@@ -1604,17 +1604,17 @@ public class Quoridor223Controller {
 			
 			// if the white player data is on the first line
 			if(saveFileFirstLine.contains("W:")) {
-				whiteTile = new Tile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileFirstLine.charAt(4)), board);
-				blackTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileSecondLine.charAt(4)), board);
+				whiteTile = getTile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
+						Character.getNumericValue(saveFileFirstLine.charAt(4)));
+				blackTile = getTile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
+						Character.getNumericValue(saveFileSecondLine.charAt(4)));
 			}
 			// else, the black player data is on the first line
 			else {
-				blackTile = new Tile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileFirstLine.charAt(4)), board);
-				whiteTile = new Tile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileSecondLine.charAt(4)), board);
+				blackTile = getTile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
+						Character.getNumericValue(saveFileFirstLine.charAt(4)));
+				whiteTile =getTile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
+						Character.getNumericValue(saveFileSecondLine.charAt(4)));
 			}
 			
 			// create the new player positions

@@ -1,6 +1,6 @@
 package ca.mcgill.ecse223.quoridor;
 
-//import ca.mcgill.ecse223.quoridor.controller.PawnBehavior;
+import ca.mcgill.ecse223.quoridor.controller.PawnBehavior;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.view.GamePage;
 import ca.mcgill.ecse223.quoridor.view.SetNamePage;
@@ -9,8 +9,8 @@ import ca.mcgill.ecse223.quoridor.view.WelcomePage;
 
 public class QuoridorApplication {
 	private static Quoridor quoridor;
-//	private static PawnBehavior whiteBehavior;
-//	private static PawnBehavior blackBehavior;
+	private static PawnBehavior whiteBehavior;
+	private static PawnBehavior blackBehavior;
 	private static SetThinkingTimePage timePage;
 	private static GamePage game;
 	private static WelcomePage lobby;
@@ -27,24 +27,24 @@ public class QuoridorApplication {
 		}
 		return quoridor;
 	}
-//	public static PawnBehavior GetWhitePawnBehavior() {
-//		if(whiteBehavior==null) {
-//			Quoridor quoridor = getQuoridor();
-//			whiteBehavior = new PawnBehavior();
-//			whiteBehavior.setCurrentGame(quoridor.getCurrentGame());
-//			whiteBehavior.setPlayer(quoridor.getCurrentGame().getWhitePlayer());
-//		}
-//		return whiteBehavior;
-//	}
-//	public static PawnBehavior GetBlackPawnBehavior() {
-//		if(blackBehavior==null) {
-//			Quoridor quoridor = getQuoridor();
-//			blackBehavior = new PawnBehavior();
-//			blackBehavior.setCurrentGame(quoridor.getCurrentGame());
-//			blackBehavior.setPlayer(quoridor.getCurrentGame().getBlackPlayer());
-//		}
-//		return blackBehavior;
-//	}
+	public static PawnBehavior GetWhitePawnBehavior() {
+		if(whiteBehavior==null) {
+			Quoridor quoridor = getQuoridor();
+			whiteBehavior = new PawnBehavior();
+			whiteBehavior.setCurrentGame(quoridor.getCurrentGame());
+			whiteBehavior.setPlayer(quoridor.getCurrentGame().getWhitePlayer());
+		}
+		return whiteBehavior;
+	}
+	public static PawnBehavior GetBlackPawnBehavior() {
+		if(blackBehavior==null) {
+			Quoridor quoridor = getQuoridor();
+			blackBehavior = new PawnBehavior();
+			blackBehavior.setCurrentGame(quoridor.getCurrentGame());
+			blackBehavior.setPlayer(quoridor.getCurrentGame().getBlackPlayer());
+		}
+		return blackBehavior;
+	}
 	public static void setMainPage() {
 		if(timePage != null) {
 			timePage.setVisible(false);
