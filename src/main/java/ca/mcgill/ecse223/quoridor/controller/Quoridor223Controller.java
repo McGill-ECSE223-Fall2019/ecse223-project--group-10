@@ -268,10 +268,11 @@ public class Quoridor223Controller {
 		// get tiles
 		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
 		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
-
-		Game currentGame = quoridor.getCurrentGame();
-
+		
+		//Initialize the Pawn Behavior
+		
 		// create players' initial positions
+		Game currentGame = quoridor.getCurrentGame();
 		PlayerPosition whitePlayerPosition = new PlayerPosition(currentGame.getWhitePlayer(), whitePlayerTile);
 		PlayerPosition blackPlayerPosition = new PlayerPosition(currentGame.getBlackPlayer(), blackPlayerTile);
 		GamePosition gamePosition = new GamePosition(0, whitePlayerPosition, blackPlayerPosition,
@@ -293,7 +294,10 @@ public class Quoridor223Controller {
 
 		// set next player
 		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
-		
+		PawnBehavior whitebehavior = QuoridorApplication.GetWhitePawnBehavior();
+		PawnBehavior blackbehavior = QuoridorApplication.GetBlackPawnBehavior();
+		whitebehavior.startGame();
+		blackbehavior.startGame();
 	}
 
 	/**
@@ -1017,37 +1021,38 @@ public class Quoridor223Controller {
 			if (side == TOPlayer.Side.Up) {
 				if(!blackBehavior.moveUp()) {
 					throw new InvalidOperationException("Illegal Move");
-				};
+				}
 			} else if (side == TOPlayer.Side.Down) {
 				if(!blackBehavior.moveDown()) {
 					throw new InvalidOperationException("Illegal Move");
-				};
+				}
 			} else if (side == TOPlayer.Side.Left) {
 				if(!blackBehavior.moveLeft()) {
 					throw new InvalidOperationException("Illegal Move");
-				};
+				}
 			} else if (side == TOPlayer.Side.Right) {
 				if(!blackBehavior.moveRight()) {
 					throw new InvalidOperationException("Illegal Move");
-				};
+				}
 			} else if (side == TOPlayer.Side.DownLeft) {
 				if(!blackBehavior.moveDownLeft()) {
 					throw new InvalidOperationException("Illegal Move");
-				};
+				}
 			} else if (side == TOPlayer.Side.DownRight) {
 				if(!blackBehavior.moveDownRight()) {
 					throw new InvalidOperationException("Illegal Move");
-				};
+				}
 			} else if (side == TOPlayer.Side.UpLeft) {
 				if(!blackBehavior.moveUpLeft()) {
 					throw new InvalidOperationException("Illegal Move");
-				};
+				}
 			} else if (side == TOPlayer.Side.UpRight) {
 				if(!blackBehavior.moveUpRight()) {
 					throw new InvalidOperationException("Illegal Move");
-				};
+				}
 			} 
 		}
+		SwitchPlayer();
 	}
 	
 	/////////////////////////////////////////////////////
@@ -1364,6 +1369,9 @@ public class Quoridor223Controller {
 	 */
 	private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
 		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
+	}
+	public static String getCurrentColor() {
+		return isWhitePlayer()?"White":"Black";
 	}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
