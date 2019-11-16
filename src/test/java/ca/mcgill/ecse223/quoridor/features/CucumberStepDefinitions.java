@@ -526,9 +526,6 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	@And("The player is located at {int}:{int}")
 	public void thePlayerIsLocatedAt(int row, int col) {
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		//if(curGame.getBlackPlayer().equals(curGame.getCurrentPosition().getPlayerToMove())) System.out.println("black player moving");
-		//else System.out.println("white player moving");
 		String player = "player";
 		assertTrue("The player is not located at {int}:{int}", playerIsLocatedAt(player, row, col));
 	}
@@ -1640,6 +1637,8 @@ public class CucumberStepDefinitions {
 	 */
 	public static boolean checkCurrentPlayerToMoveByColor(String playerColor) {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
 		return game.getCurrentPosition().getPlayerToMove().equals(getPlayerByColor(playerColor));
 	}
 	
@@ -1652,22 +1651,31 @@ public class CucumberStepDefinitions {
 	 * @throws GameNotRunningException 
 	 */
 	public static void placeWallWithDirectionAt(String direction, int row, int col) throws GameNotRunningException, InvalidOperationException {
-		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
-		int moveNum = game.getMoves().size()+1;
-		// proper way of defining rounds
-		int roundNum = (int) Math.ceil(moveNum/2);
+		// Grab the wall
+		Quoridor223Controller.grabWall();
 		
-		Wall curWall = curPlayer.getWalls().get(curPlayer.getWalls().size()-1);
+		// check if the Game is running if not throw exception
+		if (!Quoridor223Controller.isRunning())
+			throw new GameNotRunningException("Game not running");		
 		
-		WallMove candidate = new WallMove(moveNum, roundNum, curPlayer,
-		Quoridor223Controller.getTile(row, col), game, stringToDirection(direction), curWall);
+		// get the wall move candidate
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (curGame.getWallMoveCandidate() == null)
+			throw new InvalidOperationException("No wall Selected");
+		WallMove candidate = curGame.getWallMoveCandidate();
 		
-		game.setWallMoveCandidate(candidate);
+		// check the validity of the move
+		if (!Quoridor223Controller.isWallPositionValid(row, col))
+			throw new InvalidOperationException("Illegal Move");
+		// update the move candidate according to the change.
+		candidate.setTargetTile(Quoridor223Controller.getTile(row, col));
+		candidate.setWallDirection(stringToDirection(direction));
 		
+		// drop the wall		
 		Quoridor223Controller.dropWall();
-		// need to switch again the player since the drop wall feature us
+		// switchplayer again as dropwall feature includes a switchplayer operation
 		Quoridor223Controller.SwitchPlayer();
+		//curGame.getCurrentPosition().setPlayerToMove(curGame.getCurrentPosition().getPlayerToMove().getNextPlayer());
 		return;
 	}
 	

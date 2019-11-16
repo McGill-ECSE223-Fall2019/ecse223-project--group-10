@@ -908,7 +908,7 @@ public class Quoridor223Controller {
 	 * @param side
 	 * 
 	*/
-	public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
+	/*public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Board current_board = QuoridorApplication.getQuoridor().getBoard();
@@ -927,10 +927,10 @@ public class Quoridor223Controller {
 		if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
 		
 		// might need to get the next tile using indexes & get from tiles list in board
-		Tile next_tile = new Tile(newRow, newCol, current_board);
+		Tile next_tile = getTile(newRow, newCol);
 		current_position.setTile(next_tile);
 		SwitchPlayer();
-	}
+	}*/
 	
 	/////////////////////////////////////////////////////
 	//////////// Move Pawn and Jump Pawn/////////////////
@@ -946,7 +946,14 @@ public class Quoridor223Controller {
 			throw new InvalidOperationException("Cannot move pawn since there is a wall in hand.");
 		}
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
+	
 		
+		if(curPlayer.equals(curGame.getBlackPlayer())) {
+			System.out.println("black is moving");
+		}
+		else {
+			System.out.println("whiet is moving");
+		} 
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
 			PawnBehavior whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
 			if (side == TOPlayer.Side.Up) {
@@ -1018,6 +1025,18 @@ public class Quoridor223Controller {
 				}
 			} 
 		}
+		//Player current_player = current_game.getCurrentPosition().getPlayerToMove();
+		//PlayerPosition current_position;
+		//PlayerPosition opponent_position;
+		
+		//if(current_player.equals(current_game.getBlackPlayer())) {
+		//	current_position = current_game.getCurrentPosition().getBlackPosition();
+		//	opponent_position = current_game.getCurrentPosition().getWhitePosition();
+		//}
+		//else {
+		//	current_position = current_game.getCurrentPosition().getWhitePosition();
+		//	opponent_position = current_game.getCurrentPosition().getBlackPosition();
+		//}
 		SwitchPlayer();
 	}
 	
@@ -1168,7 +1187,7 @@ public class Quoridor223Controller {
 	 * @author Le-Li Mao
 	 * @return game the is game running
 	 */
-	private static boolean isRunning() {
+	public static boolean isRunning() {
 		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (current == null || current.getGameStatus()!=Game.GameStatus.Running)
 			return false;
@@ -1183,7 +1202,7 @@ public class Quoridor223Controller {
 	 * @param col
 	 * @return Is position valid 
 	 */
-	private static boolean isWallPositionValid(int row, int col) {
+	public static boolean isWallPositionValid(int row, int col) {
 		return (row > 0 && col > 0 && row < 9 && col < 9);
 	}
 
