@@ -1671,7 +1671,7 @@ public class CucumberStepDefinitions {
 		
 		// drop the wall		
 		Quoridor223Controller.dropWall();
-
+		curGame.getCurrentPosition().setPlayerToMove(curGame.getCurrentPosition().getPlayerToMove().getNextPlayer());
 		return;
 	}
 	
