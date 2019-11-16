@@ -15,6 +15,7 @@ import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.controller.TOGame;
+import ca.mcgill.ecse223.quoridor.controller.TOPlayer;
 import ca.mcgill.ecse223.quoridor.controller.TOWall;
 
 import javax.swing.Icon;
@@ -238,20 +239,35 @@ public class GamePage extends JFrame {
 				boardComponent.repaint();
 			}
 		});
+		
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////Pawn and Wall Movement Buttons////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		btnUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					// add parameter if no wall selected then simply move pawn
-					// @sacha: need to implement a way to move the player from one tile to another
-					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Up);
-					//else Quoridor223Controller.movePlayer(TOWall.Side.Up);
-					Quoridor223Controller.moveWall(TOWall.Side.Up);
-				} catch (GameNotRunningException ex) {
-					gameMessage.setText(ex.getLocalizedMessage());
-					// set the notification panel to message
-				} catch (InvalidOperationException ex) {
-					gameMessage.setText(ex.getLocalizedMessage());
-					// TODO: handle exception
+				if(hasWallInHand() == true) {
+					try {
+						// add parameter if no wall selected then simply move pawn
+						// @sacha: need to implement a way to move the player from one tile to another
+						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Up);
+						//else Quoridor223Controller.movePlayer(TOWall.Side.Up);
+						Quoridor223Controller.moveWall(TOWall.Side.Up);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// set the notification panel to message
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// TODO: handle exception
+					}
+				} else {
+					try {
+						Quoridor223Controller.movePawn(TOPlayer.Side.Up);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					}
 				}
 				boardComponent.repaint();
 			}
@@ -260,16 +276,26 @@ public class GamePage extends JFrame {
 
 		btnDown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Down);
-					//else Quoridor223Controller.movePlayer(TOWall.Side.Down);
-					Quoridor223Controller.moveWall(TOWall.Side.Down);
-				}catch (GameNotRunningException ex) {
-					gameMessage.setText(ex.getLocalizedMessage());
-					// set the notification panel to message
-				} catch (InvalidOperationException ex) {
-					gameMessage.setText(ex.getLocalizedMessage());
-					// TODO: handle exception
+				if (hasWallInHand() == true) {
+					try {
+						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Down);
+						//else Quoridor223Controller.movePlayer(TOWall.Side.Down);
+						Quoridor223Controller.moveWall(TOWall.Side.Down);
+					}catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// set the notification panel to message
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// TODO: handle exception
+					}
+				} else {
+					try {
+						Quoridor223Controller.movePawn(TOPlayer.Side.Down);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					}
 				}
 				boardComponent.repaint();
 			}
@@ -277,16 +303,26 @@ public class GamePage extends JFrame {
 
 		btnLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
-					//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
-					Quoridor223Controller.moveWall(TOWall.Side.Left);
-				} catch (GameNotRunningException ex) {
-					gameMessage.setText(ex.getLocalizedMessage());
-					// set the notification panel to message
-				} catch (InvalidOperationException ex) {
-					gameMessage.setText(ex.getLocalizedMessage());
-					// TODO: handle exception
+				if (hasWallInHand() == true) {
+					try {
+						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
+						//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
+						Quoridor223Controller.moveWall(TOWall.Side.Left);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// set the notification panel to message
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// TODO: handle exception
+					}
+				} else {
+					try {
+						Quoridor223Controller.movePawn(TOPlayer.Side.Left);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					}
 				}
 				boardComponent.repaint();
 			}
@@ -294,21 +330,105 @@ public class GamePage extends JFrame {
 
 		btnRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				try {
-					//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Right);
-					//else Quoridor223Controller.movePlayer(TOWall.Side.Right);
-					Quoridor223Controller.moveWall(TOWall.Side.Right);
-				} catch (GameNotRunningException ex) {
-					gameMessage.setText(ex.getLocalizedMessage());
-					// set the notification panel to message
-				} catch (InvalidOperationException ex) {
-					gameMessage.setText(ex.getLocalizedMessage());
-					// TODO: handle exception
+				if (hasWallInHand() == true) {
+					try {
+						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Right);
+						//else Quoridor223Controller.movePlayer(TOWall.Side.Right);
+						Quoridor223Controller.moveWall(TOWall.Side.Right);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// set the notification panel to message
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// TODO: handle exception
+					}
+				} else {
+					try {
+						Quoridor223Controller.movePawn(TOPlayer.Side.Right);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					}
 				}
+				
 				boardComponent.repaint();
 			}
 
 		});
+		
+		btnUpRight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (hasWallInHand() == true) {
+					//Disable the button
+				} else {
+					try {
+						Quoridor223Controller.movePawn(TOPlayer.Side.UpRight);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					}
+				}
+				boardComponent.repaint();
+			}
+		});
+		
+		btnUpLeft.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (hasWallInHand() == true) {
+					//Disable the button
+				} else {
+					try {
+						Quoridor223Controller.movePawn(TOPlayer.Side.UpLeft);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					}
+				}
+				boardComponent.repaint();
+			}
+		});
+		
+		btnDownRight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (hasWallInHand() == true) {
+					//Disable the button
+				} else {
+					try {
+						Quoridor223Controller.movePawn(TOPlayer.Side.DownRight);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					}
+				}
+				boardComponent.repaint();
+			}
+		});
+		
+		btnDownLeft.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (hasWallInHand() == true) {
+					//Disable the button
+				} else {
+					try {
+						Quoridor223Controller.movePawn(TOPlayer.Side.DownLeft);
+					} catch (GameNotRunningException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					}
+				}
+				boardComponent.repaint();
+			}
+		});
+		
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////End of Pawn and Wall Movement Buttons/////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+		
 		btnRotateWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {

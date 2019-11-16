@@ -972,7 +972,7 @@ public class Quoridor223Controller {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		
 		if (curGame.getWallMoveCandidate() != null) {
-			throw new InvalidOperationException("Wall is currently in hand");
+			throw new InvalidOperationException("Cannot move pawn since there is a wall in hand.");
 		}
 		
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
