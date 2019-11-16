@@ -726,7 +726,7 @@ public class PawnBehavior
           wasEventProcessed = true;
           break;
         }
-        if (isLegalDiagonalMove(MoveDirection.North))
+        if (isLegalDiagonalMove(MoveDirection.East))
         {
           exitPawnSMPlayingEastWestEastWest();
         // line 132 "../../../../../PawnStateMachine.ump"
@@ -1336,12 +1336,12 @@ public class PawnBehavior
   /**
    * Action to be called when an illegal move is attempted
    */
-  // line 231 "../../../../../PawnStateMachine.ump"
+  // line 229 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     
   }
 
-  // line 233 "../../../../../PawnStateMachine.ump"
+  // line 231 "../../../../../PawnStateMachine.ump"
    private boolean isThereWallInDir(MoveDirection dir, int row, int col){
     HashMap<Integer, Boolean> wallMap = getWallMap();
 	  switch(dir) {
@@ -1367,7 +1367,7 @@ public class PawnBehavior
 	  return false;
   }
 
-  // line 257 "../../../../../PawnStateMachine.ump"
+  // line 255 "../../../../../PawnStateMachine.ump"
    private boolean isTherePlayerInDir(MoveDirection dir, int row, int col){
     PlayerPosition otherPlayerPosition = player.equals(currentGame.getWhitePlayer())?currentGame.getCurrentPosition().getBlackPosition():currentGame.getCurrentPosition().getWhitePosition();
 		int otherRow = otherPlayerPosition.getTile().getRow();
@@ -1389,7 +1389,7 @@ public class PawnBehavior
 	    return false;
   }
 
-  // line 278 "../../../../../PawnStateMachine.ump"
+  // line 276 "../../../../../PawnStateMachine.ump"
    private boolean isLegalDiagonalMove(MoveDirection dir){
     int row = getCurrentPawnRow();
 	int col = getCurrentPawnColumn();
@@ -1455,7 +1455,7 @@ public class PawnBehavior
    		return true;
   }
 
-  // line 342 "../../../../../PawnStateMachine.ump"
+  // line 340 "../../../../../PawnStateMachine.ump"
    private void updateMove(int i, int j){
     GamePosition clone = clonePosition(currentGame.getCurrentPosition());
 	    currentGame.setCurrentPosition(clone);
@@ -1467,24 +1467,24 @@ public class PawnBehavior
 	    playerpos.setTile(Quoridor223Controller.getTile(row+i,col+j));
   }
 
-  // line 352 "../../../../../PawnStateMachine.ump"
+  // line 350 "../../../../../PawnStateMachine.ump"
    private boolean isWinningMove(){
     if(isWhite()&&getCurrentPawnRow()==1)return true;
 	   if(!isWhite()&&getCurrentPawnRow()==9)return true;
 	   return false;
   }
 
-  // line 357 "../../../../../PawnStateMachine.ump"
+  // line 355 "../../../../../PawnStateMachine.ump"
    private boolean isWhite(){
     return player.equals(currentGame.getWhitePlayer());
   }
 
-  // line 360 "../../../../../PawnStateMachine.ump"
+  // line 358 "../../../../../PawnStateMachine.ump"
    private static  PlayerPosition clonePlayerPosition(PlayerPosition playerPos){
     return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
   }
 
-  // line 363 "../../../../../PawnStateMachine.ump"
+  // line 361 "../../../../../PawnStateMachine.ump"
    private static  GamePosition clonePosition(GamePosition oldPosition){
     PlayerPosition newWhitePosition = clonePlayerPosition(oldPosition.getWhitePosition());
 		PlayerPosition newBlackPosition = clonePlayerPosition(oldPosition.getBlackPosition());
@@ -1511,7 +1511,6 @@ public class PawnBehavior
     HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();		
 		//TODO: switch to player list (more convenient if 2+)
 		for (Wall wall : currentGame.getCurrentPosition().getBlackWallsOnBoard()) {
-			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
 			WallMove wall_move = wall.getMove();
 			int row = wall_move.getTargetTile().getRow();
 			int col = wall_move.getTargetTile().getColumn();
@@ -1521,7 +1520,6 @@ public class PawnBehavior
 			wallPositions.put(row * 9 + col, dir_attr);
 		}
 		for (Wall wall : currentGame.getCurrentPosition().getWhiteWallsOnBoard()) {
-			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
 			WallMove wall_move = wall.getMove();
 			int row = wall_move.getTargetTile().getRow();
 			int col = wall_move.getTargetTile().getColumn();
@@ -1533,7 +1531,7 @@ public class PawnBehavior
 		return wallPositions;
   }
 
-// line 379 "../../../../../PawnStateMachine.ump"
+// line 377 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;

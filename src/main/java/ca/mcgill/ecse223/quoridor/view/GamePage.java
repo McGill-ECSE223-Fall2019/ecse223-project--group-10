@@ -612,6 +612,7 @@ public class GamePage extends JFrame {
 
 	}
 	public void clickMovePlayer(String dir) {
+		
 		switch (dir) {
 		case "up":
 			btnUp.doClick();
