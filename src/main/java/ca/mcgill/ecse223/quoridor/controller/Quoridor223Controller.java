@@ -980,40 +980,72 @@ public class Quoridor223Controller {
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
 			PawnBehavior whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
 			if (side == TOPlayer.Side.Up) {
-				whiteBehavior.moveUp();
+				if(!whiteBehavior.moveUp()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.Down) {
-				whiteBehavior.moveDown();
+				if(!whiteBehavior.moveDown()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.Left) {
-				whiteBehavior.moveLeft();
+				if(!whiteBehavior.moveLeft()) {
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.Right) {
-				whiteBehavior.moveRight();
+				if(!whiteBehavior.moveRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.DownLeft) {
-				whiteBehavior.moveDownLeft();
+				if(!whiteBehavior.moveDownLeft()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.DownRight) {
-				whiteBehavior.moveDownRight();
+				if(!whiteBehavior.moveDownRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.UpLeft) {
-				whiteBehavior.moveUpLeft();
+				if(!whiteBehavior.moveUpLeft()) {;
+					throw new InvalidOperationException("Illegal Move");
+				}
 			} else if (side == TOPlayer.Side.UpRight) {
-				whiteBehavior.moveUpRight();
+				if(!whiteBehavior.moveUpRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} 
 		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
 			PawnBehavior blackBehavior = QuoridorApplication.GetBlackPawnBehavior();
 			if (side == TOPlayer.Side.Up) {
-				blackBehavior.moveUp();
+				if(!blackBehavior.moveUp()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.Down) {
-				blackBehavior.moveDown();
+				if(!blackBehavior.moveDown()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.Left) {
-				blackBehavior.moveLeft();
+				if(!blackBehavior.moveLeft()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.Right) {
-				blackBehavior.moveRight();
+				if(!blackBehavior.moveRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.DownLeft) {
-				blackBehavior.moveDownLeft();
+				if(!blackBehavior.moveDownLeft()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.DownRight) {
-				blackBehavior.moveDownRight();
+				if(!blackBehavior.moveDownRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.UpLeft) {
-				blackBehavior.moveUpLeft();
+				if(!blackBehavior.moveUpLeft()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} else if (side == TOPlayer.Side.UpRight) {
-				blackBehavior.moveUpRight();
+				if(!blackBehavior.moveUpRight()) {
+					throw new InvalidOperationException("Illegal Move");
+				};
 			} 
 		}
 	}
