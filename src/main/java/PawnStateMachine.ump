@@ -6,7 +6,7 @@ class PawnBehavior {
 	depend java.util.HashMap;
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
-
+    
     pawnSM {
     	Playing{
     		NorthSouth{
@@ -74,7 +74,8 @@ class PawnBehavior {
     				moveDownLeft [isLegalDiagonalMove(MoveDirection.West)] -> MiddleNS;
     				moveDownRight[isLegalDiagonalMove(MoveDirection.South)] -> MiddleNS;
     			}
-    		} 
+    		}
+    		
     		||
     		
     		EastWest{
@@ -128,7 +129,7 @@ class PawnBehavior {
     				moveRight [isLegalJump(MoveDirection.East)] /{updateMove(0,2);}-> MiddleEW;
     				
     				moveUpRight[getCurrentPawnColumn()==7&&isLegalDiagonalMove(MoveDirection.East)] /{updateMove(-1,1);}-> AtEastBorder;
-    				moveUpRight[isLegalDiagonalMove(MoveDirection.North)] /{updateMove(-1,1);}-> MiddleEW;
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] /{updateMove(-1,1);}-> MiddleEW;
     				moveDownRight[isLegalDiagonalMove(MoveDirection.South)] /{updateMove(1,1);}-> MiddleEW;
     				moveDownRight[getCurrentPawnColumn()==7&&isLegalDiagonalMove(MoveDirection.South)] /{updateMove(1,1);}-> AtEastBorder;
 
@@ -145,14 +146,13 @@ class PawnBehavior {
 				}
     		}
     	}
-    	
     	Finished{
-  
+  			
     	}
     }
     
     // Returns the current row number of the pawn
-    int getCurrentPawnRow() { 
+   int getCurrentPawnRow() { 
 		if(player==currentGame.getWhitePlayer()) {
 			return currentGame.getCurrentPosition().getWhitePosition().getTile().getRow();
 		}
@@ -205,7 +205,6 @@ class PawnBehavior {
 	  HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();		
 		//TODO: switch to player list (more convenient if 2+)
 		for (Wall wall : currentGame.getCurrentPosition().getBlackWallsOnBoard()) {
-			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
 			WallMove wall_move = wall.getMove();
 			int row = wall_move.getTargetTile().getRow();
 			int col = wall_move.getTargetTile().getColumn();
@@ -215,7 +214,6 @@ class PawnBehavior {
 			wallPositions.put(row * 9 + col, dir_attr);
 		}
 		for (Wall wall : currentGame.getCurrentPosition().getWhiteWallsOnBoard()) {
-			if(wall.equals(currentGame.getWallMoveCandidate().getWallPlaced()))continue;
 			WallMove wall_move = wall.getMove();
 			int row = wall_move.getTargetTile().getRow();
 			int col = wall_move.getTargetTile().getColumn();
@@ -227,7 +225,8 @@ class PawnBehavior {
 		return wallPositions;
   }
     // Action to be called when an illegal move is attempted
-    void illegalMove() { }
+   void illegalMove() {
+   }
    private boolean isThereWallInDir(MoveDirection dir, int row, int col){
     HashMap<Integer, Boolean> wallMap = getWallMap();
 	  switch(dir) {

@@ -404,8 +404,6 @@ public class Quoridor223Controller {
 		// update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow, newCol));
 	}
-	
-	
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin
 	 * Feature 8: DropWall.feature
@@ -498,6 +496,52 @@ public class Quoridor223Controller {
 		return loadedPosition;
 	}
 	
+	//TODO: think about how to implement in more than 2 players way
+	/**
+	 * Feature 11: ValidatePosition, validate a wall position by checking overlapping walls and player position
+	 * 
+	 * @author Sacha Lévy
+	 * @throws GameNotRunningException
+	 * @throws UnsupportedOperationException
+	 */
+	public static boolean validatePosition() throws UnsupportedOperationException, GameNotRunningException {
+		if (!isRunning()) throw new GameNotRunningException("Game not running");
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		//TODO: better combine isWallCandidateOverlapping and doWallsOverlap, ie minimize search time
+		//TODO: implement path checking when dropping walls
+		//TODO: implement more specific error messages
+		if (doWallsOverlap()) return false;
+		if (current_game.hasWallMoveCandidate()) {
+			if (!isWallCandidatePositionValid()) return false;
+			if (isWallMoveCandidateOverlapping()) return false;
+		} else {
+			// TODO: implement the pawn behavior checking within the validate position, uniform method
+			if (!isPlayerPositionValid()) return false;
+			if (isPlayerPositionOverlapping()) return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Feature 12: SwitchPlayer, switch the players after a move is completed (dropWall for the moment)
+	 * 
+	 * @author Sacha Lévy
+	 * @throws GameNotRunningException
+	 * @throws UnsupportedOperationException
+	 */
+	public static void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException {
+		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		Player current_player = current_position.getPlayerToMove();
+		current_position.setPlayerToMove(current_player.getNextPlayer());
+		current_player.getNextPlayer().setNextPlayer(current_player);
+	}
+	
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+//////Sacha's Helper and Query methods Begins
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+	
 	/**
 	 * helper method to get validity of board position for cucumber stepDef
 	 * 
@@ -517,38 +561,6 @@ public class Quoridor223Controller {
 		return isValid;
 	} 
 
-	/**
-	 * Feature 11: ValidatePosition, validate a wall position by checking overlapping walls and player position
-	 * 
-	 * @author Sacha Lévy
-	 * @throws GameNotRunningException
-	 * @throws UnsupportedOperationException
-	 */
-	public static boolean validatePosition() throws UnsupportedOperationException, GameNotRunningException {
-		if (!isRunning()) {
-			throw new GameNotRunningException("Game not running");
-		}
-		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		if (doWallsOverlap()) return false;
-		//System.out.println(current_game.hasWallMoveCandidate());
-		// check if there is a wall to move
-		if (current_game.hasWallMoveCandidate()) {
-			if (!isWallCandidatePositionValid()) {
-				System.out.println("the wall candidate position is not valid -- superposition");
-				return false;
-			}
-			if (isWallMoveCandidateOverlapping()) {
-				System.out.println("the wall candidate position is not valid -- overlap");
-				return false;
-			}
-		} else {
-			if (!isPlayerPositionValid()) return false;
-			if (isPlayerPositionOverlapping()) return false;
-			// TODO: further check if the last player's move didn't cross any walls
-		}
-		return true;
-	}
-	
 	/**
 	 * query method to get name of a player based on its color
 	 * i.e. username for black/white players
@@ -696,6 +708,7 @@ public class Quoridor223Controller {
 			if(curRow==newRow && wallPositions.get(cur_key).equals(Direction.Vertical) && cur_key==curRow*9+curCol) return false;
 			if(curCol==newCol && wallPositions.get(cur_key).equals(Direction.Horizontal) && cur_key==curRow*9+curCol) return false;
 		}
+		
 		return true;
 	}
 	/**
@@ -843,7 +856,9 @@ public class Quoridor223Controller {
 		
 		//TODO: switch to player list (more convenient if 2+)
 		for (Wall wall : current_game.getCurrentPosition().getBlackWallsOnBoard()) {
-			if(wall.equals(current_game.getWallMoveCandidate().getWallPlaced()))continue;
+			if(current_game.hasWallMoveCandidate()) {
+				if(wall.equals(current_game.getWallMoveCandidate().getWallPlaced()))continue;
+			}
 			WallMove wall_move = wall.getMove();
 			int row = wall_move.getTargetTile().getRow();
 			int col = wall_move.getTargetTile().getColumn();
@@ -854,7 +869,9 @@ public class Quoridor223Controller {
 			wallPositions.put(row * 9 + col, dir_attr);
 		}
 		for (Wall wall : current_game.getCurrentPosition().getWhiteWallsOnBoard()) {
-			if(wall.equals(current_game.getWallMoveCandidate().getWallPlaced()))continue;
+			if(current_game.hasWallMoveCandidate()) {
+				if(wall.equals(current_game.getWallMoveCandidate().getWallPlaced()))continue;
+			}
 			WallMove wall_move = wall.getMove();
 			int row = wall_move.getTargetTile().getRow();
 			int col = wall_move.getTargetTile().getColumn();
@@ -881,19 +898,37 @@ public class Quoridor223Controller {
 		Tile target_tile = current_game.getWallMoveCandidate().getTargetTile();
 		return isWallPositionValid(target_tile.getRow(), target_tile.getColumn());
 	}
-
+	
+	
+	// @sacha: is the wall side to indicate the direction a good way of making transitions for pawn ?
 	/**
-	 * Feature 12: SwitchPlayer, switch the players after a move is completed (dropWall for the moment)
+	 * MovePlayer feature dev 
+	 * @author mixed
+	 * @param side
 	 * 
-	 * @author Sacha Lévy
-	 * @throws GameNotRunningException
-	 * @throws UnsupportedOperationException
-	 */
-	public static void SwitchPlayer() throws UnsupportedOperationException, GameNotRunningException {
-		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
-		Player current_player = current_position.getPlayerToMove();
-		current_position.setPlayerToMove(current_player.getNextPlayer());
-		current_player.getNextPlayer().setNextPlayer(current_player);
+	*/
+	public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
+		if (!isRunning()) throw new GameNotRunningException("Game not running");
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Board current_board = QuoridorApplication.getQuoridor().getBoard();
+		
+		// get player moving
+		PlayerPosition current_position;
+		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
+		else current_position = current_game.getCurrentPosition().getBlackPosition();
+
+		int newRow = current_position.getTile().getRow()
+				+ (side == TOWall.Side.Up ? -1 : side == TOWall.Side.Down ? 1 : 0);
+		int newCol = current_position.getTile().getColumn()
+				+ (side == TOWall.Side.Left ? -1 : side == TOWall.Side.Right ? 1 : 0);
+		// first case simple legal position check (does this position exists on board ?) 
+		if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
+		if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+		
+		// might need to get the next tile using indexes & get from tiles list in board
+		Tile next_tile = new Tile(newRow, newCol, current_board);
+		current_position.setTile(next_tile);
+		SwitchPlayer();
 	}
 	
 	/////////////////////////////////////////////////////
@@ -909,7 +944,6 @@ public class Quoridor223Controller {
 		if (curGame.getWallMoveCandidate() != null) {
 			throw new InvalidOperationException("Cannot move pawn since there is a wall in hand.");
 		}
-		
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
 		
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
@@ -991,7 +1025,6 @@ public class Quoridor223Controller {
 	//////////// Helper and Query methods////////////////
 	/////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////
-	
 	/**
 	 * Query methods for the UI
 	 * 
@@ -1116,6 +1149,12 @@ public class Quoridor223Controller {
 		GamePosition current_position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
 		return current_position.getPlayerToMove().getUser().getName();
 	}
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+//////Sacha's Helper and Query methods Ends
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+
 
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
