@@ -236,6 +236,10 @@ public class GamePage extends JFrame {
 				} catch (GameNotRunningException eGrab) {
 					gameMessage.setText(eGrab.getLocalizedMessage());
 				}
+				btnUpRight.setEnabled(false);
+				btnUpLeft.setEnabled(false);
+				btnDownRight.setEnabled(false);
+				btnDownLeft.setEnabled(false);
 				boardComponent.repaint();
 			}
 		});
@@ -464,6 +468,10 @@ public class GamePage extends JFrame {
 					gameMessage.setText(ex.getMessage());
 					// TODO: handle exception
 				}
+				btnUpRight.setEnabled(true);
+				btnUpLeft.setEnabled(true);
+				btnDownRight.setEnabled(true);
+				btnDownLeft.setEnabled(true);
 				boardComponent.repaint();
 			}
 
