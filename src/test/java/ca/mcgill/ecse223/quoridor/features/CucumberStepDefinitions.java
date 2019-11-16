@@ -59,6 +59,7 @@ public class CucumberStepDefinitions {
 	private boolean moveSuccessful = false;
 	private ArrayList<Player> createUsersAndPlayers;
 	private String gameDirectory = "./src/main/resources/gameFiles/";
+	private String playerTryingToMove = null;
 
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
@@ -548,7 +549,8 @@ public class CucumberStepDefinitions {
 	}
 	
 	@When("Player {string} initiates to move {string}")
-	public void playerInitiatesToMove(String name, String side) throws GameNotRunningException, InvalidOperationException {
+	public void playerInitiatesToMove(String color, String side) throws GameNotRunningException, InvalidOperationException {
+		playerTryingToMove = color;
 		gamePage.clickMovePlayer(side);
 	}
 	
@@ -568,7 +570,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("Player's new position shall be {int}:{int}")
 	public void playerNewPositionShallBe(int row, int col){
-		assertTrue("invalid position", checkCurrentPlayerPosition(row, col));
+		assertTrue("invalid position", checkPlayerPositionByColor(playerTryingToMove, row, col));
 	}
 	
 	/**
