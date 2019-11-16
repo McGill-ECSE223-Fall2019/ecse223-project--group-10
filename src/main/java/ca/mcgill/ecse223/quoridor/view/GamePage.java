@@ -614,18 +614,25 @@ public class GamePage extends JFrame {
 			btnUp.doClick();
 			break;
 		case "down":
+			btnDown.doClick();
 			break;
 		case "left":
+			btnLeft.doClick();
 			break;
 		case "right":
+			btnRight.doClick();
 			break;
 		case "upleft":
+			btnUpRight.doClick();
 			break;
 		case "upright":
+			btnUpRight.doClick();
 			break;
 		case "downleft":
+			btnDownLeft.doClick();
 			break;
 		case "downright":
+			btnDownRight.doClick();
 			break;
 		}
 	}
