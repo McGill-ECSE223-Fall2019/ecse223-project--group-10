@@ -523,27 +523,34 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	@And("The player is located at {int}:{int}")
 	public void thePlayerIsLocatedAt(int row, int col) {
-		
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		// check if the setting method for player to move did work
+		if(curGame.getBlackPlayer().equals(curGame.getCurrentPosition().getPlayerToMove())) System.out.println("black player moving");
+		else System.out.println("white player moving");
+		String player = "player";
+		assertTrue("The player is not located at {int}:{int}", playerIsLocatedAt(player, row, col));
 	}
 	
 	@And("The opponent is located at {int}:{int}")
 	public void theOpponentIsLocatedAt(int row, int col) {
-		
+		String player = "opponent";
+		assertTrue("The opponent is not located at {int}:{int}", playerIsLocatedAt(player, row, col));
 	}
 	
 	@And("There are no {string} walls {string} from the player nearby")
-	public static void noWallLeftFromThePlayerNearBy(String dir, String side) {
-		
+	public static void thereAreNoWallsFromThePlayerNearBy(String dir, String side) {
+		// should this method simply check that there are no walls from the player near by ? or set the board to conform ?
+		assertTrue("There are {string} walls {string} from the player nearby", hasWallsFromThePlayerNearby(dir, side));
+	}
+	
+	@And("The opponent is not {string} from the player")
+	public void theOpponentIsNotSideFromThePlayer(String side) {
+		assertFalse("The opponent is {string} from the player", isOpponentSideFromThePlayer(side));
 	}
 	
 	
 	@And("There are no {string} walls {string} from the player")
 	public void thereAreNoWallsFromThePlayer(String dir, String side) {
-		
-	}
-	
-	@And("The opponent is not {string} from the player")
-	public void theOpponentIsNotSideFromThePlayer(String side) {
 		
 	}
 	
