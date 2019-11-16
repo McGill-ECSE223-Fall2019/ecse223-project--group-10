@@ -219,6 +219,7 @@ public class GamePage extends JFrame {
 		// set game to run
 		boardComponent.repaint();
 		Quoridor223Controller.setGameToRun();
+		//TODO: implement moving witht eh keyboard directions commands
 		
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
@@ -250,6 +251,7 @@ public class GamePage extends JFrame {
 		
 		btnUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				if(hasWallInHand() == true) {
 					try {
 						// add parameter if no wall selected then simply move pawn
@@ -609,6 +611,7 @@ public class GamePage extends JFrame {
 
 	}
 	public void clickMovePlayer(String dir) {
+		
 		switch (dir) {
 		case "up":
 			btnUp.doClick();
