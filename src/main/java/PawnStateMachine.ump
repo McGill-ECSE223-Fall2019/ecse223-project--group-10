@@ -13,9 +13,9 @@ class PawnBehavior {
     			Setup{
     				startGame [getCurrentPawnRow()==1] -> AtNorthEdge;
     				startGame [getCurrentPawnRow()==2] -> AtNorthBorder;
-    				startGame [getCurrentPawnRow()==8] -> AtSouthEdge;
-    				startGame [getCurrentPawnRow()==7] -> AtSouthBorder;
-    				startGame [getCurrentPawnRow()<7 && getCurrentPawnRow()>2]]-> MiddleNS;
+    				startGame [getCurrentPawnRow()==9] -> AtSouthEdge;
+    				startGame [getCurrentPawnRow()==8] -> AtSouthBorder;
+    				startGame [getCurrentPawnRow()<8 && getCurrentPawnRow()>2]]-> MiddleNS;
     			}
     			AtNorthEdge{
     				moveDown [isLegalStep(MoveDirection.South)] /{updateMove(1,0);}-> AtNorthBorder;
@@ -81,9 +81,9 @@ class PawnBehavior {
     			Setup{
     				startGame [getCurrentPawnColumn()==1] -> AtWestEdge;
     				startGame [getCurrentPawnColumn()==2] -> AtWestBorder;
-    				startGame [getCurrentPawnColumn()==8] -> AtEastEdge;
-    				startGame [getCurrentPawnColumn()==7] -> AtEastBorder;
-    				startGame [getCurrentPawnColumn()<7 && getCurrentPawnColumn()>2]]-> MiddleEW;
+    				startGame [getCurrentPawnColumn()==9] -> AtEastEdge;
+    				startGame [getCurrentPawnColumn()==8] -> AtEastBorder;
+    				startGame [getCurrentPawnColumn()<8 && getCurrentPawnColumn()>2]]-> MiddleEW;
     			}
     			AtEastEdge{
     				moveLeft [isLegalStep(MoveDirection.West)] /{updateMove(0,-1);}-> AtWestBorder;
