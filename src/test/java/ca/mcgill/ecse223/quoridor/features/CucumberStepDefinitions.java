@@ -1496,18 +1496,28 @@ public class CucumberStepDefinitions {
 	 * @throws GameNotRunningException 
 	 */
 	public static void placeWallWithDirectionAt(String direction, int row, int col) throws GameNotRunningException, InvalidOperationException {
-		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Player curPlayer = game.getCurrentPosition().getPlayerToMove();
-		int moveNum = game.getMoves().size()+1;
-		int roundNum = (int) Math.ceil(moveNum/2);
 		
-		Wall curWall = curPlayer.getWalls().get(curPlayer.getWalls().size()-1);
+		// Grab the wall
+		Quoridor223Controller.grabWall();
 		
-		WallMove candidate = new WallMove(moveNum, roundNum, curPlayer,
-				Quoridor223Controller.getTile(row, col), game, stringToDirection(direction), curWall);
+		// check if the Game is running if not throw exception
+		if (!Quoridor223Controller.isRunning())
+			throw new GameNotRunningException("Game not running");		
 		
-		game.setWallMoveCandidate(candidate);
+		// get the wall move candidate
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (curGame.getWallMoveCandidate() == null)
+			throw new InvalidOperationException("No wall Selected");
+		WallMove candidate = curGame.getWallMoveCandidate();
 		
+		// check the validity of the move
+		if (!Quoridor223Controller.isWallPositionValid(row, col))
+			throw new InvalidOperationException("Illegal Move");
+		// update the move candidate according to the change.
+		candidate.setTargetTile(Quoridor223Controller.getTile(row, col));
+		candidate.setWallDirection(stringToDirection(direction));
+		
+		// drop the wall		
 		Quoridor223Controller.dropWall();
 
 		return;
