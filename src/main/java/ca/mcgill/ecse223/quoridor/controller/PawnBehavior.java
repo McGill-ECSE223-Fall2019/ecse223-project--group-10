@@ -1389,7 +1389,7 @@ public class PawnBehavior
 	    return false;
   }
 
-  // line 275 "../../../../../PawnStateMachine.ump"
+  // line 276 "../../../../../PawnStateMachine.ump"
    private boolean isLegalDiagonalMove(MoveDirection dir){
     int row = getCurrentPawnRow();
 	int col = getCurrentPawnColumn();
@@ -1409,6 +1409,7 @@ public class PawnBehavior
    				else return false;
    				break;
    			case South:
+
    				if(row==9||col==9)return false;
    				if(isTherePlayerInDir(MoveDirection.South,row,col)) {
    					if(isThereWallInDir(MoveDirection.South, row, col))return false;
@@ -1454,7 +1455,7 @@ public class PawnBehavior
    		return true;
   }
 
-  // line 338 "../../../../../PawnStateMachine.ump"
+  // line 340 "../../../../../PawnStateMachine.ump"
    private void updateMove(int i, int j){
     GamePosition clone = clonePosition(currentGame.getCurrentPosition());
 	    currentGame.setCurrentPosition(clone);
@@ -1466,24 +1467,24 @@ public class PawnBehavior
 	    playerpos.setTile(Quoridor223Controller.getTile(row+i,col+j));
   }
 
-  // line 348 "../../../../../PawnStateMachine.ump"
+  // line 350 "../../../../../PawnStateMachine.ump"
    private boolean isWinningMove(){
     if(isWhite()&&getCurrentPawnRow()==1)return true;
 	   if(!isWhite()&&getCurrentPawnRow()==9)return true;
 	   return false;
   }
 
-  // line 353 "../../../../../PawnStateMachine.ump"
+  // line 355 "../../../../../PawnStateMachine.ump"
    private boolean isWhite(){
     return player.equals(currentGame.getWhitePlayer());
   }
 
-  // line 356 "../../../../../PawnStateMachine.ump"
+  // line 358 "../../../../../PawnStateMachine.ump"
    private static  PlayerPosition clonePlayerPosition(PlayerPosition playerPos){
     return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
   }
 
-  // line 359 "../../../../../PawnStateMachine.ump"
+  // line 361 "../../../../../PawnStateMachine.ump"
    private static  GamePosition clonePosition(GamePosition oldPosition){
     PlayerPosition newWhitePosition = clonePlayerPosition(oldPosition.getWhitePosition());
 		PlayerPosition newBlackPosition = clonePlayerPosition(oldPosition.getBlackPosition());
@@ -1530,7 +1531,7 @@ public class PawnBehavior
 		return wallPositions;
   }
 
-// line 375 "../../../../../PawnStateMachine.ump"
+// line 377 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North ;
