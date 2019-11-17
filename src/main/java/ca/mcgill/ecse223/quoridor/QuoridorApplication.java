@@ -48,6 +48,10 @@ public class QuoridorApplication {
 	public static void delete() {
 		blackBehavior= null;
 		whiteBehavior= null;
+		game=null;
+		timePage=null;
+		lobby =null;
+		namePage = null;
 	}
 	public static void setMainPage() {
 		if(timePage != null) {

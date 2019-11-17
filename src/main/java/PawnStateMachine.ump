@@ -271,6 +271,7 @@ class PawnBehavior {
 	   }
 	    return false;
    }
+
 	private boolean isLegalDiagonalMove(MoveDirection dir){
     int row = getCurrentPawnRow();
 	int col = getCurrentPawnColumn();
@@ -290,6 +291,7 @@ class PawnBehavior {
    				else return false;
    				break;
    			case South:
+
    				if(row==9||col==9)return false;
    				if(isTherePlayerInDir(MoveDirection.South,row,col)) {
    					if(isThereWallInDir(MoveDirection.South, row, col))return false;

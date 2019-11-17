@@ -151,7 +151,7 @@ public class Quoridor223Controller {
 	/**
 	 * @author Vanessa Ifrah
 	 * @param name
-	 * @return
+	 * @return error
 	 */
 	public static boolean warnUser(String name) {
 		
@@ -166,6 +166,11 @@ public class Quoridor223Controller {
 
 	}
 	
+	/**
+	 * @author Vanessa Ifrah
+	 * @param playerName
+	 * @throws UnsupportedOperationException
+	 */
 	public static void createUser(String playerName) throws UnsupportedOperationException {
 
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -404,6 +409,7 @@ public class Quoridor223Controller {
 		// update the move candidate according to the change.
 		candidate.setTargetTile(getTile(newRow, newCol));
 	}
+
 	/**
 	 * Perform a drop wall Operation that drop the currently held wall Gerkin
 	 * Feature 8: DropWall.feature
@@ -850,7 +856,7 @@ public class Quoridor223Controller {
 	 * @author Sacha Lévy
 	 * @return wallPositions
 	 * */
-	private static HashMap<Integer, Boolean> loadWallPositionsMap() throws InvalidOperationException{
+	public static HashMap<Integer, Boolean> loadWallPositionsMap() throws InvalidOperationException{
 		HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		
@@ -907,7 +913,7 @@ public class Quoridor223Controller {
 	 * @param side
 	 * 
 	*/
-	public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
+	/*public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Board current_board = QuoridorApplication.getQuoridor().getBoard();
@@ -926,10 +932,10 @@ public class Quoridor223Controller {
 		if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
 		
 		// might need to get the next tile using indexes & get from tiles list in board
-		Tile next_tile = new Tile(newRow, newCol, current_board);
+		Tile next_tile = getTile(newRow, newCol);
 		current_position.setTile(next_tile);
 		SwitchPlayer();
-	}
+	}*/
 	
 	/////////////////////////////////////////////////////
 	//////////// Move Pawn and Jump Pawn/////////////////
@@ -945,7 +951,8 @@ public class Quoridor223Controller {
 			throw new InvalidOperationException("Cannot move pawn since there is a wall in hand.");
 		}
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
-		
+	
+		 
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
 			PawnBehavior whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
 			if (side == TOPlayer.Side.Up) {
@@ -1017,6 +1024,18 @@ public class Quoridor223Controller {
 				}
 			} 
 		}
+		//Player current_player = current_game.getCurrentPosition().getPlayerToMove();
+		//PlayerPosition current_position;
+		//PlayerPosition opponent_position;
+		
+		//if(current_player.equals(current_game.getBlackPlayer())) {
+		//	current_position = current_game.getCurrentPosition().getBlackPosition();
+		//	opponent_position = current_game.getCurrentPosition().getWhitePosition();
+		//}
+		//else {
+		//	current_position = current_game.getCurrentPosition().getWhitePosition();
+		//	opponent_position = current_game.getCurrentPosition().getBlackPosition();
+		//}
 		SwitchPlayer();
 	}
 	
@@ -1339,9 +1358,6 @@ public class Quoridor223Controller {
 	 */
 	private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
 		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
-	}
-	public static String getCurrentColor() {
-		return isWhitePlayer()?"White":"Black";
 	}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
@@ -1904,6 +1920,10 @@ public class Quoridor223Controller {
 	//TODO: End of Mitchell's helper and query methods
 	/////////////////////////////////////////////////
 
+	/**
+	 * @author Le-Li Mao
+	 * @return GameData
+	 */
 	public static TOGame getListOfPlayers() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Player playerToMove = quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();

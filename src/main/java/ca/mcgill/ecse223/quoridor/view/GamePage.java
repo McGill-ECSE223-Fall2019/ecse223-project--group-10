@@ -283,10 +283,9 @@ public class GamePage extends JFrame {
 
 		btnDown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 				if (hasWallInHand() == true) {
 					try {
-						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Down);
-						//else Quoridor223Controller.movePlayer(TOWall.Side.Down);
 						Quoridor223Controller.moveWall(TOWall.Side.Down);
 					}catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
