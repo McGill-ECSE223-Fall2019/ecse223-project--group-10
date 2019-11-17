@@ -626,7 +626,7 @@ public class GamePage extends JFrame {
 			btnRight.doClick();
 			break;
 		case "upleft":
-			btnUpRight.doClick();
+			btnUpLeft.doClick();
 			break;
 		case "upright":
 			btnUpRight.doClick();
