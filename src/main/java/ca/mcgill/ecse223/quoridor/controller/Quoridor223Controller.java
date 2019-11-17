@@ -151,7 +151,7 @@ public class Quoridor223Controller {
 	/**
 	 * @author Vanessa Ifrah
 	 * @param name
-	 * @return
+	 * @return error
 	 */
 	public static boolean warnUser(String name) {
 		
@@ -166,6 +166,11 @@ public class Quoridor223Controller {
 
 	}
 	
+	/**
+	 * @author Vanessa Ifrah
+	 * @param playerName
+	 * @throws UnsupportedOperationException
+	 */
 	public static void createUser(String playerName) throws UnsupportedOperationException {
 
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -936,6 +941,13 @@ public class Quoridor223Controller {
 	//////////// Move Pawn and Jump Pawn/////////////////
 	/////////////////////////////////////////////////////
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * 
+	 * @param side
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
+	 */
 	public static void movePawn(TOPlayer.Side side) throws GameNotRunningException, InvalidOperationException {
 		//call specific behaviour and call the specific move that is received by the player
 		if (!isRunning())
@@ -947,13 +959,7 @@ public class Quoridor223Controller {
 		}
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
 	
-		
-		if(curPlayer.equals(curGame.getBlackPlayer())) {
-			System.out.println("black is moving");
-		}
-		else {
-			System.out.println("whiet is moving");
-		} 
+		 
 		if (curPlayer.equals(curGame.getWhitePlayer())) {
 			PawnBehavior whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
 			if (side == TOPlayer.Side.Up) {
@@ -1359,9 +1365,6 @@ public class Quoridor223Controller {
 	 */
 	private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
 		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
-	}
-	public static String getCurrentColor() {
-		return isWhitePlayer()?"White":"Black";
 	}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
@@ -1924,6 +1927,10 @@ public class Quoridor223Controller {
 	//TODO: End of Mitchell's helper and query methods
 	/////////////////////////////////////////////////
 
+	/**
+	 * @author Le-Li Mao
+	 * @return GameData
+	 */
 	public static TOGame getListOfPlayers() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Player playerToMove = quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();
