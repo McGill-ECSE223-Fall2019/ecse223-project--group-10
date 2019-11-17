@@ -941,6 +941,13 @@ public class Quoridor223Controller {
 	//////////// Move Pawn and Jump Pawn/////////////////
 	/////////////////////////////////////////////////////
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * 
+	 * @param side
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
+	 */
 	public static void movePawn(TOPlayer.Side side) throws GameNotRunningException, InvalidOperationException {
 		//call specific behaviour and call the specific move that is received by the player
 		if (!isRunning())
