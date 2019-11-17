@@ -151,7 +151,7 @@ public class Quoridor223Controller {
 	/**
 	 * @author Vanessa Ifrah
 	 * @param name
-	 * @return
+	 * @return error
 	 */
 	public static boolean warnUser(String name) {
 		
@@ -166,6 +166,11 @@ public class Quoridor223Controller {
 
 	}
 	
+	/**
+	 * @author Vanessa Ifrah
+	 * @param playerName
+	 * @throws UnsupportedOperationException
+	 */
 	public static void createUser(String playerName) throws UnsupportedOperationException {
 
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -1340,9 +1345,6 @@ public class Quoridor223Controller {
 	private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
 		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
 	}
-	public static String getCurrentColor() {
-		return isWhitePlayer()?"White":"Black";
-	}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 //////Le-Li's Helper and Query methods Ends
@@ -1904,6 +1906,10 @@ public class Quoridor223Controller {
 	//TODO: End of Mitchell's helper and query methods
 	/////////////////////////////////////////////////
 
+	/**
+	 * @author Le-Li Mao
+	 * @return GameData
+	 */
 	public static TOGame getListOfPlayers() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Player playerToMove = quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();
