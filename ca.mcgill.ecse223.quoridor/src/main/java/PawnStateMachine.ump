@@ -1,0 +1,378 @@
+namespace ca.mcgill.ecse223.quoridor.controller;
+
+use QuoridorGame.ump;
+
+class PawnBehavior {
+	depend java.util.HashMap;
+    0..1 -> 0..1 Game currentGame;
+    0..1 -> 0..1 Player player;
+    
+    pawnSM {
+    	Playing{
+    		NorthSouth{
+    			Setup{
+    				startGame [getCurrentPawnRow()==1] -> AtNorthEdge;
+    				startGame [getCurrentPawnRow()==2] -> AtNorthBorder;
+    				startGame [getCurrentPawnRow()==9] -> AtSouthEdge;
+    				startGame [getCurrentPawnRow()==8] -> AtSouthBorder;
+    				startGame -> MiddleNS;
+    			}
+    			AtNorthEdge{
+    				moveDown [isLegalStep(MoveDirection.South)] /{updateMove(1,0);}-> AtNorthBorder;
+    				moveDown [isLegalJump(MoveDirection.South)] /{updateMove(2,0);}-> MiddleNS;
+    				
+    				moveDownLeft [isLegalDiagonalMove(MoveDirection.West)] -> AtNorthBorder;
+    				moveDownRight [isLegalDiagonalMove(MoveDirection.South)] -> AtNorthBorder;
+    			}
+    			AtNorthBorder{
+    				moveUp [isLegalStep(MoveDirection.North)]  /{updateMove(-1,0);}-> AtNorthEdge;
+    				moveDown [isLegalStep(MoveDirection.South)] /{updateMove(1,0);}-> MiddleNS;
+    				moveDown [isLegalJump(MoveDirection.South)] /{updateMove(2,0);}-> MiddleNS;
+    				
+    				moveDownLeft [isLegalDiagonalMove(MoveDirection.West)] -> MiddleNS;
+    				moveDownRight [isLegalDiagonalMove(MoveDirection.South)] -> MiddleNS;
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] -> AtNorthEdge;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] -> AtNorthEdge;
+    			}
+    			AtSouthEdge{
+    				moveUp [isLegalStep(MoveDirection.North)]  /{updateMove(-1,0);} -> AtSouthBorder;
+    				moveUp [isLegalJump(MoveDirection.North)]  /{updateMove(-2,0);}-> MiddleNS;
+    				
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] -> AtSouthBorder;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] -> AtSouthBorder;
+    			} 
+    			AtSouthBorder{
+    				moveUp [isLegalStep(MoveDirection.North)] /{updateMove(-1,0);}-> MiddleNS;
+    				moveUp [isLegalJump(MoveDirection.North)] /{updateMove(-2,0);}-> MiddleNS;
+    				moveDown [isLegalStep(MoveDirection.South)] /{updateMove(1,0);}-> AtSouthEdge;
+    				
+    				moveDownLeft [isLegalDiagonalMove(MoveDirection.West)] -> AtSouthEdge;
+    				moveDownRight [isLegalDiagonalMove(MoveDirection.South)] -> AtSouthEdge;
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] -> MiddleNS;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] -> MiddleNS;
+    			}
+    			MiddleNS{
+    				moveUp [getCurrentPawnRow()==3&&isLegalJump(MoveDirection.North)] /{updateMove(-2,0);}-> AtNorthEdge;
+    				moveUp [getCurrentPawnRow()==3&&isLegalStep(MoveDirection.North)] /{updateMove(-1,0);}-> AtNorthBorder;
+    				moveUp [getCurrentPawnRow()==4&&isLegalJump(MoveDirection.North)] /{updateMove(-2,0);}-> AtNorthBorder;
+    				moveUp [isLegalStep(MoveDirection.North)] /{updateMove(-1,0);}-> MiddleNS;
+    				moveUp [isLegalJump(MoveDirection.North)] /{updateMove(-2,0);}-> MiddleNS;
+    				
+    				moveUpRight[getCurrentPawnRow()==3&&isLegalDiagonalMove(MoveDirection.East)] -> AtNorthBorder;
+    				moveUpLeft[getCurrentPawnRow()==3&&isLegalDiagonalMove(MoveDirection.North)] -> AtNorthBorder;
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] -> MiddleNS;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] -> MiddleNS;
+    				
+    				moveDown [getCurrentPawnRow()==7&&isLegalStep(MoveDirection.South)] /{updateMove(1,0);}-> AtSouthBorder;
+    				moveDown [getCurrentPawnRow()==7&&isLegalJump(MoveDirection.South)] /{updateMove(2,0);}-> AtSouthEdge;
+    				moveDown [getCurrentPawnRow()==6&&isLegalJump(MoveDirection.South)] /{updateMove(2,0);}-> AtNorthBorder;
+    				moveDown [isLegalStep(MoveDirection.South)] /{updateMove(1,0);} -> MiddleNS;
+    				moveDown [isLegalJump(MoveDirection.South)] /{updateMove(2,0);} -> MiddleNS;
+    				
+    				moveDownLeft [getCurrentPawnRow()==7&&isLegalDiagonalMove(MoveDirection.West)] -> AtSouthBorder;
+    				moveDownRight[getCurrentPawnRow()==7&&isLegalDiagonalMove(MoveDirection.South)] -> AtSouthBorder;
+    				moveDownLeft [isLegalDiagonalMove(MoveDirection.West)] -> MiddleNS;
+    				moveDownRight[isLegalDiagonalMove(MoveDirection.South)] -> MiddleNS;
+    			}
+    		}
+    		
+    		||
+    		
+    		EastWest{
+    			Setup{
+    				startGame [getCurrentPawnColumn()==1] -> AtWestEdge;
+    				startGame [getCurrentPawnColumn()==2] -> AtWestBorder;
+    				startGame [getCurrentPawnColumn()==9] -> AtEastEdge;
+    				startGame [getCurrentPawnColumn()==8] -> AtEastBorder;
+    				startGame -> MiddleEW;
+    			}
+    			AtEastEdge{
+    				moveLeft [isLegalStep(MoveDirection.West)] /{updateMove(0,-1);}-> AtEastBorder;
+    				moveLeft [isLegalJump(MoveDirection.West)] /{updateMove(0,-2);}-> MiddleEW;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] /{updateMove(-1,-1);} -> AtEastBorder;
+    				moveDownLeft [isLegalDiagonalMove(MoveDirection.West)] /{updateMove(1,-1);}-> AtEastBorder;
+    			}
+    			AtEastBorder{
+    				moveRight [isLegalStep(MoveDirection.East)]  /{updateMove(0,1);}-> AtEastEdge;
+    				moveLeft [isLegalStep(MoveDirection.West)] /{updateMove(0,-1);}-> MiddleEW;
+    				moveLeft [isLegalJump(MoveDirection.West)] /{updateMove(0,-2);}-> MiddleEW;
+    				
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] /{updateMove(-1,-1);}-> MiddleEW;
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] /{updateMove(-1,1);}-> AtEastEdge;
+    				moveDownLeft [isLegalDiagonalMove(MoveDirection.West)] /{updateMove(1,-1);}-> MiddleEW;
+    				moveDownRight [isLegalDiagonalMove(MoveDirection.South)] /{updateMove(1,1);}-> AtEastEdge;
+    			}
+    			AtWestEdge{
+    				moveRight [isLegalStep(MoveDirection.East)]  /{updateMove(0,1);} -> AtWestBorder;
+    				moveRight [isLegalJump(MoveDirection.East)]  /{updateMove(0,2);} -> MiddleEW;
+    				
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] /{updateMove(-1,1);} -> AtWestBorder;
+    				moveDownRight [isLegalDiagonalMove(MoveDirection.South)] /{updateMove(1,1);}-> AtWestBorder;
+    			} 
+    			AtWestBorder{
+    				moveRight [isLegalStep(MoveDirection.East)] /{updateMove(0,1);}-> MiddleEW;
+    				moveRight [isLegalJump(MoveDirection.East)] /{updateMove(0,2);}-> MiddleEW;
+    				moveLeft [isLegalStep(MoveDirection.West)] /{updateMove(0,-1);}-> AtWestEdge;
+    				
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] /{updateMove(-1,1);}-> MiddleEW;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] /{updateMove(-1,-1);}-> AtWestEdge;
+
+    				moveDownLeft [isLegalDiagonalMove(MoveDirection.West)] /{updateMove(1,-1);} -> AtWestEdge;
+    				moveDownRight [isLegalDiagonalMove(MoveDirection.South)] /{updateMove(1,1);}-> MiddleEW;
+
+    			}
+    			MiddleEW{
+    				moveRight [isLegalStep(MoveDirection.East) && getCurrentPawnColumn()==7] /{updateMove(0,1);}-> AtEastBorder;
+    				moveRight [isLegalJump(MoveDirection.East) && getCurrentPawnColumn()==7] /{updateMove(0,2);}-> AtEastEdge;
+    				moveRight [isLegalJump(MoveDirection.East) && getCurrentPawnColumn()==6] /{updateMove(0,2);}-> AtEastBorder;
+    				moveRight [isLegalStep(MoveDirection.East)] /{updateMove(0,1);}-> MiddleEW;
+    				moveRight [isLegalJump(MoveDirection.East)] /{updateMove(0,2);}-> MiddleEW;
+    				
+    				moveUpRight[getCurrentPawnColumn()==7&&isLegalDiagonalMove(MoveDirection.East)] /{updateMove(-1,1);}-> AtEastBorder;
+    				moveUpRight[isLegalDiagonalMove(MoveDirection.East)] /{updateMove(-1,1);}-> MiddleEW;
+    				moveDownRight[isLegalDiagonalMove(MoveDirection.South)] /{updateMove(1,1);}-> MiddleEW;
+    				moveDownRight[getCurrentPawnColumn()==7&&isLegalDiagonalMove(MoveDirection.South)] /{updateMove(1,1);}-> AtEastBorder;
+
+    				moveLeft [getCurrentPawnColumn()==3&&isLegalStep(MoveDirection.West)] /{updateMove(0,-1);}-> AtWestBorder;
+    				moveLeft [getCurrentPawnColumn()==3&&isLegalJump(MoveDirection.West)] /{updateMove(0,-2);}-> AtWestEdge;
+    				moveLeft [getCurrentPawnColumn()==4&&isLegalJump(MoveDirection.West)] /{updateMove(0,-2);}-> AtWestBorder;
+    				moveLeft [isLegalStep(MoveDirection.West)] /{updateMove(0,-1);} -> MiddleEW;
+    				moveLeft [isLegalJump(MoveDirection.West)] /{updateMove(0,-2);} -> MiddleEW;
+    				
+    				moveUpLeft[getCurrentPawnColumn()==3 && isLegalDiagonalMove(MoveDirection.North)] /{updateMove(-1,-1);}-> AtWestBorder;
+    				moveUpLeft[isLegalDiagonalMove(MoveDirection.North)] /{updateMove(-1,-1);}-> MiddleEW;
+    				moveDownLeft[getCurrentPawnColumn()==3 && isLegalDiagonalMove(MoveDirection.West)] /{updateMove(1,-1);}-> AtWestBorder;
+    				moveDownLeft[isLegalDiagonalMove(MoveDirection.West)] /{updateMove(1,-1);}-> MiddleEW;
+				}
+    		}
+    	}
+    	Finished{
+  			
+    	}
+    }
+    
+    // Returns the current row number of the pawn
+   int getCurrentPawnRow() { 
+		if(player==currentGame.getWhitePlayer()) {
+			return currentGame.getCurrentPosition().getWhitePosition().getTile().getRow();
+		}
+		return currentGame.getCurrentPosition().getBlackPosition().getTile().getRow();
+	}
+    
+    // Returns the current column number of the pawn
+    int getCurrentPawnColumn() { 
+		if(player==currentGame.getWhitePlayer()) {
+			return currentGame.getCurrentPosition().getWhitePosition().getTile().getColumn();
+		}
+		return currentGame.getCurrentPosition().getBlackPosition().getTile().getColumn();
+	}
+    
+    // Returns if it is legal to step in the given direction
+    boolean isLegalStep(MoveDirection dir) { 
+	    HashMap<Integer, Boolean> wallMap = getWallMap();
+		int row = getCurrentPawnRow();
+		int col = getCurrentPawnColumn();
+		if(isTherePlayerInDir(dir,row,col))return false;
+		if(isThereWallInDir(dir,row,col))return false;
+	    return true;
+    }
+    
+    // Returns if it is legal to jump in the given direction
+    boolean isLegalJump(MoveDirection dir) {
+    	HashMap<Integer, Boolean> wallMap = getWallMap();
+		int row = getCurrentPawnRow();
+		int col = getCurrentPawnColumn();
+		if(isThereWallInDir(dir,row,col))return false;
+		if(!isTherePlayerInDir(dir,row,col))return false;
+		switch(dir){
+			case North:
+				row--;
+				break;
+			case South:
+				row++;
+				break;
+			case East:
+				col++;
+				break;
+			case West:
+				col--;
+				break;
+		}
+		if(isThereWallInDir(dir,row,col))return false;
+    	return true;
+    }
+	HashMap<Integer,Boolean> getWallMap(){
+	  HashMap<Integer, Boolean> wallPositions = new HashMap<Integer, Boolean>();		
+		//TODO: switch to player list (more convenient if 2+)
+		for (Wall wall : currentGame.getCurrentPosition().getBlackWallsOnBoard()) {
+			WallMove wall_move = wall.getMove();
+			int row = wall_move.getTargetTile().getRow();
+			int col = wall_move.getTargetTile().getColumn();
+			boolean dir_attr = false;
+			if (wall_move.getWallDirection().equals(Direction.Horizontal))
+				dir_attr = true;
+			wallPositions.put(row * 9 + col, dir_attr);
+		}
+		for (Wall wall : currentGame.getCurrentPosition().getWhiteWallsOnBoard()) {
+			WallMove wall_move = wall.getMove();
+			int row = wall_move.getTargetTile().getRow();
+			int col = wall_move.getTargetTile().getColumn();
+			boolean dir_attr = false;
+			if (wall_move.getWallDirection().equals(Direction.Horizontal))
+				dir_attr = true;
+			wallPositions.put(row * 9 + col, dir_attr);
+		}
+		return wallPositions;
+  }
+    // Action to be called when an illegal move is attempted
+   void illegalMove() {
+   }
+   private boolean isThereWallInDir(MoveDirection dir, int row, int col){
+    HashMap<Integer, Boolean> wallMap = getWallMap();
+	  switch(dir) {
+	  	case North:
+	  		row-=1;
+	  		if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return true;
+			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return true;
+	  		break;
+	  	case South:
+	  		if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtWestEdge&&wallMap.containsKey((row)*9+col-1)&&wallMap.get((row)*9+col-1))return true;
+			if(pawnSMPlayingEastWestEastWest!=PawnSMPlayingEastWestEastWest.AtEastEdge&&wallMap.containsKey((row)*9+col)&&wallMap.get((row)*9+col))return true;
+	  		break;
+	  	case East:
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return true;
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return true;
+	  		break;
+	  	case West:
+	  		col--;
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtSouthEdge&&wallMap.containsKey((row)*9+col)&&!wallMap.get((row)*9+col))return true;
+			if(pawnSMPlayingNorthSouthNorthSouth!=PawnSMPlayingNorthSouthNorthSouth.AtNorthEdge&&wallMap.containsKey((row-1)*9+col)&&!wallMap.get((row-1)*9+col))return true;
+	  		break;
+	  }
+	  return false;
+  }
+  private boolean isTherePlayerInDir(MoveDirection dir, int row, int col) {
+	   PlayerPosition otherPlayerPosition = player.equals(currentGame.getWhitePlayer())?currentGame.getCurrentPosition().getBlackPosition():currentGame.getCurrentPosition().getWhitePosition();
+		int otherRow = otherPlayerPosition.getTile().getRow();
+		int otherCol = otherPlayerPosition.getTile().getColumn();
+	    switch(dir) {
+	    		case North:
+	    			if(col==otherCol&&row-1==otherRow)return true;
+	    			break;
+	    		case South:
+	    			if(col==otherCol&&row+1==otherRow)return true;
+	    			break;
+	    		case West:
+	    			if(col-1==otherCol&&row==otherRow)return true;
+	    			break;
+	    		case East:
+	    			if(col+1==otherCol&&row==otherRow)return true;
+	    			break;
+	   }
+	    return false;
+   }
+
+	private boolean isLegalDiagonalMove(MoveDirection dir){
+    int row = getCurrentPawnRow();
+	int col = getCurrentPawnColumn();
+    switch(dir){
+   			case North:
+   				if(row==1||col==1)return false;
+   				if(isTherePlayerInDir(MoveDirection.North,row,col)) {
+   					if(isThereWallInDir(MoveDirection.North, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.North, row-1, col)&&(row-1)!=1)return false;
+   					if(isThereWallInDir(MoveDirection.West, row-1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.West, row, col)) {
+   					if(isThereWallInDir(MoveDirection.West, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.West, row, col-1)&&(col-1)!=1)return false;
+   					if(isThereWallInDir(MoveDirection.North, row, col-1))return false;
+   				}
+   				else return false;
+   				break;
+   			case South:
+
+   				if(row==9||col==9)return false;
+   				if(isTherePlayerInDir(MoveDirection.South,row,col)) {
+   					if(isThereWallInDir(MoveDirection.South, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.South, row+1, col)&&(row+1)!=9)return false;
+   					if(isThereWallInDir(MoveDirection.East, row+1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.East, row, col)) {
+   					if(isThereWallInDir(MoveDirection.East, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.East, row, col+1)&&(col+1)!=9)return false;
+   					if(isThereWallInDir(MoveDirection.South, row, col+1))return false;
+   				}
+   				else return false;
+   				break;
+   			case East:
+   				if(row==1||col==9)return false;
+   				if(isTherePlayerInDir(MoveDirection.North,row,col)) {
+   					if(isThereWallInDir(MoveDirection.North, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.North, row-1, col)&&(row-1)!=1)return false;
+   					if(isThereWallInDir(MoveDirection.East, row-1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.East, row, col)) {
+   					if(isThereWallInDir(MoveDirection.East, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.East, row, col+1)&&(col+1)!=9)return false;
+   					if(isThereWallInDir(MoveDirection.North, row, col+1))return false;
+   				}
+   				else return false;
+   				break;
+   			case West:
+   				if(row==9||col==1)return false;
+   				if(isTherePlayerInDir(MoveDirection.South,row,col)) {
+   					if(isThereWallInDir(MoveDirection.South, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.South, row+1, col)&&(row+1)!=9)return false;
+   					if(isThereWallInDir(MoveDirection.West, row+1, col))return false;
+   				}
+   				else if(isTherePlayerInDir(MoveDirection.West, row, col)) {
+   					if(isThereWallInDir(MoveDirection.West, row, col))return false;
+   					if(!isThereWallInDir(MoveDirection.West, row, col-1)&&(col-1)!=1)return false;
+   					if(isThereWallInDir(MoveDirection.South, row, col-1))return false;
+   				}
+   				else return false;
+   				break;
+   		}
+   		return true;
+  }
+   	private void updateMove(int i, int j){
+	    GamePosition clone = clonePosition(currentGame.getCurrentPosition());
+	    currentGame.setCurrentPosition(clone);
+	    PlayerPosition playerpos;
+	    if(isWhite())playerpos = clone.getWhitePosition();
+	    else playerpos = clone.getBlackPosition();
+	    int row = playerpos.getTile().getRow();
+	    int col = playerpos.getTile().getColumn();
+	    playerpos.setTile(Quoridor223Controller.getTile(row+i,col+j));
+	}
+   private boolean isWinningMove(){
+	   if(isWhite()&&getCurrentPawnRow()==1)return true;
+	   if(!isWhite()&&getCurrentPawnRow()==9)return true;
+	   return false;
+  }
+   private boolean isWhite(){
+   		return player.equals(currentGame.getWhitePlayer());
+   }
+   private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
+		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
+	}
+   private static GamePosition clonePosition(GamePosition oldPosition) {
+		PlayerPosition newWhitePosition = clonePlayerPosition(oldPosition.getWhitePosition());
+		PlayerPosition newBlackPosition = clonePlayerPosition(oldPosition.getBlackPosition());
+		GamePosition newPosition = new GamePosition(oldPosition.getId() + 1, newWhitePosition, newBlackPosition,
+				oldPosition.getPlayerToMove(), oldPosition.getGame());
+		for (Wall wall : oldPosition.getBlackWallsInStock())
+			newPosition.addBlackWallsInStock(wall);
+		for (Wall wall : oldPosition.getWhiteWallsInStock())
+			newPosition.addWhiteWallsInStock(wall);
+		for (Wall wall : oldPosition.getBlackWallsOnBoard())
+			newPosition.addBlackWallsOnBoard(wall);
+		for (Wall wall : oldPosition.getWhiteWallsOnBoard())
+			newPosition.addWhiteWallsOnBoard(wall);
+		return newPosition;
+	}
+    // Enumeration for the possible moving directions
+    // (directions are from the viewpoint of white player)
+    enum MoveDirection { East, South, West, North ;}
+}
