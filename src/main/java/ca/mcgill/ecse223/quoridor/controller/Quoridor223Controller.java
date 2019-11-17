@@ -183,6 +183,7 @@ public class Quoridor223Controller {
 		// get current game
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player currentPlayer;
+		
 		// get currentPlayer
 		if (currentGame.getBlackPlayer().getUser().getName().equals(playerName)) {
 			currentPlayer = currentGame.getBlackPlayer();
