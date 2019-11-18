@@ -637,6 +637,16 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
+	 * Given
+	 * @author Mitchell Keeley
+	 * @param side
+	 */
+	@And("My opponent is not {string} from the player")
+	public void myOpponentIsNotSideFromThePlayer(String side) {
+		placeOpponentFarFromPlayer();
+	}
+	
+	/**
 	 * @param side
 	 * @author Sacha Lévy
 	 * @return check if opponent is on given side of the player
@@ -766,16 +776,6 @@ public class CucumberStepDefinitions {
 		}
 		Tile new_position = Quoridor223Controller.getTile(row, col);
 		return current_position.setTile(new_position);
-	}
-	
-	/**
-	 * Given
-	 * @author Mitchell Keeley
-	 * @param side
-	 */
-	@And("My opponent is not {string} from the player")
-	public void myOpponentIsNotSideFromThePlayer(String side) {
-		placeOpponentFarFromPlayer();
 	}
 	
 	// **********************************************
@@ -1659,7 +1659,6 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * Checks the current player to move by color
-	 * 
 	 * @author Mitchell Keeley
 	 * @param playerColor
 	 * @return
@@ -1672,7 +1671,7 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
-	 * 
+	 * Places a wall with the specified direction and position
 	 * @param direction
 	 * @param row
 	 * @param col
