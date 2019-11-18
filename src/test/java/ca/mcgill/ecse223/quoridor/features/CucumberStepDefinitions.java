@@ -524,30 +524,58 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	// TODO: MovePawn and JumpPawn
 	// **********************************************
+	/**
+	 * And
+	 * @author Sacha Lévy
+	 * @param row
+	 * @param col
+	 * */
 	@And("The player is located at {int}:{int}")
 	public void thePlayerIsLocatedAt(int row, int col) {
 		String player = "player";
 		assertTrue("The player is not located at {int}:{int}", playerIsLocatedAt(player, row, col));
 	}
 	
+	/**
+	 * And
+	 * @author Sacha Lévy
+	 * @param row
+	 * @param col
+	 * */
 	@And("The opponent is located at {int}:{int}")
 	public void theOpponentIsLocatedAt(int row, int col) {
 		String player = "opponent";
 		assertTrue("The opponent is not located at {int}:{int}", playerIsLocatedAt(player, row, col));
 	}
 	
+	/**
+	 * And
+	 * @author Sacha Lévy
+	 * @param side
+	 * @param dir
+	 * */
 	@And("There are no {string} walls {string} from the player nearby")
 	public static void thereAreNoWallsFromThePlayerNearBy(String dir, String side) {
 		// should this method simply check that there are no walls from the player near by ? or set the board to conform ?
 		assertTrue("There are {string} walls {string} from the player nearby", hasWallsFromThePlayerNearby(dir, side));
 	}
 	
+	/**
+	 * And
+	 * @author Sacha Lévy
+	 * @param side
+	 * */
 	@And("The opponent is not {string} from the player")
 	public void theOpponentIsNotSideFromThePlayer(String side) {
 		assertFalse("The opponent is {string} from the player", isOpponentSideFromThePlayer(side));
 	}
 	
-	
+	/**
+	 * And
+	 * @param dir
+	 * @param side
+	 * @author Sacha Lévy
+	 * */
 	@And("There are no {string} walls {string} from the player")
 	public void thereAreNoWallsFromThePlayer(String dir, String side) {
 		// same thing as thereAreNoWallsFromThePlayerNearby
@@ -621,6 +649,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @param side
 	 * @author Sacha Lévy
+	 * @return check if opponent is on given side of the player
 	 * */
 	private static boolean isOpponentSideFromThePlayer(String side) {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -724,7 +753,7 @@ public class CucumberStepDefinitions {
 	/**
 	 * @author Sacha Lévy
 	 * @param player, row, col
-	 * @return isThePlayerAtExpectedLocation
+	 * @return wasThePlayerSetAtLocation
 	 * */
 	private boolean playerIsLocatedAt(String player, int row, int col) {
 		// defines walls near the player
