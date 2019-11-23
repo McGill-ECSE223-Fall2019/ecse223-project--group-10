@@ -1376,6 +1376,55 @@ public class CucumberStepDefinitions {
 			}
 		}
 	}
+	
+	// *****************************************************************
+	// TODO: Jump To Start Position and Jump To Last Position start here
+	// *****************************************************************
+	
+	@Given("The following moves have been played in game:")
+	public void theFollowingMoveHaveBeenPalyedInGame() {
+		
+	}
+	
+	@And("The next move is {int}.{int}")
+	public void theNextMoveIs(int movno, int rndno) {
+		
+	}
+	
+	@When("Jump to start position is initiated")
+	public void jumpToStartPositionIsInitiated() {
+		
+	}
+	
+	@Then("The next move shall be {int}.{int}")
+	public void theNextMoveShallBe(int nmov, int nrnd) {
+		
+	}
+	
+	@And("White player's position shall be \\({int},{int})")
+	public void whitePlayersPositionShallBe(int wrow, int wcol) {
+		
+	}
+	
+	@And("Black player's position shall be \\({int},{int})")
+	public void blackPlayersPositionShallBe(int brow, int bcol) {
+		
+	}
+	
+	@And("White has {int} on stock")
+	public void whiteHasOnStock(int wwallno) {
+		
+	}
+	
+	@And("Black has {int} on stock")
+	public void blackHasOnStock(int bwallno) {
+		
+	}
+	
+	// *****************************************************************
+	// TODO: Jump To Start Position and Jump To Last Position end here
+	// *****************************************************************
+	
 
 	// ***********************************************
 	// Extracted helper methods
