@@ -1388,12 +1388,16 @@ public class CucumberStepDefinitions {
 	
 	@And("The next move is {int}.{int}")
 	public void theNextMoveIs(int movno, int rndno) {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
 		
+		curGame.getMoves().get(movno).getMoveNumber();
+		curGame.getMoves().get(rndno).getRoundNumber();
+
 	}
 	
 	@When("Jump to start position is initiated")
 	public void jumpToStartPositionIsInitiated() {
-		
+		//call controller
 	}
 	
 	@Then("The next move shall be {int}.{int}")
