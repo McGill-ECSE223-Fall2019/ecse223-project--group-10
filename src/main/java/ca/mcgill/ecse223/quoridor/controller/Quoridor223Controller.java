@@ -552,17 +552,24 @@ public class Quoridor223Controller {
 	//////////////////////////////////////////////////////////////
 
 	
-	public static void jumpToStartPosition() throws GameNotRunningException {
-		if (!isRunning())
-			throw new GameNotRunningException("Game not running");
+	public static void jumpToStartPosition() throws InvalidOperationException {
+		if (!isReplay())
+			throw new InvalidOperationException("Game is not in replay mode");
 		
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition startPosition = curGame.getPosition(0);
+		curGame.setCurrentPosition(startPosition);
 		
 	}
 	
-	public static void jumpToFinalPosition() throws GameNotRunningException {
-		if (!isRunning())
-			throw new GameNotRunningException("Game not running");
+	public static void jumpToFinalPosition() throws InvalidOperationException {
+		if (!isReplay())
+			throw new InvalidOperationException("Game is not in replay mode");
 		
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		int finalIndex = curGame.getPositions().size() - 1;
+		GamePosition finalPosition = curGame.getPosition(finalIndex);
+		curGame.setCurrentPosition(finalPosition);
 		
 	}	
 	
@@ -1226,7 +1233,7 @@ public class Quoridor223Controller {
 		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (current == null || current.getGameStatus()!=Game.GameStatus.Running)
 			return false;
-		
+
 		return true;
 	}
 
@@ -1985,5 +1992,19 @@ public class Quoridor223Controller {
 		String return_statement = "current player  moving : "+getPlayerToMoveName() +"\n"+ "Next player moving:" + currentGame.getCurrentPosition().getPlayerToMove().getNextPlayer().getUser().getName();
 		return return_statement;
 	}
+	
+	/**
+	 * Check if the game is in replay mode
+	 * @author Enan Ashaduzzaman
+	 * @return game the game is replay mode
+	 */
+	public static boolean isReplay() {
+		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (current == null || current.getGameStatus()!=Game.GameStatus.Replay)
+			return false;
+
+		return true;
+	}
+	
 
 }
