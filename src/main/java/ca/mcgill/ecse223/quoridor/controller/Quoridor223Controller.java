@@ -556,11 +556,13 @@ public class Quoridor223Controller {
 		if (!isRunning())
 			throw new GameNotRunningException("Game not running");
 		
+		
 	}
 	
 	public static void jumpToFinalPosition() throws GameNotRunningException {
 		if (!isRunning())
 			throw new GameNotRunningException("Game not running");
+		
 		
 	}	
 	
