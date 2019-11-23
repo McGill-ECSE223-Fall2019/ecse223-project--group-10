@@ -542,7 +542,6 @@ public class Quoridor223Controller {
 		current_player.getNextPlayer().setNextPlayer(current_player);
 	}
 	
-
 	//////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////
@@ -564,7 +563,11 @@ public class Quoridor223Controller {
 			throw new GameNotRunningException("Game not running");
 		
 		
-	}	
+	}
+	public static void StepForward() {
+		
+		int ind = findPositionIndex();
+	}
 	
 	
 	
@@ -1394,6 +1397,17 @@ public class Quoridor223Controller {
 	 */
 	private static PlayerPosition clonePlayerPosition(PlayerPosition playerPos) {
 		return new PlayerPosition(playerPos.getPlayer(), playerPos.getTile());
+	}
+	
+	private static int findPositionIndex() {
+		GamePosition current = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		List<GamePosition> posList = QuoridorApplication.getQuoridor().getCurrentGame().getPositions();
+		int i = 0;
+		for(GamePosition cur: posList) {
+			if(cur.equals(current))return i;
+			i++;
+		}
+		return -1;
 	}
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
