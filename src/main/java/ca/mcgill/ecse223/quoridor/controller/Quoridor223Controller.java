@@ -10,11 +10,14 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.management.openmbean.InvalidOpenTypeException;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.security.InvalidAlgorithmParameterException;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
@@ -509,8 +512,9 @@ public class Quoridor223Controller {
 	 * @author Sacha Lévy
 	 * @throws GameNotRunningException
 	 * @throws UnsupportedOperationException
+	 * @throws InvalidOperationException 
 	 */
-	public static boolean validatePosition() throws UnsupportedOperationException, GameNotRunningException {
+	public static boolean validatePosition() throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException {
 		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		//TODO: better combine isWallCandidateOverlapping and doWallsOverlap, ie minimize search time
@@ -520,6 +524,7 @@ public class Quoridor223Controller {
 		if (current_game.hasWallMoveCandidate()) {
 			if (!isWallCandidatePositionValid()) return false;
 			if (isWallMoveCandidateOverlapping()) return false;
+			if (!hasPath()) return false;
 		} else {
 			// TODO: implement the pawn behavior checking within the validate position, uniform method
 			if (!isPlayerPositionValid()) return false;
@@ -639,6 +644,13 @@ public class Quoridor223Controller {
 		// take into account may not be including the wall candidate ??
 		// might need to take the wall candidate into account
 		HashMap<Integer, Boolean> wallsOnBoard = loadWallPositionsMap();
+		// add the wall candidate to the walls on board to check if it is blocking the path
+		WallMove move_candidate = current_game.getWallMoveCandidate();
+		int candidate_row = move_candidate.getTargetTile().getRow();
+		int candidate_col = move_candidate.getTargetTile().getColumn();
+		int cand_key = candidate_row * 9 + candidate_col;
+		boolean cand_dir = move_candidate.getWallDirection().equals(Direction.Horizontal) ? true : false;
+		wallsOnBoard.put(cand_key, cand_dir);
 		
 		for(int e: wallsOnBoard.keySet()) {
 			int Acol = e%9;
@@ -659,60 +671,97 @@ public class Quoridor223Controller {
 				mazeMap.replace((Arow)*9+Acol+1, tile_state+8);
 			}
 		}
-		int entry_point = 1;	// tile 1*1
-		int count = 0;			// count of visited tiles
+		int entry_point = 10;	// tile 1*9+1
 		// trivial case where one of the tile is blocked
 		if(mazeMap.containsValue(15)) return false;
-		return checkMazeMap(mazeMap, entry_point, count);
+		HashMap<Integer, Boolean> visitedMap = new HashMap<>();
+		// have to follow trace of 
+		return checkMazeMap(mazeMap, entry_point, visitedMap);
 	}
 	// exhaustive process since only need to check if can cut the board in two
-	public static boolean checkMazeMap(HashMap<Integer, Integer> mazeMap, int entry_point, int count) {
+	public static boolean checkMazeMap(HashMap<Integer, Integer> mazeMap, Integer entry_point, HashMap<Integer, Boolean> visitedMap) {
 		int Acol = entry_point%9;
 		int Arow = (entry_point-Acol)/9;
 		int tile_state = mazeMap.get(entry_point);
-		List points = new ArrayList();
+		Set<Integer> points = new HashSet<Integer>();
+		// add all the points accessible from the given initial point 
 		if(tile_state==0) {
-			points.add(points.size(), (Arow+1)*9+Acol);
-			points.add(points.size(), (Arow-1)*9+Acol);
-			points.add(points.size(), (Arow)*9+Acol+1);
+			points.add((Arow+1)*9+Acol);
+			points.add((Arow-1)*9+Acol);
+			points.add((Arow)*9+Acol+1);
+			points.add((Arow)*9+Acol-1);
 		}
 		else if(tile_state==1) {
-			
+			points.add((Arow+1)*9+Acol);
+			points.add((Arow-1)*9+Acol);
+			points.add((Arow)*9+Acol-1);
+		}
+		else if(tile_state==2) {
+			points.add((Arow+1)*9+Acol);
+			points.add((Arow)*9+Acol+1);
+			points.add((Arow)*9+Acol-1);
 		}
 		else if(tile_state==3) {
-			
+			points.add((Arow+1)*9+Acol);
+			points.add((Arow)*9+Acol-1);
+		}
+		else if(tile_state==4) {
+			points.add((Arow+1)*9+Acol);
+			points.add((Arow-1)*9+Acol);
+			points.add((Arow)*9+Acol+1);
 		}
 		else if(tile_state==5) {
-	
+			points.add((Arow+1)*9+Acol);
+			points.add((Arow-1)*9+Acol);
+		}
+		else if(tile_state==6) {
+			points.add((Arow+1)*9+Acol);
+			points.add((Arow)*9+Acol+1);
 		}
 		else if(tile_state==7) {
-			
+			points.add((Arow+1)*9+Acol);
 		}	
 		else if(tile_state==9) {
-			
+			points.add((Arow-1)*9+Acol);
+			points.add((Arow)*9+Acol-1);
 		}
 		else if(tile_state==10) {
-			
+			points.add((Arow)*9+Acol+1);
+			points.add((Arow)*9+Acol-1);
 		}
 		else if(tile_state==11) {
-			
+			points.add((Arow)*9+Acol-1);
 		}
 		else if(tile_state==12) {
-			
+			points.add((Arow-1)*9+Acol);
+			points.add((Arow)*9+Acol+1);
 		}
 		else if(tile_state==13) {
-			
+			points.add((Arow-1)*9+Acol);
 		}
 		else if(tile_state==14) {
-			
+			points.add((Arow)*9+Acol+1);
 		}
-	
-		count++;
-		for(int i=0; i <= points.size(); i++) {
-			
-		}
-		if (count==81) return true;
+		
+		points = filterPoints(points, visitedMap);
+		visitedMap.put(entry_point, true);
+		// if all tiles where visited then it is true
+		if (visitedMap.size()==81) return true;
+		
+		Iterator<Integer> itr = points.iterator();
+		while(itr.hasNext()) return checkMazeMap(mazeMap, itr.next(), visitedMap);
 		return false;
+	}
+	
+	// filter out the elements that have already been visited
+	private static Set<Integer> filterPoints(Set<Integer> points, HashMap<Integer, Boolean> visitedMap) {
+		Set<Integer> updated_points = new HashSet<Integer>();
+		Iterator<Integer> itr = points.iterator();
+		while(itr.hasNext()) {
+			int curKey = itr.next();
+			if(!visitedMap.containsKey(curKey)) updated_points.add(curKey); 
+		}
+		return updated_points;
 	}
 	
 /////////////////////////////////////////////////////
@@ -726,8 +775,9 @@ public class Quoridor223Controller {
 	 * 
 	 * @author Sacha Lévy
 	 * @return isValid
+	 * @throws InvalidOperationException 
 	 * */
-	public static String isPositionValid() {
+	public static String isPositionValid() throws InvalidOperationException {
 		String isValid = "invalid";
 		try {
 			if (validatePosition()) isValid = "valid";
