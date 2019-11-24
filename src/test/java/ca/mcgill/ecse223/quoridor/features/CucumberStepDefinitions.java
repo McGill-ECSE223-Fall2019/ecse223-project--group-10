@@ -1382,8 +1382,13 @@ public class CucumberStepDefinitions {
 	// *****************************************************************
 	
 	@Given("The following moves have been played in game:")
-	public void theFollowingMoveHaveBeenPalyedInGame() {
-		
+	public void theFollowingMoveHaveBeenPalyedInGame(io.cucumber.datatable.DataTable dataTable) {
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		for(Map<String,String> mp: valueMaps) {
+			int mv =Integer.parseInt(mp.get("mv"));
+			int rnd = Integer.parseInt(mp.get("rnd"));
+			String move =  mp.get("move");
+		}
 	}
 	
 	@And("The next move is {int}.{int}")
