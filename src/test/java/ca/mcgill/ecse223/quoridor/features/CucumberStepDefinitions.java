@@ -1386,23 +1386,32 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+	int movNoBef = 0;
+	int rndNoBef = 0;
 	@And("The next move is {int}.{int}")
 	public void theNextMoveIs(int movno, int rndno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
 		
-		curGame.getMoves().get(movno).getMoveNumber();
-		curGame.getMoves().get(rndno).getRoundNumber();
+		movNoBef = curGame.getMoves().get(movno).getMoveNumber();
+		rndNoBef = curGame.getMoves().get(rndno).getRoundNumber();
 
 	}
 	
 	@When("Jump to start position is initiated")
 	public void jumpToStartPositionIsInitiated() {
-		//call controller
+		
 	}
 	
+	int movNoAft = 0;
+	int rndNoAft = 0;
 	@Then("The next move shall be {int}.{int}")
 	public void theNextMoveShallBe(int nmov, int nrnd) {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
 		
+		movNoAft = curGame.getMoves().get(nmov).getMoveNumber();
+		movNoBef = curGame.getMoves().get(nrnd).getRoundNumber();
+		
+		assertEquals(movNoBef, movNoAft);
 	}
 	
 	@And("White player's position shall be \\({int},{int})")

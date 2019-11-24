@@ -11,12 +11,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.controller.TOGame;
 import ca.mcgill.ecse223.quoridor.controller.TOPlayer;
 import ca.mcgill.ecse223.quoridor.controller.TOWall;
+import ca.mcgill.ecse223.quoridor.model.Game;
 
 import javax.swing.Icon;
 
@@ -228,6 +230,47 @@ public class GamePage extends JFrame {
 			}
 		}, 1000, 1000);
 
+		replayGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				if(isReplayMode()) {
+					btnLeft.setText("<");
+					btnRight.setText(">");
+					replayGame.setText("Replay Game");
+					btnUp.setEnabled(true);
+					btnDown.setEnabled(true);
+					btnUpRight.setEnabled(true);
+					btnUpLeft.setText("\u2196");
+					btnDownRight.setEnabled(true);
+					btnDownLeft.setEnabled(true);
+//					try {
+//						Quoridor223Controller.exitReplayGame();
+//					} catch (InvalidOperationException eReplay) {
+//						gameMessage.setText(eReplay.getLocalizedMessage());
+//					} catch (GameNotRunningException eReplay) {
+//						gameMessage.setText(eReplay.getLocalizedMessage());
+//					}
+				} else if(!isReplayMode()) {
+					btnLeft.setText("<<");
+					btnRight.setText(">>");
+					replayGame.setText("Exit Replay");
+					btnUp.setEnabled(false);
+					btnDown.setEnabled(false);
+					btnUpRight.setEnabled(false);
+					btnUpLeft.setText("\u2b60");
+					btnDownRight.setEnabled(false);
+					btnDownLeft.setEnabled(false);
+//					try {
+//						Quoridor223Controller.replayGame();
+//					} catch (InvalidOperationException eReplay) {
+//						gameMessage.setText(eReplay.getLocalizedMessage());
+//					} catch (GameNotRunningException eReplay) {
+//						gameMessage.setText(eReplay.getLocalizedMessage());
+//					}
+				}
+				boardComponent.repaint();
+			}
+		});		
+		
 		grabWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
@@ -638,6 +681,10 @@ public class GamePage extends JFrame {
 			break;
 		}
 	}
+	public boolean isReplayMode() {
+		return Quoridor223Controller.isReplay();
+	}
+	
 	public boolean isWhiteClockRunning() {
 		return whiteClockIsRunning;
 	}
