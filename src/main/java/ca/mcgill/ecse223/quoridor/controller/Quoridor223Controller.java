@@ -550,7 +550,16 @@ public class Quoridor223Controller {
 	//////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////
 
-	
+	public static void enterReplayMode() throws GameNotRunningException {
+		if (!isRunning())throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		curGame.setGameStatus(Game.GameStatus.Replay);
+	}
+	public static void exitReplayMode() throws InvalidOperationException {
+		if (!isRunning())throw new InvalidOperationException("Not in replay mode.");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		curGame.setGameStatus(Game.GameStatus.Running);
+	}
 	public static void jumpToStartPosition() throws GameNotRunningException {
 		if (!isRunning())
 			throw new GameNotRunningException("Game not running");
@@ -564,9 +573,19 @@ public class Quoridor223Controller {
 		
 		
 	}
-	public static void StepForward() {
+	public static void StepForward() throws InvalidOperationException {
 		
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		int ind = findPositionIndex();
+		if(ind==curGame.getPositions().size())throw new InvalidOperationException("Already at the last step");
+		curGame.setCurrentPosition(curGame.getPosition(ind+1));
+	}
+	public static void StepBackward() throws InvalidOperationException {
+		
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		int ind = findPositionIndex();
+		if(ind==0)throw new InvalidOperationException("Already at the first step");
+		curGame.setCurrentPosition(curGame.getPosition(ind-1));
 	}
 	
 	
