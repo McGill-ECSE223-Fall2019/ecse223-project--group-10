@@ -164,34 +164,34 @@ public class GamePage extends JFrame {
 		// move buttons
 		btnLeft = new JButton("\u2190");
 		btnLeft.setBackground(new Color(204, 153, 102));
-		btnLeft.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnLeft.setFont(new Font("Arial Unicode MS", Font.PLAIN, 18));
 		btnLeft.setBounds(680, 330, 80, 80);
 		btnRight = new JButton("\u2192");
 		btnRight.setBackground(new Color(204, 153, 102));
-		btnRight.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnRight.setFont(new Font("Arial Unicode MS", Font.PLAIN, 18));
 		btnRight.setBounds(860, 330, 80, 80);
 		btnDown = new JButton("\u2193");
 		btnDown.setBackground(new Color(204, 153, 102));
-		btnDown.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnDown.setFont(new Font("Arial Unicode MS", Font.PLAIN, 18));
 		btnDown.setBounds(770, 420, 80, 80);
 		btnUp = new JButton("\u2191");
 		btnUp.setBackground(new Color(204, 153, 102));
-		btnUp.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnUp.setFont(new Font("Arial Unicode MS", Font.PLAIN, 18));
 		btnUp.setBounds(770, 240, 80, 80);
 		btnUpLeft = new JButton("\u2196");
-		btnUpLeft.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnUpLeft.setFont(new Font("Arial Unicode MS", Font.PLAIN, 18));
 		btnUpLeft.setBackground(new Color(204, 153, 102));
 		btnUpLeft.setBounds(680, 240, 80, 80);
 		btnDownLeft = new JButton("\u2199");
-		btnDownLeft.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnDownLeft.setFont(new Font("Arial Unicode MS", Font.PLAIN, 18));
 		btnDownLeft.setBackground(new Color(204, 153, 102));
 		btnDownLeft.setBounds(680, 420, 80, 80);
 		btnDownRight = new JButton("\u2198");
-		btnDownRight.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnDownRight.setFont(new Font("Arial Unicode MS", Font.PLAIN, 18));
 		btnDownRight.setBackground(new Color(204, 153, 102));
 		btnDownRight.setBounds(860, 420, 80, 80);
 		btnUpRight = new JButton("\u2197");
-		btnUpRight.setFont(new Font("Calibri", Font.PLAIN, 13));
+		btnUpRight.setFont(new Font("Arial Unicode MS", Font.PLAIN, 18));
 		btnUpRight.setBackground(new Color(204, 153, 102));
 		btnUpRight.setBounds(860, 240, 80, 80);
 		// ------------------------- Add to Panel ----------------------------//
@@ -233,39 +233,37 @@ public class GamePage extends JFrame {
 		replayGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				if(isReplayMode()) {
-					btnLeft.setText("<");
-					btnRight.setText(">");
+					btnLeft.setText("\u2190");
+					btnRight.setText("\u2192");
+					btnUpLeft.setText("\u2196");
+					btnUpRight.setText("\u2197");
 					replayGame.setText("Replay Game");
 					btnUp.setEnabled(true);
 					btnDown.setEnabled(true);
 					btnUpRight.setEnabled(true);
-					btnUpLeft.setText("\u2196");
+					
 					btnDownRight.setEnabled(true);
 					btnDownLeft.setEnabled(true);
-//					try {
-//						Quoridor223Controller.exitReplayGame();
-//					} catch (InvalidOperationException eReplay) {
-//						gameMessage.setText(eReplay.getLocalizedMessage());
-//					} catch (GameNotRunningException eReplay) {
-//						gameMessage.setText(eReplay.getLocalizedMessage());
-//					}
+					try {
+						Quoridor223Controller.exitReplayMode();
+					} catch (InvalidOperationException eReplay) {
+						gameMessage.setText(eReplay.getLocalizedMessage());
+					}
 				} else if(!isReplayMode()) {
-					btnLeft.setText("<<");
-					btnRight.setText(">>");
+					btnLeft.setText("\u2190");
+					btnRight.setText("\u2192");
+					btnUpLeft.setText("\u21e4");
+					btnUpRight.setText("\u21e5");
 					replayGame.setText("Exit Replay");
 					btnUp.setEnabled(false);
 					btnDown.setEnabled(false);
-					btnUpRight.setEnabled(false);
-					btnUpLeft.setText("\u2b60");
 					btnDownRight.setEnabled(false);
 					btnDownLeft.setEnabled(false);
-//					try {
-//						Quoridor223Controller.replayGame();
-//					} catch (InvalidOperationException eReplay) {
-//						gameMessage.setText(eReplay.getLocalizedMessage());
-//					} catch (GameNotRunningException eReplay) {
-//						gameMessage.setText(eReplay.getLocalizedMessage());
-//					}
+					try {
+						Quoridor223Controller.enterReplayMode();
+					} catch (GameNotRunningException eReplay) {
+						gameMessage.setText(eReplay.getLocalizedMessage());
+					} 
 				}
 				boardComponent.repaint();
 			}
