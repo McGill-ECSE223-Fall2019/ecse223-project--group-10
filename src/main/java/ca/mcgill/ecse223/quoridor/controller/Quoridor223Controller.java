@@ -542,6 +542,22 @@ public class Quoridor223Controller {
 		current_player.getNextPlayer().setNextPlayer(current_player);
 	}
 	
+	// check if there exists a path from the player position to the opponent's target area
+	public static boolean hasPath() {
+		// usefull for the dropwall method
+		// look at mazes & coordinates
+
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player current_player = current_game.getCurrentPosition().getPlayerToMove();
+		// define a target area based on the player currently playing
+			// look at the player's first move to see what is the inital state => infer target final state
+		
+		// get local environment: check if player can make a step (special steps included)
+		// if not in local environment then cannot consider opponent's pawn position, so just consider the walls
+			// 
+		return true;
+	}
+	
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 //////Sacha's Helper and Query methods Begins
