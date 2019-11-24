@@ -263,7 +263,9 @@ public class GamePage extends JFrame {
 						Quoridor223Controller.enterReplayMode();
 					} catch (GameNotRunningException eReplay) {
 						gameMessage.setText(eReplay.getLocalizedMessage());
-					} 
+					} catch (InvalidOperationException eReplay) {
+						gameMessage.setText(eReplay.getLocalizedMessage());
+					}
 				}
 				boardComponent.repaint();
 			}

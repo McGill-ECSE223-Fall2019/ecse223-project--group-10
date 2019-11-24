@@ -561,8 +561,9 @@ public class Quoridor223Controller {
 		
 	}
 
-	public static void enterReplayMode() throws GameNotRunningException {
+	public static void enterReplayMode() throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning())throw new GameNotRunningException("Game not running");
+		if (!isReplayPossible())throw new InvalidOperationException("Unable to replay");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		curGame.setGameStatus(Game.GameStatus.Replay);
 	}
@@ -576,7 +577,7 @@ public class Quoridor223Controller {
 	public static void jumpToFinalPosition() throws InvalidOperationException {
 		if (!isReplay())
 			throw new InvalidOperationException("Game is not in replay mode");
-		
+	
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		int finalIndex = curGame.getPositions().size() - 1;
 		GamePosition finalPosition = curGame.getPosition(finalIndex);
@@ -2038,5 +2039,17 @@ public class Quoridor223Controller {
 		return true;
 	}
 	
+	/**
+	 * Check if the game is allowed to go into replay mode
+	 * @author Enan Ashaduzzaman
+	 * @return is replay possible
+	 */
+	public static boolean isReplayPossible() {
+		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (current.getGameStatus()==Game.GameStatus.Running || current.getGameStatus()==Game.GameStatus.BlackWon || current.getGameStatus()==Game.GameStatus.WhiteWon || current.getGameStatus()==Game.GameStatus.Draw)
+			return true;
+
+		return false;
+	}	
 
 }
