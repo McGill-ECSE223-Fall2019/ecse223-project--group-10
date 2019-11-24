@@ -1382,36 +1382,33 @@ public class CucumberStepDefinitions {
 	// *****************************************************************
 	
 	@Given("The following moves have been played in game:")
-	public void theFollowingMoveHaveBeenPalyedInGame() {
-		
+	public void theFollowingMoveHaveBeenPalyedInGame(io.cucumber.datatable.DataTable dataTable) {
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		for(Map<String,String> mp: valueMaps) {
+			int mv =Integer.parseInt(mp.get("mv"));
+			int rnd = Integer.parseInt(mp.get("rnd"));
+			String move =  mp.get("move");
+			
+		}
 	}
 	
-	int movNoBef = 0;
-	int rndNoBef = 0;
 	@And("The next move is {int}.{int}")
 	public void theNextMoveIs(int movno, int rndno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
 		
-		movNoBef = curGame.getMoves().get(movno).getMoveNumber();
-		rndNoBef = curGame.getMoves().get(rndno).getRoundNumber();
+		curGame.getMoves().get(movno).getMoveNumber();
+		curGame.getMoves().get(rndno).getRoundNumber();
 
 	}
 	
 	@When("Jump to start position is initiated")
 	public void jumpToStartPositionIsInitiated() {
-		
+		//call controller
 	}
 	
-	int movNoAft = 0;
-	int rndNoAft = 0;
 	@Then("The next move shall be {int}.{int}")
 	public void theNextMoveShallBe(int nmov, int nrnd) {
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
 		
-		movNoAft = curGame.getMoves().get(nmov).getMoveNumber();
-		movNoBef = curGame.getMoves().get(nrnd).getRoundNumber();
-		
-		assertEquals(movNoBef, movNoAft);
 	}
 	
 	@And("White player's position shall be \\({int},{int})")
