@@ -550,29 +550,40 @@ public class Quoridor223Controller {
 	//////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////
 
-	public static void enterReplayMode() throws GameNotRunningException {
+
+	
+	public static void jumpToStartPosition() throws InvalidOperationException {
+		if (!isReplay())
+			throw new InvalidOperationException("Game is not in replay mode");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition startPosition = curGame.getPosition(0);
+		curGame.setCurrentPosition(startPosition);
+		
+	}
+
+	public static void enterReplayMode() throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning())throw new GameNotRunningException("Game not running");
+		if (!isReplayPossible())throw new InvalidOperationException("Unable to replay");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		curGame.setGameStatus(Game.GameStatus.Replay);
 	}
+	
 	public static void exitReplayMode() throws InvalidOperationException {
-		if (!isRunning())throw new InvalidOperationException("Not in replay mode.");
+		if (!isReplay())throw new InvalidOperationException("Not in replay mode.");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		curGame.setGameStatus(Game.GameStatus.Running);
 	}
-	public static void jumpToStartPosition() throws GameNotRunningException {
-		if (!isRunning())
-			throw new GameNotRunningException("Game not running");
-		
-		
+	
+	public static void jumpToFinalPosition() throws InvalidOperationException {
+		if (!isReplay())
+			throw new InvalidOperationException("Game is not in replay mode");
+	
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		int finalIndex = curGame.getPositions().size() - 1;
+		GamePosition finalPosition = curGame.getPosition(finalIndex);
+		curGame.setCurrentPosition(finalPosition);
 	}
 	
-	public static void jumpToFinalPosition() throws GameNotRunningException {
-		if (!isRunning())
-			throw new GameNotRunningException("Game not running");
-		
-		
-	}
 	public static void StepForward() throws InvalidOperationException {
 		
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -580,6 +591,7 @@ public class Quoridor223Controller {
 		if(ind==curGame.getPositions().size())throw new InvalidOperationException("Already at the last step");
 		curGame.setCurrentPosition(curGame.getPosition(ind+1));
 	}
+	
 	public static void StepBackward() throws InvalidOperationException {
 		
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -587,11 +599,6 @@ public class Quoridor223Controller {
 		if(ind==0)throw new InvalidOperationException("Already at the first step");
 		curGame.setCurrentPosition(curGame.getPosition(ind-1));
 	}
-	
-	
-	
-	
-	
 	
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
@@ -1248,7 +1255,7 @@ public class Quoridor223Controller {
 		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (current == null || current.getGameStatus()!=Game.GameStatus.Running)
 			return false;
-		
+
 		return true;
 	}
 
@@ -2018,5 +2025,31 @@ public class Quoridor223Controller {
 		String return_statement = "current player  moving : "+getPlayerToMoveName() +"\n"+ "Next player moving:" + currentGame.getCurrentPosition().getPlayerToMove().getNextPlayer().getUser().getName();
 		return return_statement;
 	}
+	
+	/**
+	 * Check if the game is in replay mode
+	 * @author Enan Ashaduzzaman
+	 * @return game the game is replay mode
+	 */
+	public static boolean isReplay() {
+		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (current == null || current.getGameStatus()!=Game.GameStatus.Replay)
+			return false;
+
+		return true;
+	}
+	
+	/**
+	 * Check if the game is allowed to go into replay mode
+	 * @author Enan Ashaduzzaman
+	 * @return is replay possible
+	 */
+	public static boolean isReplayPossible() {
+		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (current.getGameStatus()==Game.GameStatus.Running || current.getGameStatus()==Game.GameStatus.BlackWon || current.getGameStatus()==Game.GameStatus.WhiteWon || current.getGameStatus()==Game.GameStatus.Draw)
+			return true;
+
+		return false;
+	}	
 
 }

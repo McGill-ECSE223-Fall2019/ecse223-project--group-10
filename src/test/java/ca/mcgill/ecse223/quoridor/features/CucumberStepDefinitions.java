@@ -1388,6 +1388,7 @@ public class CucumberStepDefinitions {
 			int mv =Integer.parseInt(mp.get("mv"));
 			int rnd = Integer.parseInt(mp.get("rnd"));
 			String move =  mp.get("move");
+
 		}
 	}
 	
