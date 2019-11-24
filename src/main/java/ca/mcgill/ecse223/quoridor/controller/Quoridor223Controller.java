@@ -24,10 +24,12 @@ import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.model.GamePosition;
+import ca.mcgill.ecse223.quoridor.model.JumpMove;
 import ca.mcgill.ecse223.quoridor.model.Move;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
@@ -447,14 +449,14 @@ public class Quoridor223Controller {
 	}
 
 	/**
-	 * Feature 9: Save the current game position as a file in the filesystem
+	 * Feature 9: Save the current position as a file in the filesystem
 	 * 
 	 * @author Mitchell Keeley
 	 * @param filename
-	 * @return true if the game position was saved, otherwise returns false
+	 * @return true if the position was saved, otherwise returns false
 	 * @throws IOException
 	 */
-	// TODO: Feature 9: Save Game
+	// TODO: Feature 9: Save Position
 	public static boolean savePosition(String filename) throws IOException {
 		// GUI: register button press of the save game button
 		// ie: this method is called when a player clicks the save game button in the
@@ -479,16 +481,15 @@ public class Quoridor223Controller {
 		return savedPosition;
 	}
 
-	// under feature 10
 	/**
-	 * Feature 10: Load a new game position from a file in the filesystem
+	 * Feature 10: Load a new position from a file in the filesystem
 	 * 
 	 * @author Mitchell Keeley
 	 * @param filename
 	 * @return
 	 * @throws IOException 
 	 */
-	// TODO: Feature 10: Load Game
+	// TODO: Feature 10: Load Position
 	public static boolean loadPosition(String filename) throws IOException {
 		//System.out.println("called load position");
 		
@@ -502,6 +503,50 @@ public class Quoridor223Controller {
 		return loadedPosition;
 	}
 	
+	/**
+	 * Feature 23: Save the current game as a file in the filesystem
+	 * 
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @return true if the game was saved, otherwise returns false
+	 * @throws IOException
+	 */
+	// TODO: Feature 23: Save Game
+	public static boolean saveGame(String filename) throws IOException {
+	
+		boolean doesFileExist = false;
+		boolean savedPosition = false;
+		String relPath = "./src/main/resources/gameFiles/" + filename;
+		
+		//check if file exists
+		doesFileExist = checkIfFileExists(relPath);
+
+		// if the File exists
+		if (doesFileExist) {
+			savedPosition = saveGameToExistingFile(relPath);
+		} else {
+			savedPosition = saveGameToNewFile(relPath);
+		}
+
+		return savedPosition;
+	
+	}
+	
+	/**
+	 * Feature 24: Load a new game from a file in the filesystem
+	 * 
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @return
+	 * @throws IOException 
+	 */
+	// TODO: Feature 24: Load Game
+	public static boolean loadGame(String filename) throws IOException {
+	
+		return false;
+		
+	}
+		
 	//TODO: think about how to implement in more than 2 players way
 	/**
 	 * Feature 11: ValidatePosition, validate a wall position by checking overlapping walls and player position
@@ -1407,7 +1452,7 @@ public class Quoridor223Controller {
 	}
 
 	/**
-	 * Save the current game position as a file
+	 * Save the current position as a file
 	 * 
 	 * @author Mitchell Keeley
 	 * @param filename
@@ -1464,6 +1509,53 @@ public class Quoridor223Controller {
 			printWriter.printf("%s\n", blackPlayerData);
 			printWriter.printf("%s", whitePlayerData);
 		}
+		printWriter.close();
+
+		return true;
+	}
+	
+	/**
+	 * Save the current game as a file
+	 * 
+	 * @author Mitchell Keeley
+	 * @param filename
+	 * @throws IOException
+	 */
+	public static boolean saveCurrentGameAsFile(String filename) throws IOException {
+		//System.out.println("called save position");
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game currentGame = quoridor.getCurrentGame();
+		
+		String saveGameData = "";
+		
+		for (Move move : currentGame.getMoves()) {
+			int roundNum = move.getRoundNumber();
+			int moveNum = move.getMoveNumber();
+			
+			boolean newRound = moveNum %2 == 1;
+			
+			if (move instanceof WallMove) {
+				if (newRound) {
+					saveGameData.concat(roundNum + ". " + tileToString(move.getTargetTile())
+						+ directionToString(((WallMove) move).getWallDirection()));
+				} else {
+					saveGameData.concat(" " + tileToString(move.getTargetTile())
+					+ directionToString(((WallMove) move).getWallDirection()) + "\n");
+				}
+			}
+			
+			if (move instanceof StepMove || move instanceof JumpMove) {
+				if (newRound) {
+					saveGameData.concat(roundNum + ". " + tileToString(move.getTargetTile()));
+				} else {
+					saveGameData.concat(" " + tileToString(move.getTargetTile()) + "\n");
+				}
+			}
+		}
+		
+		// initialize the printWriter
+		PrintWriter printWriter = new PrintWriter(new FileWriter(filename));
+		printWriter.printf("%s", saveGameData);
 		printWriter.close();
 
 		return true;
@@ -1565,6 +1657,42 @@ public class Quoridor223Controller {
 		}
 		
 		return fileValidity;
+	}
+	
+	/**
+	 * Save game to an existing save file
+	 * @param filename
+	 * @return success or failure of operation
+	 * @throws IOException
+	 */
+	public static boolean saveGameToExistingFile(String filename) throws IOException {
+		boolean savefileUpdated = false;
+
+		// verify the file is a file, and is writable
+		// prompt the user to overwrite the file
+		if (userOverwritePrompt(filename) == true) {
+			// save the current GamePositon as the specified file
+			savefileUpdated = saveCurrentGamePositionAsFile(filename);
+		}
+
+		return savefileUpdated;
+	}
+	
+	/**
+	 * Save game to a newly created save file
+	 * @param filename
+	 * @return success or failure of operation
+	 * @throws IOException
+	 */
+	public static boolean saveGameToNewFile(String filename) throws IOException {
+		boolean saveFileCreated = false;
+		File saveFile = new File(filename);
+		
+		if (saveFile.createNewFile() && saveFile.isFile()) {
+			saveFileCreated = saveCurrentGameAsFile(filename);
+		}
+
+		return saveFileCreated;
 	}
 	
 	/**
