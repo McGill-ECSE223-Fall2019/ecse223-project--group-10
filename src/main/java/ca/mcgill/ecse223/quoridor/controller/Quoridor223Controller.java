@@ -601,19 +601,118 @@ public class Quoridor223Controller {
 	}
 	
 	// check if there exists a path from the player position to the opponent's target area
-	public static boolean hasPath() {
+	// assume the method is called after first checks of the wall candidate : isn't placed in a trivial
+	// non valid position such as on the edge of the board
+	public static boolean hasPath() throws InvalidOperationException {
+		// load
 		// usefull for the dropwall method
 		// look at mazes & coordinates
 
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player current_player = current_game.getCurrentPosition().getPlayerToMove();
-		// define a target area based on the player currently playing
-			// look at the player's first move to see what is the inital state => infer target final state
+		
+		HashMap<Integer, Integer> mazeMap = new HashMap<Integer, Integer>();
+		int board_size = 9;
+		// cost of wall at each edge of a tile
+		int up = 1;
+		int left = 2; 
+		int down = 4;
+		int right = 8;
+		// there will be no walls placed at these tiles thus no conflict between the walls
+		// and the edge tile: if considering dropping a candidate wall, should take it into account
+		
+		// init the mazeMap: every tile has a value of 0 (not blocked)
+		for(int i=0; i<=board_size; i++) {		// rows
+			for(int j=0; j<=board_size; j++) {	// cols
+				// fill with edge cases: borders of the map
+				if(i==1&&j==9) mazeMap.put(i*9+j, 3);
+				else if(i==1&&j==1) mazeMap.put(i*9+j, 6);
+				else if(i==9&&j==1) mazeMap.put(i*9+j, 12);
+				else if(i==9&&j==9) mazeMap.put(i*9+j, 9);
+				else if(i==1&&j!=9&&j!=1) mazeMap.put(i*9+j, 2);
+				else if(i==9&&j!=9&&j!=1) mazeMap.put(i*9+j, 8);
+				else if(j==1&&i!=9&&i!=1) mazeMap.put(i*9+j, 4);
+				else if(j==9&&i!=9&&i!=1) mazeMap.put(i*9+j, 1);
+				else mazeMap.put(i*9+j, 0);
+			}
+		}
+		// take into account may not be including the wall candidate ??
+		// might need to take the wall candidate into account
+		HashMap<Integer, Boolean> wallsOnBoard = loadWallPositionsMap();
+		
+		for(int e: wallsOnBoard.keySet()) {
+			int Acol = e%9;
+			int Arow = (e-Acol)/9;
+			int tile_state = mazeMap.get(e);
+			if(wallsOnBoard.get(e)) {
+				// the wall is horizontal
+				mazeMap.replace(e, tile_state+1);
+				mazeMap.replace((Arow+1)*9+Acol, tile_state+1);
+				mazeMap.replace((Arow+1)*9+Acol+1, tile_state+4);
+				mazeMap.replace((Arow)*9+Acol+1, tile_state+4);
+			}
+			else {
+				// the wall is vertical
+				mazeMap.replace(e, tile_state+8);
+				mazeMap.replace((Arow+1)*9+Acol, tile_state+2);
+				mazeMap.replace((Arow+1)*9+Acol+1, tile_state+2);
+				mazeMap.replace((Arow)*9+Acol+1, tile_state+8);
+			}
+		}
+		int entry_point = 1;	// tile 1*1
+		int count = 0;			// count of visited tiles
+		// trivial case where one of the tile is blocked
+		if(mazeMap.containsValue(15)) return false;
+		return checkMazeMap(mazeMap, entry_point, count);
+	}
+	// exhaustive process since only need to check if can cut the board in two
+	public static boolean checkMazeMap(HashMap<Integer, Integer> mazeMap, int entry_point, int count) {
+		int Acol = entry_point%9;
+		int Arow = (entry_point-Acol)/9;
+		int tile_state = mazeMap.get(entry_point);
+		List points = new ArrayList();
+		if(tile_state==0) {
+			points.add(points.size(), (Arow+1)*9+Acol);
+			points.add(points.size(), (Arow-1)*9+Acol);
+			points.add(points.size(), (Arow)*9+Acol+1);
+		}
+		else if(tile_state==1) {
 			
-		// get local environment: check if player can make a step (special steps included)
-		// if not in local environment then cannot consider opponent's pawn position, so just consider the walls
-			// 
-		return true;
+		}
+		else if(tile_state==3) {
+			
+		}
+		else if(tile_state==5) {
+	
+		}
+		else if(tile_state==7) {
+			
+		}	
+		else if(tile_state==9) {
+			
+		}
+		else if(tile_state==10) {
+			
+		}
+		else if(tile_state==11) {
+			
+		}
+		else if(tile_state==12) {
+			
+		}
+		else if(tile_state==13) {
+			
+		}
+		else if(tile_state==14) {
+			
+		}
+	
+		count++;
+		for(int i=0; i <= points.size(); i++) {
+			
+		}
+		if (count==81) return true;
+		return false;
 	}
 	
 /////////////////////////////////////////////////////
