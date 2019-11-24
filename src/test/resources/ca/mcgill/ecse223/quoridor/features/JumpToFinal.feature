@@ -24,7 +24,7 @@ As a player using replay mode, I wish to scroll fast to the very beginning of th
     And Black has <bwallno> on stock
 
     Examples: 
-      | movno | rndno | nmov | nrnd | wrow | wcol | wwall | brow | bcol | bwallno |
+      | movno | rndno | nmov | nrnd | wrow | wcol | wwallno | brow | bcol | bwallno |
       |     1 |     1 |    5 |    1 |    7 |    5 |     8 |    3 |    6 |       9 |
       |     1 |     2 |    5 |    1 |    7 |    5 |     8 |    3 |    6 |       9 |
       |     2 |     1 |    5 |    1 |    7 |    5 |     8 |    3 |    6 |       9 |
