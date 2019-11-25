@@ -212,7 +212,7 @@ public class Quoridor223Controller {
 		Player currentPlayer = getPlayerByName(playerName);
 		// set thinking time of that player
 		currentPlayer.setRemainingTime(thinkingTime);
-		if(quoridor.getCurrentGame().getGameStatus() != GameStatus.Running) {
+		if(quoridor.getCurrentGame().getGameStatus() == GameStatus.ReadyToStart||quoridor.getCurrentGame().getGameStatus() == GameStatus.Initializing) {
 			setGameToReady();
 		}
 
