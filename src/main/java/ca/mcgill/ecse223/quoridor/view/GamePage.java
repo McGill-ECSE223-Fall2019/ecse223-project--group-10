@@ -293,7 +293,6 @@ public class GamePage extends JFrame {
 		
 		btnUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				if(hasWallInHand() == true) {
 					try {
 						// add parameter if no wall selected then simply move pawn
@@ -325,7 +324,6 @@ public class GamePage extends JFrame {
 
 		btnDown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
 				if (hasWallInHand() == true) {
 					try {
 						Quoridor223Controller.moveWall(TOWall.Side.Down);
@@ -352,26 +350,30 @@ public class GamePage extends JFrame {
 
 		btnLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (hasWallInHand() == true) {
-					try {
-						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
-						//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
-						Quoridor223Controller.moveWall(TOWall.Side.Left);
-					} catch (GameNotRunningException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
-						// set the notification panel to message
-					} catch (InvalidOperationException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
-						// TODO: handle exception
-					}
-				} else {
-					try {
-						Quoridor223Controller.movePawn(TOPlayer.Side.Left);
-						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-					} catch (GameNotRunningException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
-					} catch (InvalidOperationException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
+				if (isReplayMode()) {
+					
+				} else if (!isReplayMode()) {
+					if (hasWallInHand() == true) {
+						try {
+							//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
+							//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
+							Quoridor223Controller.moveWall(TOWall.Side.Left);
+						} catch (GameNotRunningException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+							// set the notification panel to message
+						} catch (InvalidOperationException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+							// TODO: handle exception
+						}
+					} else {
+						try {
+							Quoridor223Controller.movePawn(TOPlayer.Side.Left);
+							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
+						} catch (GameNotRunningException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						} catch (InvalidOperationException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						}
 					}
 				}
 				boardComponent.repaint();
@@ -380,29 +382,32 @@ public class GamePage extends JFrame {
 
 		btnRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (hasWallInHand() == true) {
-					try {
-						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Right);
-						//else Quoridor223Controller.movePlayer(TOWall.Side.Right);
-						Quoridor223Controller.moveWall(TOWall.Side.Right);
-					} catch (GameNotRunningException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
-						// set the notification panel to message
-					} catch (InvalidOperationException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
-						// TODO: handle exception
-					}
-				} else {
-					try {
-						Quoridor223Controller.movePawn(TOPlayer.Side.Right);
-						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-					} catch (GameNotRunningException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
-					} catch (InvalidOperationException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
+				if(isReplayMode()) {
+					
+				} else if(!isReplayMode()) {
+					if (hasWallInHand() == true) {
+						try {
+							//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Right);
+							//else Quoridor223Controller.movePlayer(TOWall.Side.Right);
+							Quoridor223Controller.moveWall(TOWall.Side.Right);
+						} catch (GameNotRunningException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+							// set the notification panel to message
+						} catch (InvalidOperationException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+							// TODO: handle exception
+						}
+					} else {
+						try {
+							Quoridor223Controller.movePawn(TOPlayer.Side.Right);
+							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
+						} catch (GameNotRunningException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						} catch (InvalidOperationException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						}
 					}
 				}
-				
 				boardComponent.repaint();
 			}
 
@@ -410,16 +415,24 @@ public class GamePage extends JFrame {
 		
 		btnUpRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (hasWallInHand() == true) {
-					//Disable the button
-				} else {
+				if(isReplayMode()) {
 					try {
-						Quoridor223Controller.movePawn(TOPlayer.Side.UpRight);
-						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-					} catch (GameNotRunningException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
-					} catch (InvalidOperationException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
+						Quoridor223Controller.jumpToFinalPosition();
+					} catch (InvalidOperationException eFinal){
+						gameMessage.setText(eFinal.getLocalizedMessage());
+					}
+				} else if(!isReplayMode()) {
+					if (hasWallInHand() == true) {
+						//Button Disabled
+					} else {
+						try {
+							Quoridor223Controller.movePawn(TOPlayer.Side.UpRight);
+							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
+						} catch (GameNotRunningException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						} catch (InvalidOperationException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						}
 					}
 				}
 				boardComponent.repaint();
@@ -428,16 +441,24 @@ public class GamePage extends JFrame {
 		
 		btnUpLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (hasWallInHand() == true) {
-					//Disable the button
-				} else {
+				if(isReplayMode()) {
 					try {
-						Quoridor223Controller.movePawn(TOPlayer.Side.UpLeft);
-						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-					} catch (GameNotRunningException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
-					} catch (InvalidOperationException ex) {
-						gameMessage.setText(ex.getLocalizedMessage());
+						Quoridor223Controller.jumpToStartPosition();
+					} catch (InvalidOperationException eStart){
+						gameMessage.setText(eStart.getLocalizedMessage());
+					}					
+				} else if(!isReplayMode()) {
+					if (hasWallInHand() == true) {
+						//Disable the button
+					} else {
+						try {
+							Quoridor223Controller.movePawn(TOPlayer.Side.UpLeft);
+							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
+						} catch (GameNotRunningException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						} catch (InvalidOperationException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						}
 					}
 				}
 				boardComponent.repaint();
