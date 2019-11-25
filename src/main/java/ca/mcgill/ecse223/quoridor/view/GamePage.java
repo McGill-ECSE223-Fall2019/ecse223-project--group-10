@@ -232,6 +232,7 @@ public class GamePage extends JFrame {
 		replayGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				if(isReplayMode()) {
+					System.out.println("reach exit replay");
 					btnLeft.setText("\u2190");
 					btnRight.setText("\u2192");
 					btnUpLeft.setText("\u2196");
@@ -727,5 +728,11 @@ public class GamePage extends JFrame {
 	}
 	public void clickGrabWall() {
 		grabWall.doClick();
+	}
+	public void clickJumpStart() {
+		btnUpLeft.doClick();
+	}
+	public void clickJumpFinal() {
+		btnUpRight.doClick();
 	}
 }
