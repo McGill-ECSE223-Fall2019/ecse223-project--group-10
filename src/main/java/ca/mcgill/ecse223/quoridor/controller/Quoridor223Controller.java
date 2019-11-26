@@ -380,10 +380,25 @@ public class Quoridor223Controller {
 		}
 	}
 	
-	public static void cancelGrabWall() throws GameNotRunningException, InvalidOperationException {
+	public static void cancelGrabWall() throws GameNotRunningException {
 		if (!isRunning())
 			throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
 		
+		if (curPlayer.equals(curGame.getWhitePlayer())) {
+			WallMove curWallMove = curGame.getWallMoveCandidate();
+			Wall wallInHand = curWallMove.getWallPlaced();
+			curGame.getCurrentPosition().addWhiteWallsInStock(wallInHand);
+			curGame.removeMove(curWallMove);
+			curGame.setWallMoveCandidate(null);
+		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
+			WallMove curWallMove = curGame.getWallMoveCandidate();
+			Wall wallInHand = curWallMove.getWallPlaced();
+			curGame.getCurrentPosition().addBlackWallsInStock(wallInHand);
+			curGame.removeMove(curWallMove);
+			curGame.setWallMoveCandidate(null);
+		}
 	}
 	/**
 	 * Perform a move operation on a currently selected wall Gherkin Feature 7:
