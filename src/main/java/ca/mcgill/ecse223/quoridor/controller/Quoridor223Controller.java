@@ -570,7 +570,7 @@ public class Quoridor223Controller {
 		if (!isRunning())throw new GameNotRunningException("Game not running");
 		if (!isReplayPossible())throw new InvalidOperationException("Unable to replay");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		System.out.println(curGame);
+		curGame.setGameStatus(Game.GameStatus.Replay);
 	}
 	
 	public static void exitReplayMode() throws InvalidOperationException {
@@ -2038,7 +2038,6 @@ public class Quoridor223Controller {
 	 */
 	public static boolean isReplay() {
 		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
-		System.out.println(current);
 		if (current != null && current.getGameStatus()==Game.GameStatus.Replay)
 			return true;
 		return false;

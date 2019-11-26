@@ -344,7 +344,25 @@ class PawnBehavior {
 	    else playerpos = clone.getBlackPosition();
 	    int row = playerpos.getTile().getRow();
 	    int col = playerpos.getTile().getColumn();
-	    playerpos.setTile(Quoridor223Controller.getTile(row+i,col+j));
+	    Tile newTile = Quoridor223Controller.getTile(row+i,col+j);
+	    
+	    int moveLength= currentGame.getMoves().size();
+	    int nMoveNumber = 1;
+	    int nRoundNumber = 1;
+	    if(moveLength!=0){
+	    	Move lastMove = currentGame.getMove(moveLength-1);
+	    	nRoundNumber = lastMove.getRoundNumber()%2+1;
+	    	nMoveNumber = lastMove.getMoveNumber();
+	    	if(nRoundNumber==1)nMoveNumber++;
+	    }
+	    Move newMove;
+	    if(Math.abs(i)+Math.abs(j)==2){
+	    	newMove= new JumpMove(nMoveNumber,nRoundNumber,clone.getPlayerToMove(),newTile,currentGame);
+	    }
+	    else{
+	    	newMove= new StepMove(nMoveNumber,nRoundNumber,clone.getPlayerToMove(),newTile,currentGame);
+	    }
+	    playerpos.setTile(newTile);
 	}
    private boolean isWinningMove(){
 	   if(isWhite()&&getCurrentPawnRow()==1)return true;
