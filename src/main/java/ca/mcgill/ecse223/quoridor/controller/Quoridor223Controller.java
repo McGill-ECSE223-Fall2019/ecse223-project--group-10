@@ -342,16 +342,16 @@ public class Quoridor223Controller {
 		Board curBoard = QuoridorApplication.getQuoridor().getBoard();
 
 		int moveLength = curGame.getMoves().size();
-		int moveNum;
-		int roundNum;
-
-		if (moveLength > 0) {
-			moveNum = curGame.getMoves().get(moveLength - 1).getMoveNumber();
-			roundNum = curGame.getMoves().get(moveLength - 1).getRoundNumber();
-		} else {
-			moveNum = 0;
-			roundNum = 0;
-		}
+		
+	    int moveNumber = 1;
+	    int roundNumber = 1;
+	    if(moveLength!=0){
+	    	Move lastMove = curGame.getMove(moveLength-1);
+	    	roundNumber = lastMove.getRoundNumber()%2+1;
+	    	moveNumber = lastMove.getMoveNumber();
+	    	if(roundNumber==1)moveNumber++;
+	    }
+		
 		if (curGame.getWallMoveCandidate() != null) {
 			throw new InvalidOperationException("Already a wall Selected");
 		}
@@ -363,7 +363,7 @@ public class Quoridor223Controller {
 			} else {
 				Wall curWall = curGame.getCurrentPosition().getWhiteWallsInStock(0);
 				curGame.getCurrentPosition().removeWhiteWallsInStock(curWall);
-				WallMove curWallMove = new WallMove(moveNum + 1, roundNum + 1, curPlayer, curBoard.getTile(67), curGame,
+				WallMove curWallMove = new WallMove(moveNumber, roundNumber, curPlayer, curBoard.getTile(67), curGame,
 						Direction.Horizontal, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
 			}
@@ -373,13 +373,33 @@ public class Quoridor223Controller {
 			} else {
 				Wall curWall = curGame.getCurrentPosition().getBlackWallsInStock(0);
 				curGame.getCurrentPosition().removeBlackWallsInStock(curWall);
-				WallMove curWallMove = new WallMove(moveNum, roundNum + 1, curPlayer, curBoard.getTile(4), curGame,
+				WallMove curWallMove = new WallMove(moveNumber, roundNumber, curPlayer, curBoard.getTile(4), curGame,
 						Direction.Horizontal, curWall);
 				curGame.setWallMoveCandidate(curWallMove);
 			}
 		}
 	}
-
+	
+	public static void cancelGrabWall() throws GameNotRunningException {
+		if (!isRunning())
+			throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
+		
+		if (curPlayer.equals(curGame.getWhitePlayer())) {
+			WallMove curWallMove = curGame.getWallMoveCandidate();
+			Wall wallInHand = curWallMove.getWallPlaced();
+			curGame.getCurrentPosition().addWhiteWallsInStock(wallInHand);
+			curGame.removeMove(curWallMove);
+			curGame.setWallMoveCandidate(null);
+		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
+			WallMove curWallMove = curGame.getWallMoveCandidate();
+			Wall wallInHand = curWallMove.getWallPlaced();
+			curGame.getCurrentPosition().addBlackWallsInStock(wallInHand);
+			curGame.removeMove(curWallMove);
+			curGame.setWallMoveCandidate(null);
+		}
+	}
 	/**
 	 * Perform a move operation on a currently selected wall Gherkin Feature 7:
 	 * MoveWall.feature
@@ -571,6 +591,11 @@ public class Quoridor223Controller {
 	public static void exitReplayMode() throws InvalidOperationException {
 		if (!isReplay())throw new InvalidOperationException("Not in replay mode.");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		
+		int finalIndex = curGame.getPositions().size() - 1;
+		GamePosition finalPosition = curGame.getPosition(finalIndex);
+		curGame.setCurrentPosition(finalPosition);
+		
 		curGame.setGameStatus(Game.GameStatus.Running);
 	}
 	
@@ -2033,10 +2058,9 @@ public class Quoridor223Controller {
 	 */
 	public static boolean isReplay() {
 		Game current = QuoridorApplication.getQuoridor().getCurrentGame();
-		if (current == null || current.getGameStatus()!=Game.GameStatus.Replay)
-			return false;
-
-		return true;
+		if (current != null && current.getGameStatus()==Game.GameStatus.Replay)
+			return true;
+		return false;
 	}
 	
 	/**

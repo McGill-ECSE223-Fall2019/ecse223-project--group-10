@@ -1440,10 +1440,16 @@ public class CucumberStepDefinitions {
 		curGame.getMoves().get(rndno).getRoundNumber();
 
 	}
-	
 	@When("Jump to start position is initiated")
-	public void jumpToStartPositionIsInitiated() {
-		//call controller
+	public void jumpToStartPositionIsInitiated() throws InvalidOperationException {
+//		gamePage.clickJumpStart();
+		Quoridor223Controller.jumpToStartPosition();
+	}
+	@When("Jump to final position is initiated")
+	public void jumpToFinalPositionIsInitiated() throws InvalidOperationException {
+//		gamePage.clickJumpFinal();
+		Quoridor223Controller.jumpToFinalPosition();
+		
 	}
     @When("Step forward is initiated")
 	public void Stepforward() {
@@ -1455,27 +1461,60 @@ public class CucumberStepDefinitions {
 	}
 	@Then("The next move shall be {int}.{int}")
 	public void theNextMoveShallBe(int nmov, int nrnd) {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
 		
+		int index = 0;
+		List<GamePosition> list = curGame.getPositions();
+		for(int i=0; i<list.size(); i++) {
+			if(list.get(i).equals(curGame.getCurrentPosition())){
+				index = i;
+			}
+		}
+		Move curMove = curGame.getMove(index);
+		int curMoveNumber = curMove.getRoundNumber()%2+1;
+		int curRoundNumber = curMove.getMoveNumber();
+
+		assertEquals(nmov, curMoveNumber);
+		assertEquals(nrnd, curRoundNumber);
 	}
 	
 	@And("White player's position shall be \\({int},{int})")
 	public void whitePlayersPositionShallBe(int wrow, int wcol) {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Tile tile = curGame.getCurrentPosition().getWhitePosition().getTile();
+		int curWhiteRow = tile.getRow();
+		int curWhiteCol = tile.getColumn();
+		
+		assertEquals(wrow, curWhiteRow);
+		assertEquals(wcol, curWhiteCol);
 		
 	}
 	
 	@And("Black player's position shall be \\({int},{int})")
 	public void blackPlayersPositionShallBe(int brow, int bcol) {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Tile tile = curGame.getCurrentPosition().getBlackPosition().getTile();
+		int curBlackRow = tile.getRow();
+		int curBlackCol = tile.getColumn();
 		
+		assertEquals(brow, curBlackRow);
+		assertEquals(bcol, curBlackCol);
 	}
 	
 	@And("White has {int} on stock")
 	public void whiteHasOnStock(int wwallno) {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		int curWhiteStock = curGame.getCurrentPosition().getWhiteWallsInStock().size();
 		
+		assertEquals(wwallno, curWhiteStock);
 	}
 	
 	@And("Black has {int} on stock")
 	public void blackHasOnStock(int bwallno) {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
+		int curBlackStock = curGame.getCurrentPosition().getBlackWallsInStock().size();
 		
+		assertEquals(bwallno, curBlackStock);
 	}
 	
 	// *****************************************************************
