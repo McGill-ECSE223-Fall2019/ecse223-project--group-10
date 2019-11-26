@@ -559,11 +559,6 @@ public class GamePage extends JFrame {
 			}
 		});
 
-		replayGame.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-
-			}
-		});
 	}
 
 	private void refreshTime() {
