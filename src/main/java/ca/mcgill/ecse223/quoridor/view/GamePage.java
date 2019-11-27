@@ -367,7 +367,14 @@ public class GamePage extends JFrame {
 		btnLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (isReplayMode()) {
-					
+					try {
+						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
+						//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
+						Quoridor223Controller.StepBackward();
+					}catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// TODO: handle exception
+					}
 				} else if (!isReplayMode()) {
 					if (hasWallInHand() == true) {
 						try {
@@ -399,7 +406,14 @@ public class GamePage extends JFrame {
 		btnRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(isReplayMode()) {
-					
+					try {
+						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
+						//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
+						Quoridor223Controller.StepForward();
+					}catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// TODO: handle exception
+					}
 				} else if(!isReplayMode()) {
 					if (hasWallInHand() == true) {
 						try {
