@@ -177,6 +177,32 @@ public class Quoridor223Controller {
 		quoridor.addUser(playerName);
 
 	}
+	
+	/**
+	 * @author Vanessa Ifrah
+	 * @param 
+	 * @throws 
+	 */
+	public static boolean identifyWin(String player) {
+
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
+		
+		if(curPlayer.equals(curGame.getWhitePlayer())) {
+			Tile tile = curGame.getCurrentPosition().getWhitePosition().getTile();
+			int curWhiteRow = tile.getRow();
+			if(curWhiteRow == 9) {
+				return true;
+			}
+		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
+			Tile tile = curGame.getCurrentPosition().getBlackPosition().getTile();
+			int curBlackRow = tile.getRow();
+			if(curBlackRow == 1) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * helper method to get player by name
