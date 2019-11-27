@@ -453,13 +453,15 @@ public class Quoridor223Controller {
 		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
 		GamePosition currentPosition = curGame.getCurrentPosition();
 		GamePosition clone = clonePosition(currentPosition);
-		
-		curGame.setCurrentPosition(clone);
+
 		if (isWhitePlayer()) {
+			currentPosition.addWhiteWallsInStock(wallToDrop);
 			clone.addWhiteWallsOnBoard(wallToDrop);
 		} else {
+			currentPosition.addBlackWallsInStock(wallToDrop);
 			clone.addBlackWallsOnBoard(wallToDrop);
 		}
+		curGame.setCurrentPosition(clone);
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
 		// Switch Player here
@@ -661,15 +663,15 @@ public class Quoridor223Controller {
 	}
 	
 	public static void StepForward() throws InvalidOperationException {
-		
+		if (!isReplay())throw new InvalidOperationException("Game is not in replay mode");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		int ind = findPositionIndex();
-		if(ind==curGame.getPositions().size())throw new InvalidOperationException("Already at the last step");
+		if(ind==curGame.getPositions().size()-1)throw new InvalidOperationException("Already at the last step");
 		curGame.setCurrentPosition(curGame.getPosition(ind+1));
 	}
 	
 	public static void StepBackward() throws InvalidOperationException {
-		
+		if (!isReplay())throw new InvalidOperationException("Game is not in replay mode");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		int ind = findPositionIndex();
 		if(ind==0)throw new InvalidOperationException("Already at the first step");

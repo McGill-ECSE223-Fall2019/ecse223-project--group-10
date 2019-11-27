@@ -1471,8 +1471,8 @@ public class CucumberStepDefinitions {
 			}
 		}
 		Move curMove = curGame.getMove(index);
-		int curMoveNumber = curMove.getRoundNumber()%2+1;
-		int curRoundNumber = curMove.getMoveNumber();
+		int curRoundNumber = curMove.getRoundNumber();
+		int curMoveNumber = curMove.getMoveNumber();
 
 		assertEquals(nmov, curMoveNumber);
 		assertEquals(nrnd, curRoundNumber);
