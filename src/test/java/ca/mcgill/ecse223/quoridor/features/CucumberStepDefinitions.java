@@ -1,6 +1,7 @@
 package ca.mcgill.ecse223.quoridor.features;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -1649,14 +1650,22 @@ public class CucumberStepDefinitions {
 	 * @author Vanessa Ifrah
 	 */	
 	@And("The new position of {string} is {int}:{int}")
-	public void newPositionOfPlayerIs(String playerName, int row, int col) {
+	public void newPositionOfPlayerIs(String player, int row, int col) {
+		
+		Game currGame = QuoridorApplication.getQuoridor().getCurrentGame(); 
+		
+		if (player.equals("white")) {
+			currGame.getCurrentPosition().getWhitePosition().setTile(Quoridor223Controller.getTile(row, col));
+		} else {
+			currGame.getCurrentPosition().getBlackPosition().setTile(Quoridor223Controller.getTile(row, col));
+		}
 		
 	}
 	
 	@And("The clock of {string} is more than zero")
-	public void clockOfPlayerIsMoreThanZero(String playerName) {
+	public void clockOfPlayerIsMoreThanZero(String player) {
 		
-		//check that clock is running and not zero
+		assertNotEquals(Quoridor223Controller.getRemainingTime(player), 0);
 		
 	}
 	
@@ -1683,7 +1692,19 @@ public class CucumberStepDefinitions {
 	 * @author Vanessa Ifrah
 	 */	
 	@When("The clock of {string} counts down to zero")
-	public void clockOfPlayerCountsDowntoZero() {
+	public void clockOfPlayerCountsDowntoZero(String player) {
+		
+		if (player.equals("white")){
+			gamePage.setWhiteTime("00:00:02");
+		} else {
+			gamePage.setBlackTime("00:00:02");
+		}
+		
+		try{
+			Thread.sleep(3000);
+		} catch (Exception e) {
+			
+		}
 		
 	}
 		

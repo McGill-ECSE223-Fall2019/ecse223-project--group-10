@@ -759,4 +759,11 @@ public class GamePage extends JFrame {
 	public void clickJumpFinal() {
 		btnUpRight.doClick();
 	}
+	
+	public void setWhiteTime(String time) {
+		whiteTime.setText(time);
+	}
+	public void setBlackTime(String time) {
+		blackTime.setText(time);
+	}
 }
