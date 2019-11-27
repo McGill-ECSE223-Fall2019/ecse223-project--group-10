@@ -1381,6 +1381,11 @@ public class CucumberStepDefinitions {
 	// *****************************************************************
 	// TODO: Enter Replay Mode feature
 	// *****************************************************************
+	
+	/**
+	 * Scenario: Entering replay mode
+	 * @author Vanessa Ifrah
+	 */
 	@When("I initiate replay mode")
 	public void initiateReplayMode() throws GameNotRunningException, InvalidOperationException {
 		
@@ -1395,30 +1400,86 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+	/**
+	 * Scenario: Continue an unfinished game
+	 * @author Vanessa Ifrah
+	 */
 	@And("The game does not have a final result")
 	public void gameDoesNotHaveAFinalResult() {
 		
-		// check with sacha's method on notifying the player of the final result
+		boolean hasFinalResult = false;
+		GameStatus gamestatus = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
+		
+		if (gamestatus == GameStatus.WhiteWon || 
+				gamestatus == GameStatus.BlackWon ||
+				gamestatus == GameStatus.Draw) {
+			
+			hasFinalResult = true;
+			
+		}
+		
+		assertFalse(hasFinalResult);
 		
 	}
 	
 	@When("I initiate to continue game")
 	public void initiateToContinueGame() {
 		
+//		uncomment line below when Shuby's method is pushed to master
+//		gamePage.clickReplayGame();
+		
 	}
 	
 	@And("The remaining moves of the game shall be removed")
 	public void remainingMovesOfTheGameShalBeRemoved() {
+		
+		Game currGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition currPosition = currGame.getCurrentPosition();
+		List<GamePosition> gamePositions = currGame.getPositions();
+		
+		assertTrue(currPosition.equals(gamePositions.get(gamePositions.size()-1)));
+		
+	}
+	
+	/**
+	 * Scenario: Continue a finished game
+	 * @author Vanessa Ifrah
+	 */
+	@Given("The game is replay mode")
+	public void gameIsReplayMode() {
+		
+		initQuoridorAndBoard();
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		createAndStartGame(createUsersAndPlayers);
+		QuoridorApplication.GetWhitePawnBehavior();
+		QuoridorApplication.GetBlackPawnBehavior();
+		gamePage = new GamePage();
+		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
 		
 	}
 	
 	@And("The game has a final result")
 	public void theGameHasAFinalResult() {
 		
+		boolean hasFinalResult = false;
+		GameStatus gamestatus = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
+		
+		if (gamestatus == GameStatus.WhiteWon || 
+				gamestatus == GameStatus.BlackWon ||
+				gamestatus == GameStatus.Draw) {
+			
+			hasFinalResult = true;
+			
+		}
+		
+		assertTrue(hasFinalResult);
+		
 	}
 	
 	@And("I shall be notified that finished games cannot be continued")
 	public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
+		
+		assertEquals(gamePage.getDialogBoxText(), "Game finished");
 		
 	}
 
@@ -1573,11 +1634,20 @@ public class CucumberStepDefinitions {
 	// *****************************************************************
 	// TODO: Identify Game Won feature
 	// *****************************************************************
-	@Given("Player {string} has just completed his move")
-	public void playerHasJustCompletedHisMove(String playerName) {
-		
-	}
 	
+	/**
+	 * Scenario: Player is on the middle of the board
+	 * @author Vanessa Ifrah
+	 */
+//	@Given("Player {string} has just completed his move")
+//	public void playerHasJustCompletedHisMove(String playerName) {
+//		
+//	} same as Andrew *******
+	
+	/**
+	 * Scenario: Player reaches target area
+	 * @author Vanessa Ifrah
+	 */	
 	@And("The new position of {string} is {int}:{int}")
 	public void newPositionOfPlayerIs(String playerName, int row, int col) {
 		
@@ -1590,26 +1660,28 @@ public class CucumberStepDefinitions {
 		
 	}
 	
-	@When("Checking of game result is initated")
-	public void checkingOfGameResultIsInitiated() {
-		
-		// initiate game results
-		
-	}
+//	@When("Checking of game result is initated")
+//	public void checkingOfGameResultIsInitiated() {
+//		
+//	} same as Andrew *******
 	
-	@Then("Game result shall be {string}")
-	public void gameResultShallBe(String result) {
-		
-		// fetch game result and compare to see if good
-		// assertEquals()
-		
-	}
+//	@Then("Game result shall be {string}")
+//	public void gameResultShallBe(String result) {
+//		
+//		// fetch game result and compare to see if good
+//		// assertEquals()
+//		
+//	} same as Andrew *******
 	
-	@And("The game shall no longer be running")
-	public void theGameShallNoLongerBeRunning() {
-		
-	}
+//	@And("The game shall no longer be running")
+//	public void theGameShallNoLongerBeRunning() {
+//		
+//	} same as Andrew *******
 	
+	/**
+	 * Scenario: Player's time is exceeded
+	 * @author Vanessa Ifrah
+	 */	
 	@When("The clock of {string} counts down to zero")
 	public void clockOfPlayerCountsDowntoZero() {
 		

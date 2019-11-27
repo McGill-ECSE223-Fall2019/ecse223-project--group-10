@@ -180,10 +180,8 @@ public class Quoridor223Controller {
 	
 	/**
 	 * @author Vanessa Ifrah
-	 * @param 
-	 * @throws 
 	 */
-	public static boolean identifyWin(String player) {
+	public static boolean identifyWin() {
 
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
@@ -661,6 +659,11 @@ public class Quoridor223Controller {
 		
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
+	 */
 	public static void enterReplayMode() throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning())throw new GameNotRunningException("Game not running");
 		if (!isReplayPossible())throw new InvalidOperationException("Unable to replay");
