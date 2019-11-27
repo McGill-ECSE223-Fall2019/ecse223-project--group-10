@@ -1538,6 +1538,7 @@ public class CucumberStepDefinitions {
 				index = i;
 			}
 		}
+
 		if(index<curGame.getMoves().size()) {
 			Move curMove = curGame.getMove(index);
 			int curMoveNumber = curMove.getMoveNumber();

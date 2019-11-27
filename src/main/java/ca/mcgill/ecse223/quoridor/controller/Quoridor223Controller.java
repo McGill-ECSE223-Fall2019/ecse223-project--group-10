@@ -665,7 +665,6 @@ public class Quoridor223Controller {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		GamePosition startPosition = curGame.getPosition(0);
 		curGame.setCurrentPosition(startPosition);
-		
 	}
 
 	public static void enterReplayMode() throws GameNotRunningException, InvalidOperationException {
