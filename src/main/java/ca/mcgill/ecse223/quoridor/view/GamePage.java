@@ -272,17 +272,33 @@ public class GamePage extends JFrame {
 		
 		grabWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				try {
-					Quoridor223Controller.grabWall();
-				} catch (InvalidOperationException eGrab) {
-					gameMessage.setText(eGrab.getLocalizedMessage());
-				} catch (GameNotRunningException eGrab) {
-					gameMessage.setText(eGrab.getLocalizedMessage());
+				if(hasWallInHand()) {
+					try {
+						Quoridor223Controller.cancelGrabWall();
+					} catch (GameNotRunningException eGrab) {
+						gameMessage.setText(eGrab.getLocalizedMessage());
+					}
+					grabWall.setText("Grab Wall");
+					btnUpRight.setEnabled(true);
+					btnUpLeft.setEnabled(true);
+					btnDownRight.setEnabled(true);
+					btnDownLeft.setEnabled(true);
+				} else if(!hasWallInHand()) {
+					try {
+						Quoridor223Controller.grabWall();
+					} catch (InvalidOperationException eGrab) {
+						gameMessage.setText(eGrab.getLocalizedMessage());
+					} catch (GameNotRunningException eGrab) {
+						gameMessage.setText(eGrab.getLocalizedMessage());
+					}
+					grabWall.setText("Cancel");
+					btnUpRight.setEnabled(false);
+					btnUpLeft.setEnabled(false);
+					btnDownRight.setEnabled(false);
+					btnDownLeft.setEnabled(false);
 				}
-				btnUpRight.setEnabled(false);
-				btnUpLeft.setEnabled(false);
-				btnDownRight.setEnabled(false);
-				btnDownLeft.setEnabled(false);
+
+				
 				boardComponent.repaint();
 			}
 		});
@@ -351,7 +367,14 @@ public class GamePage extends JFrame {
 		btnLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (isReplayMode()) {
-					
+					try {
+						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
+						//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
+						Quoridor223Controller.StepBackward();
+					}catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// TODO: handle exception
+					}
 				} else if (!isReplayMode()) {
 					if (hasWallInHand() == true) {
 						try {
@@ -383,7 +406,14 @@ public class GamePage extends JFrame {
 		btnRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(isReplayMode()) {
-					
+					try {
+						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
+						//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
+						Quoridor223Controller.StepForward();
+					}catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+						// TODO: handle exception
+					}
 				} else if(!isReplayMode()) {
 					if (hasWallInHand() == true) {
 						try {
@@ -559,11 +589,6 @@ public class GamePage extends JFrame {
 			}
 		});
 
-		replayGame.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
-
-			}
-		});
 	}
 
 	private void refreshTime() {
@@ -727,5 +752,11 @@ public class GamePage extends JFrame {
 	}
 	public void clickGrabWall() {
 		grabWall.doClick();
+	}
+	public void clickJumpStart() {
+		btnUpLeft.doClick();
+	}
+	public void clickJumpFinal() {
+		btnUpRight.doClick();
 	}
 }
