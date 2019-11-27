@@ -1377,6 +1377,52 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
+	
+	// *****************************************************************
+	// TODO: Enter Replay Mode feature
+	// *****************************************************************
+	@When("I initiate replay mode")
+	public void initiateReplayMode() throws GameNotRunningException, InvalidOperationException {
+		
+		Quoridor223Controller.enterReplayMode();
+		
+	}
+	
+	@Then("The game shall be in replay mode")
+	public void gameShallBeInReplayMode() {
+		
+		assertEquals(Quoridor223Controller.isReplay(), true);
+		
+	}
+	
+	@And("The game does not have a final result")
+	public void gameDoesNotHaveAFinalResult() {
+		
+		// check with sacha's method on notifying the player of the final result
+		
+	}
+	
+	@When("I initiate to continue game")
+	public void initiateToContinueGame() {
+		
+	}
+	
+	@And("The remaining moves of the game shall be removed")
+	public void remainingMovesOfTheGameShalBeRemoved() {
+		
+	}
+	
+	@And("The game has a final result")
+	public void theGameHasAFinalResult() {
+		
+	}
+	
+	@And("I shall be notified that finished games cannot be continued")
+	public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
+		
+	}
+
+	
 	// *****************************************************************
 	// TODO: Replay feature: Jump To Start Position and Jump To Last Position start here
 	// *****************************************************************
@@ -1521,7 +1567,55 @@ public class CucumberStepDefinitions {
 	// TODO: Jump To Start Position and Jump To Last Position end here
 	// *****************************************************************
 	
+	
+	
 
+	// *****************************************************************
+	// TODO: Identify Game Won feature
+	// *****************************************************************
+	@Given("Player {string} has just completed his move")
+	public void playerHasJustCompletedHisMove(String playerName) {
+		
+	}
+	
+	@And("The new position of {string} is {int}:{int}")
+	public void newPositionOfPlayerIs(String playerName, int row, int col) {
+		
+	}
+	
+	@And("The clock of {string} is more than zero")
+	public void clockOfPlayerIsMoreThanZero(String playerName) {
+		
+		//check that clock is running and not zero
+		
+	}
+	
+	@When("Checking of game result is initated")
+	public void checkingOfGameResultIsInitiated() {
+		
+		// initiate game results
+		
+	}
+	
+	@Then("Game result shall be {string}")
+	public void gameResultShallBe(String result) {
+		
+		// fetch game result and compare to see if good
+		// assertEquals()
+		
+	}
+	
+	@And("The game shall no longer be running")
+	public void theGameShallNoLongerBeRunning() {
+		
+	}
+	
+	@When("The clock of {string} counts down to zero")
+	public void clockOfPlayerCountsDowntoZero() {
+		
+	}
+		
+		
 	// ***********************************************
 	// Extracted helper methods
 	// ***********************************************
