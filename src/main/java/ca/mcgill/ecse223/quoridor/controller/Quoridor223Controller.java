@@ -570,7 +570,59 @@ public class Quoridor223Controller {
 	//////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////
 
+	/**
+	 * Feature 19: Resign Game
+	 * 
+	 * @author Andrew Ta
+	 * @param playerName player wishes to resign the game
+	 * @throws GameNotRunningException
+	 */
+	public static void resignGame(String playerName) throws GameNotRunningException{
+		if(!isRunning()) throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = getPlayerByName(playerName);
+		if(curPlayer.equals(curGame.getBlackPlayer())) {
+			curGame.setGameStatus(GameStatus.BlackWon);
+		}else {
+			curGame.setGameStatus(GameStatus.WhiteWon);
+		}
+	}
+	
+	/**
+	 * Feeture 17: Identify if game draw
+	 * 
+	 * @author Andrew Ta
+	 * @return return a boolean to determine a game is draw or not
+	 * @throws GameNotRunningException
+	 */
+	public static boolean identifyDraw() throws GameNotRunningException{
+		if(!isRunning()) throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		List<Move> historyMoves = curGame.getMoves();
+		
+		if(historyMoves.size() < 5) return false;
+		
+		int n = historyMoves.size();
+		if(checkPosition(historyMoves.get(n-1).getTargetTile(), historyMoves.get(n-3).getTargetTile()) 
+			&& checkPosition(historyMoves.get(n-3).getTargetTile(), historyMoves.get(n-5).getTargetTile())
+			&& checkPosition(historyMoves.get(n-2).getTargetTile(), historyMoves.get(n-4).getTargetTile()))
+			return true;
+		
+		return false;
+	}
 
+
+	/**
+	 * helper method to check if two tiles are the same
+	 * @author Andrew Ta
+	 * @param tile1 the first tile
+	 * @param tile2 the second tile
+	 * @return a boolean value
+	 */
+	private static boolean checkPosition(Tile tile1, Tile tile2) {
+		if(tile1.equals(tile2)) return true;
+		return false;
+	}
 	
 	public static void jumpToStartPosition() throws InvalidOperationException {
 		if (!isReplay())
