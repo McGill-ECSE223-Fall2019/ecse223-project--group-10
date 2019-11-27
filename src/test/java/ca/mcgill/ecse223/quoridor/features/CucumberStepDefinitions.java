@@ -1377,6 +1377,52 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
+	
+	// *****************************************************************
+	// TODO: Enter Replay Mode feature
+	// *****************************************************************
+	@When("I initiate replay mode")
+	public void initiateReplayMode() throws GameNotRunningException, InvalidOperationException {
+		
+		Quoridor223Controller.enterReplayMode();
+		
+	}
+	
+	@Then("The game shall be in replay mode")
+	public void gameShallBeInReplayMode() {
+		
+		assertEquals(Quoridor223Controller.isReplay(), true);
+		
+	}
+	
+	@And("The game does not have a final result")
+	public void gameDoesNotHaveAFinalResult() {
+		
+		// check with sacha's method on notifying the player of the final result
+		
+	}
+	
+	@When("I initiate to continue game")
+	public void initiateToContinueGame() {
+		
+	}
+	
+	@And("The remaining moves of the game shall be removed")
+	public void remainingMovesOfTheGameShalBeRemoved() {
+		
+	}
+	
+	@And("The game has a final result")
+	public void theGameHasAFinalResult() {
+		
+	}
+	
+	@And("I shall be notified that finished games cannot be continued")
+	public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
+		
+	}
+
+	
 	// *****************************************************************
 	// TODO: Replay feature: Jump To Start Position and Jump To Last Position start here
 	// *****************************************************************
@@ -1385,8 +1431,14 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
-		QuoridorApplication.GetWhitePawnBehavior();
-		QuoridorApplication.GetBlackPawnBehavior();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
+		GamePosition curPos = quoridor.getCurrentGame().getCurrentPosition();
+		curPos.getBlackPosition().setTile(blackPlayerTile);
+		curPos.getWhitePosition().setTile(whitePlayerTile);
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
 		gamePage = new GamePage();
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
 	}
@@ -1435,29 +1487,45 @@ public class CucumberStepDefinitions {
 	@And("The next move is {int}.{int}")
 	public void theNextMoveIs(int movno, int rndno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
-		
-		curGame.getMoves().get(movno).getMoveNumber();
-		curGame.getMoves().get(rndno).getRoundNumber();
-
+		int ind = (movno-1)*2+rndno-1;
+		curGame.setCurrentPosition(curGame.getPosition(ind));
 	}
 	@When("Jump to start position is initiated")
 	public void jumpToStartPositionIsInitiated() throws InvalidOperationException {
 //		gamePage.clickJumpStart();
-		Quoridor223Controller.jumpToStartPosition();
+		try{
+			Quoridor223Controller.jumpToStartPosition();
+		}catch(InvalidOperationException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	@When("Jump to final position is initiated")
 	public void jumpToFinalPositionIsInitiated() throws InvalidOperationException {
 //		gamePage.clickJumpFinal();
-		Quoridor223Controller.jumpToFinalPosition();
-		
+		try{
+			Quoridor223Controller.jumpToFinalPosition();
+		}catch(InvalidOperationException e) {
+			System.out.println(e.getMessage());
+		}
 	}
     @When("Step forward is initiated")
-	public void Stepforward() {
+	public void Stepforward() throws InvalidOperationException{
 		//call controller
+    	try{
+    		Quoridor223Controller.StepForward();
+		}catch(InvalidOperationException e) {
+			System.out.println(e.getMessage());
+		}
+
 	}
     @When("Step backward is initiated")
-	public void Stepbackward() {
+	public void Stepbackward() throws InvalidOperationException{
 		//call controller
+    	try{
+    		Quoridor223Controller.StepBackward();
+    	}catch(InvalidOperationException e) {
+    		System.out.println(e.getMessage());
+    	}
 	}
 	@Then("The next move shall be {int}.{int}")
 	public void theNextMoveShallBe(int nmov, int nrnd) {
@@ -1470,12 +1538,20 @@ public class CucumberStepDefinitions {
 				index = i;
 			}
 		}
-		Move curMove = curGame.getMove(index);
-		int curRoundNumber = curMove.getRoundNumber();
-		int curMoveNumber = curMove.getMoveNumber();
 
-		assertEquals(nmov, curMoveNumber);
-		assertEquals(nrnd, curRoundNumber);
+		if(index<curGame.getMoves().size()) {
+			Move curMove = curGame.getMove(index);
+			int curMoveNumber = curMove.getMoveNumber();
+			int curRoundNumber = curMove.getRoundNumber();
+			assertEquals(nmov, curMoveNumber);
+			assertEquals(nrnd, curRoundNumber);
+		}
+		else {
+			Move curMove = curGame.getMove(curGame.getMoves().size()-1);
+			int curRoundNumber = curMove.getRoundNumber()==1?2:1;
+			int curMoveNumber = curMove.getMoveNumber()+curRoundNumber==1?1:0;
+			
+		}
 	}
 	
 	@And("White player's position shall be \\({int},{int})")
@@ -1521,7 +1597,55 @@ public class CucumberStepDefinitions {
 	// TODO: Jump To Start Position and Jump To Last Position end here
 	// *****************************************************************
 	
+	
+	
 
+	// *****************************************************************
+	// TODO: Identify Game Won feature
+	// *****************************************************************
+	@Given("Player {string} has just completed his move")
+	public void playerHasJustCompletedHisMove(String playerName) {
+		
+	}
+	
+	@And("The new position of {string} is {int}:{int}")
+	public void newPositionOfPlayerIs(String playerName, int row, int col) {
+		
+	}
+	
+	@And("The clock of {string} is more than zero")
+	public void clockOfPlayerIsMoreThanZero(String playerName) {
+		
+		//check that clock is running and not zero
+		
+	}
+	
+	@When("Checking of game result is initated")
+	public void checkingOfGameResultIsInitiated() {
+		
+		// initiate game results
+		
+	}
+	
+	@Then("Game result shall be {string}")
+	public void gameResultShallBe(String result) {
+		
+		// fetch game result and compare to see if good
+		// assertEquals()
+		
+	}
+	
+	@And("The game shall no longer be running")
+	public void theGameShallNoLongerBeRunning() {
+		
+	}
+	
+	@When("The clock of {string} counts down to zero")
+	public void clockOfPlayerCountsDowntoZero() {
+		
+	}
+		
+		
 	// ***********************************************
 	// Extracted helper methods
 	// ***********************************************
@@ -2039,9 +2163,10 @@ public class CucumberStepDefinitions {
 	 * ValidatePosition.feature
 	 * @author Sacha Lévy
 	 * @param int1, int2
+	 * @throws InvalidOperationException 
 	 */
 	@When("Validation of the position is initiated")
-	public void validation_of_the_position_is_initiated() {
+	public void validation_of_the_position_is_initiated() throws InvalidOperationException {
 	    try {
 			Quoridor223Controller.validatePosition();
 		} catch (UnsupportedOperationException | GameNotRunningException e) {
@@ -2054,9 +2179,10 @@ public class CucumberStepDefinitions {
 	 * ValidatePosition.feature
 	 * @author Sacha Lévy
 	 * @param string
+	 * @throws InvalidOperationException 
 	 */
 	@Then("The position shall be {string}")
-	public void the_position_shall_be(String string) {
+	public void the_position_shall_be(String string) throws InvalidOperationException {
 		String result = "error";
 		try {
 			if(Quoridor223Controller.validatePosition()) result = "ok";
@@ -2084,18 +2210,20 @@ public class CucumberStepDefinitions {
 	/**
 	 * ValidatePosition.feature
 	 * @author Sacha Lévy
+	 * @throws InvalidOperationException 
 	 */
 	@Then("The position shall be valid")
-	public void the_position_shall_be_valid() {
+	public void the_position_shall_be_valid() throws InvalidOperationException {
 	    assertEquals("valid", Quoridor223Controller.isPositionValid());
 	}
 
 	/**
 	 * ValidatePosition.feature
 	 * @author Sacha Lévy
+	 * @throws InvalidOperationException 
 	 */
 	@Then("The position shall be invalid")
-	public void the_position_shall_be_invalid() {
+	public void the_position_shall_be_invalid() throws InvalidOperationException {
 	    assertEquals("invalid", Quoridor223Controller.isPositionValid());
 	}
 
