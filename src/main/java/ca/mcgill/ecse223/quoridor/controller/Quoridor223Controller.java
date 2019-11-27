@@ -10,11 +10,16 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.management.openmbean.InvalidOpenTypeException;
 import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.Set;
 import java.security.InvalidAlgorithmParameterException;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
@@ -555,8 +560,9 @@ public class Quoridor223Controller {
 	 * @author Sacha Lévy
 	 * @throws GameNotRunningException
 	 * @throws UnsupportedOperationException
+	 * @throws InvalidOperationException 
 	 */
-	public static boolean validatePosition() throws UnsupportedOperationException, GameNotRunningException {
+	public static boolean validatePosition() throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException {
 		if (!isRunning()) throw new GameNotRunningException("Game not running");
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		//TODO: better combine isWallCandidateOverlapping and doWallsOverlap, ie minimize search time
@@ -566,6 +572,7 @@ public class Quoridor223Controller {
 		if (current_game.hasWallMoveCandidate()) {
 			if (!isWallCandidatePositionValid()) return false;
 			if (isWallMoveCandidateOverlapping()) return false;
+			if (!hasPath()) return false;
 		} else {
 			// TODO: implement the pawn behavior checking within the validate position, uniform method
 			if (!isPlayerPositionValid()) return false;
@@ -708,6 +715,98 @@ public class Quoridor223Controller {
 		curGame.setCurrentPosition(curGame.getPosition(ind-1));
 	}
 	
+	// check if there exists a path from the player position to the opponent's target area
+	// assume the method is called after first checks of the wall candidate : isn't placed in a trivial
+	// non valid position such as on the edge of the board
+	public static boolean hasPath() throws InvalidOperationException {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		int[][] wallMap = new int[9][9];
+		final int up = 1;
+		final int left = 2; 
+		final int down = 4;
+		final int right = 8;
+		for(int i=0; i<9; i++) {		// rows
+			for(int j=0; j<9; j++) {	// cols
+				// fill with edge cases: borders of the map
+				if(i==0)wallMap[i][j]|=up;
+				if(i==8)wallMap[i][j]|=down;
+				if(j==0)wallMap[i][j]|=left;
+				if(j==8)wallMap[i][j]|=right;
+			}
+		}
+		// add the wall candidate to the walls on board to check if it is blocking the path
+		WallMove move_candidate = current_game.getWallMoveCandidate();
+		addWall(wallMap,move_candidate);
+		for(Move move: current_game.getMoves()) {
+			if(move instanceof WallMove) {
+				addWall(wallMap,(WallMove) move);
+			}
+		}
+		int whiteRow = current_game.getCurrentPosition().getWhitePosition().getTile().getRow()-1;
+		int whiteCol = current_game.getCurrentPosition().getWhitePosition().getTile().getColumn()-1;
+		int blackRow = current_game.getCurrentPosition().getBlackPosition().getTile().getRow()-1;
+		int blackCol = current_game.getCurrentPosition().getBlackPosition().getTile().getColumn()-1;
+		return checkMazeMap(8, wallMap, blackRow, blackCol)&&checkMazeMap(0, wallMap, whiteRow, whiteCol);
+	}
+	
+	private static void addWall(int[][] mazeMap, WallMove wall) {
+		int row = wall.getTargetTile().getRow()-1;
+		int col = wall.getTargetTile().getColumn()-1;
+		final int up = 1;
+		final int left = 2; 
+		final int down = 4;
+		final int right = 8;
+		if(wall.getWallDirection()==Direction.Horizontal) {
+			// the wall is horizontal
+			mazeMap[row][col]|=down;
+			mazeMap[row][col+1]|=down;
+			mazeMap[row+1][col]|=up;
+			mazeMap[row+1][col+1]|=up;
+		}
+		else {
+			// the wall is vertical
+			mazeMap[row][col]|=right;
+			mazeMap[row+1][col]|=right;
+			mazeMap[row][col+1]|=left;
+			mazeMap[row+1][col+1]|=left;
+		}
+	}
+	
+	// exhaustive process since only need to check if can cut the board in two
+	public static boolean checkMazeMap(int goal_row, int[][] mazeMap, int i, int j) {
+		boolean[][] visited = new boolean[9][9];
+		Queue<int[]> list= new LinkedList<>();
+		list.add(new int[] {i,j});
+		while(!list.isEmpty()) {
+			int[]cord = list.remove();
+			i = cord[0];
+			j = cord[1];
+			visited[i][j]=true;
+			if(i==goal_row)return true;
+			if((mazeMap[i][j]&1)==0 && isCordValid(visited,i-1,j))list.add(new int[] {i-1,j});
+			if((mazeMap[i][j]&2)==0 && isCordValid(visited,i+1,j))list.add(new int[] {i+1,j});
+			if((mazeMap[i][j]&4)==0 && isCordValid(visited,i, j-1))list.add(new int[] {i,j-1});
+			if((mazeMap[i][j]&8)==0 && isCordValid(visited,i, j+1))list.add(new int[] {i,j+1});
+		}
+		return false;
+	}
+	private static boolean isCordValid(boolean[][] visited, int i, int j) {
+		if(i<0||j<0||i>8||j>8)return false;
+		if(visited[i][j])return false;
+		return true;
+	}
+	
+	// filter out the elements that have already been visited
+	private static Set<Integer> filterPoints(Set<Integer> points, HashMap<Integer, Boolean> visitedMap) {
+		Set<Integer> updated_points = new HashSet<Integer>();
+		Iterator<Integer> itr = points.iterator();
+		while(itr.hasNext()) {
+			int curKey = itr.next();
+			if(!visitedMap.containsKey(curKey)) updated_points.add(curKey); 
+		}
+		return updated_points;
+	}
+	
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
 //////Sacha's Helper and Query methods Begins////////
@@ -719,8 +818,9 @@ public class Quoridor223Controller {
 	 * 
 	 * @author Sacha Lévy
 	 * @return isValid
+	 * @throws InvalidOperationException 
 	 * */
-	public static String isPositionValid() {
+	public static String isPositionValid() throws InvalidOperationException {
 		String isValid = "invalid";
 		try {
 			if (validatePosition()) isValid = "valid";

@@ -2205,9 +2205,10 @@ public class CucumberStepDefinitions {
 	 * ValidatePosition.feature
 	 * @author Sacha Lévy
 	 * @param int1, int2
+	 * @throws InvalidOperationException 
 	 */
 	@When("Validation of the position is initiated")
-	public void validation_of_the_position_is_initiated() {
+	public void validation_of_the_position_is_initiated() throws InvalidOperationException {
 	    try {
 			Quoridor223Controller.validatePosition();
 		} catch (UnsupportedOperationException | GameNotRunningException e) {
@@ -2220,9 +2221,10 @@ public class CucumberStepDefinitions {
 	 * ValidatePosition.feature
 	 * @author Sacha Lévy
 	 * @param string
+	 * @throws InvalidOperationException 
 	 */
 	@Then("The position shall be {string}")
-	public void the_position_shall_be(String string) {
+	public void the_position_shall_be(String string) throws InvalidOperationException {
 		String result = "error";
 		try {
 			if(Quoridor223Controller.validatePosition()) result = "ok";
@@ -2250,18 +2252,20 @@ public class CucumberStepDefinitions {
 	/**
 	 * ValidatePosition.feature
 	 * @author Sacha Lévy
+	 * @throws InvalidOperationException 
 	 */
 	@Then("The position shall be valid")
-	public void the_position_shall_be_valid() {
+	public void the_position_shall_be_valid() throws InvalidOperationException {
 	    assertEquals("valid", Quoridor223Controller.isPositionValid());
 	}
 
 	/**
 	 * ValidatePosition.feature
 	 * @author Sacha Lévy
+	 * @throws InvalidOperationException 
 	 */
 	@Then("The position shall be invalid")
-	public void the_position_shall_be_invalid() {
+	public void the_position_shall_be_invalid() throws InvalidOperationException {
 	    assertEquals("invalid", Quoridor223Controller.isPositionValid());
 	}
 
