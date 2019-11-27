@@ -12,11 +12,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.management.openmbean.InvalidOpenTypeException;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
 import java.security.InvalidAlgorithmParameterException;
 
@@ -616,6 +618,16 @@ public class Quoridor223Controller {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player current_player = current_game.getCurrentPosition().getPlayerToMove();
 		
+		PlayerPosition current_position;
+		int goal_row;
+		if(current_player.equals(current_game.getBlackPlayer())) {
+			current_position = current_game.getCurrentPosition().getBlackPosition();
+			goal_row = 1;
+		}
+		else {
+			current_position = current_game.getCurrentPosition().getWhitePosition();
+			goal_row = 9;
+		}
 		HashMap<Integer, Integer> mazeMap = new HashMap<Integer, Integer>();
 		int board_size = 9;
 		// cost of wall at each edge of a tile
@@ -623,22 +635,22 @@ public class Quoridor223Controller {
 		int left = 2; 
 		int down = 4;
 		int right = 8;
+		
 		// there will be no walls placed at these tiles thus no conflict between the walls
 		// and the edge tile: if considering dropping a candidate wall, should take it into account
-		
 		// init the mazeMap: every tile has a value of 0 (not blocked)
-		for(int i=0; i<=board_size; i++) {		// rows
-			for(int j=0; j<=board_size; j++) {	// cols
+		for(int i=1; i<=board_size; i++) {		// rows
+			for(int j=1; j<=board_size; j++) {	// cols
 				// fill with edge cases: borders of the map
-				if(i==1&&j==9) mazeMap.put(i*9+j, 3);
-				else if(i==1&&j==1) mazeMap.put(i*9+j, 6);
-				else if(i==9&&j==1) mazeMap.put(i*9+j, 12);
-				else if(i==9&&j==9) mazeMap.put(i*9+j, 9);
-				else if(i==1&&j!=9&&j!=1) mazeMap.put(i*9+j, 2);
-				else if(i==9&&j!=9&&j!=1) mazeMap.put(i*9+j, 8);
-				else if(j==1&&i!=9&&i!=1) mazeMap.put(i*9+j, 4);
-				else if(j==9&&i!=9&&i!=1) mazeMap.put(i*9+j, 1);
-				else mazeMap.put(i*9+j, 0);
+				if(i==1&&j==9) mazeMap.put(i*9+j, 9);
+				else if(i==1&&j==1) mazeMap.put(i*9+j, 3);
+				else if(i==9&&j==1) mazeMap.put(i*9+j, 6);
+				else if(i==9&&j==9) mazeMap.put(i*9+j, 12);
+				else if(i==1&&j!=9&&j!=1) mazeMap.put(i*9+j, 1);
+				else if(i==9&&j!=9&&j!=1) mazeMap.put(i*9+j, 4);
+				else if(j==1&&i!=9&&i!=1) mazeMap.put(i*9+j, 2);
+				else if(j==9&&i!=9&&i!=1) mazeMap.put(i*9+j, 8);
+				else mazeMap.put(9*i+j, 0);
 			}
 		}
 		// take into account may not be including the wall candidate ??
@@ -658,33 +670,48 @@ public class Quoridor223Controller {
 			int tile_state = mazeMap.get(e);
 			if(wallsOnBoard.get(e)) {
 				// the wall is horizontal
-				mazeMap.replace(e, tile_state+1);
+				mazeMap.replace(e, tile_state+4);
 				mazeMap.replace((Arow+1)*9+Acol, tile_state+1);
-				mazeMap.replace((Arow+1)*9+Acol+1, tile_state+4);
+				mazeMap.replace((Arow+1)*9+Acol+1, tile_state+1);
 				mazeMap.replace((Arow)*9+Acol+1, tile_state+4);
 			}
 			else {
 				// the wall is vertical
 				mazeMap.replace(e, tile_state+8);
-				mazeMap.replace((Arow+1)*9+Acol, tile_state+2);
+				mazeMap.replace((Arow+1)*9+Acol, tile_state+8);
 				mazeMap.replace((Arow+1)*9+Acol+1, tile_state+2);
-				mazeMap.replace((Arow)*9+Acol+1, tile_state+8);
+				mazeMap.replace((Arow)*9+Acol+1, tile_state+2);
 			}
 		}
-		int entry_point = 10;	// tile 1*9+1
-		// trivial case where one of the tile is blocked
-		if(mazeMap.containsValue(15)) return false;
+		//int entry_point = 10;	// tile 1*9+1
+		//System.out.println(mazeMap);
+		
+		int entry_point = current_position.getTile().getRow()*9 + current_position.getTile().getColumn();
+		// not searching for board partitions
+		//if(mazeMap.containsValue(15)) return false;
+		
 		HashMap<Integer, Boolean> visitedMap = new HashMap<>();
-		// have to follow trace of 
-		return checkMazeMap(mazeMap, entry_point, visitedMap);
+		return checkMazeMap(goal_row, mazeMap, entry_point, visitedMap);
 	}
+	
 	// exhaustive process since only need to check if can cut the board in two
-	public static boolean checkMazeMap(HashMap<Integer, Integer> mazeMap, Integer entry_point, HashMap<Integer, Boolean> visitedMap) {
+	public static boolean checkMazeMap(int goal_row, HashMap<Integer, Integer> mazeMap, Integer entry_point, HashMap<Integer, Boolean> visitedMap) {
 		int Acol = entry_point%9;
 		int Arow = (entry_point-Acol)/9;
 		int tile_state = mazeMap.get(entry_point);
+		
+		// now need to deal with edge cases for the pawns and jumps
+		if (Arow==goal_row) return true;
+		
 		Set<Integer> points = new HashSet<Integer>();
-		// add all the points accessible from the given initial point 
+		
+		// work with a queue for breadth first search ? end up using iterator over set so equivalent...
+	    //Queue<Integer> points = new LinkedList<Integer>();
+		if((tile_state&1)!=0)points.add((Arow-1)*9+Acol);
+		if((tile_state&2)!=0)points.add((Arow+1)*9+Acol);
+		if((tile_state&4)!=0)points.add((Arow)*9+Acol-1);
+		if((tile_state&8)!=0)points.add((Arow)*9+Acol+1);
+		/*
 		if(tile_state==0) {
 			points.add((Arow+1)*9+Acol);
 			points.add((Arow-1)*9+Acol);
@@ -741,17 +768,24 @@ public class Quoridor223Controller {
 		}
 		else if(tile_state==14) {
 			points.add((Arow)*9+Acol+1);
-		}
+		}*/
 		
 		points = filterPoints(points, visitedMap);
-		visitedMap.put(entry_point, true);
+		//visitedMap.put(entry_point, true);
+		
 		// if all tiles where visited then it is true
-		if (visitedMap.size()==81) return true;
+		//if (visitedMap.size()==81) return true;
 		
 		Iterator<Integer> itr = points.iterator();
-		while(itr.hasNext()) return checkMazeMap(mazeMap, itr.next(), visitedMap);
+		// the goal for a given player is to reach the opposite side of the board, so if can reach it from one of the player's positions
+		// then should be good for the other
+		// take first player position & search the board for a valid reach to the other end of the board
+		// black player: [1-1 : 1:9] down row
+		// white player: [9-1 : 9-9] up row
+		while(itr.hasNext()) return checkMazeMap(goal_row, mazeMap, itr.next(), visitedMap);	
+		// if no state combination returns true, ie, reaches the other end of the board, will say no path
 		return false;
-	}
+		}
 	
 	// filter out the elements that have already been visited
 	private static Set<Integer> filterPoints(Set<Integer> points, HashMap<Integer, Boolean> visitedMap) {
