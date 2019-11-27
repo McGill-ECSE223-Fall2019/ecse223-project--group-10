@@ -772,6 +772,10 @@ public class Quoridor223Controller {
 	// exhaustive process since only need to check if can cut the board in two
 	public static boolean checkMazeMap(int goal_row, int[][] mazeMap, int i, int j) {
 		boolean[][] visited = new boolean[9][9];
+		final int up = 1;
+		final int left = 2; 
+		final int down = 4;
+		final int right = 8;
 		Queue<int[]> list= new LinkedList<>();
 		list.add(new int[] {i,j});
 		while(!list.isEmpty()) {
@@ -780,10 +784,10 @@ public class Quoridor223Controller {
 			j = cord[1];
 			visited[i][j]=true;
 			if(i==goal_row)return true;
-			if((mazeMap[i][j]&1)==0 && isCordValid(visited,i-1,j))list.add(new int[] {i-1,j});
-			if((mazeMap[i][j]&2)==0 && isCordValid(visited,i+1,j))list.add(new int[] {i+1,j});
-			if((mazeMap[i][j]&4)==0 && isCordValid(visited,i, j-1))list.add(new int[] {i,j-1});
-			if((mazeMap[i][j]&8)==0 && isCordValid(visited,i, j+1))list.add(new int[] {i,j+1});
+			if((mazeMap[i][j]&up)==0 && isCordValid(visited,i-1,j))list.add(new int[] {i-1,j});
+			if((mazeMap[i][j]&down)==0 && isCordValid(visited,i, j-1))list.add(new int[] {i+1,j});
+			if((mazeMap[i][j]&left)==0 && isCordValid(visited,i+1,j))list.add(new int[] {i,j-1});
+			if((mazeMap[i][j]&right)==0 && isCordValid(visited,i, j+1))list.add(new int[] {i,j+1});
 		}
 		return false;
 	}
