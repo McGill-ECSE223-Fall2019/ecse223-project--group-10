@@ -548,6 +548,7 @@ public class GamePage extends JFrame {
 					gameMessage.setText(ex.getMessage());
 					// TODO: handle exception
 				}
+				grabWall.setText("Grab Wall");
 				btnUpRight.setEnabled(true);
 				btnUpLeft.setEnabled(true);
 				btnDownRight.setEnabled(true);
