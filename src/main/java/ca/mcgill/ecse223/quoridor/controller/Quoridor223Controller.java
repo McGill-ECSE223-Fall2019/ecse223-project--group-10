@@ -453,13 +453,15 @@ public class Quoridor223Controller {
 		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
 		GamePosition currentPosition = curGame.getCurrentPosition();
 		GamePosition clone = clonePosition(currentPosition);
-		
-		curGame.setCurrentPosition(clone);
+
 		if (isWhitePlayer()) {
+			currentPosition.addWhiteWallsInStock(wallToDrop);
 			clone.addWhiteWallsOnBoard(wallToDrop);
 		} else {
+			currentPosition.addBlackWallsInStock(wallToDrop);
 			clone.addBlackWallsOnBoard(wallToDrop);
 		}
+		curGame.setCurrentPosition(clone);
 		curGame.addMove(curGame.getWallMoveCandidate());
 		curGame.setWallMoveCandidate(null);
 		// Switch Player here
