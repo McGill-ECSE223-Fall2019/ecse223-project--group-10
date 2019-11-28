@@ -770,13 +770,30 @@ public class Quoridor223Controller {
 		//if(mazeMap.containsValue(15)) return false;
 		
 		HashMap<Integer, Boolean> visitedMap = new HashMap<>();
-		return checkMazeMap(goal_row, mazeMap, entry_point, visitedMap);
+		return init_checkMazeMap(mazeMap);
 	}
-	
+	public static boolean init_checkMazeMap(HashMap<Integer, Integer> mazeMap) {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		PlayerPosition black_position = current_game.getCurrentPosition().getBlackPosition();
+		PlayerPosition white_position = current_game.getCurrentPosition().getWhitePosition();
+		
+		int black_entry_point = black_position.getTile().getRow()*9 + black_position.getTile().getColumn();
+		int white_entry_point = white_position.getTile().getRow()*9 + white_position.getTile().getColumn();
+		
+		HashMap<Integer, Boolean> black_visitedMap = new HashMap<>();
+		HashMap<Integer, Boolean> white_visitedMap = new HashMap<>();
+		
+		int black_goal_row = 1;
+		int white_goal_row = 9;
+		
+		boolean hasPlayer1Path = checkMazeMap(black_goal_row, mazeMap, black_entry_point, black_visitedMap);
+		boolean hasPlayer2Path = checkMazeMap(white_goal_row, mazeMap, white_entry_point, white_visitedMap);
+		return (hasPlayer1Path||hasPlayer2Path);
+	}
 	// exhaustive process since only need to check if can cut the board in two
 	public static boolean checkMazeMap(int goal_row, HashMap<Integer, Integer> mazeMap, Integer entry_point, HashMap<Integer, Boolean> visitedMap) {
 		int Acol = entry_point%9;
-		int Arow = (entry_point-Acol)/9;
+		int Arow = (int)(entry_point/9);
 		int tile_state = mazeMap.get(entry_point);
 		
 		// now need to deal with edge cases for the pawns and jumps
@@ -862,7 +879,6 @@ public class Quoridor223Controller {
 		// black player: [1-1 : 1:9] down row
 		// white player: [9-1 : 9-9] up row
 		while(itr.hasNext()) return checkMazeMap(goal_row, mazeMap, itr.next(), visitedMap);	
-		// if no state combination returns true, ie, reaches the other end of the board, will say no path
 		return false;
 		}
 	
