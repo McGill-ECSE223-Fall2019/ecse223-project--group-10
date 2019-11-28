@@ -1493,8 +1493,14 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
-		QuoridorApplication.GetWhitePawnBehavior();
-		QuoridorApplication.GetBlackPawnBehavior();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
+		GamePosition curPos = quoridor.getCurrentGame().getCurrentPosition();
+		curPos.getBlackPosition().setTile(blackPlayerTile);
+		curPos.getWhitePosition().setTile(whitePlayerTile);
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
 		gamePage = new GamePage();
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
 	}
@@ -1543,29 +1549,45 @@ public class CucumberStepDefinitions {
 	@And("The next move is {int}.{int}")
 	public void theNextMoveIs(int movno, int rndno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
-		
-		curGame.getMoves().get(movno).getMoveNumber();
-		curGame.getMoves().get(rndno).getRoundNumber();
-
+		int ind = (movno-1)*2+rndno-1;
+		curGame.setCurrentPosition(curGame.getPosition(ind));
 	}
 	@When("Jump to start position is initiated")
 	public void jumpToStartPositionIsInitiated() throws InvalidOperationException {
 //		gamePage.clickJumpStart();
-		Quoridor223Controller.jumpToStartPosition();
+		try{
+			Quoridor223Controller.jumpToStartPosition();
+		}catch(InvalidOperationException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	@When("Jump to final position is initiated")
 	public void jumpToFinalPositionIsInitiated() throws InvalidOperationException {
 //		gamePage.clickJumpFinal();
-		Quoridor223Controller.jumpToFinalPosition();
-		
+		try{
+			Quoridor223Controller.jumpToFinalPosition();
+		}catch(InvalidOperationException e) {
+			System.out.println(e.getMessage());
+		}
 	}
     @When("Step forward is initiated")
-	public void Stepforward() {
+	public void Stepforward() throws InvalidOperationException{
 		//call controller
+    	try{
+    		Quoridor223Controller.StepForward();
+		}catch(InvalidOperationException e) {
+			System.out.println(e.getMessage());
+		}
+
 	}
     @When("Step backward is initiated")
-	public void Stepbackward() {
+	public void Stepbackward() throws InvalidOperationException{
 		//call controller
+    	try{
+    		Quoridor223Controller.StepBackward();
+    	}catch(InvalidOperationException e) {
+    		System.out.println(e.getMessage());
+    	}
 	}
 	@Then("The next move shall be {int}.{int}")
 	public void theNextMoveShallBe(int nmov, int nrnd) {
@@ -1578,12 +1600,20 @@ public class CucumberStepDefinitions {
 				index = i;
 			}
 		}
-		Move curMove = curGame.getMove(index);
-		int curMoveNumber = curMove.getRoundNumber()%2+1;
-		int curRoundNumber = curMove.getMoveNumber();
 
-		assertEquals(nmov, curMoveNumber);
-		assertEquals(nrnd, curRoundNumber);
+		if(index<curGame.getMoves().size()) {
+			Move curMove = curGame.getMove(index);
+			int curMoveNumber = curMove.getMoveNumber();
+			int curRoundNumber = curMove.getRoundNumber();
+			assertEquals(nmov, curMoveNumber);
+			assertEquals(nrnd, curRoundNumber);
+		}
+		else {
+			Move curMove = curGame.getMove(curGame.getMoves().size()-1);
+			int curRoundNumber = curMove.getRoundNumber()==1?2:1;
+			int curMoveNumber = curMove.getMoveNumber()+curRoundNumber==1?1:0;
+			
+		}
 	}
 	
 	@And("White player's position shall be \\({int},{int})")
