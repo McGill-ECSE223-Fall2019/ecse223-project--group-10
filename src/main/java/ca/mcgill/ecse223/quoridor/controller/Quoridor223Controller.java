@@ -73,6 +73,13 @@ public class Quoridor223Controller {
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.Running);
 	}
+	
+	public static void setGameToDraw() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.setGameStatus(GameStatus.Draw);
+	}
+	
 
 	/**
 	 * Feature 2: Setting a user with a new username or with an existing one
@@ -298,7 +305,7 @@ public class Quoridor223Controller {
 		for (int i = 0; i < 10; i++) {
 			new Wall(1 * 10 + i + 1, quoridor.getCurrentGame().getBlackPlayer());
 		}
-
+		
 		// get tiles
 		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
 		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
@@ -307,11 +314,13 @@ public class Quoridor223Controller {
 		
 		// create players' initial positions
 		Game currentGame = quoridor.getCurrentGame();
+		// set current position to a new game position
+		
 		PlayerPosition whitePlayerPosition = new PlayerPosition(currentGame.getWhitePlayer(), whitePlayerTile);
 		PlayerPosition blackPlayerPosition = new PlayerPosition(currentGame.getBlackPlayer(), blackPlayerTile);
 		GamePosition gamePosition = new GamePosition(0, whitePlayerPosition, blackPlayerPosition,
 				currentGame.getWhitePlayer(), currentGame);
-
+		
 		// Add the walls to stock for the players
 		for (int j = 0; j < 10; j++) {
 			Wall wall = Wall.getWithId(j + 1);
@@ -323,15 +332,30 @@ public class Quoridor223Controller {
 			gamePosition.addBlackWallsInStock(wall);
 		}
 
-		// set current position to a new game position
 		currentGame.setCurrentPosition(gamePosition);
 
 		// set next player
 		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
-		PawnBehavior whitebehavior = QuoridorApplication.GetWhitePawnBehavior();
-		PawnBehavior blackbehavior = QuoridorApplication.GetBlackPawnBehavior();
+		PawnBehavior whitebehavior = QuoridorApplication.CreateNewWhitePawnBehavior();
+		PawnBehavior blackbehavior = QuoridorApplication.CreateNewBlackPawnBehavior();
 		whitebehavior.startGame();
 		blackbehavior.startGame();
+	}
+	
+	public static void setUpNewGame(String time1, String time2) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.delete();
+		quoridor.setCurrentGame(curGame);
+		
+		List<User> users = QuoridorApplication.getQuoridor().getUsers();
+		Player white = new Player(Time.valueOf(time1), users.get(0), 1, Direction.Vertical);
+		curGame.setWhitePlayer(white);
+		Player black = new Player(Time.valueOf(time2), users.get(1), 9, Direction.Vertical);
+		curGame.setBlackPlayer(black);
+		
+		initializeBoard();
+		curGame.setGameStatus(GameStatus.Running);
 	}
 
 	/**
@@ -633,13 +657,15 @@ public class Quoridor223Controller {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		List<Move> historyMoves = curGame.getMoves();
 		
-		if(historyMoves.size() < 5) return false;
+		if(historyMoves.size() < 9) return false;
 		
 		int n = historyMoves.size();
-		if(checkPosition(historyMoves.get(n-1).getTargetTile(), historyMoves.get(n-3).getTargetTile()) 
-			&& checkPosition(historyMoves.get(n-3).getTargetTile(), historyMoves.get(n-5).getTargetTile())
-			&& checkPosition(historyMoves.get(n-2).getTargetTile(), historyMoves.get(n-4).getTargetTile()))
+		if(checkMove(historyMoves.get(n-1), historyMoves.get(n-5)) 
+			&& checkMove(historyMoves.get(n-5), historyMoves.get(n-9))
+			&& checkMove(historyMoves.get(n-4), historyMoves.get(n-8))){
+			curGame.setGameStatus(GameStatus.Draw);
 			return true;
+		};
 		
 		return false;
 	}
@@ -652,8 +678,9 @@ public class Quoridor223Controller {
 	 * @param tile2 the second tile
 	 * @return a boolean value
 	 */
-	private static boolean checkPosition(Tile tile1, Tile tile2) {
-		if(tile1.equals(tile2)) return true;
+	private static boolean checkMove(Move move1, Move move2) {
+		if((move1 instanceof WallMove ) || (move2 instanceof WallMove)) return false;
+		if(move1.getTargetTile().equals(move2.getTargetTile())) return true;
 		return false;
 	}
 	
