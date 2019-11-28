@@ -742,8 +742,7 @@ public class Quoridor223Controller {
 		int whiteCol = current_game.getCurrentPosition().getWhitePosition().getTile().getColumn()-1;
 		int blackRow = current_game.getCurrentPosition().getBlackPosition().getTile().getRow()-1;
 		int blackCol = current_game.getCurrentPosition().getBlackPosition().getTile().getColumn()-1;
-		boolean result = checkMazeMap(8, wallMap, blackRow, blackCol)&&checkMazeMap(0, wallMap, whiteRow, whiteCol);
-		return result;
+		return checkMazeMap(8, wallMap, blackRow, blackCol)&&checkMazeMap(0, wallMap, whiteRow, whiteCol);
 	}
 	
 	private static void addWall(int[][] mazeMap, WallMove wall) {
@@ -785,8 +784,8 @@ public class Quoridor223Controller {
 			visited[i][j]=true;
 			if(i==goal_row)return true;
 			if((mazeMap[i][j]&up)==0 && isCordValid(visited,i-1,j))list.add(new int[] {i-1,j});
-			if((mazeMap[i][j]&down)==0 && isCordValid(visited,i+1, j))list.add(new int[] {i+1,j});
-			if((mazeMap[i][j]&left)==0 && isCordValid(visited,i,j-1))list.add(new int[] {i,j-1});
+			if((mazeMap[i][j]&down)==0 && isCordValid(visited,i, j-1))list.add(new int[] {i+1,j});
+			if((mazeMap[i][j]&left)==0 && isCordValid(visited,i+1,j))list.add(new int[] {i,j-1});
 			if((mazeMap[i][j]&right)==0 && isCordValid(visited,i, j+1))list.add(new int[] {i,j+1});
 		}
 		return false;
