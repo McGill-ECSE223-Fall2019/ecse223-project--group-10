@@ -1354,6 +1354,7 @@ public class CucumberStepDefinitions {
 		PawnBehavior black = QuoridorApplication.GetBlackPawnBehavior();
 		// Avoid null pointer for step definitions that are not yet implemented.
 		// gamePage.delete();
+		if(gamePage!=null)gamePage.delete();
 		gamePage = null;
 		
 		if (quoridor != null) {
