@@ -49,7 +49,9 @@ public class GamePage extends JFrame {
 
 	// remaining time
 	private JLabel whiteTime;
+	private String whiteTimeInit;
 	private JLabel blackTime;
+	private String blackTimeInit;
 	private boolean whiteClockIsRunning;
 
 	// grab, drop, rotate wall button
@@ -110,10 +112,12 @@ public class GamePage extends JFrame {
 
 		// initialize time 
 		whiteTime = new JLabel(players.getPlayerOneTime().toString());
+		whiteTimeInit = players.getPlayerOneTime().toString();
 		whiteTime.setFont(new Font("Arial", Font.PLAIN, 14));
-		whiteTime.setBounds(676, 94, 64, 33);
+		whiteTime.setBounds(696, 94, 64, 33);
 		
 		blackTime = new JLabel(players.getPlayerTwoTime().toString());
+		blackTimeInit = players.getPlayerTwoTime().toString();
 		blackTime.setFont(new Font("Arial", Font.PLAIN, 14));
 		blackTime.setBounds(936, 94, 64, 33);
 
@@ -652,13 +656,11 @@ public class GamePage extends JFrame {
 		newGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				timer.cancel();
-				whiteTime.setText("00:10:00");
-				blackTime.setText("00:10:00");
-				Quoridor223Controller.setThinkingTime(Time.valueOf("00:10:00"), name1);
-				Quoridor223Controller.setThinkingTime(Time.valueOf("00:10:00"), name2);
-				Quoridor223Controller.initializeBoard();
-				Quoridor223Controller.setGameToRun();
+				whiteTime.setText(whiteTimeInit);
+				blackTime.setText(blackTimeInit);
+				Quoridor223Controller.setUpNewGame(whiteTimeInit, blackTimeInit);
 				boardComponent.repaint();
+				gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 				timer = new Timer();
 				timer.scheduleAtFixedRate(new TimerTask() {
 					@Override

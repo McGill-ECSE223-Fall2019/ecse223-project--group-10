@@ -296,16 +296,16 @@ public class Quoridor223Controller {
 					board.addTile(i, j);
 				}
 			}
-			
-			// create walls
-			for (int i = 0; i < 10; i++) {
-				new Wall(0 * 10 + i + 1, quoridor.getCurrentGame().getWhitePlayer());
-			}
-			for (int i = 0; i < 10; i++) {
-				new Wall(1 * 10 + i + 1, quoridor.getCurrentGame().getBlackPlayer());
-			}
 		}
 
+		// create walls
+		for (int i = 0; i < 10; i++) {
+			new Wall(0 * 10 + i + 1, quoridor.getCurrentGame().getWhitePlayer());
+		}
+		for (int i = 0; i < 10; i++) {
+			new Wall(1 * 10 + i + 1, quoridor.getCurrentGame().getBlackPlayer());
+		}
+		
 		// get tiles
 		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
 		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
@@ -315,21 +315,12 @@ public class Quoridor223Controller {
 		// create players' initial positions
 		Game currentGame = quoridor.getCurrentGame();
 		// set current position to a new game position
-//		if(currentGame.getMoves().size() != 0) {
-//			for(Move move: currentGame.getMoves()) currentGame.removeMove(move);
-//		}
-//		if(currentGame.getPositions().size() != 0) {
-//			for(int i = 0; i < currentGame.getPositions().size(); i++) {
-//				currentGame.getPositions().get(i).delete();
-//			}
-//		}
-		
 		
 		PlayerPosition whitePlayerPosition = new PlayerPosition(currentGame.getWhitePlayer(), whitePlayerTile);
 		PlayerPosition blackPlayerPosition = new PlayerPosition(currentGame.getBlackPlayer(), blackPlayerTile);
 		GamePosition gamePosition = new GamePosition(0, whitePlayerPosition, blackPlayerPosition,
 				currentGame.getWhitePlayer(), currentGame);
-
+		
 		// Add the walls to stock for the players
 		for (int j = 0; j < 10; j++) {
 			Wall wall = Wall.getWithId(j + 1);
@@ -342,7 +333,6 @@ public class Quoridor223Controller {
 		}
 
 		currentGame.setCurrentPosition(gamePosition);
-		if(currentGame.getWallMoveCandidate() != null) currentGame.setWallMoveCandidate(null);
 
 		// set next player
 		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
@@ -350,6 +340,22 @@ public class Quoridor223Controller {
 		PawnBehavior blackbehavior = QuoridorApplication.CreateNewBlackPawnBehavior();
 		whitebehavior.startGame();
 		blackbehavior.startGame();
+	}
+	
+	public static void setUpNewGame(String time1, String time2) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.delete();
+		quoridor.setCurrentGame(curGame);
+		
+		List<User> users = QuoridorApplication.getQuoridor().getUsers();
+		Player white = new Player(Time.valueOf(time1), users.get(0), 1, Direction.Vertical);
+		curGame.setWhitePlayer(white);
+		Player black = new Player(Time.valueOf(time2), users.get(1), 9, Direction.Vertical);
+		curGame.setBlackPlayer(black);
+		
+		initializeBoard();
+		curGame.setGameStatus(GameStatus.Running);
 	}
 
 	/**
