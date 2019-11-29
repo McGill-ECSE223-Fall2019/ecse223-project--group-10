@@ -53,6 +53,7 @@ public class GamePage extends JFrame {
 	private JLabel blackTime;
 	private String blackTimeInit;
 	private boolean whiteClockIsRunning;
+	private boolean blackClockIsRunning;
 
 	// grab, drop, rotate wall button
 	private JButton grabWall;
@@ -792,6 +793,10 @@ public class GamePage extends JFrame {
 	
 	public boolean getWhiteClockStatus() {
 		return whiteClockIsRunning;
+	}
+	
+	public boolean getBlackClockStatus() {
+		return blackClockIsRunning;
 	}
 	
 	public void clickMoveWall(String dir) {

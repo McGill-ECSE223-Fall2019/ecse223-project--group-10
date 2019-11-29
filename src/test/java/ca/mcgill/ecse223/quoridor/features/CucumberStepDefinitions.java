@@ -62,6 +62,7 @@ public class CucumberStepDefinitions {
 	private ArrayList<Player> createUsersAndPlayers;
 	private String gameDirectory = "./src/main/resources/gameFiles/";
 	private String playerTryingToMove = null;
+	private String inner_message_check_path = null;
 
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
@@ -123,7 +124,9 @@ public class CucumberStepDefinitions {
 			default:
 				throw new IllegalArgumentException("Unsupported wall direction was provided");
 			}
-			new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
+			WallMove mv =new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
+			quoridor.getCurrentGame().addMove(mv);
+			quoridor.getCurrentGame().setWallMoveCandidate(null);
 			if (playerIdx == 0) {
 				quoridor.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
 				quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
@@ -777,6 +780,21 @@ public class CucumberStepDefinitions {
 			current_position = current_game.getCurrentPosition().getWhitePosition();
 			color = "white";
 		}
+		Tile new_position = Quoridor223Controller.getTile(row, col);
+		return current_position.setTile(new_position);
+	}
+	
+	/**
+	 * @author Sacha Lévy
+	 * */
+	private boolean setPlayerPosition(String player, int row, int col) {
+		// defines walls near the player
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		PlayerPosition current_position;
+		
+		// player to move has been defined precedently
+		if(player.equals("black")) current_position = current_game.getCurrentPosition().getBlackPosition();
+		else current_position = current_game.getCurrentPosition().getWhitePosition();
 		Tile new_position = Quoridor223Controller.getTile(row, col);
 		return current_position.setTile(new_position);
 	}
@@ -2324,7 +2342,112 @@ public class CucumberStepDefinitions {
 	public void the_position_shall_be_invalid() throws InvalidOperationException {
 	    assertEquals("invalid", Quoridor223Controller.isPositionValid());
 	}
+// checkPath feature
+	
+	@Given("A {string} wall move candidate exists at position {int}:{int}")
+	public void a_wall_move_candidate_exists_at_position(String string, Integer int1, Integer int2) {
+	    Direction dir;
+		if(string.equals("horizontal")) dir = Direction.Horizontal;
+		else dir = Direction.Vertical;
+		Quoridor223Controller.createNewWallMoveCandidate(int1, int2, dir);
+	}
 
+	@Given("The black player is located at {int}:{int}")
+	public void the_black_player_is_located_at(Integer int1, Integer int2) {
+		assertTrue(setPlayerPosition("black", int1, int2));
+	}
+
+	@Given("The white player is located at {int}:{int}")
+	public void the_white_player_is_located_at(Integer int1, Integer int2) {
+		assertTrue(setPlayerPosition("white", int1, int2));
+	}
+
+	@When("Check path existence is initiated")
+	public void check_path_existence_is_initiated() throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException {
+		inner_message_check_path = "both";
+		String inner_message = "";
+		try{
+			Quoridor223Controller.dropWall();
+		}
+		catch (InvalidOperationException e){
+			inner_message = e.getMessage();
+		}
+		if(inner_message.equals("black is blocked")) inner_message_check_path="white";
+		if(inner_message.equals("white is blocked")) inner_message_check_path="black";
+		if(inner_message.equals("both are blocked")) inner_message_check_path="none";
+	}
+
+	@Then("Path is available for {string} player\\(s)")
+	public void path_is_available_for_player_s(String string) throws InvalidOperationException {
+		assertEquals(string, inner_message_check_path);
+		//assertEquals(string, string);
+	}
+	
+// ReportFinalResult
+	@When("The game is no longer running")
+	public void the_game_is_no_longer_running() throws GameNotRunningException {
+		initQuoridorAndBoard();
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		createAndStartGame(createUsersAndPlayers);
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
+		QuoridorApplication.GetWhitePawnBehavior();
+		QuoridorApplication.GetBlackPawnBehavior();
+		gamePage = new GamePage();
+		
+		Quoridor223Controller.resignGame("black");
+	    assertFalse("the game is no longer running", Quoridor223Controller.isRunning());
+	}
+
+	@Then("The final result shall be displayed")
+	public void the_final_result_shall_be_displayed() {
+		boolean isDisplayed = false;
+		// update with an actual check when the game has finished
+		String final_text =  gamePage.getDialogBoxText();
+		System.out.println(final_text);
+		
+		if(final_text!=null) isDisplayed = true;
+	    assertTrue("final_result is displayed", isDisplayed);
+	}
+
+	@Then("White's clock shall not be counting down")
+	public void white_s_clock_shall_not_be_counting_down() {
+	    assertFalse("white clock is not running", gamePage.getWhiteClockStatus());
+	}
+
+	@Then("Black's clock shall not be counting down")
+	public void black_s_clock_shall_not_be_counting_down() {
+	    assertFalse("black clock is not running", gamePage.getBlackClockStatus());
+	}
+
+	@Then("White shall be unable to move")
+	public void white_shall_be_unable_to_move() {
+	    assertFalse("white player is unable to move", isWhitePlayerAbleToMove());
+	}
+
+	@Then("Black shall be unable to move")
+	public void black_shall_be_unable_to_move() {
+		assertFalse("black player is unable to move", isBlackPlayerAbleToMove());
+	}
+	
+	private boolean isWhitePlayerAbleToMove() {
+		// set the white player to be moving
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		game.getCurrentPosition().setPlayerToMove(game.getWhitePlayer());
+		gamePage.clickMovePlayer("up");
+		if(gamePage.getDialogBoxText().equals("Game not running")) return false;
+		return true;
+	}
+
+	private boolean isBlackPlayerAbleToMove() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		game.getCurrentPosition().setPlayerToMove(game.getBlackPlayer());
+		gamePage.clickMovePlayer("up");
+		if(gamePage.getDialogBoxText().equals("Game not running")) return false;
+		return true;
+	}
 // Switch Current Player feature
 	/**
 	 * @author Sacha Lévy
