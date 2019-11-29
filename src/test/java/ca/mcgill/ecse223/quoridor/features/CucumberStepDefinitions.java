@@ -74,8 +74,8 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
-		QuoridorApplication.GetWhitePawnBehavior();
-		QuoridorApplication.GetBlackPawnBehavior();
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
 		gamePage = new GamePage();
 	}
 
@@ -521,6 +521,85 @@ public class CucumberStepDefinitions {
 	// SetTotalThinkingTime and InitializeBoard end here
 	// **********************************************
 
+	// **********************************************
+	// ResignGame and IdentifyDraw
+	// **********************************************
+	@When("Player initates to resign")
+	public void initiateToResign() {
+		gamePage.clickForfeit();
+	}
+	
+	@Then("Game result shall be {string}")
+	public void gameResult(String result) {
+		assertEquals(result, QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().toString());
+	}
+	
+	@And("The game shall no longer be running")
+	public void isRunning() {
+		assertEquals(false, gamePage.isBlackClockRunning());
+		assertEquals(false, gamePage.isWhiteClockRunning());
+	}
+	
+	@Given("The following moves were executed:")
+	public void executeMove(io.cucumber.datatable.DataTable dataTable) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		
+		for (Map<String, String> map : valueMaps) {
+			int turn = Integer.decode(map.get("turn"));
+			int col = Integer.decode(map.get("col"));
+			int row = Integer.decode(map.get("row"));
+			Tile moveToTile = Quoridor223Controller.getTile(row, col);
+			PlayerPosition newWhitePosition, newBlackPosition;
+			GamePosition curPosition = curGame.getCurrentPosition();
+			GamePosition newPosition;
+			if(turn == 1) {
+				newWhitePosition = new PlayerPosition(curGame.getWhitePlayer(), moveToTile);
+				newBlackPosition = new PlayerPosition(curGame.getBlackPlayer(), curPosition.getBlackPosition().getTile());
+				newPosition = new GamePosition(curPosition.getId() + 1, newWhitePosition, newBlackPosition, curGame.getBlackPlayer(), curGame);
+			}else {
+				newBlackPosition = new PlayerPosition(curGame.getBlackPlayer(), moveToTile);
+				newWhitePosition = new PlayerPosition(curGame.getWhitePlayer(), curPosition.getWhitePosition().getTile());
+				newPosition = new GamePosition(curPosition.getId() + 1, newWhitePosition, newBlackPosition, curGame.getWhitePlayer(), curGame);
+			}
+			curGame.setCurrentPosition(newPosition);
+		}
+	}
+	
+	@Given("Player {string} has just completed his move")
+	public void completeMove(String player) {
+	}
+	
+	@And("The last move of {string} is pawn move to {int}:{int}")
+	public void lastMove(String player, int row, int col) {
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = Quoridor223Controller.getPlayerByColor(player);
+		Tile moveToTile = Quoridor223Controller.getTile(row, col);
+		GamePosition newPosition;
+		if(curPlayer.equals(curGame.getBlackPlayer())) {
+			newPosition = new GamePosition(curGame.getCurrentPosition().getId() + 1, 
+					new PlayerPosition(curGame.getWhitePlayer(), curGame.getCurrentPosition().getWhitePosition().getTile()), 
+					new PlayerPosition(curGame.getBlackPlayer(), moveToTile), 
+					curGame.getWhitePlayer(), curGame);
+		}else {
+			newPosition = new GamePosition(curGame.getCurrentPosition().getId() + 1, 
+					new PlayerPosition(curGame.getWhitePlayer(), moveToTile), 
+					new PlayerPosition(curGame.getBlackPlayer(), curGame.getCurrentPosition().getBlackPosition().getTile()), 
+					curGame.getWhitePlayer(), curGame);
+		}
+		curGame.setCurrentPosition(newPosition);
+	}
+	
+	@When("Checking of game result is initated")
+	public void checkGameResult() {
+		try {
+			Quoridor223Controller.identifyDraw();
+		}catch (GameNotRunningException exp) {
+			
+		}
+	}
+	
 	
 	// **********************************************
 	// TODO: MovePawn and JumpPawn

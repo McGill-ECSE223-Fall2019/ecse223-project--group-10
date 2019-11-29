@@ -639,9 +639,9 @@ public class Quoridor223Controller {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = getPlayerByName(playerName);
 		if(curPlayer.equals(curGame.getBlackPlayer())) {
-			curGame.setGameStatus(GameStatus.BlackWon);
-		}else {
 			curGame.setGameStatus(GameStatus.WhiteWon);
+		}else {
+			curGame.setGameStatus(GameStatus.BlackWon);
 		}
 	}
 	

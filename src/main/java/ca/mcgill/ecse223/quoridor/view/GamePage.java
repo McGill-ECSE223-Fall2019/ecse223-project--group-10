@@ -53,6 +53,7 @@ public class GamePage extends JFrame {
 	private JLabel blackTime;
 	private String blackTimeInit;
 	private boolean whiteClockIsRunning;
+	private boolean blackClockIsRunning;
 
 	// grab, drop, rotate wall button
 	private JButton grabWall;
@@ -619,7 +620,7 @@ public class GamePage extends JFrame {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					timer.cancel();
-					Quoridor223Controller.resignGame(userToMove);
+					Quoridor223Controller.resignGame(Quoridor223Controller.getPlayerToMoveName());
 					if(name1.equals(userToMove)) {
 						gameMessage.setText(name2 + " won! Congratulation!");
 					}else {
@@ -633,21 +634,25 @@ public class GamePage extends JFrame {
 		
 		btnOfferDraw.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String nextPlayer;
-				if(userToMove.equals(name1)) {
-					nextPlayer = name2;
+				if(Quoridor223Controller.isRunning()) {
+					String nextPlayer;
+					if(userToMove.equals(name1)) {
+						nextPlayer = name2;
+					}else {
+						nextPlayer = name1;
+					}
+					int choice = JOptionPane.showConfirmDialog((Component) boardComponent,
+							(Object) "" + userToMove + " offered a draw. Do you accept, " + nextPlayer + "?", "Draw Offer",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, (Icon) null);
+					if(choice == 0) {
+						Quoridor223Controller.setGameToDraw();
+						gameMessage.setText("The game is draw!");
+						timer.cancel();
+					}else {
+						gameMessage.setText(nextPlayer + "did not accept your offer. You have to make a move, " + userToMove + ".");
+					}
 				}else {
-					nextPlayer = name1;
-				}
-				int choice = JOptionPane.showConfirmDialog((Component) boardComponent,
-						(Object) "" + userToMove + " offered a draw. Do you accept, " + nextPlayer + "?", "Draw Offer",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, (Icon) null);
-				if(choice == 0) {
-					Quoridor223Controller.setGameToDraw();
-					gameMessage.setText("The game is draw!");
-					timer.cancel();
-				}else {
-					gameMessage.setText(nextPlayer + "did not accept your offer. You have to make a move, " + userToMove + ".");
+					gameMessage.setText("Game not running");
 				}
 				
 			}
@@ -693,9 +698,11 @@ public class GamePage extends JFrame {
 				if (userToMove.equals(name1)) {
 					Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(whiteTime.getText()).getTime() - 1000), name1);
 					whiteClockIsRunning = true;
+					blackClockIsRunning = false;
 				} else {
 					Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(blackTime.getText()).getTime() - 1000), name2);
 					whiteClockIsRunning = false;
+					blackClockIsRunning = true;
 				}
 
 				TOGame players = Quoridor223Controller.getListOfPlayers();
@@ -838,6 +845,10 @@ public class GamePage extends JFrame {
 		return whiteClockIsRunning;
 	}
 	
+	public boolean isBlackClockRunning() {
+		return blackClockIsRunning;
+	}
+	
 	public void clickDropWall() {
 		dropWall.doClick();
 	}
@@ -862,6 +873,12 @@ public class GamePage extends JFrame {
 	}
 	public void clickJumpFinal() {
 		btnUpRight.doClick();
+	}
+	public void clickForfeit() {
+		forfeit.doClick();
+	}
+	public void clickOfferDraw() {
+		btnOfferDraw.doClick();
 	}
 	
 	public void setWhiteTime(String time) {
