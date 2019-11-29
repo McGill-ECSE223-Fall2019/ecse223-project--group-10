@@ -107,13 +107,16 @@ public class SetThinkingTimePage extends JFrame {
 					String whiteTime = "00:" + whiteTimePicker.getText();
 					String blackTime = "00:" + blackTimePicker.getText();
 					
-					// set thinking time for two players
-					Quoridor223Controller.setThinkingTime(Time.valueOf(whiteTime), Quoridor223Controller.getWhitePlayerName());
-					Quoridor223Controller.setThinkingTime(Time.valueOf(blackTime), Quoridor223Controller.getBlackPlayerName());
-					
-					// open a game page
-					QuoridorApplication.setMainPage();
-					
+					if(!validateTime(whiteTimePicker.getText()) || !validateTime(blackTimePicker.getText())) {
+						setTimeError.setText("<html><font color='red' >INPUT TIME MUST BE GREATER THAN 0</font></html>");
+					}else {
+						// set thinking time for two players
+						Quoridor223Controller.setThinkingTime(Time.valueOf(whiteTime), Quoridor223Controller.getWhitePlayerName());
+						Quoridor223Controller.setThinkingTime(Time.valueOf(blackTime), Quoridor223Controller.getBlackPlayerName());
+						
+						// open a game page
+						QuoridorApplication.setMainPage();
+					}
 				}catch (NumberFormatException e) {
 					setTimeError.setText("<html><font color='red' >INPUT TIME IS NOT VALID</font></html>");
 				}
@@ -242,5 +245,11 @@ public class SetThinkingTimePage extends JFrame {
 				JOptionPane.INFORMATION_MESSAGE, (Icon) null, (Object[]) null, (Object) initialValue);
 
 		return userInput;
+	}
+	
+	private boolean validateTime(String time) {
+		String time_string[] = time.split(":");
+		if((Integer.parseInt(time_string[0]) == 0) && (Integer.parseInt(time_string[1]) == 0)) return false;
+		return true;
 	}
 }

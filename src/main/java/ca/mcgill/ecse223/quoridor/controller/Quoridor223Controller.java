@@ -73,6 +73,13 @@ public class Quoridor223Controller {
 		Game curGame = quoridor.getCurrentGame();
 		curGame.setGameStatus(GameStatus.Running);
 	}
+	
+	public static void setGameToDraw() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.setGameStatus(GameStatus.Draw);
+	}
+	
 
 	/**
 	 * Feature 2: Setting a user with a new username or with an existing one
@@ -182,6 +189,30 @@ public class Quoridor223Controller {
 		quoridor.addUser(playerName);
 
 	}
+	
+	/**
+	 * @author Vanessa Ifrah
+	 */
+	public static boolean identifyWin() {
+
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
+		
+		if(curPlayer.equals(curGame.getWhitePlayer())) {
+			Tile tile = curGame.getCurrentPosition().getWhitePosition().getTile();
+			int curWhiteRow = tile.getRow();
+			if(curWhiteRow == 9) {
+				return true;
+			}
+		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
+			Tile tile = curGame.getCurrentPosition().getBlackPosition().getTile();
+			int curBlackRow = tile.getRow();
+			if(curBlackRow == 1) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	/**
 	 * helper method to get player by name
@@ -274,7 +305,7 @@ public class Quoridor223Controller {
 		for (int i = 0; i < 10; i++) {
 			new Wall(1 * 10 + i + 1, quoridor.getCurrentGame().getBlackPlayer());
 		}
-
+		
 		// get tiles
 		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
 		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
@@ -283,11 +314,13 @@ public class Quoridor223Controller {
 		
 		// create players' initial positions
 		Game currentGame = quoridor.getCurrentGame();
+		// set current position to a new game position
+		
 		PlayerPosition whitePlayerPosition = new PlayerPosition(currentGame.getWhitePlayer(), whitePlayerTile);
 		PlayerPosition blackPlayerPosition = new PlayerPosition(currentGame.getBlackPlayer(), blackPlayerTile);
 		GamePosition gamePosition = new GamePosition(0, whitePlayerPosition, blackPlayerPosition,
 				currentGame.getWhitePlayer(), currentGame);
-
+		
 		// Add the walls to stock for the players
 		for (int j = 0; j < 10; j++) {
 			Wall wall = Wall.getWithId(j + 1);
@@ -299,15 +332,30 @@ public class Quoridor223Controller {
 			gamePosition.addBlackWallsInStock(wall);
 		}
 
-		// set current position to a new game position
 		currentGame.setCurrentPosition(gamePosition);
 
 		// set next player
 		currentGame.getWhitePlayer().setNextPlayer(currentGame.getBlackPlayer());
-		PawnBehavior whitebehavior = QuoridorApplication.GetWhitePawnBehavior();
-		PawnBehavior blackbehavior = QuoridorApplication.GetBlackPawnBehavior();
+		PawnBehavior whitebehavior = QuoridorApplication.CreateNewWhitePawnBehavior();
+		PawnBehavior blackbehavior = QuoridorApplication.CreateNewBlackPawnBehavior();
 		whitebehavior.startGame();
 		blackbehavior.startGame();
+	}
+	
+	public static void setUpNewGame(String time1, String time2) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		curGame.delete();
+		quoridor.setCurrentGame(curGame);
+		
+		List<User> users = QuoridorApplication.getQuoridor().getUsers();
+		Player white = new Player(Time.valueOf(time1), users.get(0), 1, Direction.Vertical);
+		curGame.setWhitePlayer(white);
+		Player black = new Player(Time.valueOf(time2), users.get(1), 9, Direction.Vertical);
+		curGame.setBlackPlayer(black);
+		
+		initializeBoard();
+		curGame.setGameStatus(GameStatus.Running);
 	}
 
 	/**
@@ -609,13 +657,15 @@ public class Quoridor223Controller {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		List<Move> historyMoves = curGame.getMoves();
 		
-		if(historyMoves.size() < 5) return false;
+		if(historyMoves.size() < 9) return false;
 		
 		int n = historyMoves.size();
-		if(checkPosition(historyMoves.get(n-1).getTargetTile(), historyMoves.get(n-3).getTargetTile()) 
-			&& checkPosition(historyMoves.get(n-3).getTargetTile(), historyMoves.get(n-5).getTargetTile())
-			&& checkPosition(historyMoves.get(n-2).getTargetTile(), historyMoves.get(n-4).getTargetTile()))
+		if(checkMove(historyMoves.get(n-1), historyMoves.get(n-5)) 
+			&& checkMove(historyMoves.get(n-5), historyMoves.get(n-9))
+			&& checkMove(historyMoves.get(n-4), historyMoves.get(n-8))){
+			curGame.setGameStatus(GameStatus.Draw);
 			return true;
+		};
 		
 		return false;
 	}
@@ -628,8 +678,9 @@ public class Quoridor223Controller {
 	 * @param tile2 the second tile
 	 * @return a boolean value
 	 */
-	private static boolean checkPosition(Tile tile1, Tile tile2) {
-		if(tile1.equals(tile2)) return true;
+	private static boolean checkMove(Move move1, Move move2) {
+		if((move1 instanceof WallMove ) || (move2 instanceof WallMove)) return false;
+		if(move1.getTargetTile().equals(move2.getTargetTile())) return true;
 		return false;
 	}
 	
@@ -639,9 +690,13 @@ public class Quoridor223Controller {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		GamePosition startPosition = curGame.getPosition(0);
 		curGame.setCurrentPosition(startPosition);
-		
 	}
 
+	/**
+	 * @author Vanessa Ifrah
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
+	 */
 	public static void enterReplayMode() throws GameNotRunningException, InvalidOperationException {
 		if (!isRunning())throw new GameNotRunningException("Game not running");
 		if (!isReplayPossible())throw new InvalidOperationException("Unable to replay");
@@ -690,78 +745,30 @@ public class Quoridor223Controller {
 	// assume the method is called after first checks of the wall candidate : isn't placed in a trivial
 	// non valid position such as on the edge of the board
 	public static boolean hasPath() throws InvalidOperationException {
-		// load
-		// usefull for the dropwall method
-		// look at mazes & coordinates
-
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Player current_player = current_game.getCurrentPosition().getPlayerToMove();
-		
-		PlayerPosition current_position;
-		int goal_row;
-		if(current_player.equals(current_game.getBlackPlayer())) {
-			current_position = current_game.getCurrentPosition().getBlackPosition();
-			goal_row = 1;
-		}
-		else {
-			current_position = current_game.getCurrentPosition().getWhitePosition();
-			goal_row = 9;
-		}
-		HashMap<Integer, Integer> mazeMap = new HashMap<Integer, Integer>();
-		int board_size = 9;
-		// cost of wall at each edge of a tile
-		int up = 1;
-		int left = 2; 
-		int down = 4;
-		int right = 8;
-		
-		// there will be no walls placed at these tiles thus no conflict between the walls
-		// and the edge tile: if considering dropping a candidate wall, should take it into account
-		// init the mazeMap: every tile has a value of 0 (not blocked)
-		for(int i=1; i<=board_size; i++) {		// rows
-			for(int j=1; j<=board_size; j++) {	// cols
+		int[][] wallMap = new int[9][9];
+		final int up = 1;
+		final int left = 2; 
+		final int down = 4;
+		final int right = 8;
+		for(int i=0; i<9; i++) {		// rows
+			for(int j=0; j<9; j++) {	// cols
 				// fill with edge cases: borders of the map
-				if(i==1&&j==9) mazeMap.put(i*9+j, 9);
-				else if(i==1&&j==1) mazeMap.put(i*9+j, 3);
-				else if(i==9&&j==1) mazeMap.put(i*9+j, 6);
-				else if(i==9&&j==9) mazeMap.put(i*9+j, 12);
-				else if(i==1&&j!=9&&j!=1) mazeMap.put(i*9+j, 1);
-				else if(i==9&&j!=9&&j!=1) mazeMap.put(i*9+j, 4);
-				else if(j==1&&i!=9&&i!=1) mazeMap.put(i*9+j, 2);
-				else if(j==9&&i!=9&&i!=1) mazeMap.put(i*9+j, 8);
-				else mazeMap.put(9*i+j, 0);
+				if(i==0)wallMap[i][j]|=up;
+				if(i==8)wallMap[i][j]|=down;
+				if(j==0)wallMap[i][j]|=left;
+				if(j==8)wallMap[i][j]|=right;
 			}
 		}
-		// take into account may not be including the wall candidate ??
-		// might need to take the wall candidate into account
-		HashMap<Integer, Boolean> wallsOnBoard = loadWallPositionsMap();
 		// add the wall candidate to the walls on board to check if it is blocking the path
 		WallMove move_candidate = current_game.getWallMoveCandidate();
-		int candidate_row = move_candidate.getTargetTile().getRow();
-		int candidate_col = move_candidate.getTargetTile().getColumn();
-		int cand_key = candidate_row * 9 + candidate_col;
-		boolean cand_dir = move_candidate.getWallDirection().equals(Direction.Horizontal) ? true : false;
-		wallsOnBoard.put(cand_key, cand_dir);
-		
-		for(int e: wallsOnBoard.keySet()) {
-			int Acol = e%9;
-			int Arow = (e-Acol)/9;
-			int tile_state = mazeMap.get(e);
-			if(wallsOnBoard.get(e)) {
-				// the wall is horizontal
-				mazeMap.replace(e, tile_state+4);
-				mazeMap.replace((Arow+1)*9+Acol, tile_state+1);
-				mazeMap.replace((Arow+1)*9+Acol+1, tile_state+1);
-				mazeMap.replace((Arow)*9+Acol+1, tile_state+4);
-			}
-			else {
-				// the wall is vertical
-				mazeMap.replace(e, tile_state+8);
-				mazeMap.replace((Arow+1)*9+Acol, tile_state+8);
-				mazeMap.replace((Arow+1)*9+Acol+1, tile_state+2);
-				mazeMap.replace((Arow)*9+Acol+1, tile_state+2);
+		addWall(wallMap,move_candidate);
+		for(Move move: current_game.getMoves()) {
+			if(move instanceof WallMove) {
+				addWall(wallMap,(WallMove) move);
 			}
 		}
+<<<<<<< HEAD
 		//int entry_point = 10;	// tile 1*9+1
 		//System.out.println(mazeMap);
 		
@@ -818,50 +825,59 @@ public class Quoridor223Controller {
 			points.add((Arow+1)*9+Acol);
 			points.add((Arow-1)*9+Acol);
 			points.add((Arow)*9+Acol-1);
+=======
+		int whiteRow = current_game.getCurrentPosition().getWhitePosition().getTile().getRow()-1;
+		int whiteCol = current_game.getCurrentPosition().getWhitePosition().getTile().getColumn()-1;
+		int blackRow = current_game.getCurrentPosition().getBlackPosition().getTile().getRow()-1;
+		int blackCol = current_game.getCurrentPosition().getBlackPosition().getTile().getColumn()-1;
+		return checkMazeMap(8, wallMap, blackRow, blackCol)&&checkMazeMap(0, wallMap, whiteRow, whiteCol);
+	}
+	
+	private static void addWall(int[][] mazeMap, WallMove wall) {
+		int row = wall.getTargetTile().getRow()-1;
+		int col = wall.getTargetTile().getColumn()-1;
+		final int up = 1;
+		final int left = 2; 
+		final int down = 4;
+		final int right = 8;
+		if(wall.getWallDirection()==Direction.Horizontal) {
+			// the wall is horizontal
+			mazeMap[row][col]|=down;
+			mazeMap[row][col+1]|=down;
+			mazeMap[row+1][col]|=up;
+			mazeMap[row+1][col+1]|=up;
+>>>>>>> origin/master
 		}
-		else if(tile_state==2) {
-			points.add((Arow+1)*9+Acol);
-			points.add((Arow)*9+Acol+1);
-			points.add((Arow)*9+Acol-1);
+		else {
+			// the wall is vertical
+			mazeMap[row][col]|=right;
+			mazeMap[row+1][col]|=right;
+			mazeMap[row][col+1]|=left;
+			mazeMap[row+1][col+1]|=left;
 		}
-		else if(tile_state==3) {
-			points.add((Arow+1)*9+Acol);
-			points.add((Arow)*9+Acol-1);
+	}
+	
+	// exhaustive process since only need to check if can cut the board in two
+	public static boolean checkMazeMap(int goal_row, int[][] mazeMap, int i, int j) {
+		boolean[][] visited = new boolean[9][9];
+		final int up = 1;
+		final int left = 2; 
+		final int down = 4;
+		final int right = 8;
+		Queue<int[]> list= new LinkedList<>();
+		list.add(new int[] {i,j});
+		while(!list.isEmpty()) {
+			int[]cord = list.remove();
+			i = cord[0];
+			j = cord[1];
+			visited[i][j]=true;
+			if(i==goal_row)return true;
+			if((mazeMap[i][j]&up)==0 && isCordValid(visited,i-1,j))list.add(new int[] {i-1,j});
+			if((mazeMap[i][j]&down)==0 && isCordValid(visited,i, j-1))list.add(new int[] {i+1,j});
+			if((mazeMap[i][j]&left)==0 && isCordValid(visited,i+1,j))list.add(new int[] {i,j-1});
+			if((mazeMap[i][j]&right)==0 && isCordValid(visited,i, j+1))list.add(new int[] {i,j+1});
 		}
-		else if(tile_state==4) {
-			points.add((Arow+1)*9+Acol);
-			points.add((Arow-1)*9+Acol);
-			points.add((Arow)*9+Acol+1);
-		}
-		else if(tile_state==5) {
-			points.add((Arow+1)*9+Acol);
-			points.add((Arow-1)*9+Acol);
-		}
-		else if(tile_state==6) {
-			points.add((Arow+1)*9+Acol);
-			points.add((Arow)*9+Acol+1);
-		}
-		else if(tile_state==7) {
-			points.add((Arow+1)*9+Acol);
-		}	
-		else if(tile_state==9) {
-			points.add((Arow-1)*9+Acol);
-			points.add((Arow)*9+Acol-1);
-		}
-		else if(tile_state==10) {
-			points.add((Arow)*9+Acol+1);
-			points.add((Arow)*9+Acol-1);
-		}
-		else if(tile_state==11) {
-			points.add((Arow)*9+Acol-1);
-		}
-		else if(tile_state==12) {
-			points.add((Arow-1)*9+Acol);
-			points.add((Arow)*9+Acol+1);
-		}
-		else if(tile_state==13) {
-			points.add((Arow-1)*9+Acol);
-		}
+<<<<<<< HEAD
 		else if(tile_state==14) {
 			points.add((Arow)*9+Acol+1);
 		}*/
@@ -879,8 +895,15 @@ public class Quoridor223Controller {
 		// black player: [1-1 : 1:9] down row
 		// white player: [9-1 : 9-9] up row
 		while(itr.hasNext()) return checkMazeMap(goal_row, mazeMap, itr.next(), visitedMap);	
+=======
+>>>>>>> origin/master
 		return false;
-		}
+	}
+	private static boolean isCordValid(boolean[][] visited, int i, int j) {
+		if(i<0||j<0||i>8||j>8)return false;
+		if(visited[i][j])return false;
+		return true;
+	}
 	
 	// filter out the elements that have already been visited
 	private static Set<Integer> filterPoints(Set<Integer> points, HashMap<Integer, Boolean> visitedMap) {
