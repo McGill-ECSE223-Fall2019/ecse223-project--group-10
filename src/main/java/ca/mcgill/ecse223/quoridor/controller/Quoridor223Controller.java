@@ -2592,9 +2592,7 @@ public class Quoridor223Controller {
 		
 		// process each line of data
 		String dataArr[] = null;
-		PawnBehavior whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
-		PawnBehavior blackBehavior = QuoridorApplication.GetBlackPawnBehavior();
-		
+				
 		for(String line : dataLines) {
 			dataArr = line.split("\\s");
 			
@@ -2602,7 +2600,9 @@ public class Quoridor223Controller {
 				return false;
 			}
 			
-			// Update the playerPositions
+			// Update the behaviors and playerPositions
+			PawnBehavior whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
+			PawnBehavior blackBehavior = QuoridorApplication.GetBlackPawnBehavior();
 			currentGamePosition = currentGame.getCurrentPosition();
 			whitePos = currentGamePosition.getWhitePosition();
 			blackPos = currentGamePosition.getBlackPosition();
