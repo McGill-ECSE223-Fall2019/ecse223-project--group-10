@@ -815,8 +815,8 @@ public class Quoridor223Controller {
 			visited[i][j]=true;
 			if(i==goal_row)return true;
 			if((mazeMap[i][j]&up)==0 && isCordValid(visited,i-1,j))list.add(new int[] {i-1,j});
-			if((mazeMap[i][j]&down)==0 && isCordValid(visited,i, j-1))list.add(new int[] {i+1,j});
-			if((mazeMap[i][j]&left)==0 && isCordValid(visited,i+1,j))list.add(new int[] {i,j-1});
+			if((mazeMap[i][j]&down)==0 && isCordValid(visited,i+1, j))list.add(new int[] {i+1,j});
+			if((mazeMap[i][j]&left)==0 && isCordValid(visited,i,j-1))list.add(new int[] {i,j-1});
 			if((mazeMap[i][j]&right)==0 && isCordValid(visited,i, j+1))list.add(new int[] {i,j+1});
 		}
 		return false;
