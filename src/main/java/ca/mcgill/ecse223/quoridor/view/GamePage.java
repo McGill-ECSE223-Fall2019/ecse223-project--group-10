@@ -732,7 +732,8 @@ public class GamePage extends JFrame {
 		
 		if (filename != null) {
 			try {
-				saveSuccessful = Quoridor223Controller.savePosition(filename);
+				// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
+				saveSuccessful = Quoridor223Controller.saveGame(filename);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -749,7 +750,8 @@ public class GamePage extends JFrame {
 				
 				// otherwise, keep trying to save
 				try {
-					saveSuccessful = Quoridor223Controller.savePosition(filename);
+					// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
+					saveSuccessful = Quoridor223Controller.saveGame(filename);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();

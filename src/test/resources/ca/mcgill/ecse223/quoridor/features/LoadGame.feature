@@ -24,7 +24,7 @@ Feature: Load Game
       | quoridor_test_game_1.mov | white  |     3 |     5 | black    |     7 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               9 |
       | quoridor_test_game_2.mov | white  |     2 |     5 | black    |     8 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               8 |
 
-  Scenario Outline: Load valid incomplete game 
+  Scenario Outline: Load valid complete game 
     When I initiate to load a game in "<filename>"
     And Each game move is valid
     And The game has a final result

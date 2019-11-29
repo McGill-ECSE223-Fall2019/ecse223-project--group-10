@@ -571,9 +571,9 @@ public class Quoridor223Controller {
 		boolean loadedPosition = false;
 		String relPath = "./src/main/resources/gameFiles/" + filename;
 
-		if(checkLoadFileIsValid(relPath)) {
+		if(checkIfLoadFileIsValidFile(relPath)) {
 			// add all the move data from the loadFile to the game
-			loadedPosition = loadMoveDataFromFile(relPath);
+			loadedPosition = getLoadPositionDataFromFile(relPath);
 		}
 		return loadedPosition;
 	}
@@ -590,7 +590,7 @@ public class Quoridor223Controller {
 	public static boolean saveGame(String filename) throws IOException {
 	
 		boolean doesFileExist = false;
-		boolean savedPosition = false;
+		boolean savedGame = false;
 		String relPath = "./src/main/resources/gameFiles/" + filename;
 		
 		//check if file exists
@@ -598,12 +598,12 @@ public class Quoridor223Controller {
 
 		// if the File exists
 		if (doesFileExist) {
-			savedPosition = saveGameToExistingFile(relPath);
+			savedGame = saveGameToExistingFile(relPath);
 		} else {
-			savedPosition = saveGameToNewFile(relPath);
+			savedGame = saveGameToNewFile(relPath);
 		}
 
-		return savedPosition;
+		return savedGame;
 	
 	}
 	
@@ -614,11 +614,21 @@ public class Quoridor223Controller {
 	 * @param filename
 	 * @return
 	 * @throws IOException 
+	 * @throws InvalidOperationException 
+	 * @throws GameNotRunningException 
 	 */
 	// TODO: Feature 24: Load Game
-	public static boolean loadGame(String filename) throws IOException {
-	
-		return false;
+	public static boolean loadGame(String filename) throws IOException, GameNotRunningException, InvalidOperationException {
+		//System.out.println("called load position");
+		
+		boolean loadedGame = false;
+		String relPath = "./src/main/resources/gameFiles/" + filename;
+
+		if(checkIfLoadFileIsValidFile(relPath)) {
+			// add all the move data from the loadFile to the game
+			loadedGame = getLoadGameDataFromFile(relPath);
+		}
+		return loadedGame;
 		
 	}
 		
@@ -1834,28 +1844,29 @@ public class Quoridor223Controller {
 		Game currentGame = quoridor.getCurrentGame();
 		
 		String saveGameData = "";
+		List<Move> moveList = currentGame.getMoves();
 		
-		for (Move move : currentGame.getMoves()) {
-			int roundNum = move.getRoundNumber();
-			int moveNum = move.getMoveNumber();
-			
-			boolean newRound = moveNum %2 == 1;
+		for (Move move : moveList) {
+			// Note: model is wrong, so move and round number are opposite
+			// getMove corresponds to "round" and getRound is either "move 1" or "move 2" of that "round"
+			int roundNum = move.getMoveNumber();
+			int moveNum = move.getRoundNumber();
 			
 			if (move instanceof WallMove) {
-				if (newRound) {
-					saveGameData.concat(roundNum + ". " + tileToString(move.getTargetTile())
+				if (moveNum == 1) {
+					saveGameData = saveGameData.concat(roundNum + ". " + tileToString(move.getTargetTile())
 						+ directionToString(((WallMove) move).getWallDirection()));
 				} else {
-					saveGameData.concat(" " + tileToString(move.getTargetTile())
+					saveGameData = saveGameData.concat(" " + tileToString(move.getTargetTile())
 					+ directionToString(((WallMove) move).getWallDirection()) + "\n");
 				}
 			}
 			
 			if (move instanceof StepMove || move instanceof JumpMove) {
-				if (newRound) {
-					saveGameData.concat(roundNum + ". " + tileToString(move.getTargetTile()));
+				if (moveNum == 1) {
+					saveGameData = saveGameData.concat(roundNum + ". " + tileToString(move.getTargetTile()));
 				} else {
-					saveGameData.concat(" " + tileToString(move.getTargetTile()) + "\n");
+					saveGameData = saveGameData.concat(" " + tileToString(move.getTargetTile()) + "\n");
 				}
 			}
 		}
@@ -1955,7 +1966,7 @@ public class Quoridor223Controller {
 	 * @param filename
 	 * @return
 	 */
-	public static boolean checkLoadFileIsValid(String filename) {
+	public static boolean checkIfLoadFileIsValidFile(String filename) {
 		boolean fileValidity = false;		
 		
 		File loadFile = new File(filename);
@@ -1979,7 +1990,7 @@ public class Quoridor223Controller {
 		// prompt the user to overwrite the file
 		if (userOverwritePrompt(filename) == true) {
 			// save the current GamePositon as the specified file
-			savefileUpdated = saveCurrentGamePositionAsFile(filename);
+			savefileUpdated = saveCurrentGameAsFile(filename);
 		}
 
 		return savefileUpdated;
@@ -2141,11 +2152,11 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * Load the game data from the specified file into the game
+	 * Get the load position data from the specified file into the game
 	 * @param loadFile
 	 * @return
 	 */
-	public static boolean loadMoveDataFromFile(String loadFile) {		
+	public static boolean getLoadPositionDataFromFile(String loadFile) {		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game currentGame = quoridor.getCurrentGame();
 		GamePosition currentGamePosition = currentGame.getCurrentPosition();
@@ -2329,33 +2340,302 @@ public class Quoridor223Controller {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Using the move data from the load file, attempt the pawn move
+	 * @return
+	 * @throws InvalidOperationException 
+	 */
+	public static boolean loadGameTryPawnMove(String position, PlayerPosition playerPos, PawnBehavior colorBehavior) throws InvalidOperationException{
 		
-		// validate the positions and moves
+		// Position guide: letter is column, number is row, ex: b6
+		// also need to account for letterOffset
+		int letterOffset = 9;
+		
+		// UpLeft
+		if(Character.getNumericValue(position.charAt(1)) < playerPos.getTile().getRow() && 
+				Character.getNumericValue(position.charAt(0))-letterOffset < playerPos.getTile().getColumn()) {
+			if(colorBehavior.moveUpLeft()) {
+				return true;
+			}
+		}
+		
+		// Up
+		else if(Character.getNumericValue(position.charAt(1)) < playerPos.getTile().getRow() && 
+				Character.getNumericValue(position.charAt(0))-letterOffset == playerPos.getTile().getColumn()) {
+			if(colorBehavior.moveUp()) {
+				return true;
+			}
+		}
+		
+		// UpRight
+		else if(Character.getNumericValue(position.charAt(1)) < playerPos.getTile().getRow() && 
+				Character.getNumericValue(position.charAt(0))-letterOffset > playerPos.getTile().getColumn()) {
+			if(colorBehavior.moveUpRight()) {
+				return true;
+			}
+		}
+		
+		// Right
+		else if(Character.getNumericValue(position.charAt(1)) == playerPos.getTile().getRow() && 
+				Character.getNumericValue(position.charAt(0))-letterOffset > playerPos.getTile().getColumn()) {
+			if(colorBehavior.moveRight()) {
+				return true;
+			};
+		}
+		
+		// DownRight
+		else if(Character.getNumericValue(position.charAt(1)) > playerPos.getTile().getRow() && 
+				Character.getNumericValue(position.charAt(0))-letterOffset > playerPos.getTile().getColumn()) {
+			if(colorBehavior.moveDownRight()) {
+				return true;
+			}
+		}
+		
+		// Down
+		else if(Character.getNumericValue(position.charAt(1)) > playerPos.getTile().getRow() && 
+				Character.getNumericValue(position.charAt(0))-letterOffset == playerPos.getTile().getColumn()) {
+			if(colorBehavior.moveDown()) {
+				return true;
+			}
+		}
+		
+		// DownLeft
+		else if(Character.getNumericValue(position.charAt(1)) > playerPos.getTile().getRow() && 
+				Character.getNumericValue(position.charAt(0))-letterOffset < playerPos.getTile().getColumn()) {
+			if(colorBehavior.moveDownLeft()) {
+				return true;
+			}
+		}
+		
+		// Left
+		else if(Character.getNumericValue(position.charAt(1)) == playerPos.getTile().getRow() && 
+				Character.getNumericValue(position.charAt(0))-letterOffset < playerPos.getTile().getColumn()) {
+			if(colorBehavior.moveLeft()) {
+				return true;
+			}
+		}
+			
+		return false;
+	}
+	
+	/**
+	 * Using the data from the load game file, attemp the wall move
+	 * @param position
+	 * @param player
+	 * @param gamePosition
+	 * @return
+	 */
+	public static boolean loadGameTryWallMove(String position, Player player) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game currentGame = quoridor.getCurrentGame();
+		GamePosition currentGamePosition = currentGame.getCurrentPosition();
+		Player whitePlayer = currentGame.getWhitePlayer();
+		Player blackPlayer = currentGame.getBlackPlayer();
+		
+		int letterOffset = 9;
+		int indexOfWhiteWallsPlaced = currentGamePosition.numberOfWhiteWallsOnBoard();
+		int indexOfBlackWallsPlaced = currentGamePosition.numberOfBlackWallsOnBoard();
+		
+		// to account for the backwards definitions of moveNum and roundNum
+		int moveLength= currentGame.getMoves().size();
+	    int nMoveNumber = 1;
+	    int nRoundNumber = 1;
+	    if(moveLength!=0){
+	    	Move lastMove = currentGame.getMove(moveLength-1);
+	    	nRoundNumber = lastMove.getRoundNumber()%2+1;
+	    	nMoveNumber = lastMove.getMoveNumber();
+	    	if(nRoundNumber==1)nMoveNumber++;
+	    }
+		
+	    // for when placing a white wall
+		if (player.equals(whitePlayer)) {
+			// get the new Tile
+			Tile newTile;
+			try {
+				newTile = getTile((Character.getNumericValue(position.charAt(1))),
+						Character.getNumericValue(position.charAt(0))-letterOffset);
+			} catch (IndexOutOfBoundsException e) {
+				return false;
+			}
+						
+			// initialize the current wall to be placed in the game
+			Wall currentWall = currentGamePosition.getWhiteWallsInStock(9-indexOfWhiteWallsPlaced);
+			currentWall.setMove(null);
+			currentGamePosition.removeWhiteWallsInStock(currentWall);
+			
+			// create the new Wall move, (for white, the move# = #wallsPlaced*2 and round# = #wallsPlaced)
+			WallMove newMove = new WallMove(nMoveNumber,nRoundNumber,whitePlayer,newTile,
+					currentGame, charToDirection(position.charAt(2)), currentWall);
+			
+			// validate the new Wall move and add it to the game
+			currentGame.setWallMoveCandidate(newMove);
+			if(!isWallCandidatePositionValid()) return false;
+			if(isWallMoveCandidateOverlapping()) return false;
+			currentGame.setWallMoveCandidate(null);
+			currentGame.addMove(newMove);
+			currentGamePosition.addWhiteWallsOnBoard(currentWall);
+			indexOfWhiteWallsPlaced++;
+		}
+		
+		// for when placing a black wall
+		if (player.equals(blackPlayer)) {
+			// get the new Tile
+			Tile newTile;
+			try {
+				newTile = getTile((Character.getNumericValue(position.charAt(1))),
+						Character.getNumericValue(position.charAt(0))-letterOffset);
+			} catch (IndexOutOfBoundsException e) {
+				return false;
+			}
+			
+			// initialize the current wall to be placed in the game
+			Wall currentWall = currentGamePosition.getBlackWallsInStock(9-indexOfBlackWallsPlaced);
+			currentWall.setMove(null);
+			currentGamePosition.removeBlackWallsInStock(currentWall);
+			
+			// create the new Wall move, (for black, the move# = #wallsPlaced*2+1 and round# = #wallsPlaced)
+			WallMove newMove = new WallMove(nMoveNumber,nRoundNumber,blackPlayer,newTile,
+					currentGame, charToDirection(position.charAt(2)), currentWall);
+			
+			// validate the new Wall move and add it to the game
+			currentGame.setWallMoveCandidate(newMove);
+			if(!isWallCandidatePositionValid()) return false;
+			if(isWallMoveCandidateOverlapping()) return false;
+			currentGame.setWallMoveCandidate(null);
+			currentGame.addMove(newMove);
+			currentGamePosition.addBlackWallsOnBoard(currentWall);
+			indexOfBlackWallsPlaced++;
+		}
+		
+		// update the player to move
+		try {
+			SwitchPlayer();
+		} catch (UnsupportedOperationException | GameNotRunningException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * Get the load game data from the specified file into the game
+	 * @param loadFile
+	 * @return
+	 * @throws InvalidOperationException 
+	 * @throws GameNotRunningException 
+	 */
+	public static boolean getLoadGameDataFromFile(String loadFile) throws GameNotRunningException, InvalidOperationException {		
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game currentGame = quoridor.getCurrentGame();
+		GamePosition currentGamePosition = currentGame.getCurrentPosition();
+		PlayerPosition whitePos = currentGamePosition.getWhitePosition();
+		PlayerPosition blackPos = currentGamePosition.getBlackPosition();
+		Player whitePlayer = currentGame.getWhitePlayer();
+		Player blackPlayer = currentGame.getBlackPlayer();
+		
+		Tile whiteTile;
+		Tile blackTile;
+		String saveFileFirstLine;
+		String saveFileSecondLine;
+		String[] whiteMoveData;
+		String[] blackMoveData;
+		
+		int letterOffset = 9;
+		int indexOfWhiteWallsPlaced = currentGamePosition.numberOfWhiteWallsOnBoard() -1;
+		int indexOfBlackWallsPlaced = currentGamePosition.numberOfBlackWallsOnBoard() -1;
+		
+		// clear the game moves, and place all the walls back in the player stocks to allow a new game to be loaded
+		int numOfMoves = currentGame.getMoves().size()-1;
+		while(numOfMoves >= 0) {
+			Move move = currentGame.getMove(numOfMoves);
+			if (move.getPlayer().equals(whitePlayer) && currentGamePosition.hasWhiteWallsOnBoard()) {
+				Wall currrentWhiteWall = currentGamePosition.getWhiteWallsOnBoard(indexOfWhiteWallsPlaced);
+				currentGamePosition.removeWhiteWallsOnBoard(currrentWhiteWall);
+				currentGamePosition.addWhiteWallsInStock(currrentWhiteWall);
+				indexOfWhiteWallsPlaced--;
+			}
+			if (move.getPlayer().equals(blackPlayer) && currentGamePosition.hasBlackWallsOnBoard()) {
+				Wall currentBlackWall = currentGamePosition.getBlackWallsOnBoard(indexOfBlackWallsPlaced);
+				currentGamePosition.removeBlackWallsOnBoard(currentBlackWall);
+				currentGamePosition.addBlackWallsInStock(currentBlackWall);
+				indexOfBlackWallsPlaced--;
+			}
+			currentGame.removeMove(move);
+			move.delete();
+			//currentGame.removeMove(move);
+			numOfMoves--;
+		}
+		
+		// read the data lines from the file
+		List<String> dataLines = new ArrayList<String>();
+		try {
+			// create a file reader
+			BufferedReader fileReader = new BufferedReader(new FileReader(loadFile));
+			
+			// read the first line
+			String dataString = fileReader.readLine();
+			
+			while(dataString != null) {
+				dataLines.add(dataString);
+				dataString = fileReader.readLine();
+			}
+									
+			// clean up resources
+			fileReader.close();
 
-		// add the data obtained from the file to the current Game
-		// add walls and moves based on the data from the file
-
-		// add the data obtained from the file to the current GamePosition
-		//currentGamePosition = new GamePosition(currentGamePosition.getId(), whitePlayerPosition, blackPlayerPosition, playerToMove, currentGame);
-
-		// validate the tile position for the current player
-
-		/*
-		  for(PlayerPosition playerPosition : loadGamePosition.getPlayerPositions()) {
-		  for(Tile tilePosition : playerPosition) {
-		  
-		  boolean isPositionValid = validatePosition(tilePosition); if (isPositionValid
-		  == false) { //throw new UnsupportedOperationException("Invalid load File"); }
-		  return false;
-		  
-		  if(tilePosition.isPlayerWhite()) { //set player White to tile Position }else
-		  if(tilePosition.isPlayerBlack()) { //set player Black to tile Position }else
-		  if(tilePosition.isPlayerBlackWall()) { //set wall in tile position }
-		  
-		  //decrement player Black's wall reserve by 1 } else
-		  if(tilePosition.isPlayerWhiteWall()) { //set wall in tile position
-		  //decrement player White's wall reserve by 1 } } }
-		 */
+		} catch (Exception e) {
+				return false;
+		}
+		
+		// process each line of data
+		String dataArr[] = null;
+		PawnBehavior whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
+		PawnBehavior blackBehavior = QuoridorApplication.GetBlackPawnBehavior();
+		
+		for(String line : dataLines) {
+			dataArr = line.split("\\s");
+			
+			if(dataArr == null || dataArr.length < 2 || dataArr.length > 3 ) {
+				return false;
+			}
+			
+			// Update the playerPositions
+			currentGamePosition = currentGame.getCurrentPosition();
+			whitePos = currentGamePosition.getWhitePosition();
+			blackPos = currentGamePosition.getBlackPosition();
+			
+			// Process white player's move
+			if(dataArr[1].length() == 2) {
+				if(!loadGameTryPawnMove(dataArr[1], whitePos, whiteBehavior)) {
+					return false;
+				}
+			}
+			// if it's a wallMove
+			else {
+				if(!loadGameTryWallMove(dataArr[1], whitePlayer)) {
+					return false;
+				}
+			}
+			
+			// Process black player's move, if it exists
+			if(dataArr.length == 3) {
+				if(dataArr[2].length() == 2) {
+					if(!loadGameTryPawnMove(dataArr[2], blackPos, blackBehavior)) {
+						return false;
+					}
+				}
+				// if it's a wallMove
+				else {
+					if(!loadGameTryWallMove(dataArr[2], blackPlayer)) {
+						return false;
+					}
+				}
+			}
+		}
+		return true;		
 	}
 	
 	/////////////////////////////////////////////////

@@ -10,6 +10,8 @@ import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.text.MaskFormatter;
 
+import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
+import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 
 import java.awt.Font;
@@ -125,7 +127,15 @@ public class SetThinkingTimePage extends JFrame {
 		
 		loadGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				userClicksToLoadGame();
+				try {
+					userClicksToLoadGame();
+				} catch (GameNotRunningException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InvalidOperationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 		
@@ -188,9 +198,9 @@ public class SetThinkingTimePage extends JFrame {
 		layout.setAutoCreateContainerGaps(true);
 	}
 	
-	private void userClicksToLoadGame() {
+	private void userClicksToLoadGame() throws GameNotRunningException, InvalidOperationException {
 		String filename = null;
-		Boolean saveSuccessful = false;
+		Boolean loadSuccessful = false;
 		
 		try {
 			String whiteTime = "00:" + whiteTimePicker.getText();
@@ -210,13 +220,14 @@ public class SetThinkingTimePage extends JFrame {
 		if (filename != null) {
 			
 			try {
-				saveSuccessful = Quoridor223Controller.loadPosition(filename);
+				// old version: loadSuccessful = Quoridor223Controller.loadPosition(filename);
+				loadSuccessful = Quoridor223Controller.loadGame(filename);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
 
 			// keep trying to load until the user cancels load attempt, or the load is successful
-			while (saveSuccessful == false) {
+			while (loadSuccessful == false) {
 	
 				filename = loadGameInputDialog("Enter a valid file path here:", "Load Game From File", null);
 				
@@ -227,7 +238,7 @@ public class SetThinkingTimePage extends JFrame {
 				
 				// otherwise, keep trying to save
 				try {
-					saveSuccessful = Quoridor223Controller.loadPosition(filename);
+					loadSuccessful = Quoridor223Controller.loadGame(filename);
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				}

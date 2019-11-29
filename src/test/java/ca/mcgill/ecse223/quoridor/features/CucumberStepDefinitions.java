@@ -1196,7 +1196,7 @@ public class CucumberStepDefinitions {
 	@Then("A file with {string} shall be created in the filesystem")
 	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws IOException {
 		cucumberFilename = filename;
-		Boolean result = Quoridor223Controller.saveCurrentGamePositionAsFile(gameDirectory + filename);
+		Boolean result = Quoridor223Controller.saveCurrentGameAsFile(gameDirectory + filename);
 		assertTrue("File is not a valid save file", result);
 	}
 
@@ -1261,7 +1261,7 @@ public class CucumberStepDefinitions {
 	public void iInitiateToLoadASavedGame(String filename) throws IOException {
 		cucumberFilename = filename;
 		createAndPrepareGame(createUsersAndPlayers);
-		Quoridor223Controller.checkLoadFileIsValid(filename);
+		Quoridor223Controller.checkIfLoadFileIsValidFile(filename);
 	}
 
 	/**
@@ -1269,7 +1269,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The position to load is valid")
 	public void thePositionToLoadIsValid() {
-		loadSuccessful = Quoridor223Controller.loadMoveDataFromFile(gameDirectory + cucumberFilename);
+		loadSuccessful = Quoridor223Controller.getLoadPositionDataFromFile(gameDirectory + cucumberFilename);
 	}
 	
 	/**
@@ -1324,7 +1324,7 @@ public class CucumberStepDefinitions {
 	@And("The position to load is invalid")
 	public void thePositionToLoadIsInvalid() {
 		try{
-			loadSuccessful = Quoridor223Controller.loadMoveDataFromFile(gameDirectory + cucumberFilename);
+			loadSuccessful = Quoridor223Controller.getLoadPositionDataFromFile(gameDirectory + cucumberFilename);
 		} catch (Exception e){
 			loadSuccessful = false;
 		}
@@ -1996,7 +1996,7 @@ public class CucumberStepDefinitions {
 		
 		if(cucumberUserOverwritePrompt(userInput)) {
 			try {
-				fileUpdated = Quoridor223Controller.saveCurrentGamePositionAsFile(gameDirectory + filename);
+				fileUpdated = Quoridor223Controller.saveCurrentGameAsFile(gameDirectory + filename);
 			} catch (IOException e) {
 				return fileUpdated;
 			}
@@ -2034,10 +2034,9 @@ public class CucumberStepDefinitions {
 	 * @return
 	 */
 	public static boolean checkCurrentPlayerToMoveByColor(String playerColor) {
-		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
-		return game.getCurrentPosition().getPlayerToMove().equals(getPlayerByColor(playerColor));
+		return curPlayer.equals(getPlayerByColor(playerColor));
 	}
 	
 	/**
