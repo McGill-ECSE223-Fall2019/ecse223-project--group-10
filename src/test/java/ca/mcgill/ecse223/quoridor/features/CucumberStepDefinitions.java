@@ -567,8 +567,20 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
-	@Given("Player {string} has just completed his move")
-	public void completeMove(String player) {
+	@Given("Player {string} has just completed his move {string}")
+	public void completeMove(String player, String dir) {
+		switch(dir) {
+			case "up": 
+				gamePage.clickMovePlayer("up");
+				break;
+			case "left": 
+				gamePage.clickMovePlayer("left");
+				break;
+			case "right": 
+				gamePage.clickMovePlayer("right");
+				break;
+			default: 
+		}
 	}
 	
 	@And("The last move of {string} is pawn move to {int}:{int}")
