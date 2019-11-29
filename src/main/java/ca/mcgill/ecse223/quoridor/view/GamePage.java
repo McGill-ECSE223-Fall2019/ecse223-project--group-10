@@ -851,6 +851,7 @@ public class GamePage extends JFrame {
 		boardComponent.repaint();
 	}
 	public void delete() {
+		if(timer!=null)timer.cancel();
 		boardComponent=null;
 	}
 	public void clickRotateWall() {
