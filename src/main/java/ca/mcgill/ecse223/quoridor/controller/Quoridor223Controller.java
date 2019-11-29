@@ -197,17 +197,18 @@ public class Quoridor223Controller {
 
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
-		
 		if(curPlayer.equals(curGame.getWhitePlayer())) {
 			Tile tile = curGame.getCurrentPosition().getWhitePosition().getTile();
 			int curWhiteRow = tile.getRow();
 			if(curWhiteRow == 9) {
+				curGame.setGameStatus(GameStatus.WhiteWon);
 				return true;
 			}
 		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
 			Tile tile = curGame.getCurrentPosition().getBlackPosition().getTile();
 			int curBlackRow = tile.getRow();
 			if(curBlackRow == 1) {
+				curGame.setGameStatus(GameStatus.BlackWon);
 				return true;
 			}
 		}

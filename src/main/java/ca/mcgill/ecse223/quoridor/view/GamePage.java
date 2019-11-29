@@ -52,8 +52,8 @@ public class GamePage extends JFrame {
 	private String whiteTimeInit;
 	private JLabel blackTime;
 	private String blackTimeInit;
-	private boolean whiteClockIsRunning;
-	private boolean blackClockIsRunning;
+	private boolean whiteClockIsRunning = true;
+	private boolean blackClockIsRunning = true;
 
 	// grab, drop, rotate wall button
 	private JButton grabWall;
@@ -620,6 +620,7 @@ public class GamePage extends JFrame {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					timer.cancel();
+					whiteClockIsRunning = blackClockIsRunning = false;
 					Quoridor223Controller.resignGame(Quoridor223Controller.getPlayerToMoveName());
 					if(name1.equals(userToMove)) {
 						gameMessage.setText(name2 + " won! Congratulation!");
@@ -688,12 +689,15 @@ public class GamePage extends JFrame {
 		try {
 			if(whiteTime.getText().equals("00:00:00") && !blackTime.getText().equals("00:00:00")) {
 				timer.cancel();
+				whiteClockIsRunning = blackClockIsRunning = false;
 				Quoridor223Controller.resignGame(name1);
+				System.out.println("Hello");
 				gameMessage.setText(name2 + " won. Congratulation!");
 			}else if(!whiteTime.getText().equals("00:00:00") && blackTime.getText().equals("00:00:00")){
 				timer.cancel();
 				Quoridor223Controller.resignGame(name2);
 				gameMessage.setText(name1 + " won. Congratulation!");
+				whiteClockIsRunning = blackClockIsRunning = false;
 			} else {
 				if (userToMove.equals(name1)) {
 					Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(whiteTime.getText()).getTime() - 1000), name1);
@@ -886,5 +890,11 @@ public class GamePage extends JFrame {
 	}
 	public void setBlackTime(String time) {
 		blackTime.setText(time);
+	}
+	public void killClock(boolean trigger) {
+		if(trigger) {
+			timer.cancel();
+			blackClockIsRunning = whiteClockIsRunning = false;
+		}
 	}
 }

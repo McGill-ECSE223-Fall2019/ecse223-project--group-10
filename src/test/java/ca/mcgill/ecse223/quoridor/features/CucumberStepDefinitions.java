@@ -38,6 +38,7 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
+import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.view.GamePage;
 import cucumber.api.PendingException;
 import io.cucumber.java.After;
@@ -524,22 +525,35 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	// ResignGame and IdentifyDraw
 	// **********************************************
+	
+	/**
+	 * @author Andrew Ta
+	 */
 	@When("Player initates to resign")
 	public void initiateToResign() {
 		gamePage.clickForfeit();
 	}
 	
+	/**
+	 * @author Andrew Ta
+	 */
 	@Then("Game result shall be {string}")
 	public void gameResult(String result) {
 		assertEquals(result, QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().toString());
 	}
 	
+	/**
+	 * @author Andrew Ta
+	 */
 	@And("The game shall no longer be running")
 	public void isRunning() {
 		assertEquals(false, gamePage.isBlackClockRunning());
 		assertEquals(false, gamePage.isWhiteClockRunning());
 	}
 	
+	/**
+	 * @author Andrew Ta
+	 */
 	@Given("The following moves were executed:")
 	public void executeMove(io.cucumber.datatable.DataTable dataTable) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -551,62 +565,58 @@ public class CucumberStepDefinitions {
 			int col = Integer.decode(map.get("col"));
 			int row = Integer.decode(map.get("row"));
 			Tile moveToTile = Quoridor223Controller.getTile(row, col);
-			PlayerPosition newWhitePosition, newBlackPosition;
-			GamePosition curPosition = curGame.getCurrentPosition();
-			GamePosition newPosition;
-			if(turn == 1) {
-				newWhitePosition = new PlayerPosition(curGame.getWhitePlayer(), moveToTile);
-				newBlackPosition = new PlayerPosition(curGame.getBlackPlayer(), curPosition.getBlackPosition().getTile());
-				newPosition = new GamePosition(curPosition.getId() + 1, newWhitePosition, newBlackPosition, curGame.getBlackPlayer(), curGame);
-			}else {
-				newBlackPosition = new PlayerPosition(curGame.getBlackPlayer(), moveToTile);
-				newWhitePosition = new PlayerPosition(curGame.getWhitePlayer(), curPosition.getWhitePosition().getTile());
-				newPosition = new GamePosition(curPosition.getId() + 1, newWhitePosition, newBlackPosition, curGame.getWhitePlayer(), curGame);
-			}
-			curGame.setCurrentPosition(newPosition);
+			createNewMove(turn, curGame, moveToTile);
 		}
+//		System.out.println(curGame.getPositions());
 	}
 	
-	@Given("Player {string} has just completed his move {string}")
-	public void completeMove(String player, String dir) {
-		switch(dir) {
-			case "up": 
-				gamePage.clickMovePlayer("up");
-				break;
-			case "left": 
-				gamePage.clickMovePlayer("left");
-				break;
-			case "right": 
-				gamePage.clickMovePlayer("right");
-				break;
-			default: 
+	private void createNewMove(int turn, Game curGame, Tile moveToTile) {
+		PlayerPosition newWhitePosition, newBlackPosition;
+		GamePosition curPosition = curGame.getCurrentPosition();
+		GamePosition newPosition;
+		Move move;
+		if(turn == 1) {
+			newWhitePosition = new PlayerPosition(curGame.getWhitePlayer(), moveToTile);
+			newBlackPosition = new PlayerPosition(curGame.getBlackPlayer(), curPosition.getBlackPosition().getTile());
+			newPosition = new GamePosition(curPosition.getId() + 1, newWhitePosition, newBlackPosition, curGame.getWhitePlayer(), curGame);
+			move = new StepMove(1, 1, curGame.getWhitePlayer(), moveToTile, curGame);
+		}else {
+			newBlackPosition = new PlayerPosition(curGame.getBlackPlayer(), moveToTile);
+			newWhitePosition = new PlayerPosition(curGame.getWhitePlayer(), curPosition.getWhitePosition().getTile());
+			newPosition = new GamePosition(curPosition.getId() + 1, newWhitePosition, newBlackPosition, curGame.getBlackPlayer(), curGame);
+			move = new StepMove(1, 1, curGame.getBlackPlayer(), moveToTile, curGame);
 		}
+		curGame.setCurrentPosition(newPosition);
 	}
 	
+	/**
+	 * @author Andrew Ta
+	 */
+	@Given("Player {string} has just completed his move")
+	public void completeMove(String player) {
+		
+	}
+	
+	/**
+	 * @author Andrew Ta
+	 */
 	@And("The last move of {string} is pawn move to {int}:{int}")
 	public void lastMove(String player, int row, int col) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = Quoridor223Controller.getPlayerByColor(player);
 		Tile moveToTile = Quoridor223Controller.getTile(row, col);
-		GamePosition newPosition;
-		if(curPlayer.equals(curGame.getBlackPlayer())) {
-			newPosition = new GamePosition(curGame.getCurrentPosition().getId() + 1, 
-					new PlayerPosition(curGame.getWhitePlayer(), curGame.getCurrentPosition().getWhitePosition().getTile()), 
-					new PlayerPosition(curGame.getBlackPlayer(), moveToTile), 
-					curGame.getWhitePlayer(), curGame);
-		}else {
-			newPosition = new GamePosition(curGame.getCurrentPosition().getId() + 1, 
-					new PlayerPosition(curGame.getWhitePlayer(), moveToTile), 
-					new PlayerPosition(curGame.getBlackPlayer(), curGame.getCurrentPosition().getBlackPosition().getTile()), 
-					curGame.getWhitePlayer(), curGame);
-		}
-		curGame.setCurrentPosition(newPosition);
+		int turn = 2;
+		if(curPlayer.equals(curGame.getWhitePlayer())) turn = 1; 
+		createNewMove(turn, curGame, moveToTile);
 	}
 	
+	/**
+	 * @author Andrew Ta
+	 */
 	@When("Checking of game result is initated")
 	public void checkGameResult() {
 		try {
-			Quoridor223Controller.identifyDraw();
+			gamePage.killClock(Quoridor223Controller.identifyDraw());
 		}catch (GameNotRunningException exp) {
 			
 		}
@@ -1758,15 +1768,6 @@ public class CucumberStepDefinitions {
 	// *****************************************************************
 	
 	/**
-	 * Scenario: Player is on the middle of the board
-	 * @author Vanessa Ifrah
-	 */
-//	@Given("Player {string} has just completed his move")
-//	public void playerHasJustCompletedHisMove(String playerName) {
-//		
-//	} same as Andrew *******
-	
-	/**
 	 * Scenario: Player reaches target area
 	 * @author Vanessa Ifrah
 	 */	
@@ -1774,13 +1775,11 @@ public class CucumberStepDefinitions {
 	public void newPositionOfPlayerIs(String player, int row, int col) {
 		
 		Game currGame = QuoridorApplication.getQuoridor().getCurrentGame(); 
+		Tile moveToTile = Quoridor223Controller.getTile(row, col);
+		int turn = 2; 
+		if (player.equals("white")) turn = 1;
 		
-		if (player.equals("white")) {
-			currGame.getCurrentPosition().getWhitePosition().setTile(Quoridor223Controller.getTile(row, col));
-		} else {
-			currGame.getCurrentPosition().getBlackPosition().setTile(Quoridor223Controller.getTile(row, col));
-		}
-		
+		createNewMove(turn, currGame, moveToTile);
 	}
 	
 	@And("The clock of {string} is more than zero")
@@ -1790,23 +1789,10 @@ public class CucumberStepDefinitions {
 		
 	}
 	
-//	@When("Checking of game result is initated")
-//	public void checkingOfGameResultIsInitiated() {
-//		
-//	} same as Andrew *******
-	
-//	@Then("Game result shall be {string}")
-//	public void gameResultShallBe(String result) {
-//		
-//		// fetch game result and compare to see if good
-//		// assertEquals()
-//		
-//	} same as Andrew *******
-	
-//	@And("The game shall no longer be running")
-//	public void theGameShallNoLongerBeRunning() {
-//		
-//	} same as Andrew *******
+	@When("Checking of winning move is initated")
+	public void checkingOfGameResultIsInitiated() {
+		gamePage.killClock(Quoridor223Controller.identifyWin());
+	} 
 	
 	/**
 	 * Scenario: Player's time is exceeded
@@ -1815,17 +1801,7 @@ public class CucumberStepDefinitions {
 	@When("The clock of {string} counts down to zero")
 	public void clockOfPlayerCountsDowntoZero(String player) {
 		
-		if (player.equals("white")){
-			gamePage.setWhiteTime("00:00:02");
-		} else {
-			gamePage.setBlackTime("00:00:02");
-		}
 		
-		try{
-			Thread.sleep(3000);
-		} catch (Exception e) {
-			
-		}
 		
 	}
 		
@@ -1853,7 +1829,6 @@ public class CucumberStepDefinitions {
 		User user1 = quoridor.addUser(userName1);
 		User user2 = quoridor.addUser(userName2);
 
-		int thinkingTime = 180;
 
 		// Players are assumed to start on opposite sides and need to make progress
 		// horizontally to get to the other side
@@ -1863,8 +1838,8 @@ public class CucumberStepDefinitions {
 		 * 
 		 */
 		// @formatter:on
-		Player player1 = new Player(new Time(thinkingTime), user1, 1, Direction.Vertical);
-		Player player2 = new Player(new Time(thinkingTime), user2, 9, Direction.Vertical);
+		Player player1 = new Player(Time.valueOf("00:00:10"), user1, 1, Direction.Vertical);
+		Player player2 = new Player(Time.valueOf("00:00:10"), user2, 9, Direction.Vertical);
 
 		Player[] players = { player1, player2 };
 		player1.setNextPlayer(player2);

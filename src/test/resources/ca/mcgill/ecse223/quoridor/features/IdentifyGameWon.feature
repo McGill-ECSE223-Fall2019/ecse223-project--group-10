@@ -14,23 +14,23 @@ Feature: Identify if game won
 
     Examples: 
       | player | row | col | result  |
-      | white  |   1 |   5 | pending |
-      | white  |   8 |   5 | pending |
-      | black  |   2 |   4 | pending |
-      | black  |   9 |   4 | pending |
+      | white  |   1 |   5 | Running |
+      | white  |   8 |   5 | Running |
+      | black  |   2 |   4 | Running |
+      | black  |   9 |   4 | Running |
 
   Scenario Outline: Player reaches target area
     Given Player "<player>" has just completed his move
     And The new position of "<player>" is <row>:<col>
     And The clock of "<player>" is more than zero
-    When Checking of game result is initated
+    When Checking of winning move is initated
     Then Game result shall be "<result>"
     And The game shall no longer be running
 
     Examples: 
       | player | row | col | result   |
-      | white  |   9 |   4 | whiteWon |
-      | black  |   1 |   3 | blackWon |
+      | white  |   9 |   4 | WhiteWon |
+      | black  |   1 |   3 | BlackWon |
 
   Scenario Outline: Player's time is exceeded
     Given The player to move is "<player>"
@@ -40,5 +40,5 @@ Feature: Identify if game won
 
     Examples: 
       | player | result   |
-      | white  | blackWon |
-      | black  | whiteWon |
+      | white  | BlackWon |
+      | black  | WhiteWon |

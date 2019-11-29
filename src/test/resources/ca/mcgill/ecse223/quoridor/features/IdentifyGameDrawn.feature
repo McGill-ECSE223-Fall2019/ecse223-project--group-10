@@ -23,7 +23,7 @@ Feature: Identify if game drawn
       |    4 |    2 |   1 |   5 |
 
   Scenario Outline: Player repeats for the third time
-    Given Player "<player>" has just completed his move
+    Given Player "<player>" has just completed his move 
     And The last move of "<player>" is pawn move to <row>:<col>
     When Checking of game result is initated
     Then Game result shall be "<result>"
@@ -31,16 +31,16 @@ Feature: Identify if game drawn
 
     Examples: 
       | player | row | col | result |
-      | white  |   8 |   5 | Drawn  |
+      | white  |   8 |   5 | Draw   |
 
   Scenario Outline: Player deviates for the third time
-    Given Player "<player>" has just completed his move
+    Given Player "<player>" has just completed his move 
     And The last move of "<player>" is pawn move to <row>:<col>
     When Checking of game result is initated
     Then Game result shall be "<result>"
 
     Examples: 
       | player | row | col | result  |
-      | white  |   8 |   4 | Pending |
-      | white  |   8 |   6 | Pending |
+      | white  |   8 |   4 | Running |
+      | white  |   8 |   6 | Running |
       
