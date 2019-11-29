@@ -1175,7 +1175,7 @@ public class CucumberStepDefinitions {
 	@Given("No file {string} exists in the filesystem")
 	public void noFileFilenameExistsInTheFilesystem(String filename) {
 		cucumberFilename = filename;
-		deleteFileIfItExists(filename);
+		deleteFileIfItExists(gameDirectory + filename);
 	}
 
 	/**
@@ -1185,7 +1185,7 @@ public class CucumberStepDefinitions {
 	@When("The user initiates to save the game with name {string}")
 	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) throws Throwable {
 		cucumberFilename = filename;
-		Quoridor223Controller.checkIfFileExists(filename);
+		Quoridor223Controller.checkIfFileExists(gameDirectory + filename);
 	}
 
 	/**
@@ -1207,7 +1207,7 @@ public class CucumberStepDefinitions {
 	@Given("File {string} exists in the filesystem")
 	public void fileFilenameExistsInTheFilesystem(String filename) throws IOException {
 		cucumberFilename = filename;
-		ensureFileExists(filename);
+		ensureFileExists(gameDirectory + filename);
 	}
 
 	/**
@@ -1226,7 +1226,7 @@ public class CucumberStepDefinitions {
 	@Then("File with {string} shall be updated in the filesystem")
 	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
 		cucumberFilename = filename;
-		assertTrue("The file was not modified", simulateUserAttemptingToOverwriteFile(filename, JOptionPane.YES_OPTION));
+		assertTrue("The file was not modified", simulateUserAttemptingToOverwriteFile(gameDirectory + filename, JOptionPane.YES_OPTION));
 	}
 
 	/**
@@ -1245,7 +1245,7 @@ public class CucumberStepDefinitions {
 	@Then("File {string} shall not be changed in the filesystem")
 	public void fileFilenameShallNotBeChangedInTheFilesystem(String filename) throws Throwable {
 		cucumberFilename = filename;
-		assertFalse("The file was modified", simulateUserAttemptingToOverwriteFile(filename, JOptionPane.NO_OPTION));
+		assertFalse("The file was modified", simulateUserAttemptingToOverwriteFile(gameDirectory + filename, JOptionPane.NO_OPTION));
 	}
 
 	// **********************************************
@@ -1261,7 +1261,7 @@ public class CucumberStepDefinitions {
 	public void iInitiateToLoadASavedGame(String filename) throws IOException {
 		cucumberFilename = filename;
 		createAndPrepareGame(createUsersAndPlayers);
-		Quoridor223Controller.checkIfLoadFileIsValidFile(filename);
+		Quoridor223Controller.checkIfLoadFileIsValidFile(gameDirectory + filename);
 	}
 
 	/**
@@ -1343,13 +1343,39 @@ public class CucumberStepDefinitions {
 	// TODO: Save Game starts here
 	// **********************************************
 	
-	
+	// save game has the same stepDefs as Save Position...
+	// however, these have been updated to use the newer method of saving (Save Game)
 	
 	// **********************************************
 	// TODO: Load Game starts here
 	// **********************************************
 	
-	
+	/**
+	 * @author Mitchell Keeley
+	 * @param filename
+	 */
+    @When("I initiate to load a game in {string}")
+    public void iInitiateToLoadAGameInFilename(String filename) {
+    	cucumberFilename = filename;
+		createAndPrepareGame(createUsersAndPlayers);
+		Quoridor223Controller.checkIfLoadFileIsValidFile(gameDirectory + filename);
+    }
+    
+    /**
+     * @author Mitchell Keeley
+     * @throws InvalidOperationException 
+     * @throws GameNotRunningException 
+     */
+    @And("Each game move is valid")
+    public void eachGameMoveIsValid() throws GameNotRunningException, InvalidOperationException {
+    	loadSuccessful = Quoridor223Controller.getLoadGameDataFromFile(gameDirectory + cucumberFilename);
+    }
+    
+    @And("The game has no final results")
+    public void theGameHasNoFinalResults() {
+    	// TODO:
+    }
+    	
 	
 	// ***********************************************
 	// Clean up
@@ -1963,7 +1989,7 @@ public class CucumberStepDefinitions {
 	 * @param filename
 	 */
 	private void deleteFileIfItExists(String filename) {
-		File file = new File(gameDirectory + filename);
+		File file = new File(filename);
 		if(file.exists() && file.isFile()) {
 			file.delete();
 		}
@@ -1978,7 +2004,7 @@ public class CucumberStepDefinitions {
 	 * @throws IOException
 	 */
 	private void ensureFileExists(String filename) throws IOException {
-		File file = new File(gameDirectory + filename);
+		File file = new File(filename);
 		if (!file.exists()) {
 			file.createNewFile();
 		}
@@ -1996,7 +2022,7 @@ public class CucumberStepDefinitions {
 		
 		if(cucumberUserOverwritePrompt(userInput)) {
 			try {
-				fileUpdated = Quoridor223Controller.saveCurrentGameAsFile(gameDirectory + filename);
+				fileUpdated = Quoridor223Controller.saveCurrentGameAsFile(filename);
 			} catch (IOException e) {
 				return fileUpdated;
 			}
