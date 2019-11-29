@@ -14,7 +14,7 @@ As a player using replay mode, I wish to scroll fast to the very beginning of th
       |  3 |   1 | e3h  |
       |  3 |   2 | e8h  |
       |  4 |   1 | d3v  |
-      |  4 |   2 | f2   |
+      |  4 |   2 | f3   |
     And The next move is <movno>.<rndno>
     When Jump to start position is initiated
     Then The next move shall be <nmov>.<nrnd>
@@ -24,7 +24,7 @@ As a player using replay mode, I wish to scroll fast to the very beginning of th
     And Black has <bwallno> on stock
 
     Examples: 
-      | movno | rndno | nmov | nrnd | wrow | wcol | wwall | brow | bcol | bwallno |
+      | movno | rndno | nmov | nrnd | wrow | wcol | wwallno | brow | bcol | bwallno |
       |     1 |     1 |    1 |    1 |    9 |    5 |    10 |    1 |    5 |      10 |
       |     1 |     2 |    1 |    1 |    9 |    5 |    10 |    1 |    5 |      10 |
       |     2 |     1 |    1 |    1 |    9 |    5 |    10 |    1 |    5 |      10 |

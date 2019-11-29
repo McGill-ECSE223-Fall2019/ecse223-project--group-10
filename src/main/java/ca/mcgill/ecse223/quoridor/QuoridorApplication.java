@@ -28,23 +28,27 @@ public class QuoridorApplication {
 		return quoridor;
 	}
 	public static PawnBehavior GetWhitePawnBehavior() {
-		if(whiteBehavior==null) {
-			Quoridor quoridor = getQuoridor();
-			whiteBehavior = new PawnBehavior();
-			whiteBehavior.setCurrentGame(quoridor.getCurrentGame());
-			whiteBehavior.setPlayer(quoridor.getCurrentGame().getWhitePlayer());
-		}
 		return whiteBehavior;
 	}
+	public static PawnBehavior CreateNewWhitePawnBehavior() {
+		Quoridor quoridor = getQuoridor();
+		whiteBehavior = new PawnBehavior();
+		whiteBehavior.setCurrentGame(quoridor.getCurrentGame());
+		whiteBehavior.setPlayer(quoridor.getCurrentGame().getWhitePlayer());
+		return whiteBehavior;
+	}
+	
 	public static PawnBehavior GetBlackPawnBehavior() {
-		if(blackBehavior==null) {
-			Quoridor quoridor = getQuoridor();
-			blackBehavior = new PawnBehavior();
-			blackBehavior.setCurrentGame(quoridor.getCurrentGame());
-			blackBehavior.setPlayer(quoridor.getCurrentGame().getBlackPlayer());
-		}
 		return blackBehavior;
 	}
+	public static PawnBehavior CreateNewBlackPawnBehavior() {
+		Quoridor quoridor = getQuoridor();
+		blackBehavior = new PawnBehavior();
+		blackBehavior.setCurrentGame(quoridor.getCurrentGame());
+		blackBehavior.setPlayer(quoridor.getCurrentGame().getBlackPlayer());
+		return blackBehavior;
+	}
+	
 	public static void delete() {
 		blackBehavior= null;
 		whiteBehavior= null;
