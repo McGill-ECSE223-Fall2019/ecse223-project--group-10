@@ -74,6 +74,8 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
 		QuoridorApplication.GetWhitePawnBehavior();
 		QuoridorApplication.GetBlackPawnBehavior();
 		gamePage = new GamePage();
@@ -1355,6 +1357,7 @@ public class CucumberStepDefinitions {
 		PawnBehavior black = QuoridorApplication.GetBlackPawnBehavior();
 		// Avoid null pointer for step definitions that are not yet implemented.
 		// gamePage.delete();
+		if(gamePage!=null)gamePage.delete();
 		gamePage = null;
 		
 		if (quoridor != null) {
@@ -1499,6 +1502,8 @@ public class CucumberStepDefinitions {
 		GamePosition curPos = quoridor.getCurrentGame().getCurrentPosition();
 		curPos.getBlackPosition().setTile(blackPlayerTile);
 		curPos.getWhitePosition().setTile(whitePlayerTile);
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
 		QuoridorApplication.GetWhitePawnBehavior().startGame();
 		QuoridorApplication.GetBlackPawnBehavior().startGame();
 		gamePage = new GamePage();

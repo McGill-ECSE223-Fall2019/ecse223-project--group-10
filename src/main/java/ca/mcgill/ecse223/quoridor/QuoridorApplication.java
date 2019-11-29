@@ -50,6 +50,9 @@ public class QuoridorApplication {
 	}
 	
 	public static void delete() {
+		if(blackBehavior!=null)blackBehavior.delete();
+		if(whiteBehavior!=null)whiteBehavior.delete();
+		if(game!=null)game.delete();
 		blackBehavior= null;
 		whiteBehavior= null;
 		game=null;
