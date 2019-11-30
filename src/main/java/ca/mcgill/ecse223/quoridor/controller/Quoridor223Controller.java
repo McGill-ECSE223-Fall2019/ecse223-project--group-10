@@ -1398,9 +1398,12 @@ public class Quoridor223Controller {
 		//	opponent_position = current_game.getCurrentPosition().getBlackPosition();
 		//}
 		if(identifyDraw()) {
+			// TODO: may need another switch player here for when loading a draw game
 			throw new GameIsDrawn("Game Draw!");
 		}else if(identifyWin()) {
-			throw new GameIsFinished(curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
+			String winText = curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulations!";
+			SwitchPlayer();
+			throw new GameIsFinished(winText);
 		}else {
 			SwitchPlayer();
 		}
@@ -2552,14 +2555,6 @@ public class Quoridor223Controller {
 		Player whitePlayer = currentGame.getWhitePlayer();
 		Player blackPlayer = currentGame.getBlackPlayer();
 		
-		Tile whiteTile;
-		Tile blackTile;
-		String saveFileFirstLine;
-		String saveFileSecondLine;
-		String[] whiteMoveData;
-		String[] blackMoveData;
-		
-		int letterOffset = 9;
 		int indexOfWhiteWallsPlaced = currentGamePosition.numberOfWhiteWallsOnBoard() -1;
 		int indexOfBlackWallsPlaced = currentGamePosition.numberOfBlackWallsOnBoard() -1;
 		
@@ -2635,6 +2630,8 @@ public class Quoridor223Controller {
 					return false;
 				}
 			}
+			
+			
 			
 			// Process black player's move, if it exists
 			if(dataArr.length == 3) {
