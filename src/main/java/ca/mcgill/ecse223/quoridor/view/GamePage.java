@@ -246,6 +246,20 @@ public class GamePage extends JFrame {
 		replayGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				if(isReplayMode()) {
+					try {
+						Quoridor223Controller.exitReplayMode();
+					} catch (InvalidOperationException eReplay) {
+						gameMessage.setText(eReplay.getLocalizedMessage());
+					} catch (GameIsDrawn e) {
+						// TODO Auto-generated catch block
+						gameMessage.setText(e.getLocalizedMessage());
+					} catch (GameIsFinished e) {
+						// TODO Auto-generated catch block
+						gameMessage.setText(e.getLocalizedMessage());
+					} catch (GameNotRunningException e) {
+						// TODO Auto-generated catch block
+						gameMessage.setText(e.getLocalizedMessage());
+					}
 					btnLeft.setText("\u2190");
 					btnRight.setText("\u2192");
 					btnUpLeft.setText("\u2196");
@@ -254,26 +268,20 @@ public class GamePage extends JFrame {
 					btnUp.setEnabled(true);
 					btnDown.setEnabled(true);
 					btnUpRight.setEnabled(true);
-					
 					btnDownRight.setEnabled(true);
 					btnDownLeft.setEnabled(true);
-					try {
-						Quoridor223Controller.exitReplayMode();
-					} catch (InvalidOperationException eReplay) {
-						gameMessage.setText(eReplay.getLocalizedMessage());
-					}
 				} else if(!isReplayMode()) {
-					btnLeft.setText("\u2190");
-					btnRight.setText("\u2192");
-					btnUpLeft.setText("\u21e4");
-					btnUpRight.setText("\u21e5");
-					replayGame.setText("Exit Replay");
-					btnUp.setEnabled(false);
-					btnDown.setEnabled(false);
-					btnDownRight.setEnabled(false);
-					btnDownLeft.setEnabled(false);
 					try {
 						Quoridor223Controller.enterReplayMode();
+						btnLeft.setText("\u2190");
+						btnRight.setText("\u2192");
+						btnUpLeft.setText("\u21e4");
+						btnUpRight.setText("\u21e5");
+						replayGame.setText("Exit Replay");
+						btnUp.setEnabled(false);
+						btnDown.setEnabled(false);
+						btnDownRight.setEnabled(false);
+						btnDownLeft.setEnabled(false);
 					} catch (GameNotRunningException eReplay) {
 						gameMessage.setText(eReplay.getLocalizedMessage());
 					} catch (InvalidOperationException eReplay) {
@@ -300,16 +308,16 @@ public class GamePage extends JFrame {
 				} else if(!hasWallInHand()) {
 					try {
 						Quoridor223Controller.grabWall();
+						grabWall.setText("Cancel");
+						btnUpRight.setEnabled(false);
+						btnUpLeft.setEnabled(false);
+						btnDownRight.setEnabled(false);
+						btnDownLeft.setEnabled(false);
 					} catch (InvalidOperationException eGrab) {
 						gameMessage.setText(eGrab.getLocalizedMessage());
 					} catch (GameNotRunningException eGrab) {
 						gameMessage.setText(eGrab.getLocalizedMessage());
 					}
-					grabWall.setText("Cancel");
-					btnUpRight.setEnabled(false);
-					btnUpLeft.setEnabled(false);
-					btnDownRight.setEnabled(false);
-					btnDownLeft.setEnabled(false);
 				}
 
 				
