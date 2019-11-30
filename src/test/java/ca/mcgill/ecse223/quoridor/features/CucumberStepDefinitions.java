@@ -1499,6 +1499,18 @@ public class CucumberStepDefinitions {
 	@When("I initiate replay mode")
 	public void initiateReplayMode() throws GameNotRunningException, InvalidOperationException {
 		
+		createAndStartGame(createUsersAndPlayers);
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
+		GamePosition curPos = quoridor.getCurrentGame().getCurrentPosition();
+		curPos.getBlackPosition().setTile(blackPlayerTile);
+		curPos.getWhitePosition().setTile(whitePlayerTile);
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
+		gamePage = new GamePage();
 		Quoridor223Controller.enterReplayMode();
 		
 	}
@@ -1513,7 +1525,35 @@ public class CucumberStepDefinitions {
 	/**
 	 * Scenario: Continue an unfinished game
 	 * @author Vanessa Ifrah
+	 * @throws InvalidOperationException 
+	 * @throws GameNotRunningException 
 	 */
+	@Given("The game is replay mode")
+	public void gameIsReplayMode() throws GameNotRunningException, InvalidOperationException {
+		
+		initQuoridorAndBoard();
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		createAndStartGame(createUsersAndPlayers);
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
+		GamePosition curPos = quoridor.getCurrentGame().getCurrentPosition();
+		curPos.getBlackPosition().setTile(blackPlayerTile);
+		curPos.getWhitePosition().setTile(whitePlayerTile);
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
+		gamePage = new GamePage();
+		Quoridor223Controller.enterReplayMode();
+//		createAndStartGame(createUsersAndPlayers);
+//		QuoridorApplication.GetWhitePawnBehavior();
+//		QuoridorApplication.GetBlackPawnBehavior();
+//		gamePage = new GamePage();
+//		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
+		
+	}
+	
 	@And("The game does not have a final result")
 	public void gameDoesNotHaveAFinalResult() {
 		
@@ -1535,8 +1575,7 @@ public class CucumberStepDefinitions {
 	@When("I initiate to continue game")
 	public void initiateToContinueGame() {
 		
-//		uncomment line below when Shuby's method is pushed to master
-//		gamePage.clickReplayGame();
+		gamePage.clickReplayGame();
 		
 	}
 	
@@ -1555,19 +1594,6 @@ public class CucumberStepDefinitions {
 	 * Scenario: Continue a finished game
 	 * @author Vanessa Ifrah
 	 */
-	@Given("The game is replay mode")
-	public void gameIsReplayMode() {
-		
-		initQuoridorAndBoard();
-		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
-		createAndStartGame(createUsersAndPlayers);
-		QuoridorApplication.GetWhitePawnBehavior();
-		QuoridorApplication.GetBlackPawnBehavior();
-		gamePage = new GamePage();
-		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
-		
-	}
-	
 	@And("The game has a final result")
 	public void theGameHasAFinalResult() {
 		
