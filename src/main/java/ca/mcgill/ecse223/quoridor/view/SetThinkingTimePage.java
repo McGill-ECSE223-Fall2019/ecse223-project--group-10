@@ -13,6 +13,8 @@ import javax.swing.text.MaskFormatter;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
+import ca.mcgill.ecse223.quoridor.model.Game;
+import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -243,6 +245,8 @@ public class SetThinkingTimePage extends JFrame {
 					e1.printStackTrace();
 				}
 			}
+			Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+			currentGame.setGameStatus(GameStatus.Running);
 			QuoridorApplication.setMainPage();
 			return;
 		}

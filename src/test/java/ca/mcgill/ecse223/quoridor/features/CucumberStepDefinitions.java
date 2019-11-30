@@ -67,6 +67,8 @@ public class CucumberStepDefinitions {
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
 		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		//Game curGame =QuoridorApplication.getQuoridor().getCurrentGame();
+		//curGame.getCurrentPosition().getWhitePosition().setTile(Quoridor223Controller.getTile(row, col))
 	}
 
 	@Given("^The game is running$")
@@ -1268,14 +1270,6 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
-	 */
-	@And("The position to load is valid")
-	public void thePositionToLoadIsValid() {
-		loadSuccessful = Quoridor223Controller.getLoadPositionDataFromFile(gameDirectory + cucumberFilename);
-	}
-	
-	/**
-	 * @author Mitchell Keeley
 	 * @param playerColor
 	 */
 	@Then("It shall be {string}'s turn")
@@ -1375,9 +1369,28 @@ public class CucumberStepDefinitions {
     
     @And("The game has no final results")
     public void theGameHasNoFinalResults() {
-    	// TODO:
+    	Quoridor quoridor = QuoridorApplication.getQuoridor();
+    	GameStatus status = quoridor.getCurrentGame().getGameStatus();
+    	boolean ended = status.equals(GameStatus.BlackWon) ||
+    			status.equals(GameStatus.WhiteWon) ||
+    			status.equals(GameStatus.Draw);
+    	assertFalse("The game is no longer running", ended);
     }
-    	
+    
+	/**
+	 * @author Mitchell Keeley
+	 * @throws InvalidOperationException 
+	 * @throws GameNotRunningException 
+	 */
+	@And("The position to load is valid")
+	public void thePositionToLoadIsValid() throws GameNotRunningException, InvalidOperationException {
+		if(cucumberFilename.contains(".dat")) {
+			loadSuccessful = Quoridor223Controller.getLoadPositionDataFromFile(gameDirectory + cucumberFilename);
+		} else {
+			// redundant step taken care of by ("Each game move is valid")
+			//loadSuccessful = Quoridor223Controller.getLoadGameDataFromFile(gameDirectory + cucumberFilename);
+		}
+	}
 	
 	// ***********************************************
 	// Clean up
@@ -1874,8 +1887,8 @@ public class CucumberStepDefinitions {
 		// There are total 36 tiles in the first four rows and
 		// indexing starts from 0 -> tiles with indices 36 and 36+8=44 are the starting
 		// positions
-		Tile player1StartPos = quoridor.getBoard().getTile(36);
-		Tile player2StartPos = quoridor.getBoard().getTile(44);
+		Tile player1StartPos = quoridor.getBoard().getTile(76);
+		Tile player2StartPos = quoridor.getBoard().getTile(4);
 		
 		Game game = new Game(GameStatus.ReadyToStart, MoveMode.PlayerMove, quoridor);
 		game.setWhitePlayer(players.get(0));
@@ -1896,6 +1909,12 @@ public class CucumberStepDefinitions {
 			gamePosition.addBlackWallsInStock(wall);
 		}
 		game.setCurrentPosition(gamePosition);
+		
+		PawnBehavior whitebehavior = QuoridorApplication.CreateNewWhitePawnBehavior();
+		PawnBehavior blackbehavior = QuoridorApplication.CreateNewBlackPawnBehavior();
+		whitebehavior.startGame();
+		blackbehavior.startGame();
+		
 		gamePage = new GamePage();
 	}
 		

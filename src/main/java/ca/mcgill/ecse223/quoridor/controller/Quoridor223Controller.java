@@ -628,6 +628,7 @@ public class Quoridor223Controller {
 			// add all the move data from the loadFile to the game
 			loadedGame = getLoadGameDataFromFile(relPath);
 		}
+		
 		return loadedGame;
 		
 	}
@@ -2356,68 +2357,75 @@ public class Quoridor223Controller {
 		// UpLeft
 		if(Character.getNumericValue(position.charAt(1)) < playerPos.getTile().getRow() && 
 				Character.getNumericValue(position.charAt(0))-letterOffset < playerPos.getTile().getColumn()) {
-			if(colorBehavior.moveUpLeft()) {
-				return true;
+			if(!colorBehavior.moveUpLeft()) {
+				return false;
 			}
 		}
 		
 		// Up
 		else if(Character.getNumericValue(position.charAt(1)) < playerPos.getTile().getRow() && 
 				Character.getNumericValue(position.charAt(0))-letterOffset == playerPos.getTile().getColumn()) {
-			if(colorBehavior.moveUp()) {
-				return true;
+			if(!colorBehavior.moveUp()) {
+				return false;
 			}
 		}
 		
 		// UpRight
 		else if(Character.getNumericValue(position.charAt(1)) < playerPos.getTile().getRow() && 
 				Character.getNumericValue(position.charAt(0))-letterOffset > playerPos.getTile().getColumn()) {
-			if(colorBehavior.moveUpRight()) {
-				return true;
+			if(!colorBehavior.moveUpRight()) {
+				return false;
 			}
 		}
 		
 		// Right
 		else if(Character.getNumericValue(position.charAt(1)) == playerPos.getTile().getRow() && 
 				Character.getNumericValue(position.charAt(0))-letterOffset > playerPos.getTile().getColumn()) {
-			if(colorBehavior.moveRight()) {
-				return true;
+			if(!colorBehavior.moveRight()) {
+				return false;
 			};
 		}
 		
 		// DownRight
 		else if(Character.getNumericValue(position.charAt(1)) > playerPos.getTile().getRow() && 
 				Character.getNumericValue(position.charAt(0))-letterOffset > playerPos.getTile().getColumn()) {
-			if(colorBehavior.moveDownRight()) {
-				return true;
+			if(!colorBehavior.moveDownRight()) {
+				return false;
 			}
 		}
 		
 		// Down
 		else if(Character.getNumericValue(position.charAt(1)) > playerPos.getTile().getRow() && 
 				Character.getNumericValue(position.charAt(0))-letterOffset == playerPos.getTile().getColumn()) {
-			if(colorBehavior.moveDown()) {
-				return true;
+			if(!colorBehavior.moveDown()) {
+				return false;
 			}
 		}
 		
 		// DownLeft
 		else if(Character.getNumericValue(position.charAt(1)) > playerPos.getTile().getRow() && 
 				Character.getNumericValue(position.charAt(0))-letterOffset < playerPos.getTile().getColumn()) {
-			if(colorBehavior.moveDownLeft()) {
-				return true;
+			if(!colorBehavior.moveDownLeft()) {
+				return false;
 			}
 		}
 		
 		// Left
 		else if(Character.getNumericValue(position.charAt(1)) == playerPos.getTile().getRow() && 
 				Character.getNumericValue(position.charAt(0))-letterOffset < playerPos.getTile().getColumn()) {
-			if(colorBehavior.moveLeft()) {
-				return true;
+			if(!colorBehavior.moveLeft()) {
+				return false;
 			}
 		}
-			
-		return false;
+		
+		// update the player to move
+		try {
+			SwitchPlayer();
+		} catch (UnsupportedOperationException | GameNotRunningException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	/**
@@ -2516,7 +2524,6 @@ public class Quoridor223Controller {
 			e.printStackTrace();
 			return false;
 		}
-		
 		return true;
 	}
 	
@@ -2635,6 +2642,7 @@ public class Quoridor223Controller {
 				}
 			}
 		}
+		currentGame.setGameStatus(GameStatus.ReadyToStart);
 		return true;		
 	}
 	
