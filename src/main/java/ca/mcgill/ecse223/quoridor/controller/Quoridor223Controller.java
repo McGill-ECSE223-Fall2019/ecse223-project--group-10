@@ -503,6 +503,8 @@ public class Quoridor223Controller {
 		if (!validatePosition()) {
 			throw new InvalidOperationException("Invalid Move");
 		}
+		// put the path as an external command in the dropWall feature
+		hasPath();
 		// finalize drop by putting the move into the movelist.
 		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
 		GamePosition currentPosition = curGame.getCurrentPosition();
@@ -597,7 +599,7 @@ public class Quoridor223Controller {
 		if (current_game.hasWallMoveCandidate()) {
 			if (!isWallCandidatePositionValid()) return false;
 			if (isWallMoveCandidateOverlapping()) return false;
-			if (!hasPath()) return false;
+			//if (!hasPath()) return false;
 		} else {
 			// TODO: implement the pawn behavior checking within the validate position, uniform method
 			if (!isPlayerPositionValid()) return false;
@@ -742,10 +744,12 @@ public class Quoridor223Controller {
 		curGame.setCurrentPosition(curGame.getPosition(ind-1));
 	}
 	
-	// check if there exists a path from the player position to the opponent's target area
-	// assume the method is called after first checks of the wall candidate : isn't placed in a trivial
-	// non valid position such as on the edge of the board
-	public static boolean hasPath() throws InvalidOperationException {
+	/**
+	 * 
+	 * @author Sacha Lévy & Le-li Mao
+	 * @return isthePathblocked
+	 * */
+	public static void hasPath() throws InvalidOperationException {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		int[][] wallMap = new int[9][9];
 		final int up = 1;
@@ -764,6 +768,7 @@ public class Quoridor223Controller {
 		// add the wall candidate to the walls on board to check if it is blocking the path
 		WallMove move_candidate = current_game.getWallMoveCandidate();
 		addWall(wallMap,move_candidate);
+		
 		for(Move move: current_game.getMoves()) {
 			if(move instanceof WallMove) {
 				addWall(wallMap,(WallMove) move);
@@ -773,7 +778,18 @@ public class Quoridor223Controller {
 		int whiteCol = current_game.getCurrentPosition().getWhitePosition().getTile().getColumn()-1;
 		int blackRow = current_game.getCurrentPosition().getBlackPosition().getTile().getRow()-1;
 		int blackCol = current_game.getCurrentPosition().getBlackPosition().getTile().getColumn()-1;
-		return checkMazeMap(8, wallMap, blackRow, blackCol)&&checkMazeMap(0, wallMap, whiteRow, whiteCol);
+		
+		boolean black = checkMazeMap(8, wallMap, blackRow, blackCol);
+		boolean white = checkMazeMap(0, wallMap, whiteRow, whiteCol);
+		if (!white&&!black) {
+			throw new InvalidOperationException("both are blocked");
+		}
+		else if(!white) {
+			throw new InvalidOperationException("white is blocked");
+		}
+		else if (!black) {
+			throw new InvalidOperationException("black is blocked");
+		}
 	}
 	
 	private static void addWall(int[][] mazeMap, WallMove wall) {
@@ -821,13 +837,97 @@ public class Quoridor223Controller {
 		}
 		return false;
 	}
+	
 	private static boolean isCordValid(boolean[][] visited, int i, int j) {
 		if(i<0||j<0||i>8||j>8)return false;
 		if(visited[i][j])return false;
 		return true;
 	}
 	
-	// filter out the elements that have already been visited
+	/**
+	 * @author Sacha Lévy
+	 * @return whichPlayersHasPAths
+	 * */
+	public static String testHasPath() throws InvalidOperationException {
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		int[][] wallMap = new int[9][9];
+		final int up = 1;
+		final int left = 2; 
+		final int down = 4;
+		final int right = 8;
+		for(int i=0; i<9; i++) {		// rows
+			for(int j=0; j<9; j++) {	// cols
+				// fill with edge cases: borders of the map
+				if(i==0)wallMap[i][j]|=up;
+				if(i==8)wallMap[i][j]|=down;
+				if(j==0)wallMap[i][j]|=left;
+				if(j==8)wallMap[i][j]|=right;
+			}
+		}
+		// add the wall candidate to the walls on board to check if it is blocking the path
+		// for the testing assume we have already dropped the wall
+		//WallMove move_candidate = current_game.getWallMoveCandidate();
+		//addWall(wallMap,move_candidate);
+		
+		for(Move move: current_game.getMoves()) {
+			if(move instanceof WallMove) {
+				addWall(wallMap,(WallMove) move);
+			}
+		}
+		System.out.println(loadWallPositionsMap());
+		int whiteRow = current_game.getCurrentPosition().getWhitePosition().getTile().getRow()-1;
+		int whiteCol = current_game.getCurrentPosition().getWhitePosition().getTile().getColumn()-1;
+		int blackRow = current_game.getCurrentPosition().getBlackPosition().getTile().getRow()-1;
+		int blackCol = current_game.getCurrentPosition().getBlackPosition().getTile().getColumn()-1;
+				
+		// decomposing return statement of the hasPath feature
+		boolean hasWhitePath = checkMazeMap(0, wallMap, whiteRow, whiteCol);
+		boolean hasBlackPath = checkMazeMap(8, wallMap, blackRow, blackCol);
+		String result;
+
+		if(hasWhitePath&&hasBlackPath) result = "both";
+		else if(hasWhitePath&&!hasBlackPath) result = "white";
+		else if(!hasWhitePath&&hasBlackPath) result = "black";
+		else result = "none";
+		
+		System.out.println("the result is:  "+result);
+		return result;
+	}
+	
+	/**
+	 * @author Sacha Lévy using Le-li Mao drop Wall feature
+	 * */
+	public static void testPathDropWall() throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException {
+		// check if the Game is running if not throw exception
+		if (!isRunning())
+			throw new GameNotRunningException("Game not running");
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		// check if there is wall in my hand if not throw exception
+		if (curGame.getWallMoveCandidate() == null)
+			throw new InvalidOperationException("No wall Selected");
+		// validate the position
+		if (!validatePosition()) {
+			throw new InvalidOperationException("Invalid Move");
+		}
+		// finalize drop by putting the move into the movelist.
+		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
+		GamePosition currentPosition = curGame.getCurrentPosition();
+		GamePosition clone = clonePosition(currentPosition);
+
+		if (isWhitePlayer()) {
+			currentPosition.addWhiteWallsInStock(wallToDrop);
+			clone.addWhiteWallsOnBoard(wallToDrop);
+		} else {
+			currentPosition.addBlackWallsInStock(wallToDrop);
+			clone.addBlackWallsOnBoard(wallToDrop);
+		}
+		curGame.setCurrentPosition(clone);
+		curGame.addMove(curGame.getWallMoveCandidate());
+		curGame.setWallMoveCandidate(null);
+		// Switch Player here
+		SwitchPlayer();
+	}
+	/* helper method to filter points from a set by looking at a hashmap of all already visited points
 	private static Set<Integer> filterPoints(Set<Integer> points, HashMap<Integer, Boolean> visitedMap) {
 		Set<Integer> updated_points = new HashSet<Integer>();
 		Iterator<Integer> itr = points.iterator();
@@ -836,7 +936,7 @@ public class Quoridor223Controller {
 			if(!visitedMap.containsKey(curKey)) updated_points.add(curKey); 
 		}
 		return updated_points;
-	}
+	}*/
 	
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
