@@ -10,6 +10,8 @@ import javax.swing.GroupLayout;
 import javax.swing.Icon;
 import javax.swing.text.MaskFormatter;
 
+import ca.mcgill.ecse223.quoridor.controller.GameIsDrawn;
+import ca.mcgill.ecse223.quoridor.controller.GameIsFinished;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
@@ -226,6 +228,10 @@ public class SetThinkingTimePage extends JFrame {
 				loadSuccessful = Quoridor223Controller.loadGame(filename);
 			} catch (IOException e1) {
 				e1.printStackTrace();
+			} catch(GameIsDrawn | GameIsFinished ex) {
+				QuoridorApplication.getMainPage().killClock();
+				QuoridorApplication.getMainPage().gameMessage.setText(ex.getLocalizedMessage());
+				Quoridor223Controller.enterReplayMode();
 			}
 
 			// keep trying to load until the user cancels load attempt, or the load is successful
@@ -243,6 +249,12 @@ public class SetThinkingTimePage extends JFrame {
 					loadSuccessful = Quoridor223Controller.loadGame(filename);
 				} catch (IOException e1) {
 					e1.printStackTrace();
+				} catch(GameIsDrawn ex) {
+					QuoridorApplication.getMainPage().killClock();
+					QuoridorApplication.getMainPage().gameMessage.setText(ex.getLocalizedMessage());
+				}catch (GameIsFinished ex) {
+					QuoridorApplication.getMainPage().killClock();
+					QuoridorApplication.getMainPage().gameMessage.setText(ex.getLocalizedMessage());
 				}
 			}
 			Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
