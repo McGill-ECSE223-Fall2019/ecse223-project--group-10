@@ -31,6 +31,7 @@ import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.model.GamePosition;
 import ca.mcgill.ecse223.quoridor.model.Move;
+import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
@@ -38,7 +39,6 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
-import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.view.GamePage;
 import cucumber.api.PendingException;
 import io.cucumber.java.After;
@@ -63,7 +63,6 @@ public class CucumberStepDefinitions {
 	private ArrayList<Player> createUsersAndPlayers;
 	private String gameDirectory = "./src/main/resources/gameFiles/";
 	private String playerTryingToMove = null;
-	private String inner_message_check_path = null;
 
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
@@ -123,9 +122,7 @@ public class CucumberStepDefinitions {
 			default:
 				throw new IllegalArgumentException("Unsupported wall direction was provided");
 			}
-			WallMove mv =new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
-			quoridor.getCurrentGame().addMove(mv);
-			quoridor.getCurrentGame().setWallMoveCandidate(null);
+			new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
 			if (playerIdx == 0) {
 				quoridor.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
 				quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
@@ -528,90 +525,66 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	// ResignGame and IdentifyDraw
 	// **********************************************
-	
-	/**
-	 * @author Andrew Ta
-	 */
 	@When("Player initates to resign")
 	public void initiateToResign() {
 		gamePage.clickForfeit();
 	}
 	
-	/**
-	 * @author Andrew Ta
-	 */
 	@Then("Game result shall be {string}")
 	public void gameResult(String result) {
 		assertEquals(result, QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().toString());
 	}
 	
-	/**
-	 * @author Andrew Ta
-	 */
 	@And("The game shall no longer be running")
 	public void isRunning() {
 		assertEquals(false, gamePage.isBlackClockRunning());
 		assertEquals(false, gamePage.isWhiteClockRunning());
 	}
 	
-	/**
-	 * @author Andrew Ta
-	 */
 	@Given("The following moves were executed:")
 	public void executeMove(io.cucumber.datatable.DataTable dataTable) {
-		List<Map<String, String>> valueMaps = dataTable.asMaps();
-		QuoridorApplication.GetWhitePawnBehavior().startGame();
-		QuoridorApplication.GetBlackPawnBehavior().startGame();
-		
-		for (Map<String, String> map : valueMaps) {
-			int row = Integer.decode(map.get("row"));
-			int turn = Integer.decode(map.get("turn"));
-			
-			if(turn == 1) {
-				if(row == 8) gamePage.clickMovePlayer("up");
-				else gamePage.clickMovePlayer("down");
-			}else {
-				if(row == 2) gamePage.clickMovePlayer("down");
-				else gamePage.clickMovePlayer("up");
-			}
-		}
+//		Quoridor quoridor = QuoridorApplication.getQuoridor();
+//		Game curGame = quoridor.getCurrentGame();
+//		List<Map<String, String>> valueMaps = dataTable.asMaps();
+//		
+//		for (Map<String, String> map : valueMaps) {
+//			int turn = Integer.decode(map.get("turn"));
+//			int row = Integer.decode(map.get("row"));
+//			
+//			if(turn == 1) {
+//				if(row == 8) gamePage.clickMovePlayer("up");
+//				else gamePage.clickMovePlayer("down");
+//			}else {
+//				if(row == 2) gamePage.clickMovePlayer("down");
+//				else gamePage.clickMovePlayer("up");
+//			}
+//		}
+//		System.out.println(curGame.getMoves().size());
 	}
 	
-	
-	/**
-	 * @author Andrew Ta
-	 */
 	@Given("Player {string} has just completed his move")
 	public void completeMove(String player) {
-		
 	}
 	
-	/**
-	 * @author Andrew Ta
-	 */
 	@And("The last move of {string} is pawn move to {int}:{int}")
 	public void lastMove(String player, int row, int col) {
-		if(player.equals("white")) {
-			if(col == 4) {
-				gamePage.clickMovePlayer("left");
-			}else if(col == 6) {
-				gamePage.clickMovePlayer("right");
-			}else if(row == 8) {
-				gamePage.clickMovePlayer("up");
-			}
-		}else {
-			if(row == 2) {
-				gamePage.clickMovePlayer("down");
-			}else gamePage.clickMovePlayer("up");
-		}
+//		if(player.equals("white")) {
+//			if(row == 8) gamePage.clickMovePlayer("up");
+//			else gamePage.clickMovePlayer("down");
+//		}else {
+//			if(row == 2) gamePage.clickMovePlayer("down");
+//			else gamePage.clickMovePlayer("up");
+//		}
+		gamePage.clickMovePlayer("up");
 	}
 	
-	/**
-	 * @author Andrew Ta
-	 */
 	@When("Checking of game result is initated")
 	public void checkGameResult() {
-		
+		try {
+			Quoridor223Controller.identifyDraw();
+		}catch (GameNotRunningException exp) {
+			
+		}
 	}
 	
 	
@@ -620,7 +593,7 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	/**
 	 * And
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param row
 	 * @param col
 	 * */
@@ -632,7 +605,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * And
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param row
 	 * @param col
 	 * */
@@ -644,7 +617,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * And
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param side
 	 * @param dir
 	 * */
@@ -656,7 +629,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * And
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param side
 	 * */
 	@And("The opponent is not {string} from the player")
@@ -668,7 +641,7 @@ public class CucumberStepDefinitions {
 	 * And
 	 * @param dir
 	 * @param side
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * */
 	@And("There are no {string} walls {string} from the player")
 	public void thereAreNoWallsFromThePlayer(String dir, String side) {
@@ -742,7 +715,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @param side
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @return check if opponent is on given side of the player
 	 * */
 	private static boolean isOpponentSideFromThePlayer(String side) {
@@ -760,7 +733,7 @@ public class CucumberStepDefinitions {
 			opponent_position = current_game.getCurrentPosition().getBlackPosition();
 		} 
 		
-		// inversion of directions because our board is filpped 90° ?
+		// inversion of directions because our board is filpped 90Â° ?
 		if(side.equals("up")) {
 			// up == col ++
 			if(current_position.getTile().getColumn()+1==opponent_position.getTile().getColumn()) return true;
@@ -781,7 +754,7 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param dir
 	 * @param side
 	 * @return hasWallsFromThePlayerNearby
@@ -822,7 +795,7 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param player's color
 	 * @return a hashmap with all wall positions on board
 	 * */
@@ -845,7 +818,7 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param player, row, col
 	 * @return wasThePlayerSetAtLocation
 	 * */
@@ -868,21 +841,6 @@ public class CucumberStepDefinitions {
 			current_position = current_game.getCurrentPosition().getWhitePosition();
 			color = "white";
 		}
-		Tile new_position = Quoridor223Controller.getTile(row, col);
-		return current_position.setTile(new_position);
-	}
-	
-	/**
-	 * @author Sacha Lévy
-	 * */
-	private boolean setPlayerPosition(String player, int row, int col) {
-		// defines walls near the player
-		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		PlayerPosition current_position;
-		
-		// player to move has been defined precedently
-		if(player.equals("black")) current_position = current_game.getCurrentPosition().getBlackPosition();
-		else current_position = current_game.getCurrentPosition().getWhitePosition();
 		Tile new_position = Quoridor223Controller.getTile(row, col);
 		return current_position.setTile(new_position);
 	}
@@ -1778,40 +1736,29 @@ public class CucumberStepDefinitions {
 	// *****************************************************************
 	
 	/**
+	 * Scenario: Player is on the middle of the board
+	 * @author Vanessa Ifrah
+	 */
+//	@Given("Player {string} has just completed his move")
+//	public void playerHasJustCompletedHisMove(String playerName) {
+//		
+//	} same as Andrew *******
+	
+	/**
 	 * Scenario: Player reaches target area
 	 * @author Vanessa Ifrah
 	 */	
 	@And("The new position of {string} is {int}:{int}")
 	public void newPositionOfPlayerIs(String player, int row, int col) {
-		QuoridorApplication.CreateNewWhitePawnBehavior().startGame();
-		QuoridorApplication.CreateNewBlackPawnBehavior().startGame();
 		
-		if(player.equals("white")) {
-			if(row == 9) {
-				gamePage.clickMovePlayer("down");
-			}else if (row == 8){
-				gamePage.clickMovePlayer("up");
-			} if(row == 1){
-				for(int i = 1; i < 4; i++) {
-					QuoridorApplication.GetWhitePawnBehavior().moveUp();
-				}
-				gamePage.clickMovePlayer("up");
-			}
-		}else {
-			if(row == 1) {
-				gamePage.clickMovePlayer("up");
-			}else if (row == 2){
-				gamePage.clickMovePlayer("down");
-			} if(row == 9){
-				for(int i = 1; i < 4; i++) {
-					QuoridorApplication.GetBlackPawnBehavior().moveDown();
-					System.out.println(QuoridorApplication.GetBlackPawnBehavior().getPawnSMPlayingNorthSouthNorthSouth());
-				}
-				Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-				curGame.getCurrentPosition().setPlayerToMove(curGame.getBlackPlayer());
-				gamePage.clickMovePlayer("down");
-			}
+		Game currGame = QuoridorApplication.getQuoridor().getCurrentGame(); 
+		
+		if (player.equals("white")) {
+			currGame.getCurrentPosition().getWhitePosition().setTile(Quoridor223Controller.getTile(row, col));
+		} else {
+			currGame.getCurrentPosition().getBlackPosition().setTile(Quoridor223Controller.getTile(row, col));
 		}
+		
 	}
 	
 	@And("The clock of {string} is more than zero")
@@ -1821,6 +1768,23 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+//	@When("Checking of game result is initated")
+//	public void checkingOfGameResultIsInitiated() {
+//		
+//	} same as Andrew *******
+	
+//	@Then("Game result shall be {string}")
+//	public void gameResultShallBe(String result) {
+//		
+//		// fetch game result and compare to see if good
+//		// assertEquals()
+//		
+//	} same as Andrew *******
+	
+//	@And("The game shall no longer be running")
+//	public void theGameShallNoLongerBeRunning() {
+//		
+//	} same as Andrew *******
 	
 	/**
 	 * Scenario: Player's time is exceeded
@@ -1828,25 +1792,19 @@ public class CucumberStepDefinitions {
 	 */	
 	@When("The clock of {string} counts down to zero")
 	public void clockOfPlayerCountsDowntoZero(String player) {
-		GamePage temp = gamePage;
-		if(player.equals("white")) {
-			gamePage.setWhiteTime("00:00:01");
-			gamePage.setBlackTime("00:00:10");
-		}else {
-			gamePage = new GamePage();
-			gamePage.setBlackTime("00:00:01");
-			gamePage.setWhiteTime("00:00:10");
+		
+		if (player.equals("white")){
+			gamePage.setWhiteTime("00:00:02");
+		} else {
+			gamePage.setBlackTime("00:00:02");
 		}
 		
-		try {
-			TimeUnit.SECONDS.sleep(3);
-		}catch(Exception e){
+		try{
+			Thread.sleep(3000);
+		} catch (Exception e) {
 			
 		}
-		gamePage = temp;
-		gamePage.setWhiteTime("00:10:00");
-		gamePage.setBlackTime("00:10:00");
-		gamePage.killClock();
+		
 	}
 		
 		
@@ -1873,6 +1831,7 @@ public class CucumberStepDefinitions {
 		User user1 = quoridor.addUser(userName1);
 		User user2 = quoridor.addUser(userName2);
 
+		int thinkingTime = 180;
 
 		// Players are assumed to start on opposite sides and need to make progress
 		// horizontally to get to the other side
@@ -1882,8 +1841,8 @@ public class CucumberStepDefinitions {
 		 * 
 		 */
 		// @formatter:on
-		Player player1 = new Player(Time.valueOf("00:10:00"), user1, 1, Direction.Vertical);
-		Player player2 = new Player(Time.valueOf("00:10:00"), user2, 9, Direction.Vertical);
+		Player player1 = new Player(new Time(thinkingTime), user1, 1, Direction.Vertical);
+		Player player2 = new Player(new Time(thinkingTime), user2, 9, Direction.Vertical);
 
 		Player[] players = { player1, player2 };
 		player1.setNextPlayer(player2);
@@ -2353,7 +2312,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * ValidatePosition.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param int1, int2
 	 */
 	@Given("A game position is supplied with pawn coordinate {int}:{int}")
@@ -2364,7 +2323,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * ValidatePosition.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param int1, int2
 	 * @throws InvalidOperationException 
 	 */
@@ -2380,7 +2339,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * ValidatePosition.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param string
 	 * @throws InvalidOperationException 
 	 */
@@ -2400,7 +2359,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * ValidatePosition.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param int1, int2, string
 	 */
 	@Given("A game position is supplied with wall coordinate {int}:{int}-{string}")
@@ -2412,7 +2371,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * ValidatePosition.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @throws InvalidOperationException 
 	 */
 	@Then("The position shall be valid")
@@ -2422,122 +2381,17 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * ValidatePosition.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @throws InvalidOperationException 
 	 */
 	@Then("The position shall be invalid")
 	public void the_position_shall_be_invalid() throws InvalidOperationException {
 	    assertEquals("invalid", Quoridor223Controller.isPositionValid());
 	}
-// checkPath feature
-	
-	@Given("A {string} wall move candidate exists at position {int}:{int}")
-	public void a_wall_move_candidate_exists_at_position(String string, Integer int1, Integer int2) {
-	    Direction dir;
-		if(string.equals("horizontal")) dir = Direction.Horizontal;
-		else dir = Direction.Vertical;
-		Quoridor223Controller.createNewWallMoveCandidate(int1, int2, dir);
-	}
 
-	@Given("The black player is located at {int}:{int}")
-	public void the_black_player_is_located_at(Integer int1, Integer int2) {
-		assertTrue(setPlayerPosition("black", int1, int2));
-	}
-
-	@Given("The white player is located at {int}:{int}")
-	public void the_white_player_is_located_at(Integer int1, Integer int2) {
-		assertTrue(setPlayerPosition("white", int1, int2));
-	}
-
-	@When("Check path existence is initiated")
-	public void check_path_existence_is_initiated() throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException {
-		inner_message_check_path = "both";
-		String inner_message = "";
-		try{
-			Quoridor223Controller.dropWall();
-		}
-		catch (InvalidOperationException e){
-			inner_message = e.getMessage();
-		}
-		if(inner_message.equals("black is blocked")) inner_message_check_path="white";
-		if(inner_message.equals("white is blocked")) inner_message_check_path="black";
-		if(inner_message.equals("both are blocked")) inner_message_check_path="none";
-	}
-
-	@Then("Path is available for {string} player\\(s)")
-	public void path_is_available_for_player_s(String string) throws InvalidOperationException {
-		assertEquals(string, inner_message_check_path);
-		//assertEquals(string, string);
-	}
-	
-// ReportFinalResult
-	@When("The game is no longer running")
-	public void the_game_is_no_longer_running() throws GameNotRunningException {
-		initQuoridorAndBoard();
-		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
-		createAndStartGame(createUsersAndPlayers);
-		QuoridorApplication.CreateNewWhitePawnBehavior();
-		QuoridorApplication.CreateNewBlackPawnBehavior();
-		QuoridorApplication.GetWhitePawnBehavior();
-		QuoridorApplication.GetBlackPawnBehavior();
-		gamePage = new GamePage();
-		
-		Quoridor223Controller.resignGame("black");
-	    assertFalse("the game is no longer running", Quoridor223Controller.isRunning());
-	}
-
-	@Then("The final result shall be displayed")
-	public void the_final_result_shall_be_displayed() {
-		boolean isDisplayed = false;
-		// update with an actual check when the game has finished
-		String final_text =  gamePage.getDialogBoxText();
-		System.out.println(final_text);
-		
-		if(final_text!=null) isDisplayed = true;
-	    assertTrue("final_result is displayed", isDisplayed);
-	}
-
-	@Then("White's clock shall not be counting down")
-	public void white_s_clock_shall_not_be_counting_down() {
-	    assertFalse("white clock is not running", gamePage.getWhiteClockStatus());
-	}
-
-	@Then("Black's clock shall not be counting down")
-	public void black_s_clock_shall_not_be_counting_down() {
-	    assertFalse("black clock is not running", gamePage.getBlackClockStatus());
-	}
-
-	@Then("White shall be unable to move")
-	public void white_shall_be_unable_to_move() {
-	    assertFalse("white player is unable to move", isWhitePlayerAbleToMove());
-	}
-
-	@Then("Black shall be unable to move")
-	public void black_shall_be_unable_to_move() {
-		assertFalse("black player is unable to move", isBlackPlayerAbleToMove());
-	}
-	
-	private boolean isWhitePlayerAbleToMove() {
-		// set the white player to be moving
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game game = quoridor.getCurrentGame();
-		game.getCurrentPosition().setPlayerToMove(game.getWhitePlayer());
-		gamePage.clickMovePlayer("up");
-		if(gamePage.getDialogBoxText().equals("Game not running")) return false;
-		return true;
-	}
-
-	private boolean isBlackPlayerAbleToMove() {
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game game = quoridor.getCurrentGame();
-		game.getCurrentPosition().setPlayerToMove(game.getBlackPlayer());
-		gamePage.clickMovePlayer("up");
-		if(gamePage.getDialogBoxText().equals("Game not running")) return false;
-		return true;
-	}
 // Switch Current Player feature
 	/**
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param player
 	 * @return boolean
 	 * @throws InterruptedException 
@@ -2558,7 +2412,7 @@ public class CucumberStepDefinitions {
 	 * helper method to check if given player is next to move
 	 * 
 	 * @param other
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @return isPlayerNextToMove
 	 * */
 	private boolean isNextPlayerToMove(Player other) {
@@ -2570,7 +2424,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * SwitchCurrentPlayer.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param string 
 	 * */
 	@Given("The player to move is {string}")
@@ -2580,7 +2434,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * SwitchCurrentPlayer.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param string
 	 * */
 	@Given("The clock of {string} is running")
@@ -2596,7 +2450,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * SwitchCurrentPlayer.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param string
 	 * */
 	@Given("The clock of {string} is stopped")
@@ -2611,7 +2465,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * SwitchCurrentPlayer.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param string
 	 * */
 	@When("Player {string} completes his move")
@@ -2629,7 +2483,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * SwitchCurrentPlayer.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param string
 	 * */
 	@Then("The user interface shall be showing it is {string} turn")
@@ -2639,7 +2493,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * SwitchCurrentPlayer.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param string
 	 * */
 	@Then("The clock of {string} shall be stopped")
@@ -2654,7 +2508,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * SwitchCurrentPlayer.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param string 
 	 * */
 	@Then("The clock of {string} shall be running")
@@ -2668,7 +2522,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * SwitchCurrentPlayer.feature
-	 * @author Sacha Lévy
+	 * @author Sacha LÃ©vy
 	 * @param string
 	 * */
 	@Then("The next player to move shall be {string}")

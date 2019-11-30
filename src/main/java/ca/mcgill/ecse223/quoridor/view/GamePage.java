@@ -11,6 +11,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import ca.mcgill.ecse223.quoridor.controller.GameIsDrawn;
+import ca.mcgill.ecse223.quoridor.controller.GameIsFinished;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
@@ -52,8 +54,9 @@ public class GamePage extends JFrame {
 	private String whiteTimeInit;
 	private JLabel blackTime;
 	private String blackTimeInit;
-	private boolean whiteClockIsRunning;
-	private boolean blackClockIsRunning;
+
+	private boolean whiteClockIsRunning = true;
+	private boolean blackClockIsRunning = true;
 
 	// grab, drop, rotate wall button
 	private JButton grabWall;
@@ -238,12 +241,7 @@ public class GamePage extends JFrame {
 		Quoridor223Controller.setGameToRun();
 		//TODO: implement moving witht eh keyboard directions commands
 		
-		timer.scheduleAtFixedRate(new TimerTask() {
-			@Override
-			public void run() {
-				refreshTime();
-			}
-		}, 1000, 1000);
+		setUpTimer();
 
 		replayGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -342,14 +340,15 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.Up);
-						if(Quoridor223Controller.identifyDraw()) {
-							stopGameIfDraw();
-						}else {
-							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-						}	
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					} catch(GameIsDrawn ex) {
+						killClock();
+						gameMessage.setText(ex.getLocalizedMessage());
+					}catch (GameIsFinished ex) {
+						killClock();
 						gameMessage.setText(ex.getLocalizedMessage());
 					}
 				}
@@ -373,14 +372,15 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.Down);
-						if(Quoridor223Controller.identifyDraw()) {
-							stopGameIfDraw();
-						}else {
-							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-						}	
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					}catch(GameIsDrawn ex) {
+						killClock();
+						gameMessage.setText(ex.getLocalizedMessage());
+					}catch (GameIsFinished ex) {
+						killClock();
 						gameMessage.setText(ex.getLocalizedMessage());
 					}
 				}
@@ -415,14 +415,15 @@ public class GamePage extends JFrame {
 					} else {
 						try {
 							Quoridor223Controller.movePawn(TOPlayer.Side.Left);
-							if(Quoridor223Controller.identifyDraw()) {
-								stopGameIfDraw();
-							}else {
-								gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-							}	
 						} catch (GameNotRunningException ex) {
 							gameMessage.setText(ex.getLocalizedMessage());
 						} catch (InvalidOperationException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						}catch(GameIsDrawn ex) {
+							killClock();
+							gameMessage.setText(ex.getLocalizedMessage());
+						}catch (GameIsFinished ex) {
+							killClock();
 							gameMessage.setText(ex.getLocalizedMessage());
 						}
 					}
@@ -458,14 +459,15 @@ public class GamePage extends JFrame {
 					} else {
 						try {
 							Quoridor223Controller.movePawn(TOPlayer.Side.Right);
-							if(Quoridor223Controller.identifyDraw()) {
-								stopGameIfDraw();
-							}else {
-								gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-							}	
 						} catch (GameNotRunningException ex) {
 							gameMessage.setText(ex.getLocalizedMessage());
 						} catch (InvalidOperationException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						}catch(GameIsDrawn ex) {
+							killClock();
+							gameMessage.setText(ex.getLocalizedMessage());
+						}catch (GameIsFinished ex) {
+							killClock();
 							gameMessage.setText(ex.getLocalizedMessage());
 						}
 					}
@@ -489,14 +491,15 @@ public class GamePage extends JFrame {
 					} else {
 						try {
 							Quoridor223Controller.movePawn(TOPlayer.Side.UpRight);
-							if(Quoridor223Controller.identifyDraw()) {
-								stopGameIfDraw();
-							}else {
-								gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-							}	
 						} catch (GameNotRunningException ex) {
 							gameMessage.setText(ex.getLocalizedMessage());
 						} catch (InvalidOperationException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						}catch(GameIsDrawn ex) {
+							killClock();
+							gameMessage.setText(ex.getLocalizedMessage());
+						}catch (GameIsFinished ex) {
+							killClock();
 							gameMessage.setText(ex.getLocalizedMessage());
 						}
 					}
@@ -519,14 +522,16 @@ public class GamePage extends JFrame {
 					} else {
 						try {
 							Quoridor223Controller.movePawn(TOPlayer.Side.UpLeft);
-							if(Quoridor223Controller.identifyDraw()) {
-								stopGameIfDraw();
-							}else {
-								gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-							}	
 						} catch (GameNotRunningException ex) {
 							gameMessage.setText(ex.getLocalizedMessage());
 						} catch (InvalidOperationException ex) {
+							gameMessage.setText(ex.getLocalizedMessage());
+						}
+						catch(GameIsDrawn ex) {
+							killClock();
+							gameMessage.setText(ex.getLocalizedMessage());
+						}catch (GameIsFinished ex) {
+							killClock();
 							gameMessage.setText(ex.getLocalizedMessage());
 						}
 					}
@@ -547,6 +552,12 @@ public class GamePage extends JFrame {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
+					}catch(GameIsDrawn ex) {
+						killClock();
+						gameMessage.setText(ex.getLocalizedMessage());
+					}catch (GameIsFinished ex) {
+						killClock();
+						gameMessage.setText(ex.getLocalizedMessage());
 					}
 				}
 				boardComponent.repaint();
@@ -560,14 +571,15 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.DownLeft);
-						if(Quoridor223Controller.identifyDraw()) {
-							stopGameIfDraw();
-						}else {
-							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-						}	
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
+						gameMessage.setText(ex.getLocalizedMessage());
+					}catch(GameIsDrawn ex) {
+						killClock();
+						gameMessage.setText(ex.getLocalizedMessage());
+					}catch (GameIsFinished ex) {
+						killClock();
 						gameMessage.setText(ex.getLocalizedMessage());
 					}
 				}
@@ -620,7 +632,8 @@ public class GamePage extends JFrame {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				try {
 					timer.cancel();
-					Quoridor223Controller.resignGame(userToMove);
+					whiteClockIsRunning = blackClockIsRunning = false;
+					Quoridor223Controller.resignGame(Quoridor223Controller.getPlayerToMoveName());
 					if(name1.equals(userToMove)) {
 						gameMessage.setText(name2 + " won! Congratulation!");
 					}else {
@@ -634,21 +647,25 @@ public class GamePage extends JFrame {
 		
 		btnOfferDraw.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String nextPlayer;
-				if(userToMove.equals(name1)) {
-					nextPlayer = name2;
+				if(Quoridor223Controller.isRunning()) {
+					String nextPlayer;
+					if(userToMove.equals(name1)) {
+						nextPlayer = name2;
+					}else {
+						nextPlayer = name1;
+					}
+					int choice = JOptionPane.showConfirmDialog((Component) boardComponent,
+							(Object) "" + userToMove + " offered a draw. Do you accept, " + nextPlayer + "?", "Draw Offer",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, (Icon) null);
+					if(choice == 0) {
+						Quoridor223Controller.setGameToDraw();
+						gameMessage.setText("The game is draw!");
+						timer.cancel();
+					}else {
+						gameMessage.setText(nextPlayer + "did not accept your offer. You have to make a move, " + userToMove + ".");
+					}
 				}else {
-					nextPlayer = name1;
-				}
-				int choice = JOptionPane.showConfirmDialog((Component) boardComponent,
-						(Object) "" + userToMove + " offered a draw. Do you accept, " + nextPlayer + "?", "Draw Offer",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, (Icon) null);
-				if(choice == 0) {
-					Quoridor223Controller.setGameToDraw();
-					gameMessage.setText("The game is draw!");
-					timer.cancel();
-				}else {
-					gameMessage.setText(nextPlayer + "did not accept your offer. You have to make a move, " + userToMove + ".");
+					gameMessage.setText("Game not running");
 				}
 				
 			}
@@ -662,13 +679,7 @@ public class GamePage extends JFrame {
 				Quoridor223Controller.setUpNewGame(whiteTimeInit, blackTimeInit);
 				boardComponent.repaint();
 				gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-				timer = new Timer();
-				timer.scheduleAtFixedRate(new TimerTask() {
-					@Override
-					public void run() {
-						refreshTime();
-					}
-				}, 1000, 1000);
+				setUpTimer();
 			}
 		});
 
@@ -683,20 +694,22 @@ public class GamePage extends JFrame {
 	private void refreshTime() {
 		try {
 			if(whiteTime.getText().equals("00:00:00") && !blackTime.getText().equals("00:00:00")) {
-				timer.cancel();
+				killClock();
 				Quoridor223Controller.resignGame(name1);
 				gameMessage.setText(name2 + " won. Congratulation!");
 			}else if(!whiteTime.getText().equals("00:00:00") && blackTime.getText().equals("00:00:00")){
-				timer.cancel();
+				killClock();
 				Quoridor223Controller.resignGame(name2);
 				gameMessage.setText(name1 + " won. Congratulation!");
 			} else {
 				if (userToMove.equals(name1)) {
 					Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(whiteTime.getText()).getTime() - 1000), name1);
 					whiteClockIsRunning = true;
+					blackClockIsRunning = false;
 				} else {
 					Quoridor223Controller.setThinkingTime(new Time(Time.valueOf(blackTime.getText()).getTime() - 1000), name2);
 					whiteClockIsRunning = false;
+					blackClockIsRunning = true;
 				}
 
 				TOGame players = Quoridor223Controller.getListOfPlayers();
@@ -713,10 +726,9 @@ public class GamePage extends JFrame {
 		}
 		
 	}
-	
-	private static void stopGameIfDraw() {
+	public void killClock() {
 		timer.cancel();
-		gameMessage.setText("Threefold repetition of move. The game is draw!");
+		whiteClockIsRunning = blackClockIsRunning = false;
 	}
 
 	private void initFrame() {
@@ -843,6 +855,10 @@ public class GamePage extends JFrame {
 		return whiteClockIsRunning;
 	}
 	
+	public boolean isBlackClockRunning() {
+		return blackClockIsRunning;
+	}
+	
 	public void clickDropWall() {
 		dropWall.doClick();
 	}
@@ -869,11 +885,24 @@ public class GamePage extends JFrame {
 	public void clickJumpFinal() {
 		btnUpRight.doClick();
 	}
+	public void clickForfeit() {
+		forfeit.doClick();
+	}
 	
 	public void setWhiteTime(String time) {
 		whiteTime.setText(time);
 	}
 	public void setBlackTime(String time) {
 		blackTime.setText(time);
+	}
+	
+	public void setUpTimer() {
+		timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
+			@Override
+			public void run() {
+				refreshTime();
+			}
+		}, 1000, 1000);
 	}
 }

@@ -197,17 +197,18 @@ public class Quoridor223Controller {
 
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
-		
 		if(curPlayer.equals(curGame.getWhitePlayer())) {
 			Tile tile = curGame.getCurrentPosition().getWhitePosition().getTile();
 			int curWhiteRow = tile.getRow();
-			if(curWhiteRow == 9) {
+			if(curWhiteRow == 1) {
+				curGame.setGameStatus(GameStatus.WhiteWon);
 				return true;
 			}
 		} else if (curPlayer.equals(curGame.getBlackPlayer())) {
 			Tile tile = curGame.getCurrentPosition().getBlackPosition().getTile();
 			int curBlackRow = tile.getRow();
-			if(curBlackRow == 1) {
+			if(curBlackRow == 9) {
+				curGame.setGameStatus(GameStatus.BlackWon);
 				return true;
 			}
 		}
@@ -641,9 +642,9 @@ public class Quoridor223Controller {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = getPlayerByName(playerName);
 		if(curPlayer.equals(curGame.getBlackPlayer())) {
-			curGame.setGameStatus(GameStatus.BlackWon);
-		}else {
 			curGame.setGameStatus(GameStatus.WhiteWon);
+		}else {
+			curGame.setGameStatus(GameStatus.BlackWon);
 		}
 	}
 	
@@ -1344,7 +1345,8 @@ public class Quoridor223Controller {
 	 * @throws GameNotRunningException
 	 * @throws InvalidOperationException
 	 */
-	public static void movePawn(TOPlayer.Side side) throws GameNotRunningException, InvalidOperationException {
+	public static void movePawn(TOPlayer.Side side) throws GameNotRunningException, InvalidOperationException,
+		GameIsDrawn, GameIsFinished{
 		//call specific behaviour and call the specific move that is received by the player
 		if (!isRunning())
 			throw new GameNotRunningException("Game not running");
@@ -1439,7 +1441,14 @@ public class Quoridor223Controller {
 		//	current_position = current_game.getCurrentPosition().getWhitePosition();
 		//	opponent_position = current_game.getCurrentPosition().getBlackPosition();
 		//}
-		SwitchPlayer();
+		if(identifyDraw()) {
+			throw new GameIsDrawn("Game Draw!");
+		}else if(identifyWin()) {
+			throw new GameIsFinished(curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
+		}else {
+			SwitchPlayer();
+		}
+		
 	}
 	
 	/////////////////////////////////////////////////////
