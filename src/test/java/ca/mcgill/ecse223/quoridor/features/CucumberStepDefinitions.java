@@ -1110,7 +1110,7 @@ public class CucumberStepDefinitions {
 	public void aWallMoveIsRegisteredWithDirAtPositionRowCol(String direction, int row, int col) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
-		WallMove move = (WallMove) curGame.getMove(0);
+		WallMove move = (WallMove) curGame.getMove(curGame.getMoves().size()-1);
 		Tile target = move.getTargetTile();
 		Direction expected = (direction.equalsIgnoreCase("horizontal") ? Direction.Horizontal : Direction.Vertical);
 		assertEquals(expected, move.getWallDirection());
@@ -1127,7 +1127,7 @@ public class CucumberStepDefinitions {
 		//
 		// throw new PendingException();
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		assertEquals(curGame.getMove(0), initialMove);
+		assertEquals(curGame.getMove(curGame.getMoves().size()-1), initialMove);
 
 	}
 

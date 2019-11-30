@@ -1326,7 +1326,8 @@ public class Quoridor223Controller {
 				+ (side == TOWall.Side.Left ? -1 : side == TOWall.Side.Right ? 1 : 0);
 		// first case simple legal position check (does this position exists on board ?) 
 		if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
-		if (!isPawnMoveLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
+		if (!is
+veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
 		
 		// might need to get the next tile using indexes & get from tiles list in board
 		Tile next_tile = getTile(newRow, newCol);
@@ -1443,12 +1444,11 @@ public class Quoridor223Controller {
 		//}
 		if(identifyDraw()) {
 			throw new GameIsDrawn("Game Draw!");
-		}else if(identifyWin()) {
-			throw new GameIsFinished(curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
-		}else {
-			SwitchPlayer();
 		}
-		
+		if(identifyWin()) {
+			throw new GameIsFinished(curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
+		}
+		SwitchPlayer();
 	}
 	
 	/////////////////////////////////////////////////////
