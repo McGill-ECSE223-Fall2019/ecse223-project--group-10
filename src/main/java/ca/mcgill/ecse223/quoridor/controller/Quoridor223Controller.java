@@ -718,10 +718,17 @@ public class Quoridor223Controller {
 	public static void exitReplayMode() throws InvalidOperationException, GameIsDrawn, GameIsFinished, GameNotRunningException {
 		if (!isReplay())throw new InvalidOperationException("Not in replay mode.");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		
-		int finalIndex = curGame.getPositions().size() - 1;
-		GamePosition finalPosition = curGame.getPosition(finalIndex);
-		curGame.setCurrentPosition(finalPosition);
+		int ind = findPositionIndex();
+		int size = curGame.getPositions().size()-1;
+		for(int i = ind; i<size;i++) {
+			Move move = curGame.getMove(ind);
+			move.delete();
+			GamePosition pos = curGame.getPosition(ind+1);
+			pos.delete();
+		}
+		System.out.println(curGame.getMoves().size());
+		QuoridorApplication.CreateNewWhitePawnBehavior().startGame();
+		QuoridorApplication.CreateNewBlackPawnBehavior().startGame();
 		curGame.setGameStatus(Game.GameStatus.Running);
 		if(identifyDraw()) {
 			throw new GameIsDrawn("Game Draw!");
