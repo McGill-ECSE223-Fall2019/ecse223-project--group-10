@@ -14,10 +14,10 @@ Feature: Identify if game won
 
     Examples: 
       | player | row | col | result  |
-      | white  |   1 |   5 | pending |
-      | white  |   8 |   5 | pending |
-      | black  |   2 |   4 | pending |
-      | black  |   9 |   4 | pending |
+      | white  |   9 |   5 | Running |
+      | white  |   8 |   5 | Running |
+      | black  |   2 |   4 | Running |
+      | black  |   1 |   4 | Running |
 
   Scenario Outline: Player reaches target area
     Given Player "<player>" has just completed his move
@@ -29,8 +29,8 @@ Feature: Identify if game won
 
     Examples: 
       | player | row | col | result   |
-      | white  |   9 |   4 | whiteWon |
-      | black  |   1 |   3 | blackWon |
+      | white  |   1 |   4 | WhiteWon |
+      | black  |   9 |   3 | BlackWon |
 
   Scenario Outline: Player's time is exceeded
     Given The player to move is "<player>"
@@ -40,5 +40,5 @@ Feature: Identify if game won
 
     Examples: 
       | player | result   |
-      | white  | blackWon |
-      | black  | whiteWon |
+      | white  | BlackWon |
+      | black  | WhiteWon |
