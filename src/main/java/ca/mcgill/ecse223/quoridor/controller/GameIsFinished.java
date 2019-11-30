@@ -1,6 +1,6 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
-public class GameIsDrawn extends Exception {
+public class GameIsFinished extends Exception {
 	private static final long serialVersionUID = -45678127364712894L;
 
 	/**
@@ -8,7 +8,7 @@ public class GameIsDrawn extends Exception {
 	 *
 	 * @param errorMessage Error message to be displayed
 	 */
-	public GameIsDrawn(String errorMessage) {
+	public GameIsFinished(String errorMessage) {
 		super(errorMessage);
 	}
 }

@@ -1481,7 +1481,6 @@ public class PawnBehavior
 	    }
 	    else{
 	    	newMove= new StepMove(nMoveNumber,nRoundNumber,clone.getPlayerToMove(),newTile,currentGame);
-	    	System.out.println("Hello");
 	    }
 	    playerpos.setTile(newTile);
   }

@@ -77,11 +77,6 @@ public class CucumberStepDefinitions {
 		createAndStartGame(createUsersAndPlayers);
 		QuoridorApplication.CreateNewWhitePawnBehavior();
 		QuoridorApplication.CreateNewBlackPawnBehavior();
-<<<<<<< HEAD
-=======
-		QuoridorApplication.GetWhitePawnBehavior();
-		QuoridorApplication.GetBlackPawnBehavior();
->>>>>>> master
 		gamePage = new GamePage();
 	}
 
@@ -561,38 +556,24 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("The following moves were executed:")
 	public void executeMove(io.cucumber.datatable.DataTable dataTable) {
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game curGame = quoridor.getCurrentGame();
 		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
 		
 		for (Map<String, String> map : valueMaps) {
-			int turn = Integer.decode(map.get("turn"));
-			int col = Integer.decode(map.get("col"));
 			int row = Integer.decode(map.get("row"));
-			Tile moveToTile = Quoridor223Controller.getTile(row, col);
-			createNewMove(turn, curGame, moveToTile);
+			int turn = Integer.decode(map.get("turn"));
+			
+			if(turn == 1) {
+				if(row == 8) gamePage.clickMovePlayer("up");
+				else gamePage.clickMovePlayer("down");
+			}else {
+				if(row == 2) gamePage.clickMovePlayer("down");
+				else gamePage.clickMovePlayer("up");
+			}
 		}
-//		System.out.println(curGame.getPositions());
 	}
 	
-	private void createNewMove(int turn, Game curGame, Tile moveToTile) {
-		PlayerPosition newWhitePosition, newBlackPosition;
-		GamePosition curPosition = curGame.getCurrentPosition();
-		GamePosition newPosition;
-		Move move;
-		if(turn == 1) {
-			newWhitePosition = new PlayerPosition(curGame.getWhitePlayer(), moveToTile);
-			newBlackPosition = new PlayerPosition(curGame.getBlackPlayer(), curPosition.getBlackPosition().getTile());
-			newPosition = new GamePosition(curPosition.getId() + 1, newWhitePosition, newBlackPosition, curGame.getWhitePlayer(), curGame);
-			move = new StepMove(1, 1, curGame.getWhitePlayer(), moveToTile, curGame);
-		}else {
-			newBlackPosition = new PlayerPosition(curGame.getBlackPlayer(), moveToTile);
-			newWhitePosition = new PlayerPosition(curGame.getWhitePlayer(), curPosition.getWhitePosition().getTile());
-			newPosition = new GamePosition(curPosition.getId() + 1, newWhitePosition, newBlackPosition, curGame.getBlackPlayer(), curGame);
-			move = new StepMove(1, 1, curGame.getBlackPlayer(), moveToTile, curGame);
-		}
-		curGame.setCurrentPosition(newPosition);
-	}
 	
 	/**
 	 * @author Andrew Ta
@@ -607,12 +588,19 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The last move of {string} is pawn move to {int}:{int}")
 	public void lastMove(String player, int row, int col) {
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		Player curPlayer = Quoridor223Controller.getPlayerByColor(player);
-		Tile moveToTile = Quoridor223Controller.getTile(row, col);
-		int turn = 2;
-		if(curPlayer.equals(curGame.getWhitePlayer())) turn = 1; 
-		createNewMove(turn, curGame, moveToTile);
+		if(player.equals("white")) {
+			if(col == 4) {
+				gamePage.clickMovePlayer("left");
+			}else if(col == 6) {
+				gamePage.clickMovePlayer("right");
+			}else if(row == 8) {
+				gamePage.clickMovePlayer("up");
+			}
+		}else {
+			if(row == 2) {
+				gamePage.clickMovePlayer("down");
+			}else gamePage.clickMovePlayer("up");
+		}
 	}
 	
 	/**
@@ -620,11 +608,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Checking of game result is initated")
 	public void checkGameResult() {
-		try {
-			gamePage.killClock(Quoridor223Controller.identifyDraw());
-		}catch (GameNotRunningException exp) {
-			
-		}
+		
 	}
 	
 	
@@ -1781,13 +1765,35 @@ public class CucumberStepDefinitions {
 	 */	
 	@And("The new position of {string} is {int}:{int}")
 	public void newPositionOfPlayerIs(String player, int row, int col) {
+		QuoridorApplication.CreateNewWhitePawnBehavior().startGame();
+		QuoridorApplication.CreateNewBlackPawnBehavior().startGame();
 		
-		Game currGame = QuoridorApplication.getQuoridor().getCurrentGame(); 
-		Tile moveToTile = Quoridor223Controller.getTile(row, col);
-		int turn = 2; 
-		if (player.equals("white")) turn = 1;
-		
-		createNewMove(turn, currGame, moveToTile);
+		if(player.equals("white")) {
+			if(row == 9) {
+				gamePage.clickMovePlayer("down");
+			}else if (row == 8){
+				gamePage.clickMovePlayer("up");
+			} if(row == 1){
+				for(int i = 1; i < 4; i++) {
+					QuoridorApplication.GetWhitePawnBehavior().moveUp();
+				}
+				gamePage.clickMovePlayer("up");
+			}
+		}else {
+			if(row == 1) {
+				gamePage.clickMovePlayer("up");
+			}else if (row == 2){
+				gamePage.clickMovePlayer("down");
+			} if(row == 9){
+				for(int i = 1; i < 4; i++) {
+					QuoridorApplication.GetBlackPawnBehavior().moveDown();
+					System.out.println(QuoridorApplication.GetBlackPawnBehavior().getPawnSMPlayingNorthSouthNorthSouth());
+				}
+				Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+				curGame.getCurrentPosition().setPlayerToMove(curGame.getBlackPlayer());
+				gamePage.clickMovePlayer("down");
+			}
+		}
 	}
 	
 	@And("The clock of {string} is more than zero")
@@ -1797,10 +1803,6 @@ public class CucumberStepDefinitions {
 		
 	}
 	
-	@When("Checking of winning move is initated")
-	public void checkingOfGameResultIsInitiated() {
-		gamePage.killClock(Quoridor223Controller.identifyWin());
-	} 
 	
 	/**
 	 * Scenario: Player's time is exceeded
@@ -1808,9 +1810,25 @@ public class CucumberStepDefinitions {
 	 */	
 	@When("The clock of {string} counts down to zero")
 	public void clockOfPlayerCountsDowntoZero(String player) {
+		GamePage temp = gamePage;
+		if(player.equals("white")) {
+			gamePage.setWhiteTime("00:00:01");
+			gamePage.setBlackTime("00:00:10");
+		}else {
+			gamePage = new GamePage();
+			gamePage.setBlackTime("00:00:01");
+			gamePage.setWhiteTime("00:00:10");
+		}
 		
-		
-		
+		try {
+			TimeUnit.SECONDS.sleep(3);
+		}catch(Exception e){
+			
+		}
+		gamePage = temp;
+		gamePage.setWhiteTime("00:10:00");
+		gamePage.setBlackTime("00:10:00");
+		gamePage.killClock();
 	}
 		
 		
@@ -1846,8 +1864,8 @@ public class CucumberStepDefinitions {
 		 * 
 		 */
 		// @formatter:on
-		Player player1 = new Player(Time.valueOf("00:00:10"), user1, 1, Direction.Vertical);
-		Player player2 = new Player(Time.valueOf("00:00:10"), user2, 9, Direction.Vertical);
+		Player player1 = new Player(Time.valueOf("00:10:00"), user1, 1, Direction.Vertical);
+		Player player2 = new Player(Time.valueOf("00:10:00"), user2, 9, Direction.Vertical);
 
 		Player[] players = { player1, player2 };
 		player1.setNextPlayer(player2);
