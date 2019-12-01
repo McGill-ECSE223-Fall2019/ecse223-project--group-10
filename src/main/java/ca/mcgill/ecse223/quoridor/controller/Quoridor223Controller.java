@@ -746,7 +746,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * Perform a step forward in the 
+	 * Perform a step forward in the replay mode
 	 * @author Le-Li Mao
 	 * @throws InvalidOperationException
 	 */
@@ -757,7 +757,11 @@ public class Quoridor223Controller {
 		if(ind==curGame.getPositions().size()-1)throw new InvalidOperationException("Already at the last step");
 		curGame.setCurrentPosition(curGame.getPosition(ind+1));
 	}
-	
+	/**
+	 * Perform a step backward in the replay mode
+	 * @author Le-Li Mao
+	 * @throws InvalidOperationException
+	 */
 	public static void StepBackward() throws InvalidOperationException {
 		if (!isReplay())throw new InvalidOperationException("Game is not in replay mode");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1255,39 +1259,6 @@ public class Quoridor223Controller {
 		Tile target_tile = current_game.getWallMoveCandidate().getTargetTile();
 		return isWallPositionValid(target_tile.getRow(), target_tile.getColumn());
 	}
-	
-	
-	// @sacha: is the wall side to indicate the direction a good way of making transitions for pawn ?
-	/**
-	 * MovePlayer feature dev 
-	 * @author mixed
-	 * @param side
-	 * 
-	*/
-	/*public static void movePlayer(TOWall.Side side) throws GameNotRunningException, InvalidOperationException {
-		if (!isRunning()) throw new GameNotRunningException("Game not running");
-		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Board current_board = QuoridorApplication.getQuoridor().getBoard();
-		
-		// get player moving
-		PlayerPosition current_position;
-		if(isWhitePlayer()) current_position = current_game.getCurrentPosition().getWhitePosition();
-		else current_position = current_game.getCurrentPosition().getBlackPosition();
-
-		int newRow = current_position.getTile().getRow()
-				+ (side == TOWall.Side.Up ? -1 : side == TOWall.Side.Down ? 1 : 0);
-		int newCol = current_position.getTile().getColumn()
-				+ (side == TOWall.Side.Left ? -1 : side == TOWall.Side.Right ? 1 : 0);
-		// first case simple legal position check (does this position exists on board ?) 
-		if (!isWallPositionValid(newRow, newCol)) throw new InvalidOperationException("Illegal Move");
-		if (!is
-veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: Invalid move, try again !", getCurrentPlayerName()));
-		
-		// might need to get the next tile using indexes & get from tiles list in board
-		Tile next_tile = getTile(newRow, newCol);
-		current_position.setTile(next_tile);
-		SwitchPlayer();
-	}*/
 	
 	/////////////////////////////////////////////////////
 	//////////// Move Pawn and Jump Pawn/////////////////
