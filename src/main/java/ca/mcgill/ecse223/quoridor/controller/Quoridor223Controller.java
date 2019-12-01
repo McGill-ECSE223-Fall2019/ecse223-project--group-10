@@ -682,9 +682,11 @@ public class Quoridor223Controller {
 
 	/**
 	 * Feature 19: Resign Game
+	 * This method will be called if a player wants to resign the game. Game status
+	 * will be set correspondingly.
 	 * 
 	 * @author Andrew Ta
-	 * @param playerName player wishes to resign the game
+	 * @param playerName  name of player who wishes to resign the game
 	 * @throws GameNotRunningException
 	 * @throws GameIsFinished 
 	 */
@@ -704,9 +706,11 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Feeture 17: Identify if game draw
+	 * This method checks for a threefold repetion of moves. It there is one, 
+	 * game status will be set to draw.
 	 * 
 	 * @author Andrew Ta
-	 * @return return a boolean to determine a game is draw or not
+	 * @return returns a boolean to determine a game is draw or not
 	 * @throws GameNotRunningException
 	 */
 	public static boolean identifyDraw() throws GameNotRunningException{
