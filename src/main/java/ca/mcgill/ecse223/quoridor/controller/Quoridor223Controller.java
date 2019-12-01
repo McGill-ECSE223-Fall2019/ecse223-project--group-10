@@ -702,6 +702,7 @@ public class Quoridor223Controller {
 		Player curPlayer = getPlayerByName(playerName);
 		if(curPlayer.equals(curGame.getBlackPlayer())) {
 			curGame.setIsFinished(true);
+			curGame.setGameStatus(GameStatus.WhiteWon);
 		}else {
 			curGame.setIsFinished(true);
 			curGame.setGameStatus(GameStatus.BlackWon);
