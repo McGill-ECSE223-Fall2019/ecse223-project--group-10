@@ -249,12 +249,10 @@ public class SetThinkingTimePage extends JFrame {
 					loadSuccessful = Quoridor223Controller.loadGame(filename);
 				} catch (IOException e1) {
 					e1.printStackTrace();
-				} catch(GameIsDrawn ex) {
+				} catch(GameIsDrawn | GameIsFinished ex) {
 					QuoridorApplication.getMainPage().killClock();
 					QuoridorApplication.getMainPage().gameMessage.setText(ex.getLocalizedMessage());
-				}catch (GameIsFinished ex) {
-					QuoridorApplication.getMainPage().killClock();
-					QuoridorApplication.getMainPage().gameMessage.setText(ex.getLocalizedMessage());
+					Quoridor223Controller.enterReplayMode();
 				}
 			}
 			Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();

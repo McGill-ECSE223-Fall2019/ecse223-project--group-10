@@ -2597,6 +2597,12 @@ veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: 
 			currentGame.setWallMoveCandidate(newMove);
 			if(!isWallCandidatePositionValid()) return false;
 			if(isWallMoveCandidateOverlapping()) return false;
+			try {
+				hasPath();
+			} catch (InvalidOperationException e) {
+				e.printStackTrace();
+				return false;
+			}
 			currentGame.setWallMoveCandidate(null);
 			currentGame.addMove(newMove);
 			currentGamePosition.addWhiteWallsOnBoard(currentWall);
@@ -2627,6 +2633,12 @@ veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: 
 			currentGame.setWallMoveCandidate(newMove);
 			if(!isWallCandidatePositionValid()) return false;
 			if(isWallMoveCandidateOverlapping()) return false;
+			try {
+				hasPath();
+			} catch (InvalidOperationException e) {
+				e.printStackTrace();
+				return false;
+			}
 			currentGame.setWallMoveCandidate(null);
 			currentGame.addMove(newMove);
 			currentGamePosition.addBlackWallsOnBoard(currentWall);
@@ -2656,17 +2668,24 @@ veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: 
 		int indexOfWhiteWallsPlaced = currentGamePosition.numberOfWhiteWallsOnBoard() -1;
 		int indexOfBlackWallsPlaced = currentGamePosition.numberOfBlackWallsOnBoard() -1;
 		
+		// reset the player positions
+		Tile player1StartPos = quoridor.getBoard().getTile(76);
+		Tile player2StartPos = quoridor.getBoard().getTile(4);
+		whitePos.setTile(player1StartPos);
+		blackPos.setTile(player2StartPos);
+		currentGamePosition.setPlayerToMove(whitePlayer);
+		
 		// clear the game moves, and place all the walls back in the player stocks to allow a new game to be loaded
 		int numOfMoves = currentGame.getMoves().size()-1;
 		while(numOfMoves >= 0) {
 			Move move = currentGame.getMove(numOfMoves);
-			if (move.getPlayer().equals(whitePlayer) && currentGamePosition.hasWhiteWallsOnBoard()) {
+			if (move instanceof WallMove && move.getPlayer().equals(whitePlayer) && currentGamePosition.hasWhiteWallsOnBoard()) {
 				Wall currrentWhiteWall = currentGamePosition.getWhiteWallsOnBoard(indexOfWhiteWallsPlaced);
 				currentGamePosition.removeWhiteWallsOnBoard(currrentWhiteWall);
 				currentGamePosition.addWhiteWallsInStock(currrentWhiteWall);
 				indexOfWhiteWallsPlaced--;
 			}
-			if (move.getPlayer().equals(blackPlayer) && currentGamePosition.hasBlackWallsOnBoard()) {
+			if (move instanceof WallMove && move.getPlayer().equals(blackPlayer) && currentGamePosition.hasBlackWallsOnBoard()) {
 				Wall currentBlackWall = currentGamePosition.getBlackWallsOnBoard(indexOfBlackWallsPlaced);
 				currentGamePosition.removeBlackWallsOnBoard(currentBlackWall);
 				currentGamePosition.addBlackWallsInStock(currentBlackWall);
@@ -2674,7 +2693,6 @@ veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: 
 			}
 			currentGame.removeMove(move);
 			move.delete();
-			//currentGame.removeMove(move);
 			numOfMoves--;
 		}
 		
@@ -2704,6 +2722,7 @@ veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: 
 		
 		// Ensure the game is running before making moves
 		currentGame.setGameStatus(GameStatus.Running);
+		boolean playedBlackMove = true;
 				
 		for(String line : dataLines) {
 			dataArr = line.split("\\s");
@@ -2722,6 +2741,13 @@ veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: 
 			blackPos = currentGamePosition.getBlackPosition();
 			
 			// Process white player's move
+			if(playedBlackMove) {
+				playedBlackMove = false;
+			} else {
+				// was no black move before next white move
+				return false;
+			}
+			
 			if(dataArr[1].length() == 2) {
 				if(!loadGameTryPawnMove(dataArr[1], whitePos, whiteBehavior)) {
 					return false;
@@ -2736,21 +2762,25 @@ veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: 
 			
 			// Check that the white game move was correctly registered
 			List<Move> moveList = currentGame.getMoves();
-			if(moveList.get(moveList.size()-1) instanceof WallMove) {
-				WallMove tmpMove = (WallMove) moveList.get(moveList.size()-1);
-				String tmpString = tileToString(tmpMove.getTargetTile())
-						+ directionToString(tmpMove.getWallDirection());
-				if(!tmpString.equals(dataArr[1])){
-					return false;
+			if(moveList.size() > 0) {
+				if(moveList.get(moveList.size()-1) instanceof WallMove) {
+					WallMove tmpMove = (WallMove) moveList.get(moveList.size()-1);
+					String tmpString = tileToString(tmpMove.getTargetTile())
+							+ directionToString(tmpMove.getWallDirection());
+					if(!tmpString.equals(dataArr[1])){
+						return false;
+					}
+				} else {
+					Move tmpMove = moveList.get(moveList.size()-1);
+					String tmpString = tileToString(tmpMove.getTargetTile());
+					if(!tmpString.equals(dataArr[1])){
+						return false;
+					}
 				}
 			} else {
-				Move tmpMove = moveList.get(moveList.size()-1);
-				String tmpString = tileToString(tmpMove.getTargetTile());
-				if(!tmpString.equals(dataArr[1])){
-					return false;
-				}
+				return false;
 			}
-			
+				
 			// Check game status based on white move
 			if(identifyDraw()) {
 				currentGame.setGameStatus(GameStatus.Draw);
@@ -2803,6 +2833,7 @@ veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: 
 					throw new GameIsFinished(currentGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
 				}
 				SwitchPlayer();
+				playedBlackMove = true;
 			}
 		}
 		currentGame.setGameStatus(GameStatus.ReadyToStart);

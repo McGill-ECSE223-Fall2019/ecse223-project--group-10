@@ -41,8 +41,14 @@ Feature: Load Game
     Then The game shall notify the user that the game file is invalid
 
     Examples: 
-      | filename                                 |
-      | quoridor_test_game_invalid_pawn_move.mov |
-      | quoridor_test_game_invalid_wall_move.mov |
-      | quoridor_test_game_invalid_jump_move.mov |
-
+      | filename                                  |
+      | quoridor_test_game_invalid_pawn_move.mov  |
+      | quoridor_test_game_invalid_pawn_move1.mov |
+			| quoridor_test_game_invalid_pawn_move2.mov |
+			| quoridor_test_game_invalid_pawn_move3.mov |           
+      | quoridor_test_game_invalid_wall_move.mov  |
+      | quoridor_test_game_invalid_wall_move1.mov |
+      | quoridor_test_game_invalid_wall_move2.mov |
+      | quoridor_test_game_invalid_jump_move.mov  |
+      | quoridor_test_game_invalid_jump_move1.mov |
+      | quoridor_test_game_invalid_jump_move2.mov |
