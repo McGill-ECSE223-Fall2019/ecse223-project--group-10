@@ -1,8 +1,8 @@
 package ca.mcgill.ecse223.quoridor.features;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -26,7 +26,6 @@ import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.PawnBehavior;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
-import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -41,9 +40,7 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
-import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.view.GamePage;
-import cucumber.api.PendingException;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.But;
@@ -1285,6 +1282,7 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 */
 	@Given("No file {string} exists in the filesystem")
 	public void noFileFilenameExistsInTheFilesystem(String filename) {
@@ -1294,6 +1292,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @throws Throwable
 	 */
 	@When("The user initiates to save the game with name {string}")
@@ -1304,6 +1303,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @throws IOException
 	 * @throws UnsupportedOperationException, IOExceptionable
 	 */
@@ -1316,6 +1316,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @throws IOException
 	 */
 	@Given("File {string} exists in the filesystem")
@@ -1335,6 +1336,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @throws Throwable
 	 */
 	@Then("File with {string} shall be updated in the filesystem")
@@ -1354,6 +1356,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @throws Throwable
 	 */
 	@Then("File {string} shall not be changed in the filesystem")
@@ -1451,6 +1454,7 @@ public class CucumberStepDefinitions {
 	
 	// save game has the same stepDefs as Save Position...
 	// however, these have been updated to use the newer method of saving (Save Game)
+	// while still being compatible with Save Position
 	
 	// **********************************************
 	// TODO: Load Game starts here
@@ -1486,6 +1490,9 @@ public class CucumberStepDefinitions {
 		}
     }
     
+    /**
+     * @author Mitchell Keeley
+     */
     @And("The game has no final results")
     public void theGameHasNoFinalResults() {
     	Quoridor quoridor = QuoridorApplication.getQuoridor();

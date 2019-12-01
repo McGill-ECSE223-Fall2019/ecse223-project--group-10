@@ -1,15 +1,22 @@
 package ca.mcgill.ecse223.quoridor.view;
 
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JButton;
+import java.awt.Color;
+import java.awt.Font;
+import java.io.IOException;
+import java.sql.Time;
+import java.text.ParseException;
+
+import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
+import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
-import javax.swing.GroupLayout;
-import javax.swing.Icon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.text.MaskFormatter;
 
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameIsDrawn;
 import ca.mcgill.ecse223.quoridor.controller.GameIsFinished;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
@@ -17,20 +24,6 @@ import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.model.Game;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
-
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
-import java.sql.Time;
-import java.awt.Color;
-import java.awt.Component;
-import java.text.ParseException;
-import java.sql.Time;
-
-import ca.mcgill.ecse223.quoridor.QuoridorApplication;
-import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
 public class SetThinkingTimePage extends JFrame {
 	//username and thinking time

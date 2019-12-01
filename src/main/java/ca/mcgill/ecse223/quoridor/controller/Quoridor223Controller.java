@@ -10,17 +10,10 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import javax.management.openmbean.InvalidOpenTypeException;
-import java.util.Map.Entry;
 import java.util.Queue;
-import java.util.Set;
-import java.security.InvalidAlgorithmParameterException;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -609,9 +602,7 @@ public class Quoridor223Controller {
 		} else {
 			savedGame = saveGameToNewFile(relPath);
 		}
-
 		return savedGame;
-	
 	}
 	
 	/**
@@ -637,12 +628,9 @@ public class Quoridor223Controller {
 			// add all the move data from the loadFile to the game
 			loadedGame = getLoadGameDataFromFile(relPath);
 		}
-		
 		return loadedGame;
-		
 	}
-		
-	//TODO: think about how to implement in more than 2 players way
+
 	/**
 	 * Feature 11: ValidatePosition, validate a wall position by checking overlapping walls and player position
 	 * 
@@ -1783,13 +1771,14 @@ public class Quoridor223Controller {
 /////////////////////////////////////////////////////	
 	
 	/////////////////////////////////////////////////
-	//TODO: Mitchell's helper and query methods
+	// TODO: Mitchell's helper and query methods
 	/////////////////////////////////////////////////	
 	
 	/**
 	 * Checks if file exists in the file system
+	 * @author Mitchell Keeley
 	 * @param filename
-	 * @return
+	 * @return file.exists()
 	 */
 	public static boolean checkIfFileExists(String filename) {
 		File file = new File(filename);
@@ -1798,8 +1787,8 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Prompt the user for permission to overwrite the existing file
-	 * 
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @return overwriteApproved
 	 */
 	public static boolean userOverwritePrompt(String filename) {
@@ -1818,7 +1807,6 @@ public class Quoridor223Controller {
 
 	/**
 	 * Save the current position as a file
-	 * 
 	 * @author Mitchell Keeley
 	 * @param filename
 	 * @throws IOException
@@ -1844,8 +1832,6 @@ public class Quoridor223Controller {
 		// add the wall positions
 		for (Move move : currentGame.getMoves()) {
 			// if the move is a wallMove
-			// TODO: validate that instanceof can correctly identify WallMove, may need to
-			// verify if hasDirection
 			if (move instanceof WallMove) {
 				if (move.getPlayer().equals(whitePlayer)) {
 					whitePlayerData = whitePlayerData.concat(", " + tileToString(move.getTargetTile())
@@ -1857,9 +1843,6 @@ public class Quoridor223Controller {
 					// printWriter.printf("%s\n", blackPlayerData);
 				}
 			}
-			// else if the move is a player move
-			// TODO: do nothing since the only relevent player position is the current
-			// player position (for now)
 		}
 		
 		// initialize the printWriter
@@ -1881,7 +1864,6 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Save the current game as a file
-	 * 
 	 * @author Mitchell Keeley
 	 * @param filename
 	 * @throws IOException
@@ -1930,10 +1912,9 @@ public class Quoridor223Controller {
 	/**
 	 * Translate a tile into a save compatible string
 	 * file
-	 * 
 	 * @author Mitchell Keeley
 	 * @param tile
-	 * @return
+	 * @return tileAsString
 	 */
 	public static String tileToString(Tile tile) {
 		int asciiNumberOffset = 48;
@@ -1947,7 +1928,6 @@ public class Quoridor223Controller {
 
 	/**
 	 * Translate a Direction into a save compatible string
-	 * 
 	 * @author Mitchell Keeley
 	 * @param direction
 	 * @return
@@ -1962,8 +1942,9 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Translate a character into the corresponding Direction
+	 * @author Mitchell Keeley
 	 * @param letter
-	 * @return
+	 * @return Direction
 	 */
 	public static Direction charToDirection(char letter) {
 		if (letter == 'h') {
@@ -1975,6 +1956,7 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Write to an existing save file
+	 * @author Mitchell Keeley
 	 * @param filename
 	 * @return success or failure of operation
 	 * @throws IOException
@@ -1994,6 +1976,7 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Create and write to a new save file
+	 * @author Mitchell Keeley
 	 * @param filename
 	 * @return success or failure of operation
 	 * @throws IOException
@@ -2011,8 +1994,9 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Check if the load file is a valid file
+	 * @author Mitchell Keeley
 	 * @param filename
-	 * @return
+	 * @return fileValidity
 	 */
 	public static boolean checkIfLoadFileIsValidFile(String filename) {
 		boolean fileValidity = false;		
@@ -2027,6 +2011,7 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Save game to an existing save file
+	 * @author Mitchell Keeley
 	 * @param filename
 	 * @return success or failure of operation
 	 * @throws IOException
@@ -2046,6 +2031,7 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Save game to a newly created save file
+	 * @author Mitchell Keeley
 	 * @param filename
 	 * @return success or failure of operation
 	 * @throws IOException
@@ -2062,147 +2048,10 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * Load the GamePosition data from the file
-	 * 
-	 * @author Mitchell Keeley
-	 * @param filename
-	 * @return
-	 * @throws IOException 
-	 */
-	private static GamePosition loadGamePositionDataFromFile(File filename, Quoridor quoridor, Game currentGame) throws IOException {
-		GamePosition currentGamePosition = currentGame.getCurrentPosition();
-		Player whitePlayer = currentGame.getWhitePlayer();
-		Player blackPlayer = currentGame.getBlackPlayer();
-		
-		PlayerPosition[] playerPositions = getPlayerPositionsFromFile(filename, quoridor, currentGame);		
-		currentGamePosition.setWhitePosition(playerPositions[0]);
-		currentGamePosition.setBlackPosition(playerPositions[1]);
-				
-		try {
-			// create a file reader
-			BufferedReader fileReader = new BufferedReader(new FileReader(filename));
-
-			// read the file to load the GamePosition
-			String saveFileFirstLine = fileReader.readLine();
-			
-			// if the first line is the white player's data, set the black player as the player to move
-			if(saveFileFirstLine.contains("W:")) {
-				currentGamePosition.setPlayerToMove(whitePlayer);
-			}
-			// else, set the white player as the player to move
-			else {
-				currentGamePosition.setPlayerToMove(blackPlayer);
-			}
-			
-			// clean up resources
-			fileReader.close();
-
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
-
-		return currentGamePosition;
-	}
-
-	/**
-	 * A function to get the PlayerPositions from the file
-	 * 
-	 * @author Mitchell Keeley
-	 * @param filename
-	 * @param playerPosition
-	 * @return
-	 * @throws IOException 
-	 */
-	private static PlayerPosition[] getPlayerPositionsFromFile(File filename, Quoridor quoridor, Game currentGame) throws IOException {
-		Board board = quoridor.getBoard();
-		Tile whiteTile;
-		Tile blackTile;
-		int letterOffset = 9;
-		PlayerPosition whitePlayerPosition;
-		PlayerPosition blackPlayerPosition;
-				
-		try {
-			// create a file reader
-			BufferedReader fileReader = new BufferedReader(new FileReader(filename));
-
-			// read the file to load the GamePosition
-			String saveFileFirstLine = fileReader.readLine();
-			String saveFileSecondLine = fileReader.readLine();
-			
-			// if the white player data is on the first line
-			if(saveFileFirstLine.contains("W:")) {
-				whiteTile = getTile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileFirstLine.charAt(4)));
-				blackTile = getTile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileSecondLine.charAt(4)));
-			}
-			// else, the black player data is on the first line
-			else {
-				blackTile = getTile(Character.getNumericValue(saveFileFirstLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileFirstLine.charAt(4)));
-				whiteTile =getTile(Character.getNumericValue(saveFileSecondLine.charAt(3))-letterOffset, 
-						Character.getNumericValue(saveFileSecondLine.charAt(4)));
-			}
-			
-			// create the new player positions
-			whitePlayerPosition = new PlayerPosition(currentGame.getWhitePlayer(), whiteTile);
-			blackPlayerPosition = new PlayerPosition(currentGame.getBlackPlayer(), blackTile);
-			
-			// clean up resources
-			fileReader.close();
-
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
-		
-		PlayerPosition[] playerPositions = {whitePlayerPosition, blackPlayerPosition};
-		
-		return playerPositions;
-	}
-
-	/**
-	 * A function to get the color of the next player from the file
-	 * 
-	 * @author Mitchell Keeley
-	 * @param filename
-	 * @param playerPosition
-	 * @return
-	 * @throws IOException 
-	 */
-	private static String getColorOfNextPlayerFromFile(String filename) throws IOException {
-		String nextPlayerColor;
-		
-		try {
-			// create a file reader
-			BufferedReader fileReader = new BufferedReader(new FileReader(filename));
-
-			// read the file
-			String saveFileFirstLine = fileReader.readLine();
-			String saveFileSecondLine = fileReader.readLine();
-			
-			// if the first line of the file contains "W:"
-			if(saveFileFirstLine.contains("W:")){
-				//set the next player as the white player
-				nextPlayerColor = "white";
-			} else {
-				//set the next player as the black player
-				nextPlayerColor = "black";
-			}
-						
-			// clean up resources
-			fileReader.close();
-
-		} catch (Exception e) {
-			throw new IOException(e);
-		}
-		
-		return nextPlayerColor;
-	}
-	
-	/**
 	 * Get the load position data from the specified file into the game
+	 * @author Mitchell Keeley
 	 * @param loadFile
-	 * @return
+	 * @return boolean result of operation
 	 */
 	public static boolean getLoadPositionDataFromFile(String loadFile) {		
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -2386,13 +2235,16 @@ public class Quoridor223Controller {
 				indexOfBlackWallsPlaced++;
 			}
 		}
-		
 		return true;
 	}
 	
 	/**
 	 * Using the move data from the load file, attempt the pawn move
-	 * @return
+	 * @author Mitchell Keeley
+	 * @param position
+	 * @param playerPos
+	 * @param colorBehavior
+	 * @return boolean result of operation
 	 * @throws InvalidOperationException 
 	 */
 	public static boolean loadGameTryPawnMove(String position, PlayerPosition playerPos, PawnBehavior colorBehavior) throws InvalidOperationException{
@@ -2468,11 +2320,11 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * Using the data from the load game file, attemp the wall move
+	 * Using the data from the load game file, attempt the wall move
+	 * @author Mitchell Keeley
 	 * @param position
 	 * @param player
-	 * @param gamePosition
-	 * @return
+	 * @return boolean result of the operation
 	 */
 	public static boolean loadGameTryWallMove(String position, Player player) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -2574,8 +2426,9 @@ public class Quoridor223Controller {
 	
 	/**
 	 * Get the load game data from the specified file into the game
+	 * @author Mitchell Keeley
 	 * @param loadFile
-	 * @return
+	 * @return boolean result of the operation
 	 * @throws InvalidOperationException 
 	 * @throws GameNotRunningException 
 	 * @throws GameIsDrawn 
@@ -2779,7 +2632,7 @@ public class Quoridor223Controller {
 	}
 	
 	/////////////////////////////////////////////////
-	//TODO: End of Mitchell's helper and query methods
+	// TODO: End of Mitchell's helper and query methods
 	/////////////////////////////////////////////////
 
 	/**
