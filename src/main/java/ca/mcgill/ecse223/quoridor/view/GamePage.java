@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameIsDrawn;
 import ca.mcgill.ecse223.quoridor.controller.GameIsFinished;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
@@ -249,20 +250,20 @@ public class GamePage extends JFrame {
 					try {
 						Quoridor223Controller.exitReplayMode();
 						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
+						btnLeft.setText("\u2190");
+						btnRight.setText("\u2192");
+						btnUpLeft.setText("\u2196");
+						btnUpRight.setText("\u2197");
+						replayGame.setText("Replay Game");
+						btnUp.setEnabled(true);
+						btnDown.setEnabled(true);
+						btnUpRight.setEnabled(true);
+						btnDownRight.setEnabled(true);
+						btnDownLeft.setEnabled(true);
 						setUpTimer();
 					} catch (InvalidOperationException eReplay) {
 						gameMessage.setText(eReplay.getLocalizedMessage());
 					}
-					btnLeft.setText("\u2190");
-					btnRight.setText("\u2192");
-					btnUpLeft.setText("\u2196");
-					btnUpRight.setText("\u2197");
-					replayGame.setText("Replay Game");
-					btnUp.setEnabled(true);
-					btnDown.setEnabled(true);
-					btnUpRight.setEnabled(true);
-					btnDownRight.setEnabled(true);
-					btnDownLeft.setEnabled(true);
 				} else if(!isReplayMode()) {
 					try {
 						Quoridor223Controller.enterReplayMode();
@@ -687,13 +688,7 @@ public class GamePage extends JFrame {
 
 		newGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				timer.cancel();
-				whiteTime.setText(whiteTimeInit);
-				blackTime.setText(blackTimeInit);
-				Quoridor223Controller.setUpNewGame(whiteTimeInit, blackTimeInit);
-				boardComponent.repaint();
-				gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-				setUpTimer();
+				QuoridorApplication.startGame();
 			}
 		});
 
@@ -891,6 +886,7 @@ public class GamePage extends JFrame {
 	}
 	public void delete() {
 		if(timer!=null)timer.cancel();
+		this.setVisible(false);
 		boardComponent=null;
 	}
 	public void clickRotateWall() {
