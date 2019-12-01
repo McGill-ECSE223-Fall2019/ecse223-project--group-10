@@ -24,7 +24,7 @@ Feature: Load Game
       | quoridor_test_game_1.mov | white  |     3 |     5 | black    |     7 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               9 |
       | quoridor_test_game_2.mov | white  |     2 |     5 | black    |     8 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               8 |
 
-  Scenario Outline: Load valid incomplete game 
+  Scenario Outline: Load valid complete game 
     When I initiate to load a game in "<filename>"
     And Each game move is valid
     And The game has a final result
@@ -41,8 +41,14 @@ Feature: Load Game
     Then The game shall notify the user that the game file is invalid
 
     Examples: 
-      | filename                                 |
-      | quoridor_test_game_invalid_pawn_move.mov |
-      | quoridor_test_game_invalid_wall_move.mov |
-      | quoridor_test_game_invalid_jump_move.mov |
-
+      | filename                                  |
+      | quoridor_test_game_invalid_pawn_move.mov  |
+      | quoridor_test_game_invalid_pawn_move1.mov |
+			| quoridor_test_game_invalid_pawn_move2.mov |
+			| quoridor_test_game_invalid_pawn_move3.mov |           
+      | quoridor_test_game_invalid_wall_move.mov  |
+      | quoridor_test_game_invalid_wall_move1.mov |
+      | quoridor_test_game_invalid_wall_move2.mov |
+      | quoridor_test_game_invalid_jump_move.mov  |
+      | quoridor_test_game_invalid_jump_move1.mov |
+      | quoridor_test_game_invalid_jump_move2.mov |

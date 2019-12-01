@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.GameIsDrawn;
 import ca.mcgill.ecse223.quoridor.controller.GameIsFinished;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
@@ -54,8 +55,9 @@ public class GamePage extends JFrame {
 	private String whiteTimeInit;
 	private JLabel blackTime;
 	private String blackTimeInit;
-	private boolean whiteClockIsRunning = true;
-	private boolean blackClockIsRunning = true;
+
+	private boolean whiteClockIsRunning = false;
+	private boolean blackClockIsRunning = false;
 
 	// grab, drop, rotate wall button
 	private JButton grabWall;
@@ -66,11 +68,11 @@ public class GamePage extends JFrame {
 	private JButton forfeit;
 	private JButton saveGame;
 	private JButton newGame;
-	private JButton replayGame;
+	public JButton replayGame;
 	private JButton btnOfferDraw;
 
 	// player's turn
-	private static JLabel gameMessage;
+	public JLabel gameMessage;
 
 	// Move buttons
 	private JButton btnUp;
@@ -245,34 +247,37 @@ public class GamePage extends JFrame {
 		replayGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				if(isReplayMode()) {
-					btnLeft.setText("\u2190");
-					btnRight.setText("\u2192");
-					btnUpLeft.setText("\u2196");
-					btnUpRight.setText("\u2197");
-					replayGame.setText("Replay Game");
-					btnUp.setEnabled(true);
-					btnDown.setEnabled(true);
-					btnUpRight.setEnabled(true);
-					
-					btnDownRight.setEnabled(true);
-					btnDownLeft.setEnabled(true);
 					try {
 						Quoridor223Controller.exitReplayMode();
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
+						btnLeft.setText("\u2190");
+						btnRight.setText("\u2192");
+						btnUpLeft.setText("\u2196");
+						btnUpRight.setText("\u2197");
+						replayGame.setText("Replay Game");
+						btnUp.setEnabled(true);
+						btnDown.setEnabled(true);
+						btnUpRight.setEnabled(true);
+						btnDownRight.setEnabled(true);
+						btnDownLeft.setEnabled(true);
+						setUpTimer();
 					} catch (InvalidOperationException eReplay) {
 						gameMessage.setText(eReplay.getLocalizedMessage());
 					}
 				} else if(!isReplayMode()) {
-					btnLeft.setText("\u2190");
-					btnRight.setText("\u2192");
-					btnUpLeft.setText("\u21e4");
-					btnUpRight.setText("\u21e5");
-					replayGame.setText("Exit Replay");
-					btnUp.setEnabled(false);
-					btnDown.setEnabled(false);
-					btnDownRight.setEnabled(false);
-					btnDownLeft.setEnabled(false);
 					try {
 						Quoridor223Controller.enterReplayMode();
+						timer.cancel();
+						gameMessage.setText("In Replay Mode");
+						btnLeft.setText("\u2190");
+						btnRight.setText("\u2192");
+						btnUpLeft.setText("\u21e4");
+						btnUpRight.setText("\u21e5");
+						replayGame.setText("Exit Replay");
+						btnUp.setEnabled(false);
+						btnDown.setEnabled(false);
+						btnDownRight.setEnabled(false);
+						btnDownLeft.setEnabled(false);
 					} catch (GameNotRunningException eReplay) {
 						gameMessage.setText(eReplay.getLocalizedMessage());
 					} catch (InvalidOperationException eReplay) {
@@ -299,16 +304,16 @@ public class GamePage extends JFrame {
 				} else if(!hasWallInHand()) {
 					try {
 						Quoridor223Controller.grabWall();
+						grabWall.setText("Cancel");
+						btnUpRight.setEnabled(false);
+						btnUpLeft.setEnabled(false);
+						btnDownRight.setEnabled(false);
+						btnDownLeft.setEnabled(false);
 					} catch (InvalidOperationException eGrab) {
 						gameMessage.setText(eGrab.getLocalizedMessage());
 					} catch (GameNotRunningException eGrab) {
 						gameMessage.setText(eGrab.getLocalizedMessage());
 					}
-					grabWall.setText("Cancel");
-					btnUpRight.setEnabled(false);
-					btnUpLeft.setEnabled(false);
-					btnDownRight.setEnabled(false);
-					btnDownLeft.setEnabled(false);
 				}
 
 				
@@ -339,6 +344,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.Up);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -371,6 +377,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.Down);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -414,6 +421,7 @@ public class GamePage extends JFrame {
 					} else {
 						try {
 							Quoridor223Controller.movePawn(TOPlayer.Side.Left);
+							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 						} catch (GameNotRunningException ex) {
 							gameMessage.setText(ex.getLocalizedMessage());
 						} catch (InvalidOperationException ex) {
@@ -438,6 +446,7 @@ public class GamePage extends JFrame {
 						//if(Quoridor223Controller.hasWallMoveCandidate()) Quoridor223Controller.moveWall(TOWall.Side.Left);
 						//else Quoridor223Controller.movePlayer(TOWall.Side.Left);
 						Quoridor223Controller.StepForward();
+						
 					}catch (InvalidOperationException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 						// TODO: handle exception
@@ -458,6 +467,7 @@ public class GamePage extends JFrame {
 					} else {
 						try {
 							Quoridor223Controller.movePawn(TOPlayer.Side.Right);
+							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 						} catch (GameNotRunningException ex) {
 							gameMessage.setText(ex.getLocalizedMessage());
 						} catch (InvalidOperationException ex) {
@@ -490,6 +500,7 @@ public class GamePage extends JFrame {
 					} else {
 						try {
 							Quoridor223Controller.movePawn(TOPlayer.Side.UpRight);
+							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 						} catch (GameNotRunningException ex) {
 							gameMessage.setText(ex.getLocalizedMessage());
 						} catch (InvalidOperationException ex) {
@@ -521,6 +532,7 @@ public class GamePage extends JFrame {
 					} else {
 						try {
 							Quoridor223Controller.movePawn(TOPlayer.Side.UpLeft);
+							gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 						} catch (GameNotRunningException ex) {
 							gameMessage.setText(ex.getLocalizedMessage());
 						} catch (InvalidOperationException ex) {
@@ -570,6 +582,7 @@ public class GamePage extends JFrame {
 				} else {
 					try {
 						Quoridor223Controller.movePawn(TOPlayer.Side.DownLeft);
+						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (GameNotRunningException ex) {
 						gameMessage.setText(ex.getLocalizedMessage());
 					} catch (InvalidOperationException ex) {
@@ -640,6 +653,9 @@ public class GamePage extends JFrame {
 					}
 				}catch (GameNotRunningException e){
 					gameMessage.setText(e.getLocalizedMessage());
+				} catch (GameIsFinished e) {
+					// TODO Auto-generated catch block
+					gameMessage.setText(e.getLocalizedMessage());
 				}
 			}
 		});
@@ -672,13 +688,7 @@ public class GamePage extends JFrame {
 
 		newGame.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				timer.cancel();
-				whiteTime.setText(whiteTimeInit);
-				blackTime.setText(blackTimeInit);
-				Quoridor223Controller.setUpNewGame(whiteTimeInit, blackTimeInit);
-				boardComponent.repaint();
-				gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
-				setUpTimer();
+				QuoridorApplication.startGame();
 			}
 		});
 
@@ -722,6 +732,9 @@ public class GamePage extends JFrame {
 			}
 		}catch (GameNotRunningException e){
 			gameMessage.setText(e.getLocalizedMessage());
+		} catch (GameIsFinished e) {
+			// TODO Auto-generated catch block
+			gameMessage.setText(e.getLocalizedMessage());
 		}
 		
 	}
@@ -729,6 +742,7 @@ public class GamePage extends JFrame {
 		timer.cancel();
 		whiteClockIsRunning = blackClockIsRunning = false;
 	}
+	
 
 	private void initFrame() {
 		this.setSize(1035, 720);
@@ -744,7 +758,8 @@ public class GamePage extends JFrame {
 		
 		if (filename != null) {
 			try {
-				saveSuccessful = Quoridor223Controller.savePosition(filename);
+				// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
+				saveSuccessful = Quoridor223Controller.saveGame(filename);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -761,7 +776,8 @@ public class GamePage extends JFrame {
 				
 				// otherwise, keep trying to save
 				try {
-					saveSuccessful = Quoridor223Controller.savePosition(filename);
+					// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
+					saveSuccessful = Quoridor223Controller.saveGame(filename);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
@@ -804,6 +820,10 @@ public class GamePage extends JFrame {
 	
 	public boolean getWhiteClockStatus() {
 		return whiteClockIsRunning;
+	}
+	
+	public boolean getBlackClockStatus() {
+		return blackClockIsRunning;
 	}
 	
 	public void clickMoveWall(String dir) {
@@ -866,6 +886,7 @@ public class GamePage extends JFrame {
 	}
 	public void delete() {
 		if(timer!=null)timer.cancel();
+		this.setVisible(false);
 		boardComponent=null;
 	}
 	public void clickRotateWall() {
@@ -882,6 +903,9 @@ public class GamePage extends JFrame {
 	}
 	public void clickForfeit() {
 		forfeit.doClick();
+	}
+	public void clickReplayGame() {
+		replayGame.doClick();
 	}
 	
 	public void setWhiteTime(String time) {

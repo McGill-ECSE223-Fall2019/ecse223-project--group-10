@@ -15,10 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.naming.OperationNotSupportedException;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.GameIsDrawn;
+import ca.mcgill.ecse223.quoridor.controller.GameIsFinished;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.PawnBehavior;
@@ -60,14 +63,18 @@ public class CucumberStepDefinitions {
 	private String cucumberFilename	= null;
 	private GamePage gamePage;
 	private boolean loadSuccessful = false;
+	private boolean enterReplayMode = false;
 	private ArrayList<Player> createUsersAndPlayers;
 	private String gameDirectory = "./src/main/resources/gameFiles/";
 	private String playerTryingToMove = null;
+	private String inner_message_check_path = null;
 
 	@Given("^The game is not running$")
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
 		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		//Game curGame =QuoridorApplication.getQuoridor().getCurrentGame();
+		//curGame.getCurrentPosition().getWhitePosition().setTile(Quoridor223Controller.getTile(row, col))
 	}
 
 	@Given("^The game is running$")
@@ -122,7 +129,9 @@ public class CucumberStepDefinitions {
 			default:
 				throw new IllegalArgumentException("Unsupported wall direction was provided");
 			}
-			new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
+			WallMove mv =new WallMove(0, 1, players[playerIdx], quoridor.getBoard().getTile((wrow - 1) * 9 + wcol - 1), quoridor.getCurrentGame(), direction, wall);
+			quoridor.getCurrentGame().addMove(mv);
+			quoridor.getCurrentGame().setWallMoveCandidate(null);
 			if (playerIdx == 0) {
 				quoridor.getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
 				quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
@@ -869,6 +878,21 @@ public class CucumberStepDefinitions {
 		return current_position.setTile(new_position);
 	}
 	
+	/**
+	 * @author Sacha Lévy
+	 * */
+	private boolean setPlayerPosition(String player, int row, int col) {
+		// defines walls near the player
+		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
+		PlayerPosition current_position;
+		
+		// player to move has been defined precedently
+		if(player.equals("black")) current_position = current_game.getCurrentPosition().getBlackPosition();
+		else current_position = current_game.getCurrentPosition().getWhitePosition();
+		Tile new_position = Quoridor223Controller.getTile(row, col);
+		return current_position.setTile(new_position);
+	}
+	
 	// **********************************************
 	// GrabWall and RotateWall
 	// **********************************************
@@ -1092,7 +1116,7 @@ public class CucumberStepDefinitions {
 	public void aWallMoveIsRegisteredWithDirAtPositionRowCol(String direction, int row, int col) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game curGame = quoridor.getCurrentGame();
-		WallMove move = (WallMove) curGame.getMove(0);
+		WallMove move = (WallMove) curGame.getMove(curGame.getMoves().size()-1);
 		Tile target = move.getTargetTile();
 		Direction expected = (direction.equalsIgnoreCase("horizontal") ? Direction.Horizontal : Direction.Vertical);
 		assertEquals(expected, move.getWallDirection());
@@ -1109,7 +1133,7 @@ public class CucumberStepDefinitions {
 		//
 		// throw new PendingException();
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		assertEquals(curGame.getMove(0), initialMove);
+		assertEquals(curGame.getMove(curGame.getMoves().size()-1), initialMove);
 
 	}
 
@@ -1265,7 +1289,7 @@ public class CucumberStepDefinitions {
 	@Given("No file {string} exists in the filesystem")
 	public void noFileFilenameExistsInTheFilesystem(String filename) {
 		cucumberFilename = filename;
-		deleteFileIfItExists(filename);
+		deleteFileIfItExists(gameDirectory + filename);
 	}
 
 	/**
@@ -1275,7 +1299,7 @@ public class CucumberStepDefinitions {
 	@When("The user initiates to save the game with name {string}")
 	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) throws Throwable {
 		cucumberFilename = filename;
-		Quoridor223Controller.checkIfFileExists(filename);
+		Quoridor223Controller.checkIfFileExists(gameDirectory + filename);
 	}
 
 	/**
@@ -1286,7 +1310,7 @@ public class CucumberStepDefinitions {
 	@Then("A file with {string} shall be created in the filesystem")
 	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws IOException {
 		cucumberFilename = filename;
-		Boolean result = Quoridor223Controller.saveCurrentGamePositionAsFile(gameDirectory + filename);
+		Boolean result = Quoridor223Controller.saveCurrentGameAsFile(gameDirectory + filename);
 		assertTrue("File is not a valid save file", result);
 	}
 
@@ -1297,7 +1321,7 @@ public class CucumberStepDefinitions {
 	@Given("File {string} exists in the filesystem")
 	public void fileFilenameExistsInTheFilesystem(String filename) throws IOException {
 		cucumberFilename = filename;
-		ensureFileExists(filename);
+		ensureFileExists(gameDirectory + filename);
 	}
 
 	/**
@@ -1316,7 +1340,7 @@ public class CucumberStepDefinitions {
 	@Then("File with {string} shall be updated in the filesystem")
 	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
 		cucumberFilename = filename;
-		assertTrue("The file was not modified", simulateUserAttemptingToOverwriteFile(filename, JOptionPane.YES_OPTION));
+		assertTrue("The file was not modified", simulateUserAttemptingToOverwriteFile(gameDirectory + filename, JOptionPane.YES_OPTION));
 	}
 
 	/**
@@ -1335,7 +1359,7 @@ public class CucumberStepDefinitions {
 	@Then("File {string} shall not be changed in the filesystem")
 	public void fileFilenameShallNotBeChangedInTheFilesystem(String filename) throws Throwable {
 		cucumberFilename = filename;
-		assertFalse("The file was modified", simulateUserAttemptingToOverwriteFile(filename, JOptionPane.NO_OPTION));
+		assertFalse("The file was modified", simulateUserAttemptingToOverwriteFile(gameDirectory + filename, JOptionPane.NO_OPTION));
 	}
 
 	// **********************************************
@@ -1351,17 +1375,9 @@ public class CucumberStepDefinitions {
 	public void iInitiateToLoadASavedGame(String filename) throws IOException {
 		cucumberFilename = filename;
 		createAndPrepareGame(createUsersAndPlayers);
-		Quoridor223Controller.checkLoadFileIsValid(filename);
+		Quoridor223Controller.checkIfLoadFileIsValidFile(gameDirectory + filename);
 	}
 
-	/**
-	 * @author Mitchell Keeley
-	 */
-	@And("The position to load is valid")
-	public void thePositionToLoadIsValid() {
-		loadSuccessful = Quoridor223Controller.loadMoveDataFromFile(gameDirectory + cucumberFilename);
-	}
-	
 	/**
 	 * @author Mitchell Keeley
 	 * @param playerColor
@@ -1414,7 +1430,7 @@ public class CucumberStepDefinitions {
 	@And("The position to load is invalid")
 	public void thePositionToLoadIsInvalid() {
 		try{
-			loadSuccessful = Quoridor223Controller.loadMoveDataFromFile(gameDirectory + cucumberFilename);
+			loadSuccessful = Quoridor223Controller.getLoadPositionDataFromFile(gameDirectory + cucumberFilename);
 		} catch (Exception e){
 			loadSuccessful = false;
 		}
@@ -1428,11 +1444,102 @@ public class CucumberStepDefinitions {
 	public void theLoadShallReturnAnError() throws IOException {
 		assertFalse("Invalid load does not return an error", loadSuccessful);
 	}
+		
+	// **********************************************
+	// TODO: Save Game starts here
+	// **********************************************
+	
+	// save game has the same stepDefs as Save Position...
+	// however, these have been updated to use the newer method of saving (Save Game)
 	
 	// **********************************************
-	// TODO: Save Position and Load Position end here
+	// TODO: Load Game starts here
 	// **********************************************
-
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @param filename
+	 */
+    @When("I initiate to load a game in {string}")
+    public void iInitiateToLoadAGameInFilename(String filename) {
+    	cucumberFilename = filename;
+		createAndPrepareGame(createUsersAndPlayers);
+		Quoridor223Controller.checkIfLoadFileIsValidFile(gameDirectory + filename);
+    }
+    
+    /**
+     * @author Mitchell Keeley
+     * @throws InvalidOperationException 
+     * @throws GameNotRunningException 
+     * @throws GameIsFinished 
+     * @throws GameIsDrawn 
+     */
+    @And("Each game move is valid")
+    public void eachGameMoveIsValid() throws GameNotRunningException, InvalidOperationException {
+    	try {
+    		loadSuccessful = Quoridor223Controller.getLoadGameDataFromFile(gameDirectory + cucumberFilename);
+    	} catch(GameIsDrawn | GameIsFinished ex) {
+			// GamePage normally catches these exceptions and then sets to replay mode
+    		// Due to the order of operations, this is handled in another step
+    		QuoridorApplication.getQuoridor().getCurrentGame().setIsFinished(true);
+    		enterReplayMode = true;
+		}
+    }
+    
+    @And("The game has no final results")
+    public void theGameHasNoFinalResults() {
+    	Quoridor quoridor = QuoridorApplication.getQuoridor();
+    	GameStatus status = quoridor.getCurrentGame().getGameStatus();
+    	boolean ended = status.equals(GameStatus.BlackWon) ||
+    			status.equals(GameStatus.WhiteWon) ||
+    			status.equals(GameStatus.Draw);
+    	assertFalse("The game is no longer running", ended);
+    }
+    
+	/**
+	 * @author Mitchell Keeley
+	 * @throws InvalidOperationException 
+	 * @throws GameNotRunningException 
+	 */
+	@And("The position to load is valid")
+	public void thePositionToLoadIsValid() throws GameNotRunningException, InvalidOperationException {
+		if(cucumberFilename.contains(".dat")) {
+			loadSuccessful = Quoridor223Controller.getLoadPositionDataFromFile(gameDirectory + cucumberFilename);
+		} else {
+			// redundant step taken care of by ("Each game move is valid")
+			//loadSuccessful = Quoridor223Controller.getLoadGameDataFromFile(gameDirectory + cucumberFilename);
+			// here is where we actually enter replay mode, since the order of tests requires it
+			if(enterReplayMode) {
+				Quoridor223Controller.enterReplayMode();
+			}
+		}
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
+	 */
+	@And("The game to load has an invalid move")
+	public void theGameToLoadHasAnInvalidMove() throws GameNotRunningException, InvalidOperationException {
+		try {
+			loadSuccessful = Quoridor223Controller.getLoadGameDataFromFile(gameDirectory + cucumberFilename);
+		} catch(GameIsDrawn | GameIsFinished ex) {
+			// GamePage normally catches these exceptions and then sets to replay mode
+			// Due to the order of operations, this is handled in another step
+			enterReplayMode = true;
+		}
+	}
+    
+	/**
+	 * @author Mitchell Keeley
+	 * @throws OperationNotSupportedException 
+	 */
+	@Then("The game shall notify the user that the game file is invalid")
+	public void theGameShallNotifyTheUserThatTheGameFileIsInvalid() throws OperationNotSupportedException {
+		assertFalse("Invalid load does not return an error", loadSuccessful);
+	}
+	
 	// ***********************************************
 	// Clean up
 	// ***********************************************
@@ -1481,6 +1588,18 @@ public class CucumberStepDefinitions {
 	@When("I initiate replay mode")
 	public void initiateReplayMode() throws GameNotRunningException, InvalidOperationException {
 		
+		createAndStartGame(createUsersAndPlayers);
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
+		GamePosition curPos = quoridor.getCurrentGame().getCurrentPosition();
+		curPos.getBlackPosition().setTile(blackPlayerTile);
+		curPos.getWhitePosition().setTile(whitePlayerTile);
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
+		gamePage = new GamePage();
 		Quoridor223Controller.enterReplayMode();
 		
 	}
@@ -1495,7 +1614,30 @@ public class CucumberStepDefinitions {
 	/**
 	 * Scenario: Continue an unfinished game
 	 * @author Vanessa Ifrah
+	 * @throws InvalidOperationException 
+	 * @throws GameNotRunningException 
 	 */
+	@Given("The game is replay mode")
+	public void gameIsReplayMode() throws GameNotRunningException, InvalidOperationException {
+		
+		initQuoridorAndBoard();
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		createAndStartGame(createUsersAndPlayers);
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
+		GamePosition curPos = quoridor.getCurrentGame().getCurrentPosition();
+		curPos.getBlackPosition().setTile(blackPlayerTile);
+		curPos.getWhitePosition().setTile(whitePlayerTile);
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
+		gamePage = new GamePage();
+		Quoridor223Controller.enterReplayMode();
+
+	}
+	
 	@And("The game does not have a final result")
 	public void gameDoesNotHaveAFinalResult() {
 		
@@ -1517,8 +1659,7 @@ public class CucumberStepDefinitions {
 	@When("I initiate to continue game")
 	public void initiateToContinueGame() {
 		
-//		uncomment line below when Shuby's method is pushed to master
-//		gamePage.clickReplayGame();
+		gamePage.clickReplayGame();
 		
 	}
 	
@@ -1532,46 +1673,20 @@ public class CucumberStepDefinitions {
 		assertTrue(currPosition.equals(gamePositions.get(gamePositions.size()-1)));
 		
 	}
-	
+
 	/**
 	 * Scenario: Continue a finished game
 	 * @author Vanessa Ifrah
 	 */
-	@Given("The game is replay mode")
-	public void gameIsReplayMode() {
-		
-		initQuoridorAndBoard();
-		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
-		createAndStartGame(createUsersAndPlayers);
-		QuoridorApplication.GetWhitePawnBehavior();
-		QuoridorApplication.GetBlackPawnBehavior();
-		gamePage = new GamePage();
-		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
-		
-	}
-	
 	@And("The game has a final result")
 	public void theGameHasAFinalResult() {
-		
-		boolean hasFinalResult = false;
-		GameStatus gamestatus = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
-		
-		if (gamestatus == GameStatus.WhiteWon || 
-				gamestatus == GameStatus.BlackWon ||
-				gamestatus == GameStatus.Draw) {
-			
-			hasFinalResult = true;
-			
-		}
-		
-		assertTrue(hasFinalResult);
-		
+		assertTrue(QuoridorApplication.getQuoridor().getCurrentGame().getIsFinished());		
 	}
 	
 	@And("I shall be notified that finished games cannot be continued")
 	public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
 		
-		assertEquals(gamePage.getDialogBoxText(), "Game finished");
+		assertEquals(gamePage.getDialogBoxText(), "Game Finished: Can't Continue Game");
 		
 	}
 
@@ -1597,6 +1712,10 @@ public class CucumberStepDefinitions {
 		gamePage = new GamePage();
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
 	}
+	/**
+	 * @author Le-Li Mao
+	 * @param dataTable
+	 */
 	@Given("The following moves have been played in game:")
 	public void theFollowingMoveHaveBeenPalyedInGame(io.cucumber.datatable.DataTable dataTable) {
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Running);
@@ -1613,7 +1732,10 @@ public class CucumberStepDefinitions {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		boolean isWhite = curGame.getCurrentPosition().getPlayerToMove().equals(curGame.getWhitePlayer());
 		PlayerPosition curPos = isWhite? curGame.getCurrentPosition().getWhitePosition():curGame.getCurrentPosition().getBlackPosition();
-		if(move.length()==3) {
+		if( move.length()==3&&move.charAt(1)=='-') {
+			gamePage.clickForfeit();
+		}
+		else if(move.length()==3) {
 			int row = move.charAt(1)-'0';
 			int col = move.charAt(0)-'a'+1;
 			boolean horizontal = move.charAt(2)=='h';
@@ -1639,12 +1761,21 @@ public class CucumberStepDefinitions {
 			else gamePage.clickMovePlayer("right");
 		}
 	}
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param movno
+	 * @param rndno
+	 */
 	@And("The next move is {int}.{int}")
 	public void theNextMoveIs(int movno, int rndno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
 		int ind = (movno-1)*2+rndno-1;
 		curGame.setCurrentPosition(curGame.getPosition(ind));
 	}
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @throws InvalidOperationException
+	 */
 	@When("Jump to start position is initiated")
 	public void jumpToStartPositionIsInitiated() throws InvalidOperationException {
 //		gamePage.clickJumpStart();
@@ -1654,6 +1785,10 @@ public class CucumberStepDefinitions {
 			System.out.println(e.getMessage());
 		}
 	}
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @throws InvalidOperationException
+	 */
 	@When("Jump to final position is initiated")
 	public void jumpToFinalPositionIsInitiated() throws InvalidOperationException {
 //		gamePage.clickJumpFinal();
@@ -1663,6 +1798,10 @@ public class CucumberStepDefinitions {
 			System.out.println(e.getMessage());
 		}
 	}
+    /**
+     * @author Le-Li Mao
+     * @throws InvalidOperationException
+     */
     @When("Step forward is initiated")
 	public void Stepforward() throws InvalidOperationException{
 		//call controller
@@ -1673,6 +1812,10 @@ public class CucumberStepDefinitions {
 		}
 
 	}
+    /**
+     * @author Le-Li Mao
+     * @throws InvalidOperationException
+     */
     @When("Step backward is initiated")
 	public void Stepbackward() throws InvalidOperationException{
 		//call controller
@@ -1682,6 +1825,11 @@ public class CucumberStepDefinitions {
     		System.out.println(e.getMessage());
     	}
 	}
+	/**
+	 * @author Le-Li Mao
+	 * @param nmov
+	 * @param nrnd
+	 */
 	@Then("The next move shall be {int}.{int}")
 	public void theNextMoveShallBe(int nmov, int nrnd) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
@@ -1709,6 +1857,11 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param wrow
+	 * @param wcol
+	 */
 	@And("White player's position shall be \\({int},{int})")
 	public void whitePlayersPositionShallBe(int wrow, int wcol) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1721,6 +1874,11 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param brow
+	 * @param bcol
+	 */
 	@And("Black player's position shall be \\({int},{int})")
 	public void blackPlayersPositionShallBe(int brow, int bcol) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1732,6 +1890,10 @@ public class CucumberStepDefinitions {
 		assertEquals(bcol, curBlackCol);
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param wwallno
+	 */
 	@And("White has {int} on stock")
 	public void whiteHasOnStock(int wwallno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1740,6 +1902,10 @@ public class CucumberStepDefinitions {
 		assertEquals(wwallno, curWhiteStock);
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param bwallno
+	 */
 	@And("Black has {int} on stock")
 	public void blackHasOnStock(int bwallno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
@@ -1894,7 +2060,7 @@ public class CucumberStepDefinitions {
 		Tile player1StartPos = quoridor.getBoard().getTile(36);
 		Tile player2StartPos = quoridor.getBoard().getTile(44);
 
-		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, quoridor);
+		Game game = new Game(GameStatus.Running,false, MoveMode.PlayerMove, quoridor);
 		game.setWhitePlayer(players.get(0));
 		game.setBlackPlayer(players.get(1));
 
@@ -1927,10 +2093,10 @@ public class CucumberStepDefinitions {
 		// There are total 36 tiles in the first four rows and
 		// indexing starts from 0 -> tiles with indices 36 and 36+8=44 are the starting
 		// positions
-		Tile player1StartPos = quoridor.getBoard().getTile(36);
-		Tile player2StartPos = quoridor.getBoard().getTile(44);
+		Tile player1StartPos = quoridor.getBoard().getTile(76);
+		Tile player2StartPos = quoridor.getBoard().getTile(4);
 		
-		Game game = new Game(GameStatus.ReadyToStart, MoveMode.PlayerMove, quoridor);
+		Game game = new Game(GameStatus.ReadyToStart, false, MoveMode.PlayerMove, quoridor);
 		game.setWhitePlayer(players.get(0));
 		game.setBlackPlayer(players.get(1));
 
@@ -1949,6 +2115,12 @@ public class CucumberStepDefinitions {
 			gamePosition.addBlackWallsInStock(wall);
 		}
 		game.setCurrentPosition(gamePosition);
+		
+		PawnBehavior whitebehavior = QuoridorApplication.CreateNewWhitePawnBehavior();
+		PawnBehavior blackbehavior = QuoridorApplication.CreateNewBlackPawnBehavior();
+		whitebehavior.startGame();
+		blackbehavior.startGame();
+		
 		gamePage = new GamePage();
 	}
 		
@@ -2047,7 +2219,7 @@ public class CucumberStepDefinitions {
 	 * @param filename
 	 */
 	private void deleteFileIfItExists(String filename) {
-		File file = new File(gameDirectory + filename);
+		File file = new File(filename);
 		if(file.exists() && file.isFile()) {
 			file.delete();
 		}
@@ -2062,7 +2234,7 @@ public class CucumberStepDefinitions {
 	 * @throws IOException
 	 */
 	private void ensureFileExists(String filename) throws IOException {
-		File file = new File(gameDirectory + filename);
+		File file = new File(filename);
 		if (!file.exists()) {
 			file.createNewFile();
 		}
@@ -2080,7 +2252,7 @@ public class CucumberStepDefinitions {
 		
 		if(cucumberUserOverwritePrompt(userInput)) {
 			try {
-				fileUpdated = Quoridor223Controller.saveCurrentGamePositionAsFile(gameDirectory + filename);
+				fileUpdated = Quoridor223Controller.saveCurrentGameAsFile(filename);
 			} catch (IOException e) {
 				return fileUpdated;
 			}
@@ -2118,10 +2290,9 @@ public class CucumberStepDefinitions {
 	 * @return
 	 */
 	public static boolean checkCurrentPlayerToMoveByColor(String playerColor) {
-		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
-		return game.getCurrentPosition().getPlayerToMove().equals(getPlayerByColor(playerColor));
+		return curPlayer.equals(getPlayerByColor(playerColor));
 	}
 	
 	/**
@@ -2411,7 +2582,110 @@ public class CucumberStepDefinitions {
 	public void the_position_shall_be_invalid() throws InvalidOperationException {
 	    assertEquals("invalid", Quoridor223Controller.isPositionValid());
 	}
+// checkPath feature
+	
+	@Given("A {string} wall move candidate exists at position {int}:{int}")
+	public void a_wall_move_candidate_exists_at_position(String string, Integer int1, Integer int2) {
+	    Direction dir;
+		if(string.equals("horizontal")) dir = Direction.Horizontal;
+		else dir = Direction.Vertical;
+		Quoridor223Controller.createNewWallMoveCandidate(int1, int2, dir);
+	}
 
+	@Given("The black player is located at {int}:{int}")
+	public void the_black_player_is_located_at(Integer int1, Integer int2) {
+		assertTrue(setPlayerPosition("black", int1, int2));
+	}
+
+	@Given("The white player is located at {int}:{int}")
+	public void the_white_player_is_located_at(Integer int1, Integer int2) {
+		assertTrue(setPlayerPosition("white", int1, int2));
+	}
+
+	@When("Check path existence is initiated")
+	public void check_path_existence_is_initiated() throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException {
+		inner_message_check_path = "both";
+		String inner_message = "";
+		try{
+			Quoridor223Controller.dropWall();
+		}
+		catch (InvalidOperationException e){
+			inner_message = e.getMessage();
+		}
+		if(inner_message.equals("black is blocked")) inner_message_check_path="white";
+		if(inner_message.equals("white is blocked")) inner_message_check_path="black";
+		if(inner_message.equals("both are blocked")) inner_message_check_path="none";
+	}
+
+	@Then("Path is available for {string} player\\(s)")
+	public void path_is_available_for_player_s(String string) throws InvalidOperationException {
+		assertEquals(string, inner_message_check_path);
+		//assertEquals(string, string);
+	}
+	
+// ReportFinalResult
+	@When("The game is no longer running")
+	public void the_game_is_no_longer_running() throws GameNotRunningException {
+		initQuoridorAndBoard();
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		createAndStartGame(createUsersAndPlayers);
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
+		QuoridorApplication.GetWhitePawnBehavior();
+		QuoridorApplication.GetBlackPawnBehavior();
+		gamePage = new GamePage();
+		gamePage.clickForfeit();
+	}
+
+	@Then("The final result shall be displayed")
+	public void the_final_result_shall_be_displayed() {
+		boolean isDisplayed = false;
+		// update with an actual check when the game has finished
+		String final_text =  gamePage.getDialogBoxText();
+		System.out.println(final_text);
+		
+		if(final_text.substring(0, 13).equalsIgnoreCase("Game Finished")) isDisplayed = true;
+	    assertTrue("final_result is displayed", isDisplayed);
+	}
+
+	@Then("White's clock shall not be counting down")
+	public void white_s_clock_shall_not_be_counting_down() {
+	    assertFalse("white clock is not running", gamePage.getWhiteClockStatus());
+	}
+
+	@Then("Black's clock shall not be counting down")
+	public void black_s_clock_shall_not_be_counting_down() {
+	    assertFalse("black clock is not running", gamePage.getBlackClockStatus());
+	}
+
+	@Then("White shall be unable to move")
+	public void white_shall_be_unable_to_move() {
+	    assertFalse("white player is unable to move", isWhitePlayerAbleToMove());
+	}
+
+	@Then("Black shall be unable to move")
+	public void black_shall_be_unable_to_move() {
+		assertFalse("black player is unable to move", isBlackPlayerAbleToMove());
+	}
+	
+	private boolean isWhitePlayerAbleToMove() {
+		// set the white player to be moving
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		game.getCurrentPosition().setPlayerToMove(game.getWhitePlayer());
+		gamePage.clickMovePlayer("up");
+		if(gamePage.getDialogBoxText().equals("Game not running")) return false;
+		return true;
+	}
+
+	private boolean isBlackPlayerAbleToMove() {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		game.getCurrentPosition().setPlayerToMove(game.getBlackPlayer());
+		gamePage.clickMovePlayer("up");
+		if(gamePage.getDialogBoxText().equals("Game not running")) return false;
+		return true;
+	}
 // Switch Current Player feature
 	/**
 	 * @author Sacha Lévy

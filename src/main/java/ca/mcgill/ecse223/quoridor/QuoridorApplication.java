@@ -16,9 +16,7 @@ public class QuoridorApplication {
 	private static WelcomePage lobby;
 	private static SetNamePage namePage;
 	public static void main(String[] args) {
-
-	lobby = new WelcomePage();
-	lobby.setVisible(true);
+		startGame();
 	}
 
 	public static Quoridor getQuoridor() {
@@ -52,6 +50,7 @@ public class QuoridorApplication {
 	public static void delete() {
 		if(blackBehavior!=null)blackBehavior.delete();
 		if(whiteBehavior!=null)whiteBehavior.delete();
+		if(quoridor!=null)quoridor.delete();
 		if(game!=null)game.delete();
 		blackBehavior= null;
 		whiteBehavior= null;
@@ -68,7 +67,11 @@ public class QuoridorApplication {
 		game.setVisible(true);
 		game.setResizable(false);
 	}
-	
+	public static void startGame() {
+		delete();
+		lobby = new WelcomePage();
+		lobby.setVisible(true);
+	}
 	public static GamePage getMainPage() {
 		return game;
 	}
