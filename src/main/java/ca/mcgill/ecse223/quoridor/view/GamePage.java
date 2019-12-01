@@ -67,11 +67,11 @@ public class GamePage extends JFrame {
 	private JButton forfeit;
 	private JButton saveGame;
 	private JButton newGame;
-	private JButton replayGame;
+	public JButton replayGame;
 	private JButton btnOfferDraw;
 
 	// player's turn
-	private static JLabel gameMessage;
+	public JLabel gameMessage;
 
 	// Move buttons
 	private JButton btnUp;
@@ -249,6 +249,7 @@ public class GamePage extends JFrame {
 					try {
 						Quoridor223Controller.exitReplayMode();
 						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
+						setUpTimer();
 					} catch (InvalidOperationException eReplay) {
 						gameMessage.setText(eReplay.getLocalizedMessage());
 					}
@@ -265,6 +266,7 @@ public class GamePage extends JFrame {
 				} else if(!isReplayMode()) {
 					try {
 						Quoridor223Controller.enterReplayMode();
+						timer.cancel();
 						gameMessage.setText("In Replay Mode");
 						btnLeft.setText("\u2190");
 						btnRight.setText("\u2192");
@@ -747,6 +749,7 @@ public class GamePage extends JFrame {
 		timer.cancel();
 		whiteClockIsRunning = blackClockIsRunning = false;
 	}
+	
 
 	private void initFrame() {
 		this.setSize(1035, 720);
@@ -762,7 +765,8 @@ public class GamePage extends JFrame {
 		
 		if (filename != null) {
 			try {
-				saveSuccessful = Quoridor223Controller.savePosition(filename);
+				// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
+				saveSuccessful = Quoridor223Controller.saveGame(filename);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -779,7 +783,8 @@ public class GamePage extends JFrame {
 				
 				// otherwise, keep trying to save
 				try {
-					saveSuccessful = Quoridor223Controller.savePosition(filename);
+					// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
+					saveSuccessful = Quoridor223Controller.saveGame(filename);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
