@@ -67,7 +67,7 @@ public class GamePage extends JFrame {
 	private JButton forfeit;
 	private JButton saveGame;
 	private JButton newGame;
-	private JButton replayGame;
+	public JButton replayGame;
 	private JButton btnOfferDraw;
 
 	// player's turn

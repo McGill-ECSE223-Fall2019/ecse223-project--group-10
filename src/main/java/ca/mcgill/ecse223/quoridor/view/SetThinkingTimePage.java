@@ -229,9 +229,11 @@ public class SetThinkingTimePage extends JFrame {
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			} catch(GameIsDrawn | GameIsFinished ex) {
+				QuoridorApplication.setMainPage();
 				QuoridorApplication.getMainPage().killClock();
 				QuoridorApplication.getMainPage().gameMessage.setText(ex.getLocalizedMessage());
-				Quoridor223Controller.enterReplayMode();
+				QuoridorApplication.getMainPage().replayGame.doClick();
+				return;
 			}
 
 			// keep trying to load until the user cancels load attempt, or the load is successful
@@ -250,9 +252,11 @@ public class SetThinkingTimePage extends JFrame {
 				} catch (IOException e1) {
 					e1.printStackTrace();
 				} catch(GameIsDrawn | GameIsFinished ex) {
+					QuoridorApplication.setMainPage();
 					QuoridorApplication.getMainPage().killClock();
 					QuoridorApplication.getMainPage().gameMessage.setText(ex.getLocalizedMessage());
-					Quoridor223Controller.enterReplayMode();
+					QuoridorApplication.getMainPage().replayGame.doClick();
+					return;
 				}
 			}
 			Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
