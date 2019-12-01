@@ -2457,12 +2457,14 @@ public class Quoridor223Controller {
 	public static boolean loadGameTryWallMove(String position, Player player) {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game currentGame = quoridor.getCurrentGame();
-		GamePosition currentGamePosition = currentGame.getCurrentPosition();
+		//GamePosition currentGamePosition = currentGame.getCurrentPosition();
+		GamePosition currentGamePosition = clonePosition(currentGame.getCurrentPosition());
+		currentGame.setCurrentPosition(currentGamePosition);
 		Player whitePlayer = currentGame.getWhitePlayer();
 		Player blackPlayer = currentGame.getBlackPlayer();
 		int letterOffset = 9;
 		
-		try {
+		/*try {
 			grabWall();
 			Tile newTile = getTile((Character.getNumericValue(position.charAt(1))),
 					Character.getNumericValue(position.charAt(0))-letterOffset);
@@ -2472,7 +2474,7 @@ public class Quoridor223Controller {
 			return false;
 		} catch (IndexOutOfBoundsException e) {
 			return false;
-		}
+		}*/
 		
 		/*GamePosition clone = clonePosition(currentPosition);
 
@@ -2485,7 +2487,7 @@ public class Quoridor223Controller {
 		}
 		curGame.setCurrentPosition(clone);*/
 		
-		/*int indexOfWhiteWallsPlaced = currentGamePosition.numberOfWhiteWallsOnBoard();
+		int indexOfWhiteWallsPlaced = currentGamePosition.numberOfWhiteWallsOnBoard();
 		int indexOfBlackWallsPlaced = currentGamePosition.numberOfBlackWallsOnBoard();
 		
 		// to account for the backwards definitions of moveNum and roundNum
@@ -2569,7 +2571,7 @@ public class Quoridor223Controller {
 			currentGame.addMove(newMove);
 			currentGamePosition.addBlackWallsOnBoard(currentWall);
 			indexOfBlackWallsPlaced++;
-		}*/
+		}
 		return true;
 	}
 	
@@ -2708,7 +2710,7 @@ public class Quoridor223Controller {
 			}
 				
 			// Check game status based on white move, only if pawn move
-			if(dataArr[1].length() == 2) {
+			//if(dataArr[1].length() == 2) {
 				if(identifyDraw()) {
 					currentGame.setGameStatus(GameStatus.Draw);
 					throw new GameIsDrawn("Game Draw!");
@@ -2718,7 +2720,16 @@ public class Quoridor223Controller {
 					throw new GameIsFinished(currentGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
 				}
 				SwitchPlayer();
-			}
+			//}
+			
+			// Update the behaviors and playerPositions
+			whiteBehavior = QuoridorApplication.GetWhitePawnBehavior();
+			blackBehavior = QuoridorApplication.GetBlackPawnBehavior();
+			quoridor = QuoridorApplication.getQuoridor();
+			currentGame = quoridor.getCurrentGame();
+			currentGamePosition = currentGame.getCurrentPosition();
+			whitePos = currentGamePosition.getWhitePosition();
+			blackPos = currentGamePosition.getBlackPosition();
 			
 			// Process black player's move, if it exists
 			if(dataArr.length == 3) {
@@ -2752,7 +2763,7 @@ public class Quoridor223Controller {
 				}
 				
 				// Check game status based on black move
-				if(dataArr[1].length() == 2) {
+				//if(dataArr[2].length() == 2) {
 					if(identifyDraw()) {
 						currentGame.setGameStatus(GameStatus.Draw);
 						throw new GameIsDrawn("Game Draw!");
@@ -2763,7 +2774,7 @@ public class Quoridor223Controller {
 					}
 					SwitchPlayer();
 					playedBlackMove = true;
-				}
+				//}
 			}
 		}
 		currentGame.setGameStatus(GameStatus.ReadyToStart);
