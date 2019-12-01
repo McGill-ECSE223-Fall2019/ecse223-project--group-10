@@ -2458,11 +2458,35 @@ public class Quoridor223Controller {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game currentGame = quoridor.getCurrentGame();
 		GamePosition currentGamePosition = currentGame.getCurrentPosition();
+		//GamePosition currentGamePosition = clonePosition(currentGame.getCurrentPosition());
 		Player whitePlayer = currentGame.getWhitePlayer();
 		Player blackPlayer = currentGame.getBlackPlayer();
-		
 		int letterOffset = 9;
-		int indexOfWhiteWallsPlaced = currentGamePosition.numberOfWhiteWallsOnBoard();
+		
+		try {
+			grabWall();
+			Tile newTile = getTile((Character.getNumericValue(position.charAt(1))),
+					Character.getNumericValue(position.charAt(0))-letterOffset);
+			currentGame.getWallMoveCandidate().setTargetTile(newTile);
+			dropWall();
+		} catch (GameNotRunningException | InvalidOperationException e) {
+			return false;
+		} catch (IndexOutOfBoundsException e) {
+			return false;
+		}
+		
+		/*GamePosition clone = clonePosition(currentPosition);
+
+		if (isWhitePlayer()) {
+			currentPosition.addWhiteWallsInStock(wallToDrop);
+			clone.addWhiteWallsOnBoard(wallToDrop);
+		} else {
+			currentPosition.addBlackWallsInStock(wallToDrop);
+			clone.addBlackWallsOnBoard(wallToDrop);
+		}
+		curGame.setCurrentPosition(clone);*/
+		
+		/*int indexOfWhiteWallsPlaced = currentGamePosition.numberOfWhiteWallsOnBoard();
 		int indexOfBlackWallsPlaced = currentGamePosition.numberOfBlackWallsOnBoard();
 		
 		// to account for the backwards definitions of moveNum and roundNum
@@ -2546,7 +2570,7 @@ public class Quoridor223Controller {
 			currentGame.addMove(newMove);
 			currentGamePosition.addBlackWallsOnBoard(currentWall);
 			indexOfBlackWallsPlaced++;
-		}
+		}*/
 		return true;
 	}
 	
