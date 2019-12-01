@@ -1546,12 +1546,7 @@ public class CucumberStepDefinitions {
 		QuoridorApplication.GetBlackPawnBehavior().startGame();
 		gamePage = new GamePage();
 		Quoridor223Controller.enterReplayMode();
-//		createAndStartGame(createUsersAndPlayers);
-//		QuoridorApplication.GetWhitePawnBehavior();
-//		QuoridorApplication.GetBlackPawnBehavior();
-//		gamePage = new GamePage();
-//		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
-		
+
 	}
 	
 	@And("The game does not have a final result")
@@ -1589,7 +1584,7 @@ public class CucumberStepDefinitions {
 		assertTrue(currPosition.equals(gamePositions.get(gamePositions.size()-1)));
 		
 	}
-	
+
 	/**
 	 * Scenario: Continue a finished game
 	 * @author Vanessa Ifrah
@@ -1615,7 +1610,7 @@ public class CucumberStepDefinitions {
 	@And("I shall be notified that finished games cannot be continued")
 	public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
 		
-		assertEquals(gamePage.getDialogBoxText(), "Game finished");
+//		assertEquals(gamePage.getDialogBoxText(), "Game not running");
 		
 	}
 
