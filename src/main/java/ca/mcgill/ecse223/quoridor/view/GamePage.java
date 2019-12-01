@@ -249,6 +249,7 @@ public class GamePage extends JFrame {
 					try {
 						Quoridor223Controller.exitReplayMode();
 						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
+						setUpTimer();
 					} catch (InvalidOperationException eReplay) {
 						gameMessage.setText(eReplay.getLocalizedMessage());
 					}
@@ -265,6 +266,7 @@ public class GamePage extends JFrame {
 				} else if(!isReplayMode()) {
 					try {
 						Quoridor223Controller.enterReplayMode();
+						timer.cancel();
 						gameMessage.setText("In Replay Mode");
 						btnLeft.setText("\u2190");
 						btnRight.setText("\u2192");
@@ -745,6 +747,7 @@ public class GamePage extends JFrame {
 		timer.cancel();
 		whiteClockIsRunning = blackClockIsRunning = false;
 	}
+	
 
 	private void initFrame() {
 		this.setSize(1035, 720);
