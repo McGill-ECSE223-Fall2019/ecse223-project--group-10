@@ -2458,7 +2458,6 @@ public class Quoridor223Controller {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game currentGame = quoridor.getCurrentGame();
 		GamePosition currentGamePosition = currentGame.getCurrentPosition();
-		//GamePosition currentGamePosition = clonePosition(currentGame.getCurrentPosition());
 		Player whitePlayer = currentGame.getWhitePlayer();
 		Player blackPlayer = currentGame.getBlackPlayer();
 		int letterOffset = 9;
@@ -2708,16 +2707,18 @@ public class Quoridor223Controller {
 				return false;
 			}
 				
-			// Check game status based on white move
-			if(identifyDraw()) {
-				currentGame.setGameStatus(GameStatus.Draw);
-				throw new GameIsDrawn("Game Draw!");
+			// Check game status based on white move, only if pawn move
+			if(dataArr[1].length() == 2) {
+				if(identifyDraw()) {
+					currentGame.setGameStatus(GameStatus.Draw);
+					throw new GameIsDrawn("Game Draw!");
+				}
+				if(identifyWin()) {
+					currentGame.setGameStatus(GameStatus.WhiteWon);
+					throw new GameIsFinished(currentGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
+				}
+				SwitchPlayer();
 			}
-			if(identifyWin()) {
-				currentGame.setGameStatus(GameStatus.WhiteWon);
-				throw new GameIsFinished(currentGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
-			}
-			SwitchPlayer();
 			
 			// Process black player's move, if it exists
 			if(dataArr.length == 3) {
@@ -2751,16 +2752,18 @@ public class Quoridor223Controller {
 				}
 				
 				// Check game status based on black move
-				if(identifyDraw()) {
-					currentGame.setGameStatus(GameStatus.Draw);
-					throw new GameIsDrawn("Game Draw!");
+				if(dataArr[1].length() == 2) {
+					if(identifyDraw()) {
+						currentGame.setGameStatus(GameStatus.Draw);
+						throw new GameIsDrawn("Game Draw!");
+					}
+					if(identifyWin()) {
+						currentGame.setGameStatus(GameStatus.BlackWon);
+						throw new GameIsFinished(currentGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
+					}
+					SwitchPlayer();
+					playedBlackMove = true;
 				}
-				if(identifyWin()) {
-					currentGame.setGameStatus(GameStatus.BlackWon);
-					throw new GameIsFinished(currentGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
-				}
-				SwitchPlayer();
-				playedBlackMove = true;
 			}
 		}
 		currentGame.setGameStatus(GameStatus.ReadyToStart);

@@ -1481,6 +1481,7 @@ public class CucumberStepDefinitions {
     	} catch(GameIsDrawn | GameIsFinished ex) {
 			// GamePage normally catches these exceptions and then sets to replay mode
     		// Due to the order of operations, this is handled in another step
+    		QuoridorApplication.getQuoridor().getCurrentGame().setIsFinished(true);
     		enterReplayMode = true;
 		}
     }

@@ -232,6 +232,7 @@ public class SetThinkingTimePage extends JFrame {
 				QuoridorApplication.setMainPage();
 				QuoridorApplication.getMainPage().killClock();
 				QuoridorApplication.getMainPage().gameMessage.setText(ex.getLocalizedMessage());
+				QuoridorApplication.getQuoridor().getCurrentGame().setIsFinished(true);
 				QuoridorApplication.getMainPage().replayGame.doClick();
 				return;
 			}
@@ -255,6 +256,7 @@ public class SetThinkingTimePage extends JFrame {
 					QuoridorApplication.setMainPage();
 					QuoridorApplication.getMainPage().killClock();
 					QuoridorApplication.getMainPage().gameMessage.setText(ex.getLocalizedMessage());
+					QuoridorApplication.getQuoridor().getCurrentGame().setIsFinished(true);
 					QuoridorApplication.getMainPage().replayGame.doClick();
 					return;
 				}
