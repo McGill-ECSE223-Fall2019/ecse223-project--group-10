@@ -1499,6 +1499,18 @@ public class CucumberStepDefinitions {
 	@When("I initiate replay mode")
 	public void initiateReplayMode() throws GameNotRunningException, InvalidOperationException {
 		
+		createAndStartGame(createUsersAndPlayers);
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
+		GamePosition curPos = quoridor.getCurrentGame().getCurrentPosition();
+		curPos.getBlackPosition().setTile(blackPlayerTile);
+		curPos.getWhitePosition().setTile(whitePlayerTile);
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
+		gamePage = new GamePage();
 		Quoridor223Controller.enterReplayMode();
 		
 	}
@@ -1513,7 +1525,30 @@ public class CucumberStepDefinitions {
 	/**
 	 * Scenario: Continue an unfinished game
 	 * @author Vanessa Ifrah
+	 * @throws InvalidOperationException 
+	 * @throws GameNotRunningException 
 	 */
+	@Given("The game is replay mode")
+	public void gameIsReplayMode() throws GameNotRunningException, InvalidOperationException {
+		
+		initQuoridorAndBoard();
+		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		createAndStartGame(createUsersAndPlayers);
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Tile whitePlayerTile = quoridor.getBoard().getTile(76);
+		Tile blackPlayerTile = quoridor.getBoard().getTile(4);
+		GamePosition curPos = quoridor.getCurrentGame().getCurrentPosition();
+		curPos.getBlackPosition().setTile(blackPlayerTile);
+		curPos.getWhitePosition().setTile(whitePlayerTile);
+		QuoridorApplication.CreateNewWhitePawnBehavior();
+		QuoridorApplication.CreateNewBlackPawnBehavior();
+		QuoridorApplication.GetWhitePawnBehavior().startGame();
+		QuoridorApplication.GetBlackPawnBehavior().startGame();
+		gamePage = new GamePage();
+		Quoridor223Controller.enterReplayMode();
+
+	}
+	
 	@And("The game does not have a final result")
 	public void gameDoesNotHaveAFinalResult() {
 		
@@ -1535,8 +1570,7 @@ public class CucumberStepDefinitions {
 	@When("I initiate to continue game")
 	public void initiateToContinueGame() {
 		
-//		uncomment line below when Shuby's method is pushed to master
-//		gamePage.clickReplayGame();
+		gamePage.clickReplayGame();
 		
 	}
 	
@@ -1550,46 +1584,21 @@ public class CucumberStepDefinitions {
 		assertTrue(currPosition.equals(gamePositions.get(gamePositions.size()-1)));
 		
 	}
-	
+
 	/**
 	 * Scenario: Continue a finished game
 	 * @author Vanessa Ifrah
 	 */
-	@Given("The game is replay mode")
-	public void gameIsReplayMode() {
-		
-		initQuoridorAndBoard();
-		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
-		createAndStartGame(createUsersAndPlayers);
-		QuoridorApplication.GetWhitePawnBehavior();
-		QuoridorApplication.GetBlackPawnBehavior();
-		gamePage = new GamePage();
-		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
-		
-	}
-	
 	@And("The game has a final result")
 	public void theGameHasAFinalResult() {
-		
-		boolean hasFinalResult = false;
-		GameStatus gamestatus = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
-		
-		if (gamestatus == GameStatus.WhiteWon || 
-				gamestatus == GameStatus.BlackWon ||
-				gamestatus == GameStatus.Draw) {
-			
-			hasFinalResult = true;
-			
-		}
-		
-		assertTrue(hasFinalResult);
+		assertTrue(QuoridorApplication.getQuoridor().getCurrentGame().getIsFinished());
 		
 	}
 	
 	@And("I shall be notified that finished games cannot be continued")
 	public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
 		
-		assertEquals(gamePage.getDialogBoxText(), "Game finished");
+		assertEquals(gamePage.getDialogBoxText(), "Game Finished: Can't Continue Game");
 		
 	}
 
@@ -1615,6 +1624,10 @@ public class CucumberStepDefinitions {
 		gamePage = new GamePage();
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
 	}
+	/**
+	 * @author Le-Li Mao
+	 * @param dataTable
+	 */
 	@Given("The following moves have been played in game:")
 	public void theFollowingMoveHaveBeenPalyedInGame(io.cucumber.datatable.DataTable dataTable) {
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Running);
@@ -1631,7 +1644,10 @@ public class CucumberStepDefinitions {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		boolean isWhite = curGame.getCurrentPosition().getPlayerToMove().equals(curGame.getWhitePlayer());
 		PlayerPosition curPos = isWhite? curGame.getCurrentPosition().getWhitePosition():curGame.getCurrentPosition().getBlackPosition();
-		if(move.length()==3) {
+		if( move.length()==3&&move.charAt(1)=='-') {
+			gamePage.clickForfeit();
+		}
+		else if(move.length()==3) {
 			int row = move.charAt(1)-'0';
 			int col = move.charAt(0)-'a'+1;
 			boolean horizontal = move.charAt(2)=='h';
@@ -1657,12 +1673,21 @@ public class CucumberStepDefinitions {
 			else gamePage.clickMovePlayer("right");
 		}
 	}
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param movno
+	 * @param rndno
+	 */
 	@And("The next move is {int}.{int}")
 	public void theNextMoveIs(int movno, int rndno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
 		int ind = (movno-1)*2+rndno-1;
 		curGame.setCurrentPosition(curGame.getPosition(ind));
 	}
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @throws InvalidOperationException
+	 */
 	@When("Jump to start position is initiated")
 	public void jumpToStartPositionIsInitiated() throws InvalidOperationException {
 //		gamePage.clickJumpStart();
@@ -1672,6 +1697,10 @@ public class CucumberStepDefinitions {
 			System.out.println(e.getMessage());
 		}
 	}
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @throws InvalidOperationException
+	 */
 	@When("Jump to final position is initiated")
 	public void jumpToFinalPositionIsInitiated() throws InvalidOperationException {
 //		gamePage.clickJumpFinal();
@@ -1681,6 +1710,10 @@ public class CucumberStepDefinitions {
 			System.out.println(e.getMessage());
 		}
 	}
+    /**
+     * @author Le-Li Mao
+     * @throws InvalidOperationException
+     */
     @When("Step forward is initiated")
 	public void Stepforward() throws InvalidOperationException{
 		//call controller
@@ -1691,6 +1724,10 @@ public class CucumberStepDefinitions {
 		}
 
 	}
+    /**
+     * @author Le-Li Mao
+     * @throws InvalidOperationException
+     */
     @When("Step backward is initiated")
 	public void Stepbackward() throws InvalidOperationException{
 		//call controller
@@ -1700,6 +1737,11 @@ public class CucumberStepDefinitions {
     		System.out.println(e.getMessage());
     	}
 	}
+	/**
+	 * @author Le-Li Mao
+	 * @param nmov
+	 * @param nrnd
+	 */
 	@Then("The next move shall be {int}.{int}")
 	public void theNextMoveShallBe(int nmov, int nrnd) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
@@ -1727,6 +1769,11 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param wrow
+	 * @param wcol
+	 */
 	@And("White player's position shall be \\({int},{int})")
 	public void whitePlayersPositionShallBe(int wrow, int wcol) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1739,6 +1786,11 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param brow
+	 * @param bcol
+	 */
 	@And("Black player's position shall be \\({int},{int})")
 	public void blackPlayersPositionShallBe(int brow, int bcol) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1750,6 +1802,10 @@ public class CucumberStepDefinitions {
 		assertEquals(bcol, curBlackCol);
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param wwallno
+	 */
 	@And("White has {int} on stock")
 	public void whiteHasOnStock(int wwallno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1758,6 +1814,10 @@ public class CucumberStepDefinitions {
 		assertEquals(wwallno, curWhiteStock);
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param bwallno
+	 */
 	@And("Black has {int} on stock")
 	public void blackHasOnStock(int bwallno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
@@ -1912,7 +1972,7 @@ public class CucumberStepDefinitions {
 		Tile player1StartPos = quoridor.getBoard().getTile(36);
 		Tile player2StartPos = quoridor.getBoard().getTile(44);
 
-		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, quoridor);
+		Game game = new Game(GameStatus.Running,false, MoveMode.PlayerMove, quoridor);
 		game.setWhitePlayer(players.get(0));
 		game.setBlackPlayer(players.get(1));
 
@@ -1948,7 +2008,7 @@ public class CucumberStepDefinitions {
 		Tile player1StartPos = quoridor.getBoard().getTile(36);
 		Tile player2StartPos = quoridor.getBoard().getTile(44);
 		
-		Game game = new Game(GameStatus.ReadyToStart, MoveMode.PlayerMove, quoridor);
+		Game game = new Game(GameStatus.ReadyToStart, false, MoveMode.PlayerMove, quoridor);
 		game.setWhitePlayer(players.get(0));
 		game.setBlackPlayer(players.get(1));
 
@@ -2481,9 +2541,7 @@ public class CucumberStepDefinitions {
 		QuoridorApplication.GetWhitePawnBehavior();
 		QuoridorApplication.GetBlackPawnBehavior();
 		gamePage = new GamePage();
-		
-		Quoridor223Controller.resignGame("black");
-	    assertFalse("the game is no longer running", Quoridor223Controller.isRunning());
+		gamePage.clickForfeit();
 	}
 
 	@Then("The final result shall be displayed")
@@ -2493,7 +2551,7 @@ public class CucumberStepDefinitions {
 		String final_text =  gamePage.getDialogBoxText();
 		System.out.println(final_text);
 		
-		if(final_text!=null) isDisplayed = true;
+		if(final_text.substring(0, 13).equalsIgnoreCase("Game Finished")) isDisplayed = true;
 	    assertTrue("final_result is displayed", isDisplayed);
 	}
 

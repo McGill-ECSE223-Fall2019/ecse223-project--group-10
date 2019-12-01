@@ -42,6 +42,7 @@ class Player {
 class Game {
 	enum GameStatus { Initializing, ReadyToStart, Running, WhiteWon, BlackWon, Draw, Replay };
 	GameStatus gameStatus;
+	Boolean isFinished;
 	enum MoveMode { WallMove, PlayerMove};
 	MoveMode moveMode;
 	1 <@>- * Move moves; 

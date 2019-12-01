@@ -50,7 +50,7 @@ public class Quoridor223Controller {
 		
 		// create Quoridor game and get users
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game newGame = new Game(GameStatus.Initializing, MoveMode.WallMove, quoridor);
+		Game newGame = new Game(GameStatus.Initializing, false, MoveMode.WallMove, quoridor);
 
 	}
 
@@ -382,7 +382,7 @@ public class Quoridor223Controller {
 	}
 
 	/**
-	 * Feature 6: Grab Wall Perform a grab wall operation on the stock of the
+	 * Feature 6: Wall Perform a grab wall operation on the stock of the
 	 * respective player
 	 * 
 	 * @author Enan Ashaduzzaman
@@ -434,6 +434,10 @@ public class Quoridor223Controller {
 		}
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @throws GameNotRunningException
+	 */
 	public static void cancelGrabWall() throws GameNotRunningException {
 		if (!isRunning())
 			throw new GameNotRunningException("Game not running");
@@ -636,16 +640,19 @@ public class Quoridor223Controller {
 	 * @author Andrew Ta
 	 * @param playerName player wishes to resign the game
 	 * @throws GameNotRunningException
+	 * @throws GameIsFinished 
 	 */
-	public static void resignGame(String playerName) throws GameNotRunningException{
+	public static void resignGame(String playerName) throws GameNotRunningException, GameIsFinished{
 		if(!isRunning()) throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = getPlayerByName(playerName);
 		if(curPlayer.equals(curGame.getBlackPlayer())) {
-			curGame.setGameStatus(GameStatus.WhiteWon);
+			curGame.setIsFinished(true);
 		}else {
+			curGame.setIsFinished(true);
 			curGame.setGameStatus(GameStatus.BlackWon);
 		}
+		throw new GameIsFinished("Game Finished: "+curGame.getCurrentPosition().getPlayerToMove().getNextPlayer().getUser().getName() + " won. Congratulation!");
 	}
 	
 	/**
@@ -686,6 +693,11 @@ public class Quoridor223Controller {
 		return false;
 	}
 	
+	/**
+	 * Performs the jump to the start position of the game
+	 * @author Enan Ashaduzzaman
+	 * @throws InvalidOperationException
+	 */
 	public static void jumpToStartPosition() throws InvalidOperationException {
 		if (!isReplay())
 			throw new InvalidOperationException("Game is not in replay mode");
@@ -700,42 +712,48 @@ public class Quoridor223Controller {
 	 * @throws InvalidOperationException
 	 */
 	public static void enterReplayMode() throws GameNotRunningException, InvalidOperationException {
-		if (!isReplayPossible())throw new InvalidOperationException("Unable to replay");
+		
+		if (!isReplayPossible()) throw new InvalidOperationException("Unable to replay");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		curGame.setGameStatus(Game.GameStatus.Replay);
+		
+		if(curGame.getWallMoveCandidate()!=null) {
+			throw new InvalidOperationException("Cannot enter Replay Mode with wall in hand");
+		}
+		
+		curGame.setGameStatus(GameStatus.Replay);
+		
 	}
 	
 	/**
 	 * @author Le-Li Mao
 	 * @throws InvalidOperationException
-	 * @throws GameIsDrawn 
-	 * @throws GameIsFinished 
-	 * @throws GameNotRunningException 
-	 *
 	 */
-	public static void exitReplayMode() throws InvalidOperationException, GameIsDrawn, GameIsFinished, GameNotRunningException {
+	public static void exitReplayMode() throws InvalidOperationException{
 		if (!isReplay())throw new InvalidOperationException("Not in replay mode.");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		int ind = findPositionIndex();
 		int size = curGame.getPositions().size()-1;
+		if(curGame.getIsFinished()) {
+			curGame.setCurrentPosition(curGame.getPosition(size));
+			throw new InvalidOperationException("Game Finished: Can't Continue Game");
+		}
+		curGame.setGameStatus(GameStatus.Running);
+		int ind = findPositionIndex();
 		for(int i = ind; i<size;i++) {
 			Move move = curGame.getMove(ind);
 			move.delete();
+			curGame.removeMove(move);
 			GamePosition pos = curGame.getPosition(ind+1);
 			pos.delete();
 		}
-		System.out.println(curGame.getMoves().size());
 		QuoridorApplication.CreateNewWhitePawnBehavior().startGame();
 		QuoridorApplication.CreateNewBlackPawnBehavior().startGame();
-		curGame.setGameStatus(Game.GameStatus.Running);
-		if(identifyDraw()) {
-			throw new GameIsDrawn("Game Draw!");
-		}
-		if(identifyWin()) {
-			throw new GameIsFinished(curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won");
-		}
+		
 	}
-	
+	/**
+	 * Performs the jump to the final position
+	 * @author Enan Ashaduzzaman
+	 * @throws InvalidOperationException
+	 */
 	public static void jumpToFinalPosition() throws InvalidOperationException {
 		if (!isReplay())
 			throw new InvalidOperationException("Game is not in replay mode");
@@ -747,7 +765,7 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * Perform a step forward in the 
+	 * Perform a step forward in replay mode
 	 * @author Le-Li Mao
 	 * @throws InvalidOperationException
 	 */
@@ -759,6 +777,11 @@ public class Quoridor223Controller {
 		curGame.setCurrentPosition(curGame.getPosition(ind+1));
 	}
 	
+	/**
+	 * Performs a sstep backward in replay mode
+	 * @author Le-Li Mao
+	 * @throws InvalidOperationException
+	 */
 	public static void StepBackward() throws InvalidOperationException {
 		if (!isReplay())throw new InvalidOperationException("Game is not in replay mode");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1385,23 +1408,13 @@ veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: 
 				}
 			} 
 		}
-		//Player current_player = current_game.getCurrentPosition().getPlayerToMove();
-		//PlayerPosition current_position;
-		//PlayerPosition opponent_position;
-		
-		//if(current_player.equals(current_game.getBlackPlayer())) {
-		//	current_position = current_game.getCurrentPosition().getBlackPosition();
-		//	opponent_position = current_game.getCurrentPosition().getWhitePosition();
-		//}
-		//else {
-		//	current_position = current_game.getCurrentPosition().getWhitePosition();
-		//	opponent_position = current_game.getCurrentPosition().getBlackPosition();
-		//}
 		if(identifyDraw()) {
-			throw new GameIsDrawn("Game Draw!");
+			curGame.setIsFinished(true);
+			throw new GameIsDrawn("Game Finished: Game Draw!");
 		}
 		if(identifyWin()) {
-			throw new GameIsFinished(curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
+			curGame.setIsFinished(true);
+			throw new GameIsFinished("Game Finished: "+curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
 		}
 		SwitchPlayer();
 	}
