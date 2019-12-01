@@ -1591,26 +1591,14 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The game has a final result")
 	public void theGameHasAFinalResult() {
-		
-		boolean hasFinalResult = false;
-		GameStatus gamestatus = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
-		
-		if (gamestatus == GameStatus.WhiteWon || 
-				gamestatus == GameStatus.BlackWon ||
-				gamestatus == GameStatus.Draw) {
-			
-			hasFinalResult = true;
-			
-		}
-		
-		assertTrue(hasFinalResult);
+		assertTrue(QuoridorApplication.getQuoridor().getCurrentGame().getIsFinished());
 		
 	}
 	
 	@And("I shall be notified that finished games cannot be continued")
 	public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
 		
-		assertEquals(gamePage.getDialogBoxText(), "Game not running");
+		assertEquals(gamePage.getDialogBoxText(), "Game Finished: Can't Continue Game");
 		
 	}
 
@@ -1652,7 +1640,7 @@ public class CucumberStepDefinitions {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		boolean isWhite = curGame.getCurrentPosition().getPlayerToMove().equals(curGame.getWhitePlayer());
 		PlayerPosition curPos = isWhite? curGame.getCurrentPosition().getWhitePosition():curGame.getCurrentPosition().getBlackPosition();
-		if( move.length()==33&&move.charAt(1)=='-') {
+		if( move.length()==3&&move.charAt(1)=='-') {
 			gamePage.clickForfeit();
 		}
 		else if(move.length()==3) {
@@ -2505,9 +2493,7 @@ public class CucumberStepDefinitions {
 		QuoridorApplication.GetWhitePawnBehavior();
 		QuoridorApplication.GetBlackPawnBehavior();
 		gamePage = new GamePage();
-		
-		Quoridor223Controller.resignGame("black");
-	    assertFalse("the game is no longer running", Quoridor223Controller.isRunning());
+		gamePage.clickForfeit();
 	}
 
 	@Then("The final result shall be displayed")
@@ -2517,7 +2503,7 @@ public class CucumberStepDefinitions {
 		String final_text =  gamePage.getDialogBoxText();
 		System.out.println(final_text);
 		
-		if(final_text!=null) isDisplayed = true;
+		if(final_text.substring(0, 13).equalsIgnoreCase("Game Finished")) isDisplayed = true;
 	    assertTrue("final_result is displayed", isDisplayed);
 	}
 

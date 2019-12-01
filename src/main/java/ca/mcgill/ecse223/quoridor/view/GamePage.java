@@ -650,6 +650,9 @@ public class GamePage extends JFrame {
 					}
 				}catch (GameNotRunningException e){
 					gameMessage.setText(e.getLocalizedMessage());
+				} catch (GameIsFinished e) {
+					// TODO Auto-generated catch block
+					gameMessage.setText(e.getLocalizedMessage());
 				}
 			}
 		});
@@ -731,6 +734,9 @@ public class GamePage extends JFrame {
 				}
 			}
 		}catch (GameNotRunningException e){
+			gameMessage.setText(e.getLocalizedMessage());
+		} catch (GameIsFinished e) {
+			// TODO Auto-generated catch block
 			gameMessage.setText(e.getLocalizedMessage());
 		}
 		

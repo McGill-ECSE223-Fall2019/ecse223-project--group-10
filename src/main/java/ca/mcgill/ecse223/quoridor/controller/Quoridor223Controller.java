@@ -636,18 +636,19 @@ public class Quoridor223Controller {
 	 * @author Andrew Ta
 	 * @param playerName player wishes to resign the game
 	 * @throws GameNotRunningException
+	 * @throws GameIsFinished 
 	 */
-	public static void resignGame(String playerName) throws GameNotRunningException{
+	public static void resignGame(String playerName) throws GameNotRunningException, GameIsFinished{
 		if(!isRunning()) throw new GameNotRunningException("Game not running");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = getPlayerByName(playerName);
 		if(curPlayer.equals(curGame.getBlackPlayer())) {
 			curGame.setIsFinished(true);
-			curGame.setGameStatus(GameStatus.WhiteWon);
 		}else {
 			curGame.setIsFinished(true);
 			curGame.setGameStatus(GameStatus.BlackWon);
 		}
+		throw new GameIsFinished("Game Finished: "+curGame.getCurrentPosition().getPlayerToMove().getNextPlayer().getUser().getName() + " won. Congratulation!");
 	}
 	
 	/**
@@ -719,7 +720,7 @@ public class Quoridor223Controller {
 		int size = curGame.getPositions().size()-1;
 		if(curGame.getIsFinished()) {
 			curGame.setCurrentPosition(curGame.getPosition(size));
-			throw new InvalidOperationException("Game is finished. Return to the last position.");
+			throw new InvalidOperationException("Game Finished: Can't Continue Game");
 		}
 		curGame.setGameStatus(GameStatus.Running);
 		int ind = findPositionIndex();
@@ -734,7 +735,6 @@ public class Quoridor223Controller {
 		QuoridorApplication.CreateNewBlackPawnBehavior().startGame();
 		
 	}
-	
 	public static void jumpToFinalPosition() throws InvalidOperationException {
 		if (!isReplay())
 			throw new InvalidOperationException("Game is not in replay mode");
@@ -1386,11 +1386,11 @@ veLegal(newRow, newCol)) throw new InvalidOperationException(String.format("%s: 
 		}
 		if(identifyDraw()) {
 			curGame.setIsFinished(true);
-			throw new GameIsDrawn("Game Draw!");
+			throw new GameIsDrawn("Game Finished: Game Draw!");
 		}
 		if(identifyWin()) {
 			curGame.setIsFinished(true);
-			throw new GameIsFinished(curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
+			throw new GameIsFinished("Game Finished: "+curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won. Congratulation!");
 		}
 		SwitchPlayer();
 	}
