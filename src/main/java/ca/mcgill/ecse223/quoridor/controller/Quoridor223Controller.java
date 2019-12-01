@@ -382,7 +382,7 @@ public class Quoridor223Controller {
 	}
 
 	/**
-	 * Feature 6: Wall Perform a grab wall operation on the stock of the
+	 * Feature 6: Grab Wall Perform a grab wall operation on the stock of the
 	 * respective player
 	 * 
 	 * @author Enan Ashaduzzaman
