@@ -897,6 +897,9 @@ public class GamePage extends JFrame {
 	public void clickForfeit() {
 		forfeit.doClick();
 	}
+	public void clickReplayGame() {
+		replayGame.doClick();
+	}
 	
 	public void setWhiteTime(String time) {
 		whiteTime.setText(time);
