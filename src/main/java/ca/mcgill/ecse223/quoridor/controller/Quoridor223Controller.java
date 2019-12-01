@@ -700,9 +700,11 @@ public class Quoridor223Controller {
 	 * @throws InvalidOperationException
 	 */
 	public static void enterReplayMode() throws GameNotRunningException, InvalidOperationException {
-		if (!isReplayPossible())throw new InvalidOperationException("Unable to replay");
+		
+		if (!isReplayPossible()) throw new InvalidOperationException("Unable to replay");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		curGame.setGameStatus(Game.GameStatus.Replay);
+		curGame.setGameStatus(GameStatus.Replay);
+		
 	}
 	
 	/**
