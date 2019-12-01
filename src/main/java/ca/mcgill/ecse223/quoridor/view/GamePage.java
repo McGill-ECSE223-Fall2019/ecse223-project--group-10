@@ -647,9 +647,9 @@ public class GamePage extends JFrame {
 					whiteClockIsRunning = blackClockIsRunning = false;
 					Quoridor223Controller.resignGame(Quoridor223Controller.getPlayerToMoveName());
 					if(name1.equals(userToMove)) {
-						gameMessage.setText(name2 + " won! Congratulation!");
+						gameMessage.setText("Game Finished: " + name2 + " won! Congratulation!");
 					}else {
-						gameMessage.setText(name1 + " won! Congratulation!");
+						gameMessage.setText("Game Finished: " + name1 + " won! Congratulation!");
 					}
 				}catch (GameNotRunningException e){
 					gameMessage.setText(e.getLocalizedMessage());
@@ -672,12 +672,14 @@ public class GamePage extends JFrame {
 					int choice = JOptionPane.showConfirmDialog((Component) boardComponent,
 							(Object) "" + userToMove + " offered a draw. Do you accept, " + nextPlayer + "?", "Draw Offer",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, (Icon) null);
-					if(choice == 0) {
-						Quoridor223Controller.setGameToDraw();
-						gameMessage.setText("The game is draw!");
-						timer.cancel();
-					}else {
-						gameMessage.setText(nextPlayer + "did not accept your offer. You have to make a move, " + userToMove + ".");
+					if(Quoridor223Controller.isRunning()) {
+						if(choice == 0) {
+							Quoridor223Controller.setGameToDraw();
+							gameMessage.setText("Game Finished: Game Draw");
+							timer.cancel();
+						}else {
+							gameMessage.setText(nextPlayer + "did not accept your offer. You have to make a move, " + userToMove + ".");
+						}
 					}
 				}else {
 					gameMessage.setText("Game not running");
