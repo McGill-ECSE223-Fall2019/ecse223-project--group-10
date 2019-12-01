@@ -1610,7 +1610,7 @@ public class CucumberStepDefinitions {
 	@And("I shall be notified that finished games cannot be continued")
 	public void iShallBeNotifiedThatFinishedGamesCannotBeContinued() {
 		
-//		assertEquals(gamePage.getDialogBoxText(), "Game not running");
+		assertEquals(gamePage.getDialogBoxText(), "Game not running");
 		
 	}
 
