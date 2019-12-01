@@ -219,7 +219,7 @@ public class SetThinkingTimePage extends JFrame {
 			return;
 		}
 		
-		filename = loadGameInputDialog("Enter the file path below:", "Load Game From File", null);
+		filename = loadGameInputDialog("Enter the file name below:", "Load Game From File", null);
 		
 		if (filename != null) {
 			
@@ -240,7 +240,7 @@ public class SetThinkingTimePage extends JFrame {
 			// keep trying to load until the user cancels load attempt, or the load is successful
 			while (loadSuccessful == false) {
 	
-				filename = loadGameInputDialog("Enter a valid file path here:", "Load Game From File", null);
+				filename = loadGameInputDialog("Enter a valid file name here:", "Load Game From File", null);
 				
 				// if the user cancels the save, return
 				if (filename == null) {
