@@ -1631,7 +1631,10 @@ public class CucumberStepDefinitions {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		boolean isWhite = curGame.getCurrentPosition().getPlayerToMove().equals(curGame.getWhitePlayer());
 		PlayerPosition curPos = isWhite? curGame.getCurrentPosition().getWhitePosition():curGame.getCurrentPosition().getBlackPosition();
-		if(move.length()==3) {
+		if( move.length()==33&&move.charAt(1)=='-') {
+			gamePage.clickForfeit();
+		}
+		else if(move.length()==3) {
 			int row = move.charAt(1)-'0';
 			int col = move.charAt(0)-'a'+1;
 			boolean horizontal = move.charAt(2)=='h';
@@ -1912,7 +1915,7 @@ public class CucumberStepDefinitions {
 		Tile player1StartPos = quoridor.getBoard().getTile(36);
 		Tile player2StartPos = quoridor.getBoard().getTile(44);
 
-		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, quoridor);
+		Game game = new Game(GameStatus.Running,false, MoveMode.PlayerMove, quoridor);
 		game.setWhitePlayer(players.get(0));
 		game.setBlackPlayer(players.get(1));
 
@@ -1948,7 +1951,7 @@ public class CucumberStepDefinitions {
 		Tile player1StartPos = quoridor.getBoard().getTile(36);
 		Tile player2StartPos = quoridor.getBoard().getTile(44);
 		
-		Game game = new Game(GameStatus.ReadyToStart, MoveMode.PlayerMove, quoridor);
+		Game game = new Game(GameStatus.ReadyToStart, false, MoveMode.PlayerMove, quoridor);
 		game.setWhitePlayer(players.get(0));
 		game.setBlackPlayer(players.get(1));
 
