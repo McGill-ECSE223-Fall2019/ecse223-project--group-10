@@ -669,7 +669,6 @@ public class Quoridor223Controller {
 			curGame.setGameStatus(GameStatus.Draw);
 			return true;
 		};
-		
 		return false;
 	}
 
@@ -701,21 +700,40 @@ public class Quoridor223Controller {
 	 * @throws InvalidOperationException
 	 */
 	public static void enterReplayMode() throws GameNotRunningException, InvalidOperationException {
-		if (!isRunning())throw new GameNotRunningException("Game not running");
 		if (!isReplayPossible())throw new InvalidOperationException("Unable to replay");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		curGame.setGameStatus(Game.GameStatus.Replay);
 	}
 	
-	public static void exitReplayMode() throws InvalidOperationException {
+	/**
+	 * @author Le-Li Mao
+	 * @throws InvalidOperationException
+	 * @throws GameIsDrawn 
+	 * @throws GameIsFinished 
+	 * @throws GameNotRunningException 
+	 *
+	 */
+	public static void exitReplayMode() throws InvalidOperationException, GameIsDrawn, GameIsFinished, GameNotRunningException {
 		if (!isReplay())throw new InvalidOperationException("Not in replay mode.");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		
-		int finalIndex = curGame.getPositions().size() - 1;
-		GamePosition finalPosition = curGame.getPosition(finalIndex);
-		curGame.setCurrentPosition(finalPosition);
-		
+		int ind = findPositionIndex();
+		int size = curGame.getPositions().size()-1;
+		for(int i = ind; i<size;i++) {
+			Move move = curGame.getMove(ind);
+			move.delete();
+			GamePosition pos = curGame.getPosition(ind+1);
+			pos.delete();
+		}
+		System.out.println(curGame.getMoves().size());
+		QuoridorApplication.CreateNewWhitePawnBehavior().startGame();
+		QuoridorApplication.CreateNewBlackPawnBehavior().startGame();
 		curGame.setGameStatus(Game.GameStatus.Running);
+		if(identifyDraw()) {
+			throw new GameIsDrawn("Game Draw!");
+		}
+		if(identifyWin()) {
+			throw new GameIsFinished(curGame.getCurrentPosition().getPlayerToMove().getUser().getName() + " won");
+		}
 	}
 	
 	public static void jumpToFinalPosition() throws InvalidOperationException {
@@ -728,6 +746,11 @@ public class Quoridor223Controller {
 		curGame.setCurrentPosition(finalPosition);
 	}
 	
+	/**
+	 * Perform a step forward in the 
+	 * @author Le-Li Mao
+	 * @throws InvalidOperationException
+	 */
 	public static void StepForward() throws InvalidOperationException {
 		if (!isReplay())throw new InvalidOperationException("Game is not in replay mode");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -745,10 +768,11 @@ public class Quoridor223Controller {
 	}
 	
 	/**
-	 * 
-	 * @author Sacha Lévy & Le-li Mao
-	 * @return isthePathblocked
-	 * */
+	 * @author Sacha Lévy 
+	 * @author Le-li Mao
+	 * perform check to validate a wall move have path to allow player to pass through
+	 * @throws InvalidOperationException
+	 */
 	public static void hasPath() throws InvalidOperationException {
 		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
 		int[][] wallMap = new int[9][9];
@@ -792,6 +816,13 @@ public class Quoridor223Controller {
 		}
 	}
 	
+	/**
+	 * Add the wall by updating the matrix created to simulate a maze environment
+	 * @author Sacha Lévy 
+	 * @author Le-li Mao
+	 * @param mazeMap
+	 * @param wall
+	 */
 	private static void addWall(int[][] mazeMap, WallMove wall) {
 		int row = wall.getTargetTile().getRow()-1;
 		int col = wall.getTargetTile().getColumn()-1;
@@ -816,6 +847,15 @@ public class Quoridor223Controller {
 	}
 	
 	// exhaustive process since only need to check if can cut the board in two
+	/**
+	 * @author Sacha Lévy 
+	 * @author Le-li Mao
+	 * @param goal_row
+	 * @param mazeMap
+	 * @param i
+	 * @param j
+	 * @return whether the path exist
+	 */
 	public static boolean checkMazeMap(int goal_row, int[][] mazeMap, int i, int j) {
 		boolean[][] visited = new boolean[9][9];
 		final int up = 1;
@@ -838,105 +878,20 @@ public class Quoridor223Controller {
 		return false;
 	}
 	
+	/**
+	 * check if a coordinate is visited or out of bound
+	 * @author Sacha Lévy 
+	 * @author Le-li Mao
+	 * @param visited
+	 * @param i
+	 * @param j
+	 * @return is coordinate valid
+	 */
 	private static boolean isCordValid(boolean[][] visited, int i, int j) {
 		if(i<0||j<0||i>8||j>8)return false;
 		if(visited[i][j])return false;
 		return true;
 	}
-	
-	/**
-	 * @author Sacha Lévy
-	 * @return whichPlayersHasPAths
-	 * */
-	public static String testHasPath() throws InvalidOperationException {
-		Game current_game = QuoridorApplication.getQuoridor().getCurrentGame();
-		int[][] wallMap = new int[9][9];
-		final int up = 1;
-		final int left = 2; 
-		final int down = 4;
-		final int right = 8;
-		for(int i=0; i<9; i++) {		// rows
-			for(int j=0; j<9; j++) {	// cols
-				// fill with edge cases: borders of the map
-				if(i==0)wallMap[i][j]|=up;
-				if(i==8)wallMap[i][j]|=down;
-				if(j==0)wallMap[i][j]|=left;
-				if(j==8)wallMap[i][j]|=right;
-			}
-		}
-		// add the wall candidate to the walls on board to check if it is blocking the path
-		// for the testing assume we have already dropped the wall
-		//WallMove move_candidate = current_game.getWallMoveCandidate();
-		//addWall(wallMap,move_candidate);
-		
-		for(Move move: current_game.getMoves()) {
-			if(move instanceof WallMove) {
-				addWall(wallMap,(WallMove) move);
-			}
-		}
-		System.out.println(loadWallPositionsMap());
-		int whiteRow = current_game.getCurrentPosition().getWhitePosition().getTile().getRow()-1;
-		int whiteCol = current_game.getCurrentPosition().getWhitePosition().getTile().getColumn()-1;
-		int blackRow = current_game.getCurrentPosition().getBlackPosition().getTile().getRow()-1;
-		int blackCol = current_game.getCurrentPosition().getBlackPosition().getTile().getColumn()-1;
-				
-		// decomposing return statement of the hasPath feature
-		boolean hasWhitePath = checkMazeMap(0, wallMap, whiteRow, whiteCol);
-		boolean hasBlackPath = checkMazeMap(8, wallMap, blackRow, blackCol);
-		String result;
-
-		if(hasWhitePath&&hasBlackPath) result = "both";
-		else if(hasWhitePath&&!hasBlackPath) result = "white";
-		else if(!hasWhitePath&&hasBlackPath) result = "black";
-		else result = "none";
-		
-		System.out.println("the result is:  "+result);
-		return result;
-	}
-	
-	/**
-	 * @author Sacha Lévy using Le-li Mao drop Wall feature
-	 * */
-	public static void testPathDropWall() throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException {
-		// check if the Game is running if not throw exception
-		if (!isRunning())
-			throw new GameNotRunningException("Game not running");
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		// check if there is wall in my hand if not throw exception
-		if (curGame.getWallMoveCandidate() == null)
-			throw new InvalidOperationException("No wall Selected");
-		// validate the position
-		if (!validatePosition()) {
-			throw new InvalidOperationException("Invalid Move");
-		}
-		// finalize drop by putting the move into the movelist.
-		Wall wallToDrop = curGame.getWallMoveCandidate().getWallPlaced();
-		GamePosition currentPosition = curGame.getCurrentPosition();
-		GamePosition clone = clonePosition(currentPosition);
-
-		if (isWhitePlayer()) {
-			currentPosition.addWhiteWallsInStock(wallToDrop);
-			clone.addWhiteWallsOnBoard(wallToDrop);
-		} else {
-			currentPosition.addBlackWallsInStock(wallToDrop);
-			clone.addBlackWallsOnBoard(wallToDrop);
-		}
-		curGame.setCurrentPosition(clone);
-		curGame.addMove(curGame.getWallMoveCandidate());
-		curGame.setWallMoveCandidate(null);
-		// Switch Player here
-		SwitchPlayer();
-	}
-	/* helper method to filter points from a set by looking at a hashmap of all already visited points
-	private static Set<Integer> filterPoints(Set<Integer> points, HashMap<Integer, Boolean> visitedMap) {
-		Set<Integer> updated_points = new HashSet<Integer>();
-		Iterator<Integer> itr = points.iterator();
-		while(itr.hasNext()) {
-			int curKey = itr.next();
-			if(!visitedMap.containsKey(curKey)) updated_points.add(curKey); 
-		}
-		return updated_points;
-	}*/
 	
 /////////////////////////////////////////////////////
 /////////////////////////////////////////////////////
