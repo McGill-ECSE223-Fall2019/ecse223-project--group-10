@@ -721,6 +721,7 @@ public class Quoridor223Controller {
 		for(int i = ind; i<size;i++) {
 			Move move = curGame.getMove(ind);
 			move.delete();
+			curGame.removeMove(move);
 			GamePosition pos = curGame.getPosition(ind+1);
 			pos.delete();
 		}
