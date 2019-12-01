@@ -436,6 +436,10 @@ public class Quoridor223Controller {
 		}
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @throws GameNotRunningException
+	 */
 	public static void cancelGrabWall() throws GameNotRunningException {
 		if (!isRunning())
 			throw new GameNotRunningException("Game not running");
@@ -748,6 +752,11 @@ public class Quoridor223Controller {
 		return false;
 	}
 	
+	/**
+	 * Performs the jump to the start position of the game
+	 * @author Enan Ashaduzzaman
+	 * @throws InvalidOperationException
+	 */
 	public static void jumpToStartPosition() throws InvalidOperationException {
 		if (!isReplay())
 			throw new InvalidOperationException("Game is not in replay mode");
@@ -764,6 +773,11 @@ public class Quoridor223Controller {
 	public static void enterReplayMode() throws GameNotRunningException, InvalidOperationException {
 		if (!isReplayPossible()) throw new InvalidOperationException("Unable to replay");
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		
+		if(curGame.getWallMoveCandidate()!=null) {
+			throw new InvalidOperationException("Cannot enter Replay Mode with wall in hand");
+		}
+		
 		curGame.setGameStatus(GameStatus.Replay);
 		
 	}
@@ -793,6 +807,11 @@ public class Quoridor223Controller {
 		QuoridorApplication.CreateNewBlackPawnBehavior().startGame();
 		
 	}
+	/**
+	 * Performs the jump to the final position
+	 * @author Enan Ashaduzzaman
+	 * @throws InvalidOperationException
+	 */
 	public static void jumpToFinalPosition() throws InvalidOperationException {
 		if (!isReplay())
 			throw new InvalidOperationException("Game is not in replay mode");
@@ -815,6 +834,7 @@ public class Quoridor223Controller {
 		if(ind==curGame.getPositions().size()-1)throw new InvalidOperationException("Already at the last step");
 		curGame.setCurrentPosition(curGame.getPosition(ind+1));
 	}
+
 	/**
 	 * Perform a step backward in the replay mode
 	 * @author Le-Li Mao

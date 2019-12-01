@@ -1712,6 +1712,10 @@ public class CucumberStepDefinitions {
 		gamePage = new GamePage();
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Replay);
 	}
+	/**
+	 * @author Le-Li Mao
+	 * @param dataTable
+	 */
 	@Given("The following moves have been played in game:")
 	public void theFollowingMoveHaveBeenPalyedInGame(io.cucumber.datatable.DataTable dataTable) {
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(Game.GameStatus.Running);
@@ -1757,12 +1761,21 @@ public class CucumberStepDefinitions {
 			else gamePage.clickMovePlayer("right");
 		}
 	}
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param movno
+	 * @param rndno
+	 */
 	@And("The next move is {int}.{int}")
 	public void theNextMoveIs(int movno, int rndno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
 		int ind = (movno-1)*2+rndno-1;
 		curGame.setCurrentPosition(curGame.getPosition(ind));
 	}
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @throws InvalidOperationException
+	 */
 	@When("Jump to start position is initiated")
 	public void jumpToStartPositionIsInitiated() throws InvalidOperationException {
 //		gamePage.clickJumpStart();
@@ -1772,6 +1785,10 @@ public class CucumberStepDefinitions {
 			System.out.println(e.getMessage());
 		}
 	}
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @throws InvalidOperationException
+	 */
 	@When("Jump to final position is initiated")
 	public void jumpToFinalPositionIsInitiated() throws InvalidOperationException {
 //		gamePage.clickJumpFinal();
@@ -1781,6 +1798,10 @@ public class CucumberStepDefinitions {
 			System.out.println(e.getMessage());
 		}
 	}
+    /**
+     * @author Le-Li Mao
+     * @throws InvalidOperationException
+     */
     @When("Step forward is initiated")
 	public void Stepforward() throws InvalidOperationException{
 		//call controller
@@ -1791,6 +1812,10 @@ public class CucumberStepDefinitions {
 		}
 
 	}
+    /**
+     * @author Le-Li Mao
+     * @throws InvalidOperationException
+     */
     @When("Step backward is initiated")
 	public void Stepbackward() throws InvalidOperationException{
 		//call controller
@@ -1800,6 +1825,11 @@ public class CucumberStepDefinitions {
     		System.out.println(e.getMessage());
     	}
 	}
+	/**
+	 * @author Le-Li Mao
+	 * @param nmov
+	 * @param nrnd
+	 */
 	@Then("The next move shall be {int}.{int}")
 	public void theNextMoveShallBe(int nmov, int nrnd) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
@@ -1827,6 +1857,11 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param wrow
+	 * @param wcol
+	 */
 	@And("White player's position shall be \\({int},{int})")
 	public void whitePlayersPositionShallBe(int wrow, int wcol) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1839,6 +1874,11 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param brow
+	 * @param bcol
+	 */
 	@And("Black player's position shall be \\({int},{int})")
 	public void blackPlayersPositionShallBe(int brow, int bcol) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1850,6 +1890,10 @@ public class CucumberStepDefinitions {
 		assertEquals(bcol, curBlackCol);
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param wwallno
+	 */
 	@And("White has {int} on stock")
 	public void whiteHasOnStock(int wwallno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -1858,6 +1902,10 @@ public class CucumberStepDefinitions {
 		assertEquals(wwallno, curWhiteStock);
 	}
 	
+	/**
+	 * @author Enan Ashaduzzaman
+	 * @param bwallno
+	 */
 	@And("Black has {int} on stock")
 	public void blackHasOnStock(int bwallno) {
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();	
