@@ -251,15 +251,6 @@ public class GamePage extends JFrame {
 						gameMessage.setText("It is "+Quoridor223Controller.getCurrentPlayerName()+"'s Turn !!");
 					} catch (InvalidOperationException eReplay) {
 						gameMessage.setText(eReplay.getLocalizedMessage());
-					} catch (GameIsDrawn e) {
-						// TODO Auto-generated catch block
-						gameMessage.setText(e.getLocalizedMessage());
-					} catch (GameIsFinished e) {
-						// TODO Auto-generated catch block
-						gameMessage.setText(e.getLocalizedMessage());
-					} catch (GameNotRunningException e) {
-						// TODO Auto-generated catch block
-						gameMessage.setText(e.getLocalizedMessage());
 					}
 					btnLeft.setText("\u2190");
 					btnRight.setText("\u2192");
@@ -659,6 +650,9 @@ public class GamePage extends JFrame {
 					}
 				}catch (GameNotRunningException e){
 					gameMessage.setText(e.getLocalizedMessage());
+				} catch (GameIsFinished e) {
+					// TODO Auto-generated catch block
+					gameMessage.setText(e.getLocalizedMessage());
 				}
 			}
 		});
@@ -740,6 +734,9 @@ public class GamePage extends JFrame {
 				}
 			}
 		}catch (GameNotRunningException e){
+			gameMessage.setText(e.getLocalizedMessage());
+		} catch (GameIsFinished e) {
+			// TODO Auto-generated catch block
 			gameMessage.setText(e.getLocalizedMessage());
 		}
 		
