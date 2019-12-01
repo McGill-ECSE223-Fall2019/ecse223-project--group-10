@@ -15,10 +15,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import javax.naming.OperationNotSupportedException;
 import javax.swing.Icon;
 import javax.swing.JOptionPane;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.GameIsDrawn;
+import ca.mcgill.ecse223.quoridor.controller.GameIsFinished;
 import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.PawnBehavior;
@@ -60,6 +63,7 @@ public class CucumberStepDefinitions {
 	private String cucumberFilename	= null;
 	private GamePage gamePage;
 	private boolean loadSuccessful = false;
+	private boolean enterReplayMode = false;
 	private ArrayList<Player> createUsersAndPlayers;
 	private String gameDirectory = "./src/main/resources/gameFiles/";
 	private String playerTryingToMove = null;
@@ -69,6 +73,8 @@ public class CucumberStepDefinitions {
 	public void theGameIsNotRunning() {
 		initQuoridorAndBoard();
 		createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
+		//Game curGame =QuoridorApplication.getQuoridor().getCurrentGame();
+		//curGame.getCurrentPosition().getWhitePosition().setTile(Quoridor223Controller.getTile(row, col))
 	}
 
 	@Given("^The game is running$")
@@ -1283,7 +1289,7 @@ public class CucumberStepDefinitions {
 	@Given("No file {string} exists in the filesystem")
 	public void noFileFilenameExistsInTheFilesystem(String filename) {
 		cucumberFilename = filename;
-		deleteFileIfItExists(filename);
+		deleteFileIfItExists(gameDirectory + filename);
 	}
 
 	/**
@@ -1293,7 +1299,7 @@ public class CucumberStepDefinitions {
 	@When("The user initiates to save the game with name {string}")
 	public void theUserInitiatesToSaveTheGameWithNameFilename(String filename) throws Throwable {
 		cucumberFilename = filename;
-		Quoridor223Controller.checkIfFileExists(filename);
+		Quoridor223Controller.checkIfFileExists(gameDirectory + filename);
 	}
 
 	/**
@@ -1304,7 +1310,7 @@ public class CucumberStepDefinitions {
 	@Then("A file with {string} shall be created in the filesystem")
 	public void aFileWithFilenameShallBeCreatedInTheFilesystem(String filename) throws IOException {
 		cucumberFilename = filename;
-		Boolean result = Quoridor223Controller.saveCurrentGamePositionAsFile(gameDirectory + filename);
+		Boolean result = Quoridor223Controller.saveCurrentGameAsFile(gameDirectory + filename);
 		assertTrue("File is not a valid save file", result);
 	}
 
@@ -1315,7 +1321,7 @@ public class CucumberStepDefinitions {
 	@Given("File {string} exists in the filesystem")
 	public void fileFilenameExistsInTheFilesystem(String filename) throws IOException {
 		cucumberFilename = filename;
-		ensureFileExists(filename);
+		ensureFileExists(gameDirectory + filename);
 	}
 
 	/**
@@ -1334,7 +1340,7 @@ public class CucumberStepDefinitions {
 	@Then("File with {string} shall be updated in the filesystem")
 	public void fileWithFilenameShallBeUpdatedInTheFilesystem(String filename) throws Throwable {
 		cucumberFilename = filename;
-		assertTrue("The file was not modified", simulateUserAttemptingToOverwriteFile(filename, JOptionPane.YES_OPTION));
+		assertTrue("The file was not modified", simulateUserAttemptingToOverwriteFile(gameDirectory + filename, JOptionPane.YES_OPTION));
 	}
 
 	/**
@@ -1353,7 +1359,7 @@ public class CucumberStepDefinitions {
 	@Then("File {string} shall not be changed in the filesystem")
 	public void fileFilenameShallNotBeChangedInTheFilesystem(String filename) throws Throwable {
 		cucumberFilename = filename;
-		assertFalse("The file was modified", simulateUserAttemptingToOverwriteFile(filename, JOptionPane.NO_OPTION));
+		assertFalse("The file was modified", simulateUserAttemptingToOverwriteFile(gameDirectory + filename, JOptionPane.NO_OPTION));
 	}
 
 	// **********************************************
@@ -1369,17 +1375,9 @@ public class CucumberStepDefinitions {
 	public void iInitiateToLoadASavedGame(String filename) throws IOException {
 		cucumberFilename = filename;
 		createAndPrepareGame(createUsersAndPlayers);
-		Quoridor223Controller.checkLoadFileIsValid(filename);
+		Quoridor223Controller.checkIfLoadFileIsValidFile(gameDirectory + filename);
 	}
 
-	/**
-	 * @author Mitchell Keeley
-	 */
-	@And("The position to load is valid")
-	public void thePositionToLoadIsValid() {
-		loadSuccessful = Quoridor223Controller.loadMoveDataFromFile(gameDirectory + cucumberFilename);
-	}
-	
 	/**
 	 * @author Mitchell Keeley
 	 * @param playerColor
@@ -1432,7 +1430,7 @@ public class CucumberStepDefinitions {
 	@And("The position to load is invalid")
 	public void thePositionToLoadIsInvalid() {
 		try{
-			loadSuccessful = Quoridor223Controller.loadMoveDataFromFile(gameDirectory + cucumberFilename);
+			loadSuccessful = Quoridor223Controller.getLoadPositionDataFromFile(gameDirectory + cucumberFilename);
 		} catch (Exception e){
 			loadSuccessful = false;
 		}
@@ -1446,11 +1444,102 @@ public class CucumberStepDefinitions {
 	public void theLoadShallReturnAnError() throws IOException {
 		assertFalse("Invalid load does not return an error", loadSuccessful);
 	}
+		
+	// **********************************************
+	// TODO: Save Game starts here
+	// **********************************************
+	
+	// save game has the same stepDefs as Save Position...
+	// however, these have been updated to use the newer method of saving (Save Game)
 	
 	// **********************************************
-	// TODO: Save Position and Load Position end here
+	// TODO: Load Game starts here
 	// **********************************************
-
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @param filename
+	 */
+    @When("I initiate to load a game in {string}")
+    public void iInitiateToLoadAGameInFilename(String filename) {
+    	cucumberFilename = filename;
+		createAndPrepareGame(createUsersAndPlayers);
+		Quoridor223Controller.checkIfLoadFileIsValidFile(gameDirectory + filename);
+    }
+    
+    /**
+     * @author Mitchell Keeley
+     * @throws InvalidOperationException 
+     * @throws GameNotRunningException 
+     * @throws GameIsFinished 
+     * @throws GameIsDrawn 
+     */
+    @And("Each game move is valid")
+    public void eachGameMoveIsValid() throws GameNotRunningException, InvalidOperationException {
+    	try {
+    		loadSuccessful = Quoridor223Controller.getLoadGameDataFromFile(gameDirectory + cucumberFilename);
+    	} catch(GameIsDrawn | GameIsFinished ex) {
+			// GamePage normally catches these exceptions and then sets to replay mode
+    		// Due to the order of operations, this is handled in another step
+    		QuoridorApplication.getQuoridor().getCurrentGame().setIsFinished(true);
+    		enterReplayMode = true;
+		}
+    }
+    
+    @And("The game has no final results")
+    public void theGameHasNoFinalResults() {
+    	Quoridor quoridor = QuoridorApplication.getQuoridor();
+    	GameStatus status = quoridor.getCurrentGame().getGameStatus();
+    	boolean ended = status.equals(GameStatus.BlackWon) ||
+    			status.equals(GameStatus.WhiteWon) ||
+    			status.equals(GameStatus.Draw);
+    	assertFalse("The game is no longer running", ended);
+    }
+    
+	/**
+	 * @author Mitchell Keeley
+	 * @throws InvalidOperationException 
+	 * @throws GameNotRunningException 
+	 */
+	@And("The position to load is valid")
+	public void thePositionToLoadIsValid() throws GameNotRunningException, InvalidOperationException {
+		if(cucumberFilename.contains(".dat")) {
+			loadSuccessful = Quoridor223Controller.getLoadPositionDataFromFile(gameDirectory + cucumberFilename);
+		} else {
+			// redundant step taken care of by ("Each game move is valid")
+			//loadSuccessful = Quoridor223Controller.getLoadGameDataFromFile(gameDirectory + cucumberFilename);
+			// here is where we actually enter replay mode, since the order of tests requires it
+			if(enterReplayMode) {
+				Quoridor223Controller.enterReplayMode();
+			}
+		}
+	}
+	
+	/**
+	 * @author Mitchell Keeley
+	 * @throws GameNotRunningException
+	 * @throws InvalidOperationException
+	 */
+	@And("The game to load has an invalid move")
+	public void theGameToLoadHasAnInvalidMove() throws GameNotRunningException, InvalidOperationException {
+		try {
+			loadSuccessful = Quoridor223Controller.getLoadGameDataFromFile(gameDirectory + cucumberFilename);
+		} catch(GameIsDrawn | GameIsFinished ex) {
+			// GamePage normally catches these exceptions and then sets to replay mode
+			// Due to the order of operations, this is handled in another step
+			enterReplayMode = true;
+		}
+	}
+    
+	/**
+	 * @author Mitchell Keeley
+	 * @throws OperationNotSupportedException 
+	 */
+	@Then("The game shall notify the user that the game file is invalid")
+	public void theGameShallNotifyTheUserThatTheGameFileIsInvalid() throws OperationNotSupportedException {
+		assertFalse("Invalid load does not return an error", loadSuccessful);
+	}
+	
 	// ***********************************************
 	// Clean up
 	// ***********************************************
@@ -1591,8 +1680,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The game has a final result")
 	public void theGameHasAFinalResult() {
-		assertTrue(QuoridorApplication.getQuoridor().getCurrentGame().getIsFinished());
-		
+		assertTrue(QuoridorApplication.getQuoridor().getCurrentGame().getIsFinished());		
 	}
 	
 	@And("I shall be notified that finished games cannot be continued")
@@ -1957,8 +2045,8 @@ public class CucumberStepDefinitions {
 		// There are total 36 tiles in the first four rows and
 		// indexing starts from 0 -> tiles with indices 36 and 36+8=44 are the starting
 		// positions
-		Tile player1StartPos = quoridor.getBoard().getTile(36);
-		Tile player2StartPos = quoridor.getBoard().getTile(44);
+		Tile player1StartPos = quoridor.getBoard().getTile(76);
+		Tile player2StartPos = quoridor.getBoard().getTile(4);
 		
 		Game game = new Game(GameStatus.ReadyToStart, false, MoveMode.PlayerMove, quoridor);
 		game.setWhitePlayer(players.get(0));
@@ -1979,6 +2067,12 @@ public class CucumberStepDefinitions {
 			gamePosition.addBlackWallsInStock(wall);
 		}
 		game.setCurrentPosition(gamePosition);
+		
+		PawnBehavior whitebehavior = QuoridorApplication.CreateNewWhitePawnBehavior();
+		PawnBehavior blackbehavior = QuoridorApplication.CreateNewBlackPawnBehavior();
+		whitebehavior.startGame();
+		blackbehavior.startGame();
+		
 		gamePage = new GamePage();
 	}
 		
@@ -2077,7 +2171,7 @@ public class CucumberStepDefinitions {
 	 * @param filename
 	 */
 	private void deleteFileIfItExists(String filename) {
-		File file = new File(gameDirectory + filename);
+		File file = new File(filename);
 		if(file.exists() && file.isFile()) {
 			file.delete();
 		}
@@ -2092,7 +2186,7 @@ public class CucumberStepDefinitions {
 	 * @throws IOException
 	 */
 	private void ensureFileExists(String filename) throws IOException {
-		File file = new File(gameDirectory + filename);
+		File file = new File(filename);
 		if (!file.exists()) {
 			file.createNewFile();
 		}
@@ -2110,7 +2204,7 @@ public class CucumberStepDefinitions {
 		
 		if(cucumberUserOverwritePrompt(userInput)) {
 			try {
-				fileUpdated = Quoridor223Controller.saveCurrentGamePositionAsFile(gameDirectory + filename);
+				fileUpdated = Quoridor223Controller.saveCurrentGameAsFile(filename);
 			} catch (IOException e) {
 				return fileUpdated;
 			}
@@ -2148,10 +2242,9 @@ public class CucumberStepDefinitions {
 	 * @return
 	 */
 	public static boolean checkCurrentPlayerToMoveByColor(String playerColor) {
-		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Player curPlayer = curGame.getCurrentPosition().getPlayerToMove();
-		return game.getCurrentPosition().getPlayerToMove().equals(getPlayerByColor(playerColor));
+		return curPlayer.equals(getPlayerByColor(playerColor));
 	}
 	
 	/**

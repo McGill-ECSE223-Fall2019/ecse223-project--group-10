@@ -67,11 +67,11 @@ public class GamePage extends JFrame {
 	private JButton forfeit;
 	private JButton saveGame;
 	private JButton newGame;
-	private JButton replayGame;
+	public JButton replayGame;
 	private JButton btnOfferDraw;
 
 	// player's turn
-	private static JLabel gameMessage;
+	public JLabel gameMessage;
 
 	// Move buttons
 	private JButton btnUp;
@@ -763,7 +763,8 @@ public class GamePage extends JFrame {
 		
 		if (filename != null) {
 			try {
-				saveSuccessful = Quoridor223Controller.savePosition(filename);
+				// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
+				saveSuccessful = Quoridor223Controller.saveGame(filename);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -780,7 +781,8 @@ public class GamePage extends JFrame {
 				
 				// otherwise, keep trying to save
 				try {
-					saveSuccessful = Quoridor223Controller.savePosition(filename);
+					// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
+					saveSuccessful = Quoridor223Controller.saveGame(filename);
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
