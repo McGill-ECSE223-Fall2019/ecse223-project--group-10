@@ -2591,6 +2591,11 @@ public class CucumberStepDefinitions {
 	}
 // checkPath feature
 	
+	/**
+	 * CheckIfPathExists.feature
+	 * @author Sacha Lévy
+	 * @param direction, row, col
+	 */
 	@Given("A {string} wall move candidate exists at position {int}:{int}")
 	public void a_wall_move_candidate_exists_at_position(String string, Integer int1, Integer int2) {
 	    Direction dir;
@@ -2599,16 +2604,31 @@ public class CucumberStepDefinitions {
 		Quoridor223Controller.createNewWallMoveCandidate(int1, int2, dir);
 	}
 
+	/**
+	 * CheckIfPathExists.feature
+	 * @author Sacha Lévy
+	 * @param row, col
+	 */
 	@Given("The black player is located at {int}:{int}")
 	public void the_black_player_is_located_at(Integer int1, Integer int2) {
 		assertTrue(setPlayerPosition("black", int1, int2));
 	}
 
+	/**
+	 * CheckIfPathExists.feature
+	 * @author Sacha Lévy
+	 * @param row, col
+	 */
 	@Given("The white player is located at {int}:{int}")
 	public void the_white_player_is_located_at(Integer int1, Integer int2) {
 		assertTrue(setPlayerPosition("white", int1, int2));
 	}
 
+	/**
+	 * CheckIfPathExists.feature
+	 * @author Sacha Lévy
+	 * @throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException
+	 */
 	@When("Check path existence is initiated")
 	public void check_path_existence_is_initiated() throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException {
 		inner_message_check_path = "both";
@@ -2624,6 +2644,11 @@ public class CucumberStepDefinitions {
 		if(inner_message.equals("both are blocked")) inner_message_check_path="none";
 	}
 
+	/**
+	 * CheckIfPathExists.feature
+	 * @author Sacha Lévy
+	 * @param player
+	 */
 	@Then("Path is available for {string} player\\(s)")
 	public void path_is_available_for_player_s(String string) throws InvalidOperationException {
 		assertEquals(string, inner_message_check_path);
@@ -2631,6 +2656,11 @@ public class CucumberStepDefinitions {
 	}
 	
 // ReportFinalResult
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 * @throws GameNotRunningException
+	 */
 	@When("The game is no longer running")
 	public void the_game_is_no_longer_running() throws GameNotRunningException {
 		initQuoridorAndBoard();
@@ -2644,6 +2674,10 @@ public class CucumberStepDefinitions {
 		gamePage.clickForfeit();
 	}
 
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("The final result shall be displayed")
 	public void the_final_result_shall_be_displayed() {
 		boolean isDisplayed = false;
@@ -2655,26 +2689,46 @@ public class CucumberStepDefinitions {
 	    assertTrue("final_result is displayed", isDisplayed);
 	}
 
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("White's clock shall not be counting down")
 	public void white_s_clock_shall_not_be_counting_down() {
 	    assertFalse("white clock is not running", gamePage.getWhiteClockStatus());
 	}
 
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("Black's clock shall not be counting down")
 	public void black_s_clock_shall_not_be_counting_down() {
 	    assertFalse("black clock is not running", gamePage.getBlackClockStatus());
 	}
 
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("White shall be unable to move")
 	public void white_shall_be_unable_to_move() {
 	    assertFalse("white player is unable to move", isWhitePlayerAbleToMove());
 	}
 
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("Black shall be unable to move")
 	public void black_shall_be_unable_to_move() {
 		assertFalse("black player is unable to move", isBlackPlayerAbleToMove());
 	}
 	
+	/**
+	 * @author Sacha Lévy
+	 * @return isWhitePlayerAbleToMove
+	 * */
 	private boolean isWhitePlayerAbleToMove() {
 		// set the white player to be moving
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -2684,7 +2738,11 @@ public class CucumberStepDefinitions {
 		if(gamePage.getDialogBoxText().equals("Game not running")) return false;
 		return true;
 	}
-
+	
+	/**
+	 * @author Sacha Lévy
+	 * @return isBlackPlayerAbleToMove
+	 * */
 	private boolean isBlackPlayerAbleToMove() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game game = quoridor.getCurrentGame();
