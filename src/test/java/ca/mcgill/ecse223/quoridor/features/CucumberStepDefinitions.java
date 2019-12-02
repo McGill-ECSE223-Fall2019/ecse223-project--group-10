@@ -1,8 +1,8 @@
 package ca.mcgill.ecse223.quoridor.features;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -26,7 +26,6 @@ import ca.mcgill.ecse223.quoridor.controller.GameNotRunningException;
 import ca.mcgill.ecse223.quoridor.controller.InvalidOperationException;
 import ca.mcgill.ecse223.quoridor.controller.PawnBehavior;
 import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
-import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -41,9 +40,7 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
-import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.view.GamePage;
-import cucumber.api.PendingException;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.But;
@@ -1285,6 +1282,7 @@ public class CucumberStepDefinitions {
 	// **********************************************
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 */
 	@Given("No file {string} exists in the filesystem")
 	public void noFileFilenameExistsInTheFilesystem(String filename) {
@@ -1294,6 +1292,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @throws Throwable
 	 */
 	@When("The user initiates to save the game with name {string}")
@@ -1304,6 +1303,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @throws IOException
 	 * @throws UnsupportedOperationException, IOExceptionable
 	 */
@@ -1316,6 +1316,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @throws IOException
 	 */
 	@Given("File {string} exists in the filesystem")
@@ -1335,6 +1336,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @throws Throwable
 	 */
 	@Then("File with {string} shall be updated in the filesystem")
@@ -1354,6 +1356,7 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Mitchell Keeley
+	 * @param filename
 	 * @throws Throwable
 	 */
 	@Then("File {string} shall not be changed in the filesystem")
@@ -1451,6 +1454,7 @@ public class CucumberStepDefinitions {
 	
 	// save game has the same stepDefs as Save Position...
 	// however, these have been updated to use the newer method of saving (Save Game)
+	// while still being compatible with Save Position
 	
 	// **********************************************
 	// TODO: Load Game starts here
@@ -1486,6 +1490,9 @@ public class CucumberStepDefinitions {
 		}
     }
     
+    /**
+     * @author Mitchell Keeley
+     */
     @And("The game has no final results")
     public void theGameHasNoFinalResults() {
     	Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -2584,6 +2591,11 @@ public class CucumberStepDefinitions {
 	}
 // checkPath feature
 	
+	/**
+	 * CheckIfPathExists.feature
+	 * @author Sacha Lévy
+	 * @param direction, row, col
+	 */
 	@Given("A {string} wall move candidate exists at position {int}:{int}")
 	public void a_wall_move_candidate_exists_at_position(String string, Integer int1, Integer int2) {
 	    Direction dir;
@@ -2592,16 +2604,31 @@ public class CucumberStepDefinitions {
 		Quoridor223Controller.createNewWallMoveCandidate(int1, int2, dir);
 	}
 
+	/**
+	 * CheckIfPathExists.feature
+	 * @author Sacha Lévy
+	 * @param row, col
+	 */
 	@Given("The black player is located at {int}:{int}")
 	public void the_black_player_is_located_at(Integer int1, Integer int2) {
 		assertTrue(setPlayerPosition("black", int1, int2));
 	}
 
+	/**
+	 * CheckIfPathExists.feature
+	 * @author Sacha Lévy
+	 * @param row, col
+	 */
 	@Given("The white player is located at {int}:{int}")
 	public void the_white_player_is_located_at(Integer int1, Integer int2) {
 		assertTrue(setPlayerPosition("white", int1, int2));
 	}
 
+	/**
+	 * CheckIfPathExists.feature
+	 * @author Sacha Lévy
+	 * @throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException
+	 */
 	@When("Check path existence is initiated")
 	public void check_path_existence_is_initiated() throws UnsupportedOperationException, GameNotRunningException, InvalidOperationException {
 		inner_message_check_path = "both";
@@ -2617,6 +2644,11 @@ public class CucumberStepDefinitions {
 		if(inner_message.equals("both are blocked")) inner_message_check_path="none";
 	}
 
+	/**
+	 * CheckIfPathExists.feature
+	 * @author Sacha Lévy
+	 * @param player
+	 */
 	@Then("Path is available for {string} player\\(s)")
 	public void path_is_available_for_player_s(String string) throws InvalidOperationException {
 		assertEquals(string, inner_message_check_path);
@@ -2624,6 +2656,11 @@ public class CucumberStepDefinitions {
 	}
 	
 // ReportFinalResult
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 * @throws GameNotRunningException
+	 */
 	@When("The game is no longer running")
 	public void the_game_is_no_longer_running() throws GameNotRunningException {
 		initQuoridorAndBoard();
@@ -2637,6 +2674,10 @@ public class CucumberStepDefinitions {
 		gamePage.clickForfeit();
 	}
 
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("The final result shall be displayed")
 	public void the_final_result_shall_be_displayed() {
 		boolean isDisplayed = false;
@@ -2648,26 +2689,46 @@ public class CucumberStepDefinitions {
 	    assertTrue("final_result is displayed", isDisplayed);
 	}
 
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("White's clock shall not be counting down")
 	public void white_s_clock_shall_not_be_counting_down() {
 	    assertFalse("white clock is not running", gamePage.getWhiteClockStatus());
 	}
 
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("Black's clock shall not be counting down")
 	public void black_s_clock_shall_not_be_counting_down() {
 	    assertFalse("black clock is not running", gamePage.getBlackClockStatus());
 	}
 
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("White shall be unable to move")
 	public void white_shall_be_unable_to_move() {
 	    assertFalse("white player is unable to move", isWhitePlayerAbleToMove());
 	}
 
+	/**
+	 * ReportFinalResult.feature
+	 * @author Sacha Lévy
+	 */
 	@Then("Black shall be unable to move")
 	public void black_shall_be_unable_to_move() {
 		assertFalse("black player is unable to move", isBlackPlayerAbleToMove());
 	}
 	
+	/**
+	 * @author Sacha Lévy
+	 * @return isWhitePlayerAbleToMove
+	 * */
 	private boolean isWhitePlayerAbleToMove() {
 		// set the white player to be moving
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
@@ -2677,7 +2738,11 @@ public class CucumberStepDefinitions {
 		if(gamePage.getDialogBoxText().equals("Game not running")) return false;
 		return true;
 	}
-
+	
+	/**
+	 * @author Sacha Lévy
+	 * @return isBlackPlayerAbleToMove
+	 * */
 	private boolean isBlackPlayerAbleToMove() {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		Game game = quoridor.getCurrentGame();

@@ -3,12 +3,19 @@ package ca.mcgill.ecse223.quoridor.view;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.sql.Time;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.sql.Time;
+
+import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
@@ -20,16 +27,6 @@ import ca.mcgill.ecse223.quoridor.controller.Quoridor223Controller;
 import ca.mcgill.ecse223.quoridor.controller.TOGame;
 import ca.mcgill.ecse223.quoridor.controller.TOPlayer;
 import ca.mcgill.ecse223.quoridor.controller.TOWall;
-import ca.mcgill.ecse223.quoridor.model.Game;
-
-import javax.swing.Icon;
-
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Font;
-import java.io.IOException;
-import javax.swing.JOptionPane;
-import java.awt.SystemColor;
 
 public class GamePage extends JFrame {
 	/**
@@ -758,24 +755,31 @@ public class GamePage extends JFrame {
 		String filename = null;
 		Boolean saveSuccessful = false;
 
-		filename = saveGameInputDialog("Enter the file path below:", "Save Game As", null);
+		filename = saveGameInputDialog("Enter the file name below:", "Save Game As", null);
 		
 		if (filename != null) {
-			try {
-				// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
-				saveSuccessful = Quoridor223Controller.saveGame(filename);
-			} catch (IOException e1) {
-				e1.printStackTrace();
+			if(!filename.equals("")) {
+				try {
+					// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
+					saveSuccessful = Quoridor223Controller.saveGame(filename);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
 			}
 
 			// keep trying to save until the user cancels save attempt, or the save is successful
 			while (saveSuccessful == false) {
 	
-				filename = saveGameInputDialog("Enter a valid file path here:", "Save Game As", null);
+				filename = saveGameInputDialog("Enter a valid file name here:", "Save Game As", null);
 				
 				// if the user cancels the save, return
 				if (filename == null) {
 					return;
+				}
+				
+				// if the filename is empty
+				if (filename.equals("")) {
+					continue;
 				}
 				
 				// otherwise, keep trying to save
@@ -783,7 +787,6 @@ public class GamePage extends JFrame {
 					// old version: saveSuccessful = Quoridor223Controller.savePosition(filename);
 					saveSuccessful = Quoridor223Controller.saveGame(filename);
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}
@@ -803,7 +806,7 @@ public class GamePage extends JFrame {
 	public static int userOverwritePrompt(String filename) {
 
 		int overWriteAllowed = JOptionPane.showConfirmDialog((Component) boardComponent,
-				(Object) "Permisssion to Overwrite file:\n\"" + filename + "\"", "Overwrite File",
+				(Object) "Permisssion to Overwrite file:\n\"" + filename + "\"?", "Overwrite File",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, (Icon) null);
 
 		return overWriteAllowed;

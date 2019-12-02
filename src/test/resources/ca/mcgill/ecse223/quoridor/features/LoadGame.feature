@@ -20,9 +20,12 @@ Feature: Load Game
     And The game shall become ready to start
 
     Examples: 
-      | filename                 | player | p_row | p_col | opponent | o_row | o_col | pw_row | pw_col | pw_orientation | ow_row | ow_col | ow_orientation | remaining_walls |
-      | quoridor_test_game_1.mov | white  |     3 |     5 | black    |     7 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               9 |
-      | quoridor_test_game_2.mov | white  |     2 |     5 | black    |     8 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               8 |
+      | filename                  | player | p_row | p_col | opponent | o_row | o_col | pw_row | pw_col | pw_orientation | ow_row | ow_col | ow_orientation | remaining_walls |
+      | quoridor_test_game_1.mov  | white  |     3 |     5 | black    |     7 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               9 |
+      | quoridor_test_game_2.mov  | white  |     2 |     5 | black    |     8 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               8 |
+			| quoridor_test_game_11.mov | white  |     3 |     5 | black    |     7 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               9 |
+      | quoridor_test_game_22.mov | white  |     2 |     5 | black    |     8 |     5 |      6 |      5 | horizontal     |      3 |      5 | vertical       |               8 |
+			
 
   Scenario Outline: Load valid complete game 
     When I initiate to load a game in "<filename>"
@@ -32,8 +35,9 @@ Feature: Load Game
     Then The game shall be in replay mode 
 
     Examples: 
-      | filename                 | 
-      | quoridor_test_game_3.mov |  
+      | filename                  | 
+      | quoridor_test_game_3.mov  |
+      | quoridor_test_game_33.mov |
 
   Scenario Outline: Invalid move in game file
     When I initiate to load a saved game "<filename>"
@@ -43,12 +47,16 @@ Feature: Load Game
     Examples: 
       | filename                                  |
       | quoridor_test_game_invalid_pawn_move.mov  |
+      | quoridor_test_game_invalid_jump_move.mov  |      
+      | quoridor_test_game_invalid_wall_move.mov  |
       | quoridor_test_game_invalid_pawn_move1.mov |
 			| quoridor_test_game_invalid_pawn_move2.mov |
-			| quoridor_test_game_invalid_pawn_move3.mov |           
-      | quoridor_test_game_invalid_wall_move.mov  |
+			| quoridor_test_game_invalid_pawn_move3.mov |
+			| quoridor_test_game_invalid_pawn_move4.mov |
+			| quoridor_test_game_invalid_pawn_move5.mov |
       | quoridor_test_game_invalid_wall_move1.mov |
       | quoridor_test_game_invalid_wall_move2.mov |
-      | quoridor_test_game_invalid_jump_move.mov  |
+      | quoridor_test_game_invalid_wall_move3.mov |
       | quoridor_test_game_invalid_jump_move1.mov |
       | quoridor_test_game_invalid_jump_move2.mov |
+      | quoridor_test_game_invalid_jump_move3.mov |
